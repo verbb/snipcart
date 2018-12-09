@@ -1,16 +1,16 @@
-# Snipcart Craft CMS 3 Plugin
-
 ![Snipcart](resources/hero.svg)
 
-Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.
+<h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
+
+<h4 align="center">Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.</h4>
+
+<p align="center"><img src="https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master" alt="CI Status"></p>
 
 ---
 
-🚧 **This plugin is under development and will require a paid license once it's ready for the plugin store.** 🚧
+<p align="center">🚧 <b>This plugin is under development and will require a paid license once it's ready for the plugin store.</b> 🚧</p>
 
 ---
-
-[![Build Status](https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master)](https://travis-ci.org/workingconcept/snipcart-craft-plugin)
 
 ## Features
 
