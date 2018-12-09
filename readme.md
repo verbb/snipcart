@@ -2,7 +2,7 @@
 
 <h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
 
-<h4 align="center">Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.</h4>
+<h4 align="center">Do more with <a href="https://snipcart.com/">Snipcart</a> directly from Craft CMS.</h4>
 
 <p align="center"><img src="https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master" alt="CI Status"></p>
 
