@@ -15,6 +15,6 @@ install:
   - composer require codeception/codeception workingconcept/craft-snipcart @dev
   - ./craft install --email=nobody@example.com --username=admin --password=whocares --siteName="Test Site" --siteUrl="http://localhost" --language=en
   - ./craft install/plugin snipcart
-  - cp $TRAVIS_BUILD_DIR/codeception.yml ./ && cp -r $TRAVIS_BUILD_DIR/test/ ./test
+  - cp $TRAVIS_BUILD_DIR/codeception.yml ./ && cp -r $TRAVIS_BUILD_DIR/tests/ ./tests
 script:
   - ./vendor/codeception/codeception/codecept run --xml --html
