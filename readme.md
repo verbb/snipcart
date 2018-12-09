@@ -10,6 +10,8 @@ Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.
 
 ---
 
+[![Build Status](https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master)](https://travis-ci.org/workingconcept/snipcart-craft-plugin)
+
 ## Features
 
 Snipcart makes it easy to add a full-featured cart system to any site in very little time, and this plugin makes it both easier to get started with Snipcart and lets Craft CMS take more advantage of its features right out of the box. If Craft Commerce is too complex for your project, odds are Snipcart will be a great fit.
