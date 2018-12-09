@@ -1,12 +1,12 @@
 # Snipcart Craft CMS 3 Plugin
 
-Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.
-
 ![Snipcart](resources/hero.svg)
+
+Do more with [Snipcart](https://snipcart.com/) directly from Craft CMS.
 
 ---
 
-**This plugin is under development and will require a paid license once it's ready for relase on the Craft plugin store.**
+🚧 **This plugin is under development and will require a paid license once it's ready for relase on the Craft plugin store.** 🚧
 
 ---
 
