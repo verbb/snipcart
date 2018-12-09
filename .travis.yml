@@ -1,0 +1,19 @@
+language: php
+php:
+  - '7.1'
+services:
+  - mysql
+env:
+  - ENVIRONMENT="test" SECURITY_KEY="12345" DB_DRIVER="mysql" DB_SERVER="localhost" DB_USER="root" DB_PASSWORD="" DB_DATABASE="test"
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - composer create-project craftcms/craft /home/travis/build/craftcms/craft
+install:
+  - cd /home/travis/build/craftcms/craft
+  - composer config repositories.craft-snipcart path /home/travis/build/workingconcept/snipcart-craft
+  - composer config minimum-stability dev
+  - composer require codeception/codeception workingconcept/craft-snipcart @dev
+  - ./craft install --email=nobody@example.com --username=admin --password=whocares --siteName="Test Site" --siteUrl="http://localhost" --language=en
+  - ./craft install/plugin snipcart
+script:
+  - ./vendor/codeception/codeception/codecept run --xml --html

@@ -1,0 +1,19 @@
+paths:
+  tests: tests
+  output: tests/_output
+  data: tests/_data
+  support: tests/_support
+  envs: tests/_envs
+settings:
+  bootstrap: _bootstrap.php
+coverage:
+  enabled: true
+  include:
+    - src/*
+  exclude:
+    - src/icon.svg
+    - src/icon-mask.svg
+actor_suffix: Tester
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed

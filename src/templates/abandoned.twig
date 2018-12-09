@@ -1,0 +1,42 @@
+{% extends "snipcart/_layout" %}
+
+{% set title       = "Snipcart Abandoned Carts"|t %}
+{% set carts       = craft.snipcart.listAbandoned() %}
+{% set selectedTab = "abandoned" %}
+
+{% block content %}
+
+	{% if craft.snipcart.isLinked %}
+		<p id="noredirects"{% if carts.items | length %} class="hidden"{% endif %}>
+			{{ "There aren't any abandoned carts yet."|t }}
+		</p>
+	{% else %}
+		<p>
+			{{ "Add your Snipcart Private API Key in the plugin settings."|t }}
+		</p>
+	{% endif %}
+
+	{% if carts.items | length %}
+
+		<table id="carts" class="data" style="width: 100%;">
+			<thead>
+				<th scope="col">{{ "Email"|t }}</th>
+				<th scope="col">{{ "Status"|t }}</th>
+				<th scope="col">{{ "Date"|t }}</th>
+				<th scope="col">{{ "Total"|t }}</th>
+			</thead>
+			<tbody>
+				{% for cart in carts.items %}
+					<tr data-id="{{ cart.token }}" data-name="{{ cart.email }}">
+						<td>{{ cart.email }}</td>
+						<td>{{ cart.status }}</td>
+						<td>{{ cart.modificationDate | date() }}</td>
+						<td>{{ cart.total }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+	{% endif %}
+
+{% endblock %}

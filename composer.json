@@ -1,0 +1,42 @@
+{
+    "name": "workingconcept/craft-snipcart",
+    "description": "Do more with Snipcart directly from Craft CMS.",
+    "type": "craft-plugin",
+    "version": "1.0.0-beta",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft3",
+        "snipcart"
+    ],
+    "support": {
+        "docs": "https://github.com/workingconcept/snipcart-craft-plugin/wiki",
+        "issues": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Working Concept",
+            "homepage": "https://workingconcept.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0",
+        "pelago/emogrifier": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "workingconcept\\snipcart\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Snipcart",
+        "handle": "snipcart",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://github.com/workingconcept/snipcart-craft-plugin/changelog.md",
+        "class": "workingconcept\\snipcart\\Snipcart"
+    }
+}

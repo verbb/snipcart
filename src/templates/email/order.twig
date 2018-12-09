@@ -1,0 +1,130 @@
+{% extends 'snipcart/email/_layout' %}
+
+{% block hero %}
+    <tr>
+        <td style="background-color: #F6E767;">
+            <img src="{{ heroImage }}" width="600" height="" alt="order complete" border="0" style="width: 100%; max-width: 600px; height: auto; background: #F6E767; font-family: sans-serif; font-size: 15px; line-height: 15px; color: #F6E767; margin: auto;" class="g-img">
+        </td>
+    </tr>
+{% endblock hero %}
+
+{% block content %}
+    <h1 style="margin: 0 0 25px 0; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
+        {{- order.cardHolderName }} {{ "just placed an order"|t }}.
+    </h1>
+
+    <p class="no-margin" style="color: #333;"><b>Order Number:</b> {{ order.invoiceNumber }}</p>
+    <p class="no-top-margin" style="color: #333; margin-bottom: 35px;"><b>Order Email:</b> {{ order.email }}</p>
+
+    <table class="content-table">
+        <thead>
+            <th class="align-left no-left-margin first-cell-padding">{{ "Quantity"|t }}</th>
+            <th class="align-left normal-cell-padding" width="50%">{{ "Item"|t }}</th>
+            <th class="align-right normal-cell-padding">{{ "Price"|t }}</th>
+            <th class="align-right no-right-margin last-cell-padding">{{ "Subtotal"|t }}</th>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+                <tr>
+                    <td class="align-left first-cell-padding">{{ item.quantity }}</td>
+                    <td class="align-left normal-cell-padding" width="50%">
+                        {{ item.name }}
+                        {% if item.customFields | length -%}
+                            ({% for field in item.customFields -%}
+                            {{ field.name }}: {{ field.value }}{% if loop.last != true %},{% endif %}
+                        {%- endfor %})
+                        {%- endif -%}
+                    </td>
+                    <td class="align-right normal-cell-padding">{{ item.price | currency(order.currency|upper) }}</td>
+                    <td class="align-right last-cell-padding">{{ (item.price * item.quantity) | currency(order.currency|upper) }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td class="subtotal align-right first-cell-padding" colspan="3">{{ order.shippingMethod }}<br><span class="muted mono">{{ order.totalWeight | number_format }} {{ "grams"|t }}</span></td>
+                <td class="align-right last-cell-padding">{{ order.shippingFees | currency(order.currency|upper) }}</td>
+            </tr>
+            <tr>
+                <td class="subtotal align-right first-cell-padding" colspan="3">Tax</td>
+                <td class="align-right last-cell-padding">{{ order.taxesTotal | currency(order.currency|upper) }}</td>
+            </tr>
+            <tr>
+                <td class="subtotal align-right first-cell-padding" colspan="3">
+                    {{ "Grand Total"|t }}<br>
+                    <span class="muted mono">
+                        {{- order.paymentMethod }}{% if order.paymentMethod == 'CreditCard' %} {{ order.creditCardLast4Digits }}{% endif -%}
+                    </span>
+                </td>
+                <td class="align-right last-cell-padding">
+                    <b>{{ order.finalGrandTotal | currency(order.currency|upper) -}}</b>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% for customField in order.customFields %}
+        {% if customField.value is not empty %}
+            <h3>{{ customField.name|t }}</h3>
+            <p class="no-top-margin">{{ customField.value }}</p>
+        {% endif %}
+    {% endfor %}
+
+    {% if order.shippingAddressSameAsBilling %}
+
+        <h3>{{ "Billing + Shipping Address"|t }}</h3>
+
+        <p class="no-top-margin">
+            {{- order.billingAddressName }}<br>
+            {{ order.billingAddressAddress1 }}<br>
+            {% if order.billingAddressAddress2 %}
+                {{ order.billingAddressAddress2 }}<br>
+            {% endif %}
+            {{ order.billingAddressCity }}, {{ order.billingAddressProvince }} {{ order.billingAddressPostalCode }}
+            {% if order.billingAddressCountry != "US" %}<br>{{ order.billingAddressCountry }}{% endif -%}
+        </p>
+
+        <p class="no-top-margin">{{ order.billingAddress.formattedPhone }}</p>
+
+    {% else %}
+
+        <h3>{{ "Billing Address"|t }}</h3>
+
+        <p class="no-top-margin">
+            {{- order.billingAddressName }}<br>
+            {{ order.billingAddressAddress1 }}<br>
+            {% if order.billingAddressAddress2 %}
+                {{ order.billingAddressAddress2 }}<br>
+            {% endif %}
+            {{ order.billingAddressCity }}, {{ order.billingAddressProvince }} {{ order.billingAddressPostalCode }}
+            {% if order.billingAddressCountry != "US" %}<br>{{ order.billingAddressCountry }}{% endif -%}
+        </p>
+
+        <p class="no-top-margin">{{ order.billingAddress.formattedPhone }}</p>
+
+        <h3>{{ "Shipping Address"|t }}</h3>
+
+        <p class="no-top-margin">
+            {{- order.shippingAddressName }}<br>
+            {{ order.shippingAddressAddress1 }}<br>
+            {% if order.shippingAddressAddress2 %}
+                {{ order.shippingAddressAddress2 }}<br>
+            {% endif %}
+            {{ order.shippingAddressCity }}, {{ order.shippingAddressProvince }} {{ order.shippingAddressPostalCode }}
+            {% if order.shippingAddressCountry != "US" %}<br>{{ order.shippingAddressCountry }}{% endif -%}
+        </p>
+
+        <p class="no-top-margin">{{ order.shippingAddress.formattedPhone }}</p>
+
+    {% endif %}
+
+    {% if settings.reduceQuantitiesOnOrder and settings.productInventoryField %}
+        <h3>{{ "Remaining Quantities"|t }}</h3>
+
+        <ul class="no-top-margin">
+            {% for element in elements %}
+                <li><span style="{% if entry.productInventory == 0 %}color: red;{% endif %}">{{ elements.title }}: <b>{{ elements[settings.productInventoryField] }}</b></span></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p style="margin-top: 40px;" class="muted mono">{{ order.ipAddress }}<br>{{ order.userAgent }}</p>
+{% endblock content %}

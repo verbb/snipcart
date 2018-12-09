@@ -1,0 +1,7 @@
+<p>The following completed Snipcart orders don't exist in ShipStation. Each needs to be re-fed immediately.</p>
+
+<ul>
+{% for order in orders %}
+    <li><a href="https://app.snipcart.com/dashboard/orders/{{ order.token }}">{{ order.invoiceNumber }}</a> from {{ order.creationDate }}</li>
+{% endfor %}
+</ul>
