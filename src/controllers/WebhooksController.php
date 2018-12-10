@@ -161,7 +161,9 @@ class WebhooksController extends Controller
     {
         $options = Snipcart::$plugin->snipcart->processShippingRates($order);
 
-        $response = $this->asJson($options);
+        $response = $this->asJson([
+            'rates' => $options
+        ]);
 
         if ($this->settings->logCustomRates)
         {
