@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 use craft\base\Model;
+use Yii;
 
 /**
  * ShipStation Order Item Model
