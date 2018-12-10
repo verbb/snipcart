@@ -31,7 +31,7 @@
                         {{ item.name }}
                         {% if item.customFields | length -%}
                             ({% for field in item.customFields -%}
-                            {{ field.name }}: {{ field.value }}{% if loop.last != true %},{% endif %}
+                            {{ field.name }}: {{ field.value }}{% if loop.last != true %}, {% endif %}
                         {%- endfor %})
                         {%- endif -%}
                     </td>
