@@ -236,9 +236,9 @@ class ShipStationService extends Component
         if ( ! empty($rateQuote))
         {
             // get the Snipcart order data
-            $quotedRates = json_decode($rateQuote->body);
+            $quoteRecord = json_decode($rateQuote->body);
 
-            foreach ($quotedRates as $rate)
+            foreach ($quoteRecord->rates as $rate)
             {
                 if ((float)$rate->cost === $order->shippingAmount && $rate->description === $order->requestedShippingService)
                 {
