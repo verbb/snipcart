@@ -8,13 +8,8 @@
 
 namespace workingconcept\snipcart;
 
-use craft\base\Field;
 use craft\fields\Number;
 use craft\fields\PlainText;
-use workingconcept\snipcart\controllers\WebhooksController;
-use workingconcept\snipcart\controllers\SnipcartController;
-use workingconcept\snipcart\controllers\TestController;
-use workingconcept\snipcart\controllers\VerifyController;
 use workingconcept\snipcart\services\SnipcartService;
 use workingconcept\snipcart\services\ShipStationService;
 use workingconcept\snipcart\variables\SnipcartVariable;
@@ -35,7 +30,7 @@ class Snipcart extends Plugin
     // =========================================================================
 
     /**
-     * @var Reporter
+     * @var Snipcart
      */
     public static $plugin;
 
@@ -97,25 +92,6 @@ class Snipcart extends Plugin
         {
             $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
         }
-    }
-
-    public function getSettingsResponse()
-    {
-        $view = Craft::$app->getView();
-        $namespace = $view->getNamespace();
-        $view->setNamespace('settings');
-        
-        $settingsHtml = $this->settingsHtml();
-        $view->setNamespace($namespace);
-
-        $controller = Craft::$app->controller;
-
-        // TODO: update ShipStation webhook subscription if we've changed settings
-
-        return $controller->renderTemplate('settings/plugins/_settings', [
-            'plugin' => $this,
-            'settingsHtml' => $settingsHtml
-        ]);
     }
 
 

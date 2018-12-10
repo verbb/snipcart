@@ -2,7 +2,7 @@
     "name": "workingconcept/craft-snipcart",
     "description": "Do more with Snipcart directly from Craft CMS.",
     "type": "craft-plugin",
-    "version": "1.0.0-beta",
+    "version": "1.0.0-beta.1",
     "keywords": [
         "craft",
         "cms",
@@ -23,8 +23,10 @@
         }
     ],
     "require": {
+        "php": ">7.0.0",
         "craftcms/cms": "^3.0.0",
-        "pelago/emogrifier": "*"
+        "pelago/emogrifier": "*",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

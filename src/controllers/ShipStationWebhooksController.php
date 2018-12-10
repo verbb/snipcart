@@ -27,8 +27,6 @@ class ShipStationWebhooksController extends Controller
 
     /**
      * Handle the $_POST data that ShipStation sent, which is a raw body of JSON.
-     *
-     * @return void
      */
 
     public function actionHandle()
@@ -101,7 +99,8 @@ class ShipStationWebhooksController extends Controller
      * Output a 400 response with an optional JSON error array.
      *
      * @param  array  $errors Array of errors that explain the 400 response
-     * @return void
+     *
+     * @return Response;
      */
 
     private function badResponse(array $errors)

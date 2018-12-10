@@ -72,10 +72,10 @@ class WebhooksController extends Controller
     /**
      * Validate and handle Snipcart's post according to the declared event type.
      *
-     * @return void
+     * @return Response
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionHandle()
+    public function actionHandle(): ?Response
     {
         // only take post requests
         $this->requirePostRequest();
@@ -155,9 +155,9 @@ class WebhooksController extends Controller
      *
      * @param  SnipcartOrder $order
      *
-     * @return void
+     * @return Response
      */
-    private function handleShippingRateFetchEvent(SnipcartOrder $order)
+    private function handleShippingRateFetchEvent(SnipcartOrder $order): Response
     {
         $options = Snipcart::$plugin->snipcart->processShippingRates($order);
 
@@ -182,9 +182,10 @@ class WebhooksController extends Controller
      * Output a 400 response with an optional JSON error array.
      *
      * @param  array  $errors Array of errors that explain the 400 response
-     * @return void
+     *
+     * @return Response
      */
-    private function badResponse(array $errors)
+    private function badResponse(array $errors): Response
     {
         $response = Craft::$app->getResponse();
 
@@ -203,9 +204,9 @@ class WebhooksController extends Controller
     /**
      * Output a 200 response so Snipcart knows we're okay, but not handling the event.
      *
-     * @return void
+     * @return Response
      */
-    private function notSupportedResponse()
+    private function notSupportedResponse(): Response
     {
         $response = Craft::$app->getResponse();
         $response->setStatusCode(200);
@@ -219,9 +220,9 @@ class WebhooksController extends Controller
      *
      * @param  SnipcartOrder $order
      *
-     * @return json
+     * @return Response
      */
-    private function handleOrderCompletedEvent(SnipcartOrder $order)
+    private function handleOrderCompletedEvent(SnipcartOrder $order): Response
     {
         if ($this->hasEventHandlers(self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER))
         {
@@ -266,7 +267,7 @@ class WebhooksController extends Controller
      *
      * @param $postBody
      */
-    private function logWebhookTransaction($postBody)
+    private function logWebhookTransaction($postBody): void
     {
         $webhookLog = new WebhookLog();
 
@@ -283,7 +284,7 @@ class WebhooksController extends Controller
      *
      * @return boolean
      */
-    protected function validateRequest()
+    protected function validateRequest(): bool
     {
         $key = 'HTTP_X_SNIPCART_REQUESTTOKEN';
         

@@ -8,11 +8,8 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use workingconcept\snipcart\Snipcart;
-
 use Craft;
 use craft\web\Controller;
-use craft\helpers\UrlHelper;
 
 class SnipcartController extends Controller
 {
