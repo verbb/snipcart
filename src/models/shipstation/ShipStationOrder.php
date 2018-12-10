@@ -317,7 +317,7 @@ class ShipStationOrder extends Model
      *
      * @return ShipStationWeight
      */
-    public function getWeight(): ShipStationWeight
+    public function getWeight()
     {
         return $this->_weight;
     }
@@ -346,7 +346,7 @@ class ShipStationOrder extends Model
      *
      * @return ShipStationDimensions
      */
-    public function getDimensions(): ShipStationDimensions
+    public function getDimensions()
     {
         return $this->_dimensions;
     }
