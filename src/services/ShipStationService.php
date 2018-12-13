@@ -191,12 +191,7 @@ class ShipStationService extends Component
      * @param ShipStationOrder $order           Order in progress in response to Snipcart data.
      * @param string           $shippingMethod  Formatted shipping name selected by customer and provided
      *                                          by Snipcart, to be used as a clue.
-     * @return array|null      [ 
-     *                          'serviceName' => 'USPS Priority Mail - Package',
-     *                          'serviceCode' => 'usps_priority_mail',
-     *                          'shipmentCost' => 6.98,
-     *                          'otherCost' => 0
-     *                         ]
+     * @return ShipStationRate|null
      */
     public function getShippingMethodFromOrder(ShipStationOrder $order, $shippingMethod)
     {
@@ -219,18 +214,18 @@ class ShipStationService extends Component
             {
                 if ((float)$rate->cost === $order->shippingAmount && $rate->description === $order->requestedShippingService)
                 {
-                    return (object) [
+                    return new ShipStationRate([
                         'serviceName'  => $rate->description,
                         'serviceCode'  => $rate->code,
                         'shipmentCost' => $rate->cost,
                         'otherCost'    => 0,
-                    ];
+                    ]);
                 }
             }
         }
 
         /**
-         * if there wasn't a matching option, get rate quote again to find closest possible match
+         * if there wasn't a matching option, get a fresh quote and look for the closest match
          */
 
         // check rates again to get potential choices
@@ -248,21 +243,25 @@ class ShipStationService extends Component
         // check rates for matching name and/or price, otherwise take closest
         foreach ($rates as $rate)
         {
-            if ($rate->serviceName == $shippingMethod && $rate->shipmentCost == $order->shippingAmount)
+            if ($rate->serviceName === $shippingMethod && $rate->shipmentCost === $order->shippingAmount)
             {
                 // return exact match
                 return $rate;
             }
-            else
+
+            if ($closest === null)
             {
-                if (
-                    $closest === null ||
-                    abs($rate->shipmentCost - $order->shippingAmount) < abs($closest->shipmentCost - $order->shippingAmount)
-                )
-                {
-                    // store the rate that has the least cost difference
-                    $closest = $rate;
-                }
+                $closest = $rate;
+                continue;
+            }
+
+            $currentRateDifferenceFromPaid = abs($rate->shipmentCost - $order->shippingAmount);
+            $closestRateDifferenceFromPaid = abs($closest->shipmentCost - $order->shippingAmount);
+
+            if ($currentRateDifferenceFromPaid < $closestRateDifferenceFromPaid)
+            {
+                // use the rate that has the least cost difference
+                $closest = $rate;
             }
         }
 

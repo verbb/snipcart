@@ -23,6 +23,7 @@ use craft\elements\Entry;
 use craft\mail\Message;
 use GuzzleHttp\Client;
 use yii\base\Exception;
+use yii\base\ErrorException;
 
 /**
  * Class SnipcartService
@@ -571,6 +572,8 @@ class SnipcartService extends Component
      */
     public function updateElementsFromOrder(SnipcartOrder $order)
     {
+        $elements = [];
+
         // store up related entries, reducing inventory counts if needed
         foreach ($order->items as $item)
         {
@@ -616,7 +619,7 @@ class SnipcartService extends Component
         }
         else
         {
-            throw new \Exception('Email notification setting must be string or array.');
+            throw new Exception('Email notification setting must be string or array.');
         }
 
         $emails = [];
@@ -638,7 +641,6 @@ class SnipcartService extends Component
         $view = Craft::$app->getView();
         $oldTemplateMode = $view->getTemplateMode();
         $view->setTemplateMode($view::TEMPLATE_MODE_CP);
-
 
         if (Craft::$app->getConfig()->general->devMode)
         {
@@ -675,13 +677,11 @@ class SnipcartService extends Component
 
             $message->setHtmlBody($mergedHtml);
 
-            try
+            if ( ! Craft::$app->mailer->send($message))
             {
-                Craft::$app->mailer->send($message);
-            }
-            catch (ErrorException $e)
-            {
-                $errors[] = $e;
+                $problem = "Notification failed to send to {$address}!";
+                Craft::warning($problem, 'snipcart');
+                $errors[] = $problem;
             }
         }
 
@@ -706,7 +706,7 @@ class SnipcartService extends Component
      *
      * @param  string $id  the unique ID Snipcart provided
      *
-     * @return mixed       matching Craft Element or false
+     * @return Entry|false matching Craft Element or false
      */
     private function getProductElementById($id)
     {
