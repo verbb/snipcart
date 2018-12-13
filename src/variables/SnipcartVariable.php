@@ -8,104 +8,164 @@
 
 namespace workingconcept\snipcart\variables;
 
-use Craft;
-use craft\helpers\UrlHelper;
+use workingconcept\snipcart\models\SnipcartOrder;
 use workingconcept\snipcart\Snipcart;
 
 class SnipcartVariable
 {
-    
+
+    /**
+     * @param int $pageNumber
+     * @return \stdClass
+     * @throws \Exception
+     */
     public function listOrders($pageNumber = 1)
     {
         return Snipcart::$plugin->snipcart->listOrders($pageNumber);
     }
-    
-    public function listOrdersByDay($pageNumber = 1)
+
+    /**
+     * @param int $pageNumber
+     * @return array
+     */
+    public function listOrdersByDay($pageNumber = 1): array
     {
         return Snipcart::$plugin->snipcart->listOrdersByDay($pageNumber);
     }
-    
+
+    /**
+     * @param int $pageNumber
+     * @return \stdClass
+     * @throws \Exception
+     */
     public function listCustomers($pageNumber = 1)
     {
         return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
     }
-    
-    public function listDiscounts()
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function listDiscounts(): array
     {
         return Snipcart::$plugin->snipcart->listDiscounts();
     }
-    
-    public function listAbandoned()
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function listAbandoned(): array
     {
         return Snipcart::$plugin->snipcart->listAbandoned();
     }
 
-    public function listSubscriptions()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function listSubscriptions(): array
     {
         return Snipcart::$plugin->snipcart->listSubscriptions();
     }
 
-    public function listRefunds()
-    {
-        return Snipcart::$plugin->snipcart->listRefunds();
-    }
-
-    public function getOrder($orderId)
+    /**
+     * @param $orderId
+     * @return SnipcartOrder
+     * @throws \Exception
+     */
+    public function getOrder($orderId): SnipcartOrder
     {
         return Snipcart::$plugin->snipcart->getOrder($orderId);
     }
 
+    /**
+     * @param $orderId
+     * @return \stdClass
+     * @throws \yii\base\Exception
+     */
     public function getOrderNotifications($orderId)
     {
         return Snipcart::$plugin->snipcart->getOrderNotifications($orderId);
     }
 
+    /**
+     * @param $orderId
+     * @return \stdClass
+     * @throws \yii\base\Exception
+     */
     public function getOrderRefunds($orderId)
     {
         return Snipcart::$plugin->snipcart->getOrderRefunds($orderId);
     }
 
+    /**
+     * @param $customerId
+     * @return \stdClass
+     * @throws \Exception
+     */
     public function getCustomer($customerId)
     {
         return Snipcart::$plugin->snipcart->getCustomer($customerId);
     }
-    
+
+    /**
+     * @param $customerId
+     * @return \stdClass
+     * @throws \Exception
+     */
     public function getCustomerOrders($customerId)
     {
         return Snipcart::$plugin->snipcart->getCustomerOrders($customerId);
     }
-    
-    public function snipcartUrl()
+
+    /**
+     * @return string
+     */
+    public function publicApiKey(): string
     {
-        return Snipcart::$plugin->snipcart->snipcartUrl();
+        return Snipcart::$plugin->getSettings()->publicApiKey;
     }
 
-    public function publicApiKey()
-    {
-        return Snipcart::$plugin->settings->publicApiKey;
-    }
-
+    /**
+     * @return bool|\DateTime
+     */
     public function startDate()
     {
         return \DateTime::createFromFormat('U', Snipcart::$plugin->snipcart->dateRangeStart());
     }
-    
+
+    /**
+     * @return bool|\DateTime
+     */
     public function endDate()
     {
         return \DateTime::createFromFormat('U', Snipcart::$plugin->snipcart->dateRangeEnd());
     }
-    
+
+    /**
+     * @return mixed|string
+     */
     public function searchKeywords()
     {
         return Snipcart::$plugin->snipcart->searchKeywords();
     }
 
-    public function searchCustomers($keywords)
+    /**
+     * @param $keywords
+     * @return array
+     * @throws \Exception
+     */
+    public function searchCustomers($keywords): array
     {
         return Snipcart::$plugin->snipcart->searchCustomers($keywords);
     }
 
-    public function isLinked()
+    /**
+     * @return bool
+     */
+    public function isLinked(): bool
     {
         return Snipcart::$plugin->snipcart->isLinked();
     }

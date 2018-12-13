@@ -477,20 +477,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressName(): string
+    public function getBillingAddressName()
     {
         return $this->getBillingAddress()->name;
     }
 
     /**
      * @param $name
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressName($name): SnipcartAddress
+    public function setBillingAddressName($name)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['name' => $name]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->name = $name;
@@ -499,20 +499,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressFirstName(): string
+    public function getBillingAddressFirstName()
     {
         return $this->getBillingAddress()->firstName;
     }
 
     /**
      * @param $firstName
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressFirstName($firstName): SnipcartAddress
+    public function setBillingAddressFirstName($firstName)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['firstName' => $firstName]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->firstName = $firstName;
@@ -528,13 +528,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $companyName
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressCompanyName($companyName): SnipcartAddress
+    public function setBillingAddressCompanyName($companyName)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['companyName' => $companyName]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->companyName = $companyName;
@@ -543,20 +543,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressAddress1(): string
+    public function getBillingAddressAddress1()
     {
         return $this->getBillingAddress()->address1;
     }
 
     /**
      * @param $address1
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressAddress1($address1): SnipcartAddress
+    public function setBillingAddressAddress1($address1)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['address1' => $address1]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->address1 = $address1;
@@ -572,13 +572,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $address2
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressAddress2($address2): SnipcartAddress
+    public function setBillingAddressAddress2($address2)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['address2' => $address2]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->address2 = $address2;
@@ -594,13 +594,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $city
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressCity($city): SnipcartAddress
+    public function setBillingAddressCity($city)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['city' => $city]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->city = $city;
@@ -609,20 +609,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressCountry(): string
+    public function getBillingAddressCountry()
     {
         return $this->getBillingAddress()->country;
     }
 
     /**
      * @param $country
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressCountry($country): SnipcartAddress
+    public function setBillingAddressCountry($country)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['country' => $country]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->country = $country;
@@ -631,20 +631,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressProvince(): string
+    public function getBillingAddressProvince()
     {
         return $this->getBillingAddress()->province;
     }
 
     /**
      * @param $province
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressProvince($province): SnipcartAddress
+    public function setBillingAddressProvince($province)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['province' => $province]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->province = $province;
@@ -653,20 +653,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getBillingAddressPostalCode(): string
+    public function getBillingAddressPostalCode()
     {
         return $this->getBillingAddress()->postalCode;
     }
 
     /**
      * @param $postalCode
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressPostalCode($postalCode): SnipcartAddress
+    public function setBillingAddressPostalCode($postalCode)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['postalCode' => $postalCode]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->postalCode = $postalCode;
@@ -682,13 +682,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $phone
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setBillingAddressPhone($phone): SnipcartAddress
+    public function setBillingAddressPhone($phone)
     {
         if ($this->_billingAddress === null)
         {
-            return $this->_billingAddress = new SnipcartAddress(['phone' => $phone]);
+            $this->_billingAddress = new SnipcartAddress();
         }
 
         return $this->_billingAddress->phone = $phone;
@@ -704,7 +704,7 @@ class SnipcartOrder extends Model
 
     /**
      * @param $address
-     * @return SnipcartAddress
+     * @return string
      */
     public function setShippingAddress($address): SnipcartAddress
     {
@@ -716,20 +716,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressName(): string
+    public function getShippingAddressName()
     {
         return $this->getShippingAddress()->name;
     }
 
     /**
      * @param $name
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressName($name): SnipcartAddress
+    public function setShippingAddressName($name)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['name' => $name]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->name = $name;
@@ -738,20 +738,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressFirstName(): string
+    public function getShippingAddressFirstName()
     {
         return $this->getShippingAddress()->firstName;
     }
 
     /**
      * @param $firstName
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressFirstName($firstName): SnipcartAddress
+    public function setShippingAddressFirstName($firstName)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['firstName' => $firstName]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->firstName = $firstName;
@@ -767,13 +767,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $companyName
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressCompanyName($companyName): SnipcartAddress
+    public function setShippingAddressCompanyName($companyName)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['companyName' => $companyName]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->companyName = $companyName;
@@ -782,20 +782,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressAddress1(): string
+    public function getShippingAddressAddress1()
     {
         return $this->getShippingAddress()->address1;
     }
 
     /**
      * @param $address1
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressAddress1($address1): SnipcartAddress
+    public function setShippingAddressAddress1($address1)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['address1' => $address1]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->address1 = $address1;
@@ -811,13 +811,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $address2
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressAddress2($address2): SnipcartAddress
+    public function setShippingAddressAddress2($address2)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['address2' => $address2]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->address2 = $address2;
@@ -826,20 +826,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressCity(): string
+    public function getShippingAddressCity()
     {
         return $this->getShippingAddress()->city;
     }
 
     /**
      * @param $city
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressCity($city): SnipcartAddress
+    public function setShippingAddressCity($city)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['city' => $city]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->city = $city;
@@ -848,20 +848,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressCountry(): string
+    public function getShippingAddressCountry()
     {
         return $this->getShippingAddress()->country;
     }
 
     /**
      * @param $country
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressCountry($country): SnipcartAddress
+    public function setShippingAddressCountry($country)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['country' => $country]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->country = $country;
@@ -870,20 +870,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressProvince(): string
+    public function getShippingAddressProvince()
     {
         return $this->getShippingAddress()->province;
     }
 
     /**
      * @param $province
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressProvince($province): SnipcartAddress
+    public function setShippingAddressProvince($province)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['province' => $province]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->province = $province;
@@ -892,20 +892,20 @@ class SnipcartOrder extends Model
     /**
      * @return string
      */
-    public function getShippingAddressPostalCode(): string
+    public function getShippingAddressPostalCode()
     {
         return $this->getShippingAddress()->postalCode;
     }
 
     /**
      * @param $postalCode
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressPostalCode($postalCode): SnipcartAddress
+    public function setShippingAddressPostalCode($postalCode)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['postalCode' => $postalCode]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->postalCode = $postalCode;
@@ -921,13 +921,13 @@ class SnipcartOrder extends Model
 
     /**
      * @param $phone
-     * @return SnipcartAddress
+     * @return string
      */
-    public function setShippingAddressPhone($phone): SnipcartAddress
+    public function setShippingAddressPhone($phone)
     {
         if ($this->_shippingAddress === null)
         {
-            return $this->_shippingAddress = new SnipcartAddress(['phone' => $phone]);
+            $this->_shippingAddress = new SnipcartAddress();
         }
 
         return $this->_shippingAddress->phone = $phone;
