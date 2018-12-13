@@ -152,9 +152,9 @@ class Snipcart extends Plugin
 		];
 
 		foreach ($allFields as $field)
-        {
+		{
         	if (in_array(get_class($field), $supportedProductIdentifierTypes, true))
-			{
+        	{
 				// disallow multiline text as an option
 				if (isset($field->multiline) && $field->multiline)
 				{

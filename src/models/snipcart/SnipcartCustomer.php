@@ -38,7 +38,7 @@ class SnipcartCustomer extends Model
     public $email;
 
     // TODO: can these be related models that are flattened again?
-		// maybe just getter and setter interfaces that interact with models?
+  // maybe just getter and setter interfaces that interact with models?
     /**
      * @var string
      */

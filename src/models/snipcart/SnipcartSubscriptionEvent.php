@@ -13,7 +13,7 @@ use craft\base\Model;
 
 class SnipcartSubscriptionEvent extends Model
 {
-	// Properties
-	// =========================================================================
+ // Properties
+ // =========================================================================
 
 }
