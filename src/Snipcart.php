@@ -24,6 +24,16 @@ use craft\console\Application as ConsoleApplication;
 
 use yii\base\Event;
 
+/**
+ * Class Snipcart
+ *
+ * @author    Working Concept
+ * @package   Lever
+ * @since     1.0.0
+ *
+ * @property  SnipcartService $snipcart
+ * @property  ShipStationService shipStation
+ */
 class Snipcart extends Plugin
 {
     // Static Properties

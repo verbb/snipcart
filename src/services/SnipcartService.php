@@ -57,7 +57,7 @@ class SnipcartService extends Component
     // Public Methods
     // ------------------------------------------------------------------------
 
-    public function getClient()
+    public function getClient(): \GuzzleHttp\Client
     {
         return $this->client = new \GuzzleHttp\Client([
             'base_uri' => $this->apiBaseUrl,
@@ -80,10 +80,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return stdClass
+     * @return \stdClass Snipcart response object
      */
     
-    public function getOrder($orderId)
+    public function getOrder($orderId): \stdClass
     {
         return $this->apiRequest('orders/'.$orderId);
     }
@@ -94,10 +94,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return stdClass
+     * @return \stdClass Snipcart response object
      */
     
-    public function getOrderNotifications($orderId)
+    public function getOrderNotifications($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/notifications');
     }
@@ -108,10 +108,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return stdClass
+     * @return \stdClass Snipcart response object
      */
     
-    public function getOrderRefunds($orderId)
+    public function getOrderRefunds($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/refunds');
     }
@@ -123,10 +123,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return stdClass or empty array
+     * @return array
      */
     
-    public function listOrders($page = 1, $limit = 25)
+    public function listOrders($page = 1, $limit = 25): array
     {
         $orders = $this->apiRequest('orders', [
             'offset' => ($page - 1) * $limit,
@@ -145,10 +145,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return stdClass or empty array
+     * @return array
      */
     
-    public function listOrdersByDay($page = 1, $limit = 25)
+    public function listOrdersByDay($page = 1, $limit = 25): array
     {
         $orders = $this->listOrders($page, $limit);
         $ordersByDay = [];
@@ -180,10 +180,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return stdClass or empty array
+     * @return array
      */
 
-    public function listCustomers($page = 1, $limit = 25)
+    public function listCustomers($page = 1, $limit = 25): array
     {
         $customers = $this->apiRequest('customers', [
             'offset' => ($page - 1) * $limit,
@@ -199,10 +199,10 @@ class SnipcartService extends Component
      *
      * @param integer $keywords  search term
      *
-     * @return stdClass or empty array
+     * @return array
      */
 
-    public function searchCustomers($keywords)
+    public function searchCustomers($keywords): array
     {
         $customers = $this->apiRequest('customers', [
             'name' => $keywords
@@ -215,10 +215,10 @@ class SnipcartService extends Component
     /**
      * List available coupons (not implemented)
      * 
-     * @return stdClass
+     * @return array
      */
 
-    public function listDiscounts()
+    public function listDiscounts(): array
     {
         $discounts = $this->apiRequest('discounts');
 
@@ -229,10 +229,10 @@ class SnipcartService extends Component
     /**
      * List abandoned carts (not implemented)
      *
-     * @return stdClass
+     * @return array
      */
 
-    public function listAbandoned()
+    public function listAbandoned(): array
     {
         $abandoned = $this->apiRequest('carts/abandoned');
 
@@ -243,10 +243,10 @@ class SnipcartService extends Component
     /**
      * List subscriptions (not implemented)
      *
-     * @return stdClass
+     * @return array
      */
 
-    public function listSubscriptions()
+    public function listSubscriptions(): array
     {
         $subscriptions = $this->apiRequest('subscriptions');
 
@@ -259,10 +259,10 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * 
-     * @return stdClass
+     * @return \stdClass
      */
     
-    public function getCustomer($customerId)
+    public function getCustomer($customerId): \stdClass
     {
         return $this->apiRequest('customers/' . $customerId);
     }
@@ -273,10 +273,10 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * 
-     * @return stdClass
+     * @return \stdClass
      */
     
-    public function getCustomerOrders($customerId)
+    public function getCustomerOrders($customerId): \stdClass
     {
         return $this->apiRequest('customers/' . $customerId . '/orders');
     }
@@ -292,10 +292,10 @@ class SnipcartService extends Component
      * 
      * @param string  $token  $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
      * 
-     * @return stdClass
+     * @return \stdClass
      */
 
-    public function validateToken($token)
+    public function validateToken($token): \stdClass
     {
         return $this->apiRequest('requestvalidation/' . $token, null, false);
     }
@@ -303,7 +303,7 @@ class SnipcartService extends Component
 
     public function dateRangeStart()
     {
-        $param   = Craft::$app->request->getParam('startDate', FALSE);
+        $param   = Craft::$app->request->getParam('startDate', false);
         $default = strtotime('-1 month');
         $stored  = Craft::$app->session->get('snipcartStartDate');
 
@@ -324,7 +324,7 @@ class SnipcartService extends Component
 
     public function dateRangeEnd()
     {
-        $param    = Craft::$app->request->getParam('endDate', FALSE);
+        $param    = Craft::$app->request->getParam('endDate', false);
         $default  = time();
         $stored   = Craft::$app->session->get('snipcartEndDate');
 
@@ -345,10 +345,10 @@ class SnipcartService extends Component
 
     public function searchKeywords()
     {
-        $param  = Craft::$app->request->getParam('searchKeywords', FALSE);
+        $param  = Craft::$app->request->getParam('searchKeywords', false);
         $stored = Craft::$app->session->get('snipcartSearchKeywords');
 
-        $keywords = $param ?? $stored ?? "";
+        $keywords = $param ?? $stored ?? '';
 
         Craft::$app->session->set('snipcartSearchKeywords', $keywords);
 
@@ -363,7 +363,7 @@ class SnipcartService extends Component
      *
      * @return SnipcartShippingRate[]
      */
-    public function processShippingRates(SnipcartOrder $order)
+    public function processShippingRates(SnipcartOrder $order): array
     {
         $includeShipStationRates = in_array(
             Settings::PROVIDER_SHIPSTATION,
@@ -680,9 +680,13 @@ class SnipcartService extends Component
      * 
      * @param  string $query    Snipcart API method (segment) to query
      * @param  array  $inData   any data that should be sent with the request; will be formatted as URL parameters or POST data
+     * @param  bool   $useCache whether or not to cache responses
      * 
-     * @return stdClass query response
+     * @return \stdClass|array|false|null  query response data, which can be a single object, an array,
+     *                                     false if we're not linked, or void
      */
+
+    // TODO: clean up these response types
     
     private function apiRequest($query = '', $inData = array(), $useCache = true)
     {
