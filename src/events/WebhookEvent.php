@@ -8,6 +8,9 @@
 
 namespace workingconcept\snipcart\events;
 
+use workingconcept\snipcart\models\SnipcartOrder;
+use workingconcept\snipcart\models\SnipcartShippingRate;
+use workingconcept\snipcart\models\SnipcartPackage;
 use yii\base\Event;
 
 /**
