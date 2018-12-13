@@ -4,7 +4,7 @@
 
 <h4 align="center">Do more with <a href="https://snipcart.com/">Snipcart</a> directly from Craft CMS.</h4>
 
-<p align="center"><a href="https://travis-ci.org/workingconcept/snipcart-craft-plugin"><img src="https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master" alt="CI Status"></a></p>
+<p align="center"><a href="https://travis-ci.org/workingconcept/snipcart-craft-plugin"><img src="https://travis-ci.org/workingconcept/snipcart-craft-plugin.svg?branch=master" alt="CI status"></a> <a href="https://scrutinizer-ci.com/g/workingconcept/snipcart-craft-plugin/"><img src="https://scrutinizer-ci.com/g/workingconcept/snipcart-craft-plugin/badges/quality-score.png?b=master" alt="Scrutinizer status"></a></p>
 
 ---
 
