@@ -7,35 +7,36 @@
  */
 namespace workingconcept\snipcart\console\controllers;
 
+use workingconcept\snipcart\Snipcart;
 use Craft;
 use yii\console\Controller;
 use craft\mail\Message;
+use yii\console\ExitCode;
 
 class VerifyController extends Controller
 {
     // Public Methods
     // =========================================================================
 
-    
     /**
      * Verify that the most recently-added orders exist in both Snipcart and ShipStation
      * and that none quietly failed to make it to ShipStation.
      * 
      * If there was a failure, send email notifications.
      *
-     * @return void
+     * @return int
+     * @throws
      */
-    public function actionCheckOrders()
+    public function actionCheckOrders(): int
     {
-        $startTime    = microtime(true);
-        $updatedCount = 0;
+        $startTime = microtime(true);
 
         $limit    = 3;
         $failures = [];
 
-        echo "-------------------------------------\n";
-        echo "Checking last $limit orders...\n";
-        echo "-------------------------------------\n";
+        $this->stdout('-------------------------------------');
+        $this->stdout("Checking last $limit orders...");
+        $this->stdout('-------------------------------------');
 
         $snipcartOrders    = $this->getSnipcartOrders($limit);
         $shipStationOrders = $this->getShipStationOrders($limit * 2);
@@ -46,7 +47,7 @@ class VerifyController extends Controller
 
             foreach ($shipStationOrders as $shipStationOrder)
             {
-                if ($shipStationOrder->orderNumber == $snipcartOrder->invoiceNumber)
+                if ($shipStationOrder->orderNumber === $snipcartOrder->invoiceNumber)
                 {
                     $success = true;
                     continue;
@@ -55,7 +56,7 @@ class VerifyController extends Controller
 
             $shipStationStatusString = $success ? '✓' : '✗';
 
-            echo "Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]\n";
+            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]");
             
             if ( ! $success)
             {
@@ -67,54 +68,62 @@ class VerifyController extends Controller
         {
             $this->reFeedToShipStation($failures);
             // TODO: reconfirm updated orders
-            // TODO: send admin email notification
             $this->sendAdminNotification($failures);
         }
 
-        echo "-------------------------------------\n";
+        $this->stdout('-------------------------------------');
 
         $endTime       = microtime(true);
         $executionTime = ($endTime - $startTime);
 
-        echo "Executed in ${executionTime} seconds.\n";
+        $this->stdout("Executed in ${executionTime} seconds.");
 
-        return true;
+        return ExitCode::OK;
     }
-
 
     /**
      * Try re-feeding missing orders into ShipStation.
      *
-     * @param [type] $snipcartOrders
-     * @return void
+     * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
+     *
+     * @return int
      */
-    private function reFeedToShipStation($snipcartOrders)
+    private function reFeedToShipStation($snipcartOrders): int
     {
-        // TODO: feed each order to ShipStation
-    }
+        foreach ($snipcartOrders as $snipcartOrder)
+        {
+            // TODO: feed each order to ShipStation
+        }
 
+        return ExitCode::OK;
+    }
 
     /**
      * Let somebody know that one or more orders didn't make it to ShipStation.
      *
-     * @param [type] $snipcartOrders
-     * @return void
+     * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
+     * @return int
+     * @throws
      */
-    private function sendAdminNotification($snipcartOrders)
+    private function sendAdminNotification($snipcartOrders): int
     {
         // TODO: consolidate with SnipcartService
 
-        if (is_array(Snipcart::$plugin->settings->notificationEmails))
+        $settings = Snipcart::$plugin->getSettings();
+        $notificationEmails = $settings->notificationEmails;
+
+        if (is_array($notificationEmails))
         {
-            $emailAddresses = Snipcart::$plugin->settings->notificationEmails;
+            $emailAddresses = $notificationEmails;
         }
-        elseif (is_string(Snipcart::$plugin->settings->notificationEmails))
+        elseif (is_string($notificationEmails))
         {
-            $emailAddresses = explode(',', Snipcart::$plugin->settings->notificationEmails);
+            $emailAddresses = explode(',', $notificationEmails);
         }
         else
         {
-            throw new \Exception('Email notification setting must be string or array.');
+            $this->stderr('Email notification setting must be string or array.');
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         // temporarily change template modes so we can render the plugin's template
@@ -136,43 +145,45 @@ class VerifyController extends Controller
                 'orders' => $snipcartOrders,
             ]));
 
-            try
+            if ( ! Craft::$app->mailer->send($message))
             {
-                Craft::$app->mailer->send($message);
-            }
-            catch (ErrorException $e)
-            {
-                $errors[] = $e;
+                $this->stderr("Notification failed to send to {$address}!");
+                return ExitCode::UNSPECIFIED_ERROR;
             }
         }
 
         $view->setTemplateMode($oldTemplateMode);
+
+        return ExitCode::OK;
     }
 
+
+    // Private Methods
+    // =========================================================================
 
     /**
      * Fetch recent Snipcart orders.
+     * TODO: refactor to rely on service for actual SnipcartOrder models
      *
      * @param integer $limit
-     * @return void
+     *
+     * @return array
      */
-    private function getSnipcartOrders($limit = 5)
+    private function getSnipcartOrders($limit = 5): array
     {
         $snipcart       = new \workingconcept\snipcart\services\SnipcartService;
-        $snipcartClient = $snipcart->getClient($limit);
+        $snipcartClient = $snipcart->getClient();
         $response       = $snipcartClient->get('orders?limit=' . $limit);
 
-        $responseData = json_decode($response->getBody(true));
-
-        return $responseData->items;
+        return json_decode($response->getBody())->items;
     }
 
-    
     /**
      * Fetch recent ShipStation orders.
      *
      * @param integer $limit
-     * @return void
+     *
+     * @return array
      */
     private function getShipStationOrders($limit = 5)
     {

@@ -10,6 +10,13 @@ namespace workingconcept\snipcart\models;
 
 use craft\base\Model;
 
+/**
+ * Settings model
+ *
+ * @package workingconcept\snipcart\models
+ * @property SnipcartAddress $shipFrom
+ * @property SnipcartPackage[] $packagingTypes
+ */
 class Settings extends Model
 {
     // Constants
@@ -87,6 +94,9 @@ class Settings extends Model
      */
     private $_shipFrom;
 
+    /**
+     * @var array
+     */
     public $shipFromAddress = [];
 
     /**
@@ -94,6 +104,9 @@ class Settings extends Model
      */
     private $_packagingTypes = [];
 
+    /**
+     * @var array
+     */
     public $customPackaging = [];
 
     /**
@@ -123,7 +136,10 @@ class Settings extends Model
     // Methods
     // =========================================================================
 
-    public function rules()
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
     {
         return [
             [['publicApiKey', 'secretApiKey', 'productIdentifier', 'productInventoryField', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
@@ -146,28 +162,38 @@ class Settings extends Model
         ];
     }
 
-    public function beforeValidate()
-    {        
+    public function beforeValidate(): bool
+    {
+        /**
+         * If the `notificationEmails` value came from a table in the settings UI,
+         * convert it to a clean, one-dimensional array of email addresses.
+         */
         if (
             is_array($this->notificationEmails) && 
             count($this->notificationEmails) &&
             is_array($this->notificationEmails[0])
         )
         {
-            $flattenedArrayFromTableData = [];
+            $arrayFromTableData = [];
 
             foreach ($this->notificationEmails as $row)
             {
-                $flattenedArrayFromTableData[] = $row[0];
+                $arrayFromTableData[] = trim($row[0]);
             }
 
-            $this->notificationEmails = $flattenedArrayFromTableData;
+            $this->notificationEmails = $arrayFromTableData;
         }
 
         return true;
     }
 
-    public function getNotificationEmailsForTable()
+    /**
+     * Format an array of email addresses (`['gob@bluth.com', 'george@bluth.com']`) for the table in
+     * the control panel settings (`[[0 => 'gob@bluth.com'], [0 => 'george@bluth.com']]`).
+     *
+     * @return array
+     */
+    public function getNotificationEmailsForTable(): array
     {
         $rows = [];
 
@@ -181,7 +207,12 @@ class Settings extends Model
         return $rows;
     }
 
-    public function getPackagingTypes()
+    /**
+     * Get custom packaging type definitions.
+     *
+     * @return SnipcartPackage[]
+     */
+    public function getPackagingTypes(): array
     {
         // use the customPackaging field that would've come from a static config
         if ( ! empty($this->customPackaging))
@@ -192,7 +223,12 @@ class Settings extends Model
         return $this->_packagingTypes;
     }
 
-    public function setPackagingTypes($packagingTypes)
+    /**
+     * @param $packagingTypes
+     *
+     * @return SnipcartPackage[]
+     */
+    public function setPackagingTypes($packagingTypes): array
     {
         foreach ($packagingTypes as $name => $values)
         {
@@ -207,7 +243,12 @@ class Settings extends Model
         return $this->_packagingTypes;
     }
 
-    public function getpackagingTypesForTable()
+    /**
+     * Convert custom packaging types into a multi-dimensional array for the control panel's settings UI.
+     *
+     * @return array
+     */
+    public function getPackagingTypesForTable(): array
     {
         $rows = [];
 
@@ -225,7 +266,10 @@ class Settings extends Model
         return $rows;
     }
 
-    public function getShipFrom()
+    /**
+     * @return SnipcartAddress
+     */
+    public function getShipFrom(): SnipcartAddress
     {
         // use the customPackaging field that would've come from a static config
         if ( ! empty($this->shipFromAddress))
@@ -236,6 +280,11 @@ class Settings extends Model
         return $this->_shipFrom;
     }
 
+    /**
+     * @param $address
+     *
+     * @return SnipcartAddress
+     */
     public function setShipFrom($address)
     {
         return $this->_shipFrom = new SnipcartAddress($address);

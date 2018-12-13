@@ -12,7 +12,15 @@ use Craft;
 use craft\base\Model;
 
 /**
+ * Snipcart Order model
  * https://docs.snipcart.com/api-reference/orders
+ *
+ * @property ShipStationAddress $billingAddress
+ * @property ShipStationAddress $shippingAddress
+ * @property SnipcartCustomer $user
+ * @property SnipcartDiscount[] $discounts
+ * @property SnipcartPlan[] $plans
+ * @property SnipcartItem[] $items
  */
 
 class SnipcartOrder extends Model
@@ -53,6 +61,9 @@ class SnipcartOrder extends Model
      */
     public $status;
 
+    /**
+     * @var
+     */
     public $paymentStatus;
 
     /**

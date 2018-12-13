@@ -14,7 +14,6 @@ use craft\base\Model;
  * ShipStation Address Model
  * https://www.shipstation.com/developer-api/#/reference/model-address
  */
-
 class ShipStationAddress extends Model
 {
     // Constants

@@ -102,10 +102,10 @@ class WebhooksController extends Controller
         }
 
         // TODO: respond thoughtfully to test vs. live mode
-        $mode = $postData->mode;
+        // $mode = $postData->mode;
 
         // TODO: consider response for any timestamp that's not very recent
-        $createdOn = $postData->createdOn;
+        // $createdOn = $postData->createdOn;
 
         if ($this->settings->logWebhookRequests)
         {

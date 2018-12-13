@@ -20,6 +20,8 @@ use workingconcept\snipcart\models\SnipcartOrder;
 
 use Craft;
 use craft\base\Component;
+use yii\base\Exception;
+use GuzzleHttp\Client;
 
 class ShipStationService extends Component
 {
@@ -38,7 +40,7 @@ class ShipStationService extends Component
     protected $settings;
     protected $providerSettings;
 
-    protected $webhookOptions = [
+    protected static $webhookOptions = [
         'ORDER_NOTIFY',
         'ITEM_ORDER_NOTIFY',
         'SHIP_NOTIFY',
@@ -52,13 +54,14 @@ class ShipStationService extends Component
     public function init()
     {
         parent::init();
+
         $this->settings         = Snipcart::$plugin->getSettings();
         $this->providerSettings = $this->settings->providers['shipStation'];
         $this->shipFrom         = $this->settings->shipFrom;
 
         if ($this->isLinked())
         {
-            $this->client = new \GuzzleHttp\Client([
+            $this->client = new Client([
                 'base_uri' => self::API_BASE_URL,
                 'auth' => [
                     $this->settings->providers['shipStation']['apiKey'],
@@ -74,10 +77,9 @@ class ShipStationService extends Component
         }
         else
         {
-            throw new \Exception('Please add ShipStation API key and secret.');
+            throw new Exception('Please add ShipStation API key and secret.');
         }
     }
-
 
     /**
      * Get shipping rates for the supplied order details.
@@ -93,10 +95,10 @@ class ShipStationService extends Component
      * @param ShipStationDimensions  $dimensions (optional)
      * @param array                  $from (optional; defaults to standard shipFrom)
      * 
-     * @return StdClass decoded response data
-     * @throws Exception
+     * @return array response object
+     * @throws \GuzzleHttp\Exception\ServerException
      */
-    public function getRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $from = [])
+    public function getRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $from = []): \stdClass
     {
         if ($shipFrom = $this->validateFrom($from))
         {
@@ -118,10 +120,10 @@ class ShipStationService extends Component
             'toCountry'      => $to['country'], // two-character ISO country code
             'weight'         => $weight->toArray(),
             'confirmation'   => $this->providerSettings['defaultOrderConfirmation'],
-            'residential'    => false
+            'residential'    => $to['residential'] ?? false
         ];
 
-        if ( ! is_null($dimensions))
+        if ($dimensions !== null)
         {
             $shipmentInfo['dimensions'] = $dimensions->toArray();
         }
@@ -147,7 +149,7 @@ class ShipStationService extends Component
             return [];
         }
 
-        $responseData = json_decode($response->getBody(true));
+        $responseData = json_decode($response->getBody());
 
         return $responseData;
     }
@@ -334,7 +336,9 @@ class ShipStationService extends Component
     /**
      * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-w/o-parameters
      *
-     * @return void
+     * @param int $limit
+     *
+     * @return ShipstationOrder[]
      */
     public function listOrders($limit = 25)
     {
@@ -391,8 +395,9 @@ class ShipStationService extends Component
      * @param SnipcartOrder $snipcartOrder
      *
      * @return array|bool
+     * @throws
      */
-    public function sendSnipCartOrder(SnipcartOrder $snipcartOrder)
+    public function sendSnipcartOrder(SnipcartOrder $snipcartOrder)
     {
         $shipstationOrder = new ShipStationOrder();
 
@@ -560,10 +565,11 @@ class ShipStationService extends Component
     /**
      * Build a new ShipStationOrder using data we got back from the ShipStation API.
      *
-     * @param $data  associative array of API response data
+     * @param array $data associative array of API response data
+     *
      * @return ShipStationOrder
      */
-    private function populateModelFromResponseData($data)
+    private function populateModelFromResponseData($data): ShipstationOrder
     {
         $order = new ShipStationOrder();
         $order->attributes = $data;
@@ -573,7 +579,8 @@ class ShipStationService extends Component
         $order->weight     = new ShipStationWeight($data['weight']);
         $order->dimensions = new ShipStationDimensions($data['dimensions']);
 
-        // TODO: figure out how to get these working
+        // TODO: support insurance options
+        // TODO: support international options
         //$order->insuranceOptions = new ShipStationInsuranceOptions($data['insuranceOptions']);
         //$order->internationalOptions = new ShipStationInternationalOptions($data['insuranceOptions']);
 
@@ -600,7 +607,6 @@ class ShipStationService extends Component
         return $order;
     }
 
-
     /**
      * Modify an array about to be sent via API to remove read-only fields that can't be set.
      *
@@ -623,7 +629,6 @@ class ShipStationService extends Component
         return $payload;
     }
 
-
     /**
      * Extract optional customer's note from a custom order comment field.
      *
@@ -643,7 +648,6 @@ class ShipStationService extends Component
 
         return null;
     }
-
 
     /**
      * Extract optional gift note from a custom order comment field.
@@ -665,7 +669,6 @@ class ShipStationService extends Component
         return null;
     }
 
-
     /**
      * Translate Snipcart order data into to array for Shipstation.
      *
@@ -683,7 +686,6 @@ class ShipStationService extends Component
         ];
     }
 
-
     /**
      * Translate Snipcart order data into to array for Shipstation.
      *
@@ -698,7 +700,6 @@ class ShipStationService extends Component
             'units' => ShipStationWeight::UNIT_GRAMS,
         ]);
     }
-
 
     /**
      * Translate Snipcart order data into to array for Shipstation.

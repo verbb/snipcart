@@ -19,6 +19,7 @@ use Craft;
 use craft\base\Component;
 use craft\elements\Entry;
 use craft\mail\Message;
+use GuzzleHttp\Client;
 
 class SnipcartService extends Component
 {
@@ -30,15 +31,29 @@ class SnipcartService extends Component
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
     const EVENT_PRODUCT_INVENTORY_CHANGE      = 'productInventoryChange';
 
-    protected $apiBaseUrl = 'https://app.snipcart.com/api/';
+    /**
+     * @var string
+     */
+    protected static $apiBaseUrl = 'https://app.snipcart.com/api/';
+
+    /**
+     * @var
+     */
     protected $settings;
+
+    /**
+     * @var bool
+     */
     protected $isLinked;
+
+    /**
+     * @var Client
+     */
     protected $client;
 
     /**
-     * Constructor
+     * @inheritdoc
      */
-    
     public function init()
     {
         parent::init();
@@ -53,13 +68,12 @@ class SnipcartService extends Component
     }
 
 
-    // ------------------------------------------------------------------------
-    // Public Methods
-    // ------------------------------------------------------------------------
+    // Public Method
+    // =========================================================================
 
-    public function getClient(): \GuzzleHttp\Client
+    public function getClient(): Client
     {
-        return $this->client = new \GuzzleHttp\Client([
+        return $this->client = new Client([
             'base_uri' => $this->apiBaseUrl,
             'auth' => [
                 $this->settings->secretApiKey,
@@ -82,7 +96,6 @@ class SnipcartService extends Component
      * 
      * @return \stdClass Snipcart response object
      */
-    
     public function getOrder($orderId): \stdClass
     {
         return $this->apiRequest('orders/'.$orderId);
@@ -96,7 +109,6 @@ class SnipcartService extends Component
      * 
      * @return \stdClass Snipcart response object
      */
-    
     public function getOrderNotifications($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/notifications');
@@ -110,7 +122,6 @@ class SnipcartService extends Component
      * 
      * @return \stdClass Snipcart response object
      */
-    
     public function getOrderRefunds($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/refunds');
@@ -125,7 +136,6 @@ class SnipcartService extends Component
      * 
      * @return array
      */
-    
     public function listOrders($page = 1, $limit = 25): array
     {
         $orders = $this->apiRequest('orders', [
@@ -147,7 +157,6 @@ class SnipcartService extends Component
      * 
      * @return array
      */
-    
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
         $orders = $this->listOrders($page, $limit);
@@ -461,8 +470,8 @@ class SnipcartService extends Component
      * Trigger an Event that will allow another plugin or module to adjust
      * product inventory for a relevant Entry.
      *
-     * @param EntryModel $entry     entry that's used as a product definition
-     * @param int        $quantity  a whole number representing the quantity change (normally negative)
+     * @param Entry $entry entry that's used as a product definition
+     * @param int   $quantity  a whole number representing the quantity change (normally negative)
      */
     public function reduceProductInventory($entry, $quantity)
     {
@@ -481,10 +490,10 @@ class SnipcartService extends Component
     /**
      * Get the Snipcart URL
      * 
-     * @return stdClass
+     * @return string
      */
 
-    public function snipcartUrl()
+    public function snipcartUrl(): string
     {
         return $this->snipcartUrl;
     }
@@ -493,10 +502,10 @@ class SnipcartService extends Component
     /**
      * See whether we're linked up to Snipcart
      * 
-     * @return stdClass
+     * @return bool
      */
 
-    public function isLinked()
+    public function isLinked(): bool
     {
         return $this->isLinked;
     }
@@ -508,6 +517,7 @@ class SnipcartService extends Component
      * @param SnipcartOrder $order
      *
      * @return true or array of notification errors
+     * @throws
      */
     public function updateElementsFromOrder(SnipcartOrder $order)
     {
@@ -526,7 +536,7 @@ class SnipcartService extends Component
             }
         }
 
-        if (isset(Snipcart::$plugin->settings->notificationEmails))
+        if (isset($this->settings->notificationEmails))
         {
             return $this->sendOrderEmailNotification($elements, $order);
         }
@@ -547,13 +557,13 @@ class SnipcartService extends Component
      */
     private function sendOrderEmailNotification($elements, $order)
     {
-        if (is_array(Snipcart::$plugin->settings->notificationEmails))
+        if (is_array($this->settings->notificationEmails))
         {
-            $emailAddresses = Snipcart::$plugin->settings->notificationEmails;
+            $emailAddresses = $this->settings->notificationEmails;
         }
-        elseif (is_string(Snipcart::$plugin->settings->notificationEmails))
+        elseif (is_string($this->settings->notificationEmails))
         {
-            $emailAddresses = explode(',', Snipcart::$plugin->settings->notificationEmails);
+            $emailAddresses = explode(',', $this->settings->notificationEmails);
         }
         else
         {
