@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\controllers;
 
 use Craft;
 use craft\web\Controller;
+use workingconcept\snipcart\Snipcart;
 
 class SnipcartController extends Controller
 {
@@ -18,8 +19,8 @@ class SnipcartController extends Controller
     {
         $this->requirePostRequest();
 
-        if (Craft::$app->snipcart->saveAccount()) {
-            Craft::$app->userSession->setNotice(Craft::t('Account settings saved.'));
+        if (Snipcart::$plugin->snipcart->saveAccount()) {
+            Craft::$app->userSession->setNotice(Craft::t('snipcart', 'Account settings saved.'));
             $this->redirectToPostedUrl();
         }
     }

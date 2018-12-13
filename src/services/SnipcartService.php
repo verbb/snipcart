@@ -88,7 +88,6 @@ class SnipcartService extends Component
         ]);
     }
 
-
     /**
      * Get an order from Snipcart
      * 
@@ -100,7 +99,6 @@ class SnipcartService extends Component
     {
         return $this->apiRequest('orders/'.$orderId);
     }
-
 
     /**
      * Get an order's notifications from Snipcart
@@ -114,7 +112,6 @@ class SnipcartService extends Component
         return $this->apiRequest('orders/' . $orderId . '/notifications');
     }
 
-
     /**
      * Get an order's refunds from Snipcart
      * 
@@ -126,7 +123,6 @@ class SnipcartService extends Component
     {
         return $this->apiRequest('orders/' . $orderId . '/refunds');
     }
-
 
     /**
      * List Snipcart orders by a range of dates supplied in $_POST (defaults to 30 days)
@@ -148,7 +144,6 @@ class SnipcartService extends Component
         return ! empty($orders) ? $orders : [];
     }
 
-
     /**
      * List Snipcart orders by a range of dates supplied in $_POST (defaults to 30 days)
      * 
@@ -161,8 +156,6 @@ class SnipcartService extends Component
     {
         $orders = $this->listOrders($page, $limit);
         $ordersByDay = [];
-        $start = $this->dateRangeStart();
-        $end = $this->dateRangeEnd();
 
         foreach ($orders->items as $order)
         {
@@ -182,7 +175,6 @@ class SnipcartService extends Component
         return ! empty($ordersByDay) ? $ordersByDay : [];
     }
 
-
     /**
      * List Snipcart customers
      * 
@@ -191,7 +183,6 @@ class SnipcartService extends Component
      * 
      * @return array
      */
-
     public function listCustomers($page = 1, $limit = 25): array
     {
         $customers = $this->apiRequest('customers', [
@@ -202,7 +193,6 @@ class SnipcartService extends Component
         return ! empty($customers) ? $customers : [];
     }
 
-
     /**
      * Search Snipcart customers
      *
@@ -210,7 +200,6 @@ class SnipcartService extends Component
      *
      * @return array
      */
-
     public function searchCustomers($keywords): array
     {
         $customers = $this->apiRequest('customers', [
@@ -220,13 +209,11 @@ class SnipcartService extends Component
         return ! empty($customers) ? $customers : [];
     }
 
-
     /**
      * List available coupons (not implemented)
      * 
      * @return array
      */
-
     public function listDiscounts(): array
     {
         $discounts = $this->apiRequest('discounts');
@@ -234,13 +221,11 @@ class SnipcartService extends Component
         return ! empty($discounts) ? $discounts : [];
     }
 
-
     /**
      * List abandoned carts (not implemented)
      *
      * @return array
      */
-
     public function listAbandoned(): array
     {
         $abandoned = $this->apiRequest('carts/abandoned');
@@ -248,20 +233,17 @@ class SnipcartService extends Component
         return ! empty($abandoned) ? $abandoned : [];
     }
 
-
     /**
      * List subscriptions (not implemented)
      *
      * @return array
      */
-
     public function listSubscriptions(): array
     {
         $subscriptions = $this->apiRequest('subscriptions');
 
         return ! empty($subscriptions) ? $subscriptions : [];
     }
-
 
     /**
      * Get a customer from Snipcart
@@ -270,12 +252,10 @@ class SnipcartService extends Component
      * 
      * @return \stdClass
      */
-    
     public function getCustomer($customerId): \stdClass
     {
         return $this->apiRequest('customers/' . $customerId);
     }
-
 
     /**
      * Get a given customer's order history
@@ -284,12 +264,10 @@ class SnipcartService extends Component
      * 
      * @return \stdClass
      */
-    
     public function getCustomerOrders($customerId): \stdClass
     {
         return $this->apiRequest('customers/' . $customerId . '/orders');
     }
-
 
     /**
      * Ask Snipcart whether its provided token is genuine
@@ -303,12 +281,10 @@ class SnipcartService extends Component
      * 
      * @return \stdClass
      */
-
     public function validateToken($token): \stdClass
     {
         return $this->apiRequest('requestvalidation/' . $token, null, false);
     }
-
 
     public function dateRangeStart()
     {
@@ -330,7 +306,6 @@ class SnipcartService extends Component
         return $startDate;
     }
 
-
     public function dateRangeEnd()
     {
         $param    = Craft::$app->request->getParam('endDate', false);
@@ -351,7 +326,6 @@ class SnipcartService extends Component
         return $endDate;
     }
 
-
     public function searchKeywords()
     {
         $param  = Craft::$app->request->getParam('searchKeywords', false);
@@ -363,7 +337,6 @@ class SnipcartService extends Component
 
         return $keywords;
     }
-
 
     /**
      * Return custom shipping rates for a nearly-finalized Snipcart order.
@@ -438,7 +411,6 @@ class SnipcartService extends Component
         return $rateOptions;
     }
 
-
     /**
      * Trigger an Event that will allow another plugin or module to provide packaging
      * details for an order before shipping rates are requested.
@@ -465,7 +437,6 @@ class SnipcartService extends Component
         return $packageDetails;
     }
 
-
     /**
      * Trigger an Event that will allow another plugin or module to adjust
      * product inventory for a relevant Entry.
@@ -486,7 +457,6 @@ class SnipcartService extends Component
         }
     }
 
-    
     /**
      * Get the Snipcart URL
      * 
@@ -509,7 +479,6 @@ class SnipcartService extends Component
     {
         return $this->isLinked;
     }
-
 
     /**
      * Get Craft Elements that relate to order items, updating quantities and sending a notification if relevant.
@@ -543,7 +512,6 @@ class SnipcartService extends Component
 
         return true;
     }
-
 
     /**
      * Have Craft send email order notifications.
