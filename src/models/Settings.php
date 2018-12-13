@@ -153,8 +153,8 @@ class Settings extends Model
             [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
             [['enabledProviders'], 'in', 'range' => [
-                self::SHIPPING_PROVIDER_SHIPSTATION,
-                self::SHIPPING_PROVIDER_SHIPPO
+                self::PROVIDER_SHIPSTATION,
+                self::PROVIDER_SHIPPO
             ]],
 
             // TODO: validate shipFrom
