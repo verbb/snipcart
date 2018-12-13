@@ -73,7 +73,7 @@ class SnipcartShippingRate extends Model
             $return[] = 'code';
         }
 
-        if( ! empty($this->guaranteedDaysToDelivery))
+        if ( ! empty($this->guaranteedDaysToDelivery))
         {
             $return[] = 'guaranteedDaysToDelivery';
         }

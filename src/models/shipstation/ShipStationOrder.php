@@ -460,7 +460,7 @@ class ShipStationOrder extends Model
             [['customerEmail'], 'email'],
             [['gift', 'externallyFulfilled'], 'boolean'],
             [['gift', 'externallyFulfilled'], 'default', 'value' => false],
-            ['tagIds', 'each', 'rule' => ['integer'] ],
+            ['tagIds', 'each', 'rule' => ['integer']],
         ];
     }
 
