@@ -33,8 +33,7 @@ class WebhookEvent extends Event
      * @var SnipcartShippingRate[]
      */
     public $rates;
-
-
+    
     /**
      * @var SnipcartPackage[]
      */

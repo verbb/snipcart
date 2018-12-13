@@ -8,15 +8,16 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ShipStationAddress;
 use workingconcept\snipcart\models\ShipStationOrderItem;
 use workingconcept\snipcart\models\ShipStationDimensions;
 use workingconcept\snipcart\models\ShipStationOrder;
 use workingconcept\snipcart\models\ShipStationWeight;
 use workingconcept\snipcart\models\ShipStationItemOption;
-use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\SnipcartOrder;
+use workingconcept\snipcart\models\ShipStationRate;
 
 use Craft;
 use craft\base\Component;
@@ -95,11 +96,13 @@ class ShipStationService extends Component
      * @param ShipStationDimensions  $dimensions (optional)
      * @param array                  $from (optional; defaults to standard shipFrom)
      * 
-     * @return array response object
+     * @return array
      * @throws \GuzzleHttp\Exception\ServerException
      */
-    public function getRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $from = []): \stdClass
+    public function getRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $from = []): array
     {
+        $rates = [];
+
         if ($this->validateFrom($from))
         {
             $shipFrom = $from;
@@ -137,14 +140,20 @@ class ShipStationService extends Component
         catch(\GuzzleHttp\Exception\ServerException $e)
         {
             // ShipStation returns a 500 error with a message if there aren't any service options
-            //Craft::dd($response);
             Craft::error($e, 'snipcart');
-
-            // return empty array
-            return [];
+            return $rates;
         }
 
-        return json_decode($response->getBody());
+        $response = json_decode($response->getBody());
+
+        foreach ($response as $rateData)
+        {
+            // TODO: switch to ShipStationRate, which errors as "not found" for some reason
+            //$rates[] = new ShipStationRate($rateData);
+            $rates[] = $rateData;
+        }
+
+        return $rates;
     }
 
     /**

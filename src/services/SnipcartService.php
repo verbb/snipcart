@@ -15,6 +15,7 @@ use workingconcept\snipcart\models\SnipcartShippingRate;
 use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\events\InventoryEvent;
 use workingconcept\snipcart\models\SnipcartOrder;
+use workingconcept\snipcart\models\SnipcartPackage;
 
 use Craft;
 use craft\base\Component;
@@ -509,11 +510,11 @@ class SnipcartService extends Component
      *
      * @param SnipcartOrder $order
      *
-     * @return array
+     * @return SnipcartPackage
      */
-    public function getOrderPackagingDetails(SnipcartOrder $order): array
+    public function getOrderPackagingDetails(SnipcartOrder $order): SnipcartPackage
     {
-        $packageDetails = [];
+        $packageDetails = new SnipcartPackage();
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES))
         {

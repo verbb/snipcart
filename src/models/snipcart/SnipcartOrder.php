@@ -161,7 +161,7 @@ class SnipcartOrder extends Model
     private $_refunds;
 
     /**
-     * @var []
+     * @var array
      */
     public $taxes;
 
