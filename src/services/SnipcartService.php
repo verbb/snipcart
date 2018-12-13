@@ -21,6 +21,11 @@ use craft\elements\Entry;
 use craft\mail\Message;
 use GuzzleHttp\Client;
 
+/**
+ * Class SnipcartService
+ *
+ * @package workingconcept\snipcart\services
+ */
 class SnipcartService extends Component
 {
 
