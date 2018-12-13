@@ -9,26 +9,38 @@
 namespace workingconcept\snipcart\controllers;
 
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\WebhookEvent;
 
 use Craft;
 use craft\web\Controller;
-use craft\elements\Entry;
-use craft\mail\Message;
 use yii\web\Response;
 
 class ShipStationWebhooksController extends Controller
 {
-    public $enableCsrfValidation = false; // disable CSRF for this controller
+    // Properties
+    // =========================================================================
 
+    /**
+     * @var bool Disable CSRF here since we're expecting and validating outside posts.
+     */
+    public $enableCsrfValidation = false;
+
+    /**
+     * @var bool Allow anonymous, unauthenticated access to our one method.
+     */
     protected $allowAnonymous = true;
+
+    /**
+     * @var
+     */
     protected $settings;
 
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * Handle the $_POST data that ShipStation sent, which is a raw body of JSON.
      */
-
     public function actionHandle()
     {
         $this->requirePostRequest();
@@ -36,10 +48,10 @@ class ShipStationWebhooksController extends Controller
 
         $body = json_decode(Craft::$app->request->getRawBody());
 
-        if (is_null($body) or !isset($body->resource_type))
+        if ($body === null || ! isset($body->resource_type))
         {
-            /*
-             * every post should have an eventName property, so we've got empty data or a bad format
+            /**
+             * Every post should have an eventName property, so we've got empty data or a bad format.
              */
 
             return $this->badResponse([
@@ -47,53 +59,77 @@ class ShipStationWebhooksController extends Controller
             ]);
         }
 
-        /*
-         * respond to different types of Snipcart events—in this case only one
+        /**
+         * Respond to different types of Snipcart events—in this case only one.
          */
-
         switch ($body->resource_type)
         {
             case 'ORDER_NOTIFY':
-                return $this->processOrderNotifyEvent($body);
-                break;
+                return $this->handleOrderNotifyEvent($body);
             case 'ITEM_ORDER_NOTIFY':
-                return $this->processItemOrderNotifyEvent($body);
-                break;
+                return $this->handleItemOrderNotifyEvent($body);
             case 'SHIP_NOTIFY':
-                return $this->processShipNotifyEvent($body);
-                break;
+                return $this->handleShipNotifyEvent($body);
             case 'ITEM_SHIP_NOTIFY':
-                return $this->processShipNotifyEvent($body);
-                break;
+                return $this->handleItemShipNotifyEvent($body);
             default:
-                // unsupported event
                 return $this->notSupportedResponse();
-                break;
         }
     }
-    
-    private function processOrderNotifyEvent($body)
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Respond to an order notification. (Currently, we don't.)
+     *
+     * @param $body Object sent by ShipStation.
+     *
+     * @return Response
+     */
+    private function handleOrderNotifyEvent($body): Response
     {
         return $this->notSupportedResponse();
     }
 
-    private function processItemOrderNotifyEvent($body)
+    /**
+     * Respond to an *item* order notification. (Currently, we don't.)
+     *
+     * @param $body Object sent by ShipStation.
+     *
+     * @return Response
+     */
+    private function handleItemOrderNotifyEvent($body): Response
     {
         return $this->notSupportedResponse();
     }
 
-    private function processShipNotifyEvent($body)
+    /**
+     * Respond to a shipment notification. (Currently, we don't.)
+     *
+     * @param $body Object sent by ShipStation.
+     *
+     * @return Response
+     */
+    private function handleShipNotifyEvent($body): Response
     {
-        // TODO: notify the customer that their order has shipped + provide tracking number
+        // TODO: notify customer that the order has shipped + provide tracking number
             // follow $body->resource_url to get more information
         return $this->notSupportedResponse();
     }
 
-    private function processItemShipNotifyEvent($body)
+    /**
+     * Respond to an *item* shipment notification. (Currently, we don't.)
+     *
+     * @param $body Object sent by ShipStation.
+     *
+     * @return Response
+     */
+    private function handleItemShipNotifyEvent($body): Response
     {
         return $this->notSupportedResponse();
     }
-
 
     /**
      * Output a 400 response with an optional JSON error array.
@@ -102,8 +138,7 @@ class ShipStationWebhooksController extends Controller
      *
      * @return Response;
      */
-
-    private function badResponse(array $errors)
+    private function badResponse(array $errors): Response
     {
         $response = Craft::$app->getResponse();
 
@@ -118,14 +153,12 @@ class ShipStationWebhooksController extends Controller
         return $response;
     }
 
-
     /**
-     * Output a 200 response so Snipcart knows we're okay, but not handling the event.
+     * Send back a 200 response so Snipcart knows we're okay but not handling the event.
      *
-     * @return void
+     * @return Response
      */
-
-    private function notSupportedResponse()
+    private function notSupportedResponse(): Response
     {
         $response = Craft::$app->getResponse();
         $response->setStatusCode(200);
