@@ -100,7 +100,7 @@ class ShipStationService extends Component
      */
     public function getRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $from = []): \stdClass
     {
-        if ($shipFrom = $this->validateFrom($from))
+        if ($this->validateFrom($from))
         {
             $shipFrom = $from;
         }
@@ -140,45 +140,12 @@ class ShipStationService extends Component
             //Craft::dd($response);
             Craft::error($e, 'snipcart');
 
-            if (class_exists('\superbig\bugsnag\Bugsnag'))
-            {
-                \superbig\bugsnag\Bugsnag::$plugin->bugsnagService->handleException($e);
-            }
-
             // return empty array
             return [];
         }
 
-        $responseData = json_decode($response->getBody());
-
-        return $responseData;
+        return json_decode($response->getBody());
     }
-
-
-    /**
-     * Get shipping rates for the supplied order details, and filter out ones we don't want to show.
-     * https://www.shipstation.com/developer-api/#/reference/shipments/get-rates
-     *
-     * @param array                  $to [
-     *                          		'city' => 'Seattle',
-     *                          		'state' => 'WA',
-     *                          		'country' => 'US'
-     *                          		'zip' => '98103'
-     *                         	     ]
-     * @param ShipStationWeight      $weight
-     * @param ShipStationDimensions  $dimensions
-     * @param array                  $items
-     *
-     * @return StdClass decoded response data
-     * @throws Exception
-     */
-    public function getFilteredRates($to, ShipStationWeight $weight, ShipStationDimensions $dimensions = null, $items = [])
-    {
-        $rates = $this->getRates($to, $weight, $dimensions);
-
-        return $this->filterRates($rates, $weight, $dimensions, $items);
-    }
-
 
     /**
      * Create an order.
@@ -186,8 +153,7 @@ class ShipStationService extends Component
      *
      * @param ShipStationOrder $order
      *
-     * @return StdClass decoded response data, with ->labelData base64-encoded PDF body
-     * @throws Exception
+     * @return ShipStationOrder|null decoded response data, with ->labelData base64-encoded PDF body
      */
     public function createOrder(ShipStationOrder $order)
     {
@@ -204,7 +170,7 @@ class ShipStationService extends Component
             return;
         }
 
-        $responseData = json_decode($response->getBody(true), true);
+        $responseData = json_decode($response->getBody(), true);
 
         return $this->populateModelFromResponseData($responseData);
     }

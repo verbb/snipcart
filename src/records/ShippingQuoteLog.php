@@ -10,16 +10,19 @@ namespace workingconcept\snipcart\records;
 
 use craft\db\ActiveRecord;
 
+/**
+ * Class ShippingQuoteLog
+ *
+ * @package workingconcept\snipcart\records
+ *
+ * @property int $siteId
+ * @property string $token
+ * @property string $body
+ */
 class ShippingQuoteLog extends ActiveRecord
 {
     /**
      * @inheritdoc
-     *
-     * @return string
-     *
-     * @property int $siteId
-     * @property string $token
-     * @property string $body
      */
     public static function tableName(): string
     {

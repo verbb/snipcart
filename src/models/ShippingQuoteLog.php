@@ -11,6 +11,11 @@ namespace workingconcept\snipcart\models;
 use Craft;
 use craft\base\Model;
 
+/**
+ * Class ShippingQuoteLog
+ *
+ * @package workingconcept\snipcart\models
+ */
 class ShippingQuoteLog extends Model
 {
     public $id;

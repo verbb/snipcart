@@ -13,8 +13,16 @@ use craft\base\Model;
 /**
  * ShipStation Order Model
  * https://www.shipstation.com/developer-api/#/reference/model-order
+ *
+ * @property ShipStationAddress $billTo
+ * @property ShipStationAddress $shipTo
+ * @property ShipStationOrderItem[] $items
+ * @property ShipStationWeight $weight
+ * @property ShipStationDimensions $dimensions
+ * @property ShipStationInsuranceOptions $insuranceOptions
+ * @property ShipStationInternationalOptions $internationalOptions
+ * @property ShipStationAdvancedOptions $advancedOptions
  */
-
 class ShipStationOrder extends Model
 {
     // Constants

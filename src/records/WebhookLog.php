@@ -10,17 +10,20 @@ namespace workingconcept\snipcart\records;
 
 use craft\db\ActiveRecord;
 
+/**
+ * Class WebhookLog
+ *
+ * @package workingconcept\snipcart\records
+ *
+ * @property int $id
+ * @property int $siteId
+ * @property string $type
+ * @property string $body
+ */
 class WebhookLog extends ActiveRecord
 {
     /**
      * @inheritdoc
-     *
-     * @return string
-     *
-     * @property int $id
-     * @property int $siteId
-     * @property string $type
-     * @property string $body
      */
     public static function tableName(): string
     {

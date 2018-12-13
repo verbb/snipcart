@@ -124,11 +124,9 @@ class WebhooksController extends Controller
             case self::WEBHOOK_ORDER_COMPLETED:
                 $order = new SnipcartOrder($postData->content);
                 return $this->handleOrderCompletedEvent($order);
-                break;
             case self::WEBHOOK_SHIPPINGRATES_FETCH:
                 $order = new SnipcartOrder($postData->content);
                 return $this->handleShippingRateFetchEvent($order);
-                break;
             case self::WEBHOOK_ORDER_STATUS_CHANGED:
             case self::WEBHOOK_ORDER_TRACKING_NUMBER_CHANGED:
             case self::WEBHOOK_SUBSCRIPTION_CREATED:
@@ -139,11 +137,9 @@ class WebhooksController extends Controller
             case self::WEBHOOK_TAXES_CALCULATE:
             case self::WEBHOOK_CUSTOMER_UPDATED:
                 return $this->asJson([ 'success' => true ]);
-                break;
             default:
                 // unsupported event
                 return $this->notSupportedResponse();
-                break;
         }
     }
 
