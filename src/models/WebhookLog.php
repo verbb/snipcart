@@ -8,17 +8,43 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
 use craft\base\Model;
 
 class WebhookLog extends Model
 {
+    /**
+     * @var
+     */
     public $id;
+
+    /**
+     * @var
+     */
     public $siteId;
+
+    /**
+     * @var
+     */
     public $type;
+
+    /**
+     * @var
+     */
     public $body;
+
+    /**
+     * @var
+     */
     public $dateCreated;
+
+    /**
+     * @var
+     */
     public $dateUpdated;
+
+    /**
+     * @var
+     */
     public $uid;
 
     public function init()

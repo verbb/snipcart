@@ -16,6 +16,11 @@ class WebhookLog extends ActiveRecord
      * @inheritdoc
      *
      * @return string
+     *
+     * @property int $id
+     * @property int $siteId
+     * @property string $type
+     * @property string $body
      */
     public static function tableName(): string
     {

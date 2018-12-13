@@ -16,6 +16,10 @@ class ShippingQuoteLog extends ActiveRecord
      * @inheritdoc
      *
      * @return string
+     *
+     * @property int $siteId
+     * @property string $token
+     * @property string $body
      */
     public static function tableName(): string
     {

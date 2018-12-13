@@ -18,6 +18,7 @@ use workingconcept\snipcart\models\Settings;
 use Craft;
 use craft\web\Controller;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
 
 class WebhooksController extends Controller
 {
@@ -73,9 +74,9 @@ class WebhooksController extends Controller
      * Validate and handle Snipcart's post according to the declared event type.
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
-    public function actionHandle(): ?Response
+    public function actionHandle(): Response
     {
         // only take post requests
         $this->requirePostRequest();
@@ -93,7 +94,7 @@ class WebhooksController extends Controller
 
         $postData = json_decode(Craft::$app->request->getRawBody());
 
-        if (is_null($postData) or !isset($postData->eventName))
+        if ($postData === null || !isset($postData->eventName))
         {
             // every Snipcart post should have an eventName, so we've got empty data or a bad format
             return $this->badResponse([
@@ -283,6 +284,7 @@ class WebhooksController extends Controller
      * Ask Snipcart whether the request's token is genuine.
      *
      * @return boolean
+     * @throws BadRequestHttpException
      */
     protected function validateRequest(): bool
     {
@@ -296,7 +298,7 @@ class WebhooksController extends Controller
 
         if (!isset($_SERVER[$key]))
         {
-            throw new Exception('Invalid request: no request token');
+            throw new BadRequestHttpException('Invalid request: no request token');
         }
 
         if ($token = $_SERVER[$key])
