@@ -34,9 +34,9 @@ class VerifyController extends Controller
         $limit    = 3;
         $failures = [];
 
-        $this->stdout('-------------------------------------');
-        $this->stdout("Checking last $limit orders...");
-        $this->stdout('-------------------------------------');
+        $this->stdout("-------------------------------------\n");
+        $this->stdout("Checking last $limit orders...\n");
+        $this->stdout("-------------------------------------\n");
 
         $snipcartOrders    = $this->getSnipcartOrders($limit);
         $shipStationOrders = $this->getShipStationOrders($limit * 2);
@@ -56,7 +56,7 @@ class VerifyController extends Controller
 
             $shipStationStatusString = $success ? '✓' : '✗';
 
-            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]");
+            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]\n");
             
             if ( ! $success)
             {
@@ -71,7 +71,7 @@ class VerifyController extends Controller
             $this->sendAdminNotification($failures);
         }
 
-        $this->stdout('-------------------------------------');
+        $this->stdout("-------------------------------------\n");
 
         $endTime       = microtime(true);
         $executionTime = ($endTime - $startTime);
@@ -122,7 +122,7 @@ class VerifyController extends Controller
         }
         else
         {
-            $this->stderr('Email notification setting must be string or array.');
+            $this->stderr("Email notification setting must be string or array.\n");
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
@@ -146,7 +146,7 @@ class VerifyController extends Controller
 
             if ( ! Craft::$app->mailer->send($message))
             {
-                $this->stderr("Notification failed to send to {$address}!");
+                $this->stderr("Notification failed to send to {$address}!\n");
                 return ExitCode::UNSPECIFIED_ERROR;
             }
         }
@@ -184,7 +184,7 @@ class VerifyController extends Controller
      *
      * @return array
      */
-    private function getShipStationOrders($limit = 5)
+    private function getShipStationOrders($limit = 5): array
     {
         $shipStation       = new \workingconcept\snipcart\services\ShipStationService;
         $shipStationOrders = $shipStation->listOrders($limit);

@@ -747,14 +747,14 @@ class SnipcartService extends Component
 
     // TODO: clean up these response types
     
-    private function apiRequest($query = '', $inData = array(), $useCache = true)
+    private function apiRequest($query = '', $inData = [], $useCache = true)
     {
         if ( ! $this->isLinked)
         {
             throw new Exception('Snipcart plugin is not configured.');
         }
 
-        if (count($inData) > 0)
+        if ( ! empty($inData))
         {			
             $query .= '?' . http_build_query($inData);
         }
