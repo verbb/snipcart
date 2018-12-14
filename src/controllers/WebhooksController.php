@@ -254,7 +254,7 @@ class WebhooksController extends Controller
             'success' => true
         ];
 
-        if ($sendToShipStation)
+        if (isset($shipStationOrder))
         {
             // successful orders have a populated ->orderId, and with tests ->orderId = 99999999
             $responseData['shipstation_order_id'] = $shipStationOrder->orderId ?? '';
