@@ -16,8 +16,8 @@ use craft\base\Model;
  *
  * @package workingconcept\snipcart\models
  *
- * @property ShipStationAddress $billingAddress
- * @property ShipStationAddress $shippingAddress
+ * @property SnipcartAddress $billingAddress
+ * @property SnipcartAddress $shippingAddress
  * @property SnipcartCustomer $user
  * @property SnipcartDiscount[] $discounts
  * @property SnipcartPlan[] $plans
