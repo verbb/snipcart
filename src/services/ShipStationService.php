@@ -430,25 +430,25 @@ class ShipStationService extends Component
         }
 
         $shipStationOrder->shipTo = new ShipStationAddress([
-            'name'       => $snipcartOrder->shippingAddressName,
-            'street1'    => $snipcartOrder->shippingAddressAddress1,
-            'street2'    => $snipcartOrder->shippingAddressAddress2,
-            'city'       => $snipcartOrder->shippingAddressCity,
-            'state'      => $snipcartOrder->shippingAddressProvince,
-            'postalCode' => $snipcartOrder->shippingAddressPostalCode,
-            'phone'      => $snipcartOrder->shippingAddressPhone
+            'name'       => $snipcartOrder->shippingAddress->name,
+            'street1'    => $snipcartOrder->shippingAddress->address1,
+            'street2'    => $snipcartOrder->shippingAddress->address2,
+            'city'       => $snipcartOrder->shippingAddress->city,
+            'state'      => $snipcartOrder->shippingAddress->province,
+            'postalCode' => $snipcartOrder->shippingAddress->postalCode,
+            'phone'      => $snipcartOrder->shippingAddress->phone
         ]);
 
         $shipStationOrder->shipTo->validate();
 
         $shipStationOrder->billTo = new ShipStationAddress([
-            'name'       => $snipcartOrder->billingAddressName,
-            'street1'    => $snipcartOrder->billingAddressAddress1,
-            'street2'    => $snipcartOrder->billingAddressAddress2,
-            'city'       => $snipcartOrder->billingAddressCity,
-            'state'      => $snipcartOrder->billingAddressProvince,
-            'postalCode' => $snipcartOrder->billingAddressPostalCode,
-            'phone'      => $snipcartOrder->billingAddressPhone
+            'name'       => $snipcartOrder->billingAddress->name,
+            'street1'    => $snipcartOrder->billingAddress->address1,
+            'street2'    => $snipcartOrder->billingAddress->address2,
+            'city'       => $snipcartOrder->billingAddress->city,
+            'state'      => $snipcartOrder->billingAddress->province,
+            'postalCode' => $snipcartOrder->billingAddress->postalCode,
+            'phone'      => $snipcartOrder->billingAddress->phone
         ]);
 
         $shipStationOrder->billTo->validate();
@@ -468,12 +468,12 @@ class ShipStationService extends Component
 
         $shipStationOrder->weight->validate();
 
-        if ( ! empty($packageDetails['length']) && ! empty($packageDetails['width']) && ! empty($packageDetails['height']))
+        if ($packageDetails->hasPhysicalDimensions())
         {
             $shipStationOrder->dimensions = new ShipStationDimensions([
-                'length' => $packageDetails['length'],
-                'width'  => $packageDetails['width'],
-                'height' => $packageDetails['height'],
+                'length' => $packageDetails->length,
+                'width'  => $packageDetails->width,
+                'height' => $packageDetails->height,
                 'units'  => ShipStationDimensions::UNIT_INCHES,
             ]);
 
