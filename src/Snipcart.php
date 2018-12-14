@@ -28,7 +28,7 @@ use yii\base\Event;
  * Class Snipcart
  *
  * @author    Working Concept
- * @package   Lever
+ * @package   Snipcart
  * @since     1.0.0
  *
  * @property  SnipcartService $snipcart
