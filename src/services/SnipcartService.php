@@ -759,6 +759,11 @@ class SnipcartService extends Component
 
         if ( ! empty($element))
         {
+            if (is_array($element))
+            {
+                return $element[0];
+            }
+            
             return $element;
         }
 
