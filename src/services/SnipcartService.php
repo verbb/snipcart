@@ -507,7 +507,7 @@ class SnipcartService extends Component
 
         if ($includeShipStationRates)
         {
-            $to     = Snipcart::$plugin->shipStation->getToFromSnipcartData($order);
+            $to     = Snipcart::$plugin->shipStation->getToFromSnipcartOrder($order);
             $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartOrder($order);
 
             if ($package !== null)

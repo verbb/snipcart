@@ -681,13 +681,13 @@ class ShipStationService extends Component
      * 
      * @return array
      */
-    public function getToFromSnipcartData($order): array
+    public function getToFromSnipcartOrder($order): array
     {
         return [
-            'city'    => $order->shippingAddressCity,
-            'state'   => $order->shippingAddressProvince,
-            'country' => $order->shippingAddressCountry,
-            'zip'     => $order->shippingAddressPostalCode,
+            'city'    => $order->shippingAddress->city,
+            'state'   => $order->shippingAddress->province,
+            'country' => $order->shippingAddress->country,
+            'zip'     => $order->shippingAddress->postalCode,
         ];
     }
 
