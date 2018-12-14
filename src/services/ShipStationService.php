@@ -344,7 +344,7 @@ class ShipStationService extends Component
      *
      * @return ShipstationOrder[]|null
      */
-    public function listOrders($limit = 25): array
+    public function listOrders($limit = 25)
     {
         $response = $this->client->get('orders?pageSize=' . $limit . '&sortBy=OrderDate&sortDir=DESC');
         $orders = [];
@@ -665,12 +665,9 @@ class ShipStationService extends Component
     {
         foreach ($customFields as $customField)
         {
-            if ($customField->name === $this->settings->orderGiftNoteFieldName)
+            if ($customField->name === $this->settings->orderGiftNoteFieldName && ! empty($customField->value))
             {
-                if ( ! empty($customField->value))
-                {
-                    return $customField->value;
-                }
+                return $customField->value;
             }
         }
 

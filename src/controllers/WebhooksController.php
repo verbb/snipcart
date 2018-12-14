@@ -143,7 +143,6 @@ class WebhooksController extends Controller
         }
     }
 
-
     // Private Methods
     // =========================================================================
 
@@ -174,7 +173,6 @@ class WebhooksController extends Controller
         return $response;
     }
 
-
     /**
      * Output a 400 response with an optional JSON error array.
      *
@@ -197,7 +195,6 @@ class WebhooksController extends Controller
         return $response;
     }
 
-
     /**
      * Output a 200 response so Snipcart knows we're okay, but not handling the event.
      *
@@ -210,7 +207,6 @@ class WebhooksController extends Controller
 
         return $response;
     }
-
 
     /**
      * Handle the completed order.

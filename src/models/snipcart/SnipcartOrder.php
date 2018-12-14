@@ -14,6 +14,8 @@ use craft\base\Model;
  * Snipcart Order model
  * https://docs.snipcart.com/api-reference/orders
  *
+ * @package workingconcept\snipcart\models
+ *
  * @property ShipStationAddress $billingAddress
  * @property ShipStationAddress $shippingAddress
  * @property SnipcartCustomer $user
@@ -41,7 +43,6 @@ use craft\base\Model;
  * @property string $shippingAddressPostalCode;
  * @property string $shippingAddressPhone;
  */
-
 class SnipcartOrder extends Model
 {
     const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
