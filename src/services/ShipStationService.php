@@ -692,13 +692,13 @@ class ShipStationService extends Component
     }
 
     /**
-     * Translate Snipcart order data into to array for Shipstation.
+     * Translate SnipcartOrder data into ShipStationWeight.
      *
      * @param SnipcartOrder $order
      *
      * @return ShipStationWeight
      */
-    public function getWeightFromSnipcartData($order): ShipStationWeight
+    public function getWeightFromSnipcartOrder($order): ShipStationWeight
     {
         return new ShipStationWeight([
             'value' => $order->totalWeight,
@@ -707,7 +707,7 @@ class ShipStationService extends Component
     }
 
     /**
-     * Translate Snipcart order data into to array for Shipstation.
+     * Translate SSnipcartPackage into ShipStationDimensions.
      *
      * @param SnipcartPackage $packageDetails
      *
