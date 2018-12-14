@@ -84,20 +84,20 @@ class SnipcartVariable
 
     /**
      * @param $orderId
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function getOrderNotifications($orderId): \stdClass
+    public function getOrderNotifications($orderId)
     {
         return Snipcart::$plugin->snipcart->getOrderNotifications($orderId);
     }
 
     /**
      * @param $orderId
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \yii\base\Exception
      */
-    public function getOrderRefunds($orderId): \stdClass
+    public function getOrderRefunds($orderId)
     {
         return Snipcart::$plugin->snipcart->getOrderRefunds($orderId);
     }
@@ -114,7 +114,7 @@ class SnipcartVariable
 
     /**
      * @param $customerId
-     * @return array
+     * @return \stdClass|array
      * @throws \Exception
      */
     public function getCustomerOrders($customerId)
