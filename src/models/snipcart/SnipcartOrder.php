@@ -385,11 +385,6 @@ class SnipcartOrder extends Model
      */
     public $hasSubscriptions;
 
-    /**
-     * @var string
-     */
-    public $giftMessage;
-
 
     // Public Methods
     // =========================================================================

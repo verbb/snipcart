@@ -231,7 +231,7 @@ class WebhooksController extends Controller
         $sendToShipStation = in_array(
             Settings::PROVIDER_SHIPSTATION,
             $this->settings->enabledProviders,
-            true
+            false
         );
 
         // send order to ShipStation if we need to
@@ -249,6 +249,8 @@ class WebhooksController extends Controller
                 ]
             );
         }
+
+        // TODO: expose any problems sending to shipStation
 
         return $this->asJson(
             [

@@ -21,6 +21,7 @@ use workingconcept\snipcart\models\ShipStationRate;
 
 use Craft;
 use craft\base\Component;
+use yii\base\ErrorException;
 use yii\base\Exception;
 use GuzzleHttp\Client;
 
@@ -174,6 +175,7 @@ class ShipStationService extends Component
         if ($response->getStatusCode() !== 200)
         {
             // something bad happened!
+            // TODO: expose this!
             return;
         }
 
@@ -387,7 +389,8 @@ class ShipStationService extends Component
             'orderStatus'              => ShipStationOrder::STATUS_AWAITING_SHIPMENT
         ]);
 
-        if ( ! empty($snipcartOrder->giftMessage))
+        // if the newly-created ShipStation order includes a gift message, mark it as a gift
+        if ($shipstationOrder->giftMessage !== null)
         {
             $shipstationOrder->gift = true;
         }
@@ -490,7 +493,7 @@ class ShipStationService extends Component
 
         $shipstationOrder->items = $orderItems;
 
-        if ($shippingMethod = Snipcart::$plugin->shipStation->getShippingMethodFromOrder($shipstationOrder, $snipcartOrder->shippingMethod))
+        if ($shippingMethod = $this->getShippingMethodFromOrder($shipstationOrder, $snipcartOrder->shippingMethod))
         {
             $shipstationOrder->serviceCode = $shippingMethod->serviceCode;
         }
@@ -504,7 +507,7 @@ class ShipStationService extends Component
                 return false;
             }
 
-            if ($createdOrder = Snipcart::$plugin->shipStation->createOrder($shipstationOrder))
+            if ($createdOrder = $this->createOrder($shipstationOrder))
             {
                 // TODO: delete related rate quotes when order makes it to ShipStation
                 return $createdOrder;
