@@ -412,20 +412,21 @@ class SnipcartService extends Component
     {
         $param   = Craft::$app->request->getParam('startDate', false);
         $default = strtotime('-1 month');
-        $stored  = Craft::$app->session->get('snipcartStartDate');
+        $session = Craft::$app->getSession();
 
         if ($param)
         {
-            $startDate = DateTimeHelper::toDateTime($param['date'])
-                ->modify('+1 day')
-                ->getTimestamp();
+            $startDate = DateTimeHelper::toDateTime($param)->getTimestamp();
         }
         else
         {
-            $startDate = $stored ?? $default;
+            $startDate = $session->get('snipcartStartDate') ?? $default;
         }
 
-        Craft::$app->session->set('snipcartStartDate', $startDate);
+        if ($session)
+        {
+            $session->set('snipcartStartDate', $startDate);
+        }
 
         return $startDate;
     }
@@ -434,20 +435,21 @@ class SnipcartService extends Component
     {
         $param    = Craft::$app->request->getParam('endDate', false);
         $default  = time();
-        $stored   = Craft::$app->session->get('snipcartEndDate');
+        $session  = Craft::$app->getSession();
 
         if ($param)
         {
-            $endDate = DateTimeHelper::toDateTime($param['date'])
-                ->modify('+1 day')
-                ->getTimestamp();
+            $endDate = DateTimeHelper::toDateTime($param)->getTimestamp();
         }
         else
         {
-            $endDate = $stored ?? $default;
+            $endDate = $session->get('snipcartEndDate') ?? $default;
         }
 
-        Craft::$app->session->set('snipcartEndDate', $endDate);
+        if ($session)
+        {
+            $session->set('snipcartEndDate', $endDate);
+        }
 
         return $endDate;
     }
