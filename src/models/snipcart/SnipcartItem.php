@@ -8,7 +8,6 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
 use craft\base\Model;
 
 class SnipcartItem extends Model
@@ -69,6 +68,11 @@ class SnipcartItem extends Model
      * @var
      */
     public $url;
+
+    /**
+     * @var int
+     */
+    public $weight;
 
     /**
      * @var
