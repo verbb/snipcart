@@ -14,8 +14,8 @@ use craft\base\Model;
  * ShipStation Order Model
  * https://www.shipstation.com/developer-api/#/reference/model-order
  *
- * @property ShipStationAddress $billTo
- * @property ShipStationAddress $shipTo
+ * @property ShipStationAddress|null $billTo
+ * @property ShipStationAddress|null $shipTo
  * @property ShipStationOrderItem[] $items
  * @property ShipStationWeight $weight
  * @property ShipStationDimensions $dimensions
@@ -244,9 +244,9 @@ class ShipStationOrder extends Model
     /**
      * Gets the order’s billing address.
      *
-     * @return ShipStationAddress
+     * @return ShipStationAddress|null
      */
-    public function getBillTo(): ShipStationAddress
+    public function getBillTo()
     {
         return $this->_billTo;
     }
@@ -268,9 +268,9 @@ class ShipStationOrder extends Model
     /**
      * Gets the order’s shipping address.
      *
-     * @return ShipStationAddress
+     * @return ShipStationAddress|null
      */
-    public function getShipTo(): ShipStationAddress
+    public function getShipTo()
     {
         return $this->_shipTo;
     }
