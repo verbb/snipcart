@@ -489,7 +489,7 @@ class SnipcartOrder extends Model
      */
     public function setBillingAddress($address): SnipcartAddress
     {
-        if (is_array($address))
+        if ( ! $address instanceof SnipcartAddress)
         {
             $address = new SnipcartAddress($address);
         }
@@ -731,7 +731,7 @@ class SnipcartOrder extends Model
      */
     public function setShippingAddress($address): SnipcartAddress
     {
-        if (is_array($address))
+        if ( ! $address instanceof SnipcartAddress)
         {
             $address = new SnipcartAddress($address);
         }

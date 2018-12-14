@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\variables;
 
+use workingconcept\snipcart\models\SnipcartCustomer;
 use workingconcept\snipcart\models\SnipcartOrder;
 use workingconcept\snipcart\Snipcart;
 
@@ -16,7 +17,7 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass
+     * @return \stdClass|null
      * @throws \Exception
      */
     public function listOrders($pageNumber = 1)
@@ -27,6 +28,7 @@ class SnipcartVariable
     /**
      * @param int $pageNumber
      * @return array
+     * @throws \Exception
      */
     public function listOrdersByDay($pageNumber = 1): array
     {
@@ -35,10 +37,10 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return array
+     * @return \stdClass|null
      * @throws \Exception
      */
-    public function listCustomers($pageNumber = 1): array
+    public function listCustomers($pageNumber = 1)
     {
         return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
     }
@@ -82,8 +84,8 @@ class SnipcartVariable
 
     /**
      * @param $orderId
-     * @return \stdClass
-     * @throws \yii\base\Exception
+     * @return \stdClass|null
+     * @throws \Exception
      */
     public function getOrderNotifications($orderId)
     {
@@ -92,7 +94,7 @@ class SnipcartVariable
 
     /**
      * @param $orderId
-     * @return \stdClass
+     * @return \stdClass|null
      * @throws \yii\base\Exception
      */
     public function getOrderRefunds($orderId)
@@ -102,10 +104,10 @@ class SnipcartVariable
 
     /**
      * @param $customerId
-     * @return \stdClass
+     * @return SnipcartCustomer
      * @throws \Exception
      */
-    public function getCustomer($customerId)
+    public function getCustomer($customerId): SnipcartCustomer
     {
         return Snipcart::$plugin->snipcart->getCustomer($customerId);
     }
@@ -154,10 +156,10 @@ class SnipcartVariable
 
     /**
      * @param $keywords
-     * @return array
+     * @return \stdClass
      * @throws \Exception
      */
-    public function searchCustomers($keywords): array
+    public function searchCustomers($keywords): \stdClass
     {
         return Snipcart::$plugin->snipcart->searchCustomers($keywords);
     }

@@ -44,6 +44,11 @@ class SnipcartCustomer extends Model
     public $billingAddressName;
 
     /**
+     * @var string
+     */
+    public $billingAddressFirstName;
+
+    /**
      * @var
      */
     public $billingAddressCompanyName;
@@ -91,6 +96,11 @@ class SnipcartCustomer extends Model
     /**
      * @var
      */
+    public $shippingAddressFirstName;
+
+    /**
+     * @var
+     */
     public $shippingAddressCompanyName;
 
     /**
@@ -129,7 +139,7 @@ class SnipcartCustomer extends Model
     public $shippingAddressPhone;
 
     /**
-     * @var bool Specifies whether the shipping and bililng addresses are the same.
+     * @var bool Specifies whether the shipping and billing addresses are the same.
      */
     public $shippingAddressSameAsBilling;
 
@@ -153,6 +163,30 @@ class SnipcartCustomer extends Model
      */
     public $gravatarUrl;
 
+    /**
+     * @var
+     */
+    public $mode;
+
+    /**
+     * @var
+     */
+    public $creationDate;
+
+    /**
+     * @var
+     */
+    public $gatewayId;
+
+    /**
+     * @var
+     */
+    public $billingAddress;
+
+    /**
+     * @var
+     */
+    public $shippingAddress;
 
     // Public Methods
     // =========================================================================

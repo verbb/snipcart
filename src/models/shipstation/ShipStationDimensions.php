@@ -63,4 +63,16 @@ class ShipStationDimensions extends Model
         ];
     }
 
+    /**
+     * True if valid, non-zero length, width, and height are all present.
+     *
+     * @return bool
+     */
+    public function hasPhysicalDimensions(): bool
+    {
+        return $this->length !== null && $this->length > 0 &&
+            $this->width !== null && $this->width > 0 &&
+            $this->height !== null && $this->height > 0;
+    }
+
 }
