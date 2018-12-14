@@ -459,7 +459,13 @@ class ShipStationOrder extends Model
      */
     public function rules()
     {
-        // TODO: validate and transform dates properly
+        /**
+         * TODO: validate and transform dates properly
+         *
+         * ShipStation uses the ISO 8601 combined format for dateTime stamps being submitted to and returned from the API.
+         * `2016-11-29 23:59:59`
+         * The time zone represented in all API responses is PST/PDT. Similarly, ShipStation asks that you make all time zone conversions and submit any dateTime requests in PST/PDT.
+         */
         return [
             [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
