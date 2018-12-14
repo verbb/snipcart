@@ -483,12 +483,15 @@ class SnipcartOrder extends Model
     }
 
     /**
-     * @param $address
+     * @param SnipcartAddress|array $address
      * @return SnipcartAddress
      */
     public function setBillingAddress($address): SnipcartAddress
     {
-        $address = new SnipcartAddress($address);
+        if (is_array($address))
+        {
+            $address = new SnipcartAddress($address);
+        }
 
         return $this->_billingAddress = $address;
     }
@@ -722,12 +725,15 @@ class SnipcartOrder extends Model
     }
 
     /**
-     * @param $address
-     * @return string
+     * @param SnipcartAddress|array $address
+     * @return SnipcartAddress
      */
     public function setShippingAddress($address): SnipcartAddress
     {
-        $address = new SnipcartAddress($address);
+        if (is_array($address))
+        {
+            $address = new SnipcartAddress($address);
+        }
 
         return $this->_shippingAddress = $address;
     }
