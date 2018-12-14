@@ -723,10 +723,12 @@ class ShipStationService extends Component
         ]);
     }
 
+    /*
     private function convertGramsToOunces($grams)
     {
         return ceil($grams * 0.03527396);
     }
+    */
 
     private function validateFrom($from): bool
     {
