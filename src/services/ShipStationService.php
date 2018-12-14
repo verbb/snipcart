@@ -148,9 +148,7 @@ class ShipStationService extends Component
 
         foreach ($response as $rateData)
         {
-            // TODO: switch to ShipStationRate, which errors as "not found" for some reason
-            //$rates[] = new ShipStationRate($rateData);
-            $rates[] = $rateData;
+            $rates[] = new ShipStationRate($rateData);
         }
 
         return $rates;
@@ -275,14 +273,13 @@ class ShipStationService extends Component
      *
      * Identical to createShipmentLabel() except for the required orderId.
      *
-     *
      * https://shipstation.docs.apiary.io/#reference/orders/create-label-for-order/create-label-for-order
      *
      * @param ShipStationOrder  $order
-     * @param array             $isTest  true if we only want to create a sample label
+     * @param bool              $isTest       true if we only want to create a sample label
+     * @param string            $packageCode  package code to be sent
      *
-     * @return StdClass decoded response data, with ->labelData base64-encoded PDF body
-     * @throws Exception
+     * @return \stdClass|null   response data, with ->labelData base64-encoded PDF body
      */
     public function createLabelForOrder(ShipStationOrder $order, $isTest = false, $packageCode = 'package')
     {
@@ -298,23 +295,20 @@ class ShipStationService extends Component
         if ($response->getStatusCode() !== 200)
         {
             // something bad happened!
-            return;
+            return null;
         }
 
-        $responseData = json_decode($response->getBody(true));
-
-        return $responseData;
+        return json_decode($response->getBody());
     }
-
 
     /**
      * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-w/o-parameters
      *
      * @param int $limit
      *
-     * @return ShipstationOrder[]
+     * @return ShipstationOrder[]|null
      */
-    public function listOrders($limit = 25)
+    public function listOrders($limit = 25): array
     {
         $response = $this->client->get('orders?pageSize=' . $limit . '&sortBy=OrderDate&sortDir=DESC');
         $orders = [];
@@ -322,10 +316,10 @@ class ShipStationService extends Component
         if ($response->getStatusCode() !== 200)
         {
             // something bad happened!
-            return;
+            return null;
         }
 
-        $responseData = json_decode($response->getBody(true), true);
+        $responseData = json_decode($response->getBody(), true);
 
         foreach ($responseData['orders'] as $order)
         {
@@ -340,7 +334,7 @@ class ShipStationService extends Component
      *
      * @param $webhook
      */
-
+    /*
     public function subscribeToWebhook($webhook)
     {
         // https://www.shipstation.com/developer-api/#/reference/webhooks/subscribe-to-webhook
@@ -361,14 +355,14 @@ class ShipStationService extends Component
     {
 
     }
-
+    */
 
     /**
      * Send a Snipcart order to ShipStation.
      *
      * @param SnipcartOrder $snipcartOrder
      *
-     * @return array|bool
+     * @return ShipStationOrder|false|array Created order, false, or error array.
      * @throws
      */
     public function sendSnipcartOrder(SnipcartOrder $snipcartOrder)
@@ -507,7 +501,7 @@ class ShipStationService extends Component
             {
                 // don't actually send orders to ShipStation in devMode
                 // TODO: simulate created order
-                return;
+                return false;
             }
 
             if ($createdOrder = Snipcart::$plugin->shipStation->createOrder($shipstationOrder))
@@ -517,11 +511,7 @@ class ShipStationService extends Component
             }
             else
             {
-                if (class_exists('\superbig\bugsnag\Bugsnag'))
-                {
-                    \superbig\bugsnag\Bugsnag::$plugin->bugsnagService->handleException('Order not created.');
-                }
-
+                Craft::error('Failed to create ShipStation order for ' . $shipstationOrder->orderNumber);
                 return false;
             }
         }
@@ -588,16 +578,18 @@ class ShipStationService extends Component
      *
      * @return array
      */
-    private function removeReadOnlyFieldsFromPayload($payload)
+    private function removeReadOnlyFieldsFromPayload($payload): array
     {
         unset($payload['orderId']);
 
         foreach ($payload['items'] as &$item)
         {
-            unset($item['orderItemId']);
-            unset($item['adjustment']);
-            unset($item['createDate']);
-            unset($item['modifyDate']);
+            unset(
+                $item['orderItemId'],
+                $item['adjustment'],
+                $item['createDate'],
+                $item['modifyDate']
+            );
         }
 
         return $payload;
@@ -650,7 +642,7 @@ class ShipStationService extends Component
      * 
      * @return array
      */
-    public function getToFromSnipcartData($order)
+    public function getToFromSnipcartData($order): array
     {
         return [
             'city'    => $order->shippingAddressCity,
@@ -667,7 +659,7 @@ class ShipStationService extends Component
      *
      * @return ShipStationWeight
      */
-    public function getWeightFromSnipcartData($order)
+    public function getWeightFromSnipcartData($order): ShipStationWeight
     {
         return new ShipStationWeight([
             'value' => $order->totalWeight,
@@ -682,7 +674,7 @@ class ShipStationService extends Component
      *
      * @return ShipStationDimensions
      */
-    public function getDimensionsFromSnipcartData($packageDetails)
+    public function getDimensionsFromSnipcartData($packageDetails): ShipStationDimensions
     {
         return new ShipStationDimensions([
             'length' => $packageDetails['length'],
@@ -697,12 +689,12 @@ class ShipStationService extends Component
         return ceil($grams * 0.03527396);
     }
 
-    private function validateFrom($from)
+    private function validateFrom($from): bool
     {
         return ! empty($from);
     }
 
-    private function isLinked()
+    private function isLinked(): bool
     {
         return ! empty($this->providerSettings['apiKey']) &&
             ! empty($this->providerSettings['apiSecret']);
