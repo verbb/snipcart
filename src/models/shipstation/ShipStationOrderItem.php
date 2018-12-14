@@ -14,8 +14,12 @@ use Yii;
 /**
  * ShipStation Order Item Model
  * https://www.shipstation.com/developer-api/#/reference/model-orderitem
+ *
+ * @package workingconcept\snipcart\models
+ *
+ * @property ShipStationWeight|null $weight
+ * @property ShipStationItemOption[]|null $options
  */
-
 class ShipStationOrderItem extends Model
 {
     // Properties
