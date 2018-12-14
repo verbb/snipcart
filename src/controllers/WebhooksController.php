@@ -250,14 +250,22 @@ class WebhooksController extends Controller
             );
         }
 
-        // TODO: expose any problems sending to shipStation
+        $responseData = [
+            'success' => true
+        ];
 
-        return $this->asJson(
-            [
-                'success'  => true,
-                'order_id' => $shipStationOrder->id ?? '',
-            ]
-        );
+        if ($sendToShipStation)
+        {
+            // successful orders have a populated ->orderId, and with tests ->orderId = 99999999
+            $responseData['shipstation_order_id'] = $shipStationOrder->orderId ?? '';
+
+            if ( ! empty($shipStationOrder->getErrors()))
+            {
+                $responseData['shipstation_errors'] = $shipStationOrder->getErrors();
+            }
+        }
+
+        return $this->asJson($responseData);
     }
 
 

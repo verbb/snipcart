@@ -459,11 +459,12 @@ class ShipStationOrder extends Model
      */
     public function rules()
     {
+        // TODO: validate and transform dates properly
         return [
             [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'default', 'value' => 0],
-            [['orderNumber', 'orderStatus', 'orderDate', 'createDate', 'modifyDate', 'paymentDate', 'shipByDate', 'shipDate', 'holdUntilDate'], 'string'], // TODO: figure out how to validate and/or transform these
+            [['orderNumber', 'orderStatus', 'orderDate', 'createDate', 'modifyDate', 'paymentDate', 'shipByDate', 'shipDate', 'holdUntilDate'], 'string'],
             [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string'],
             [['customerEmail'], 'email'],
             [['gift', 'externallyFulfilled'], 'boolean'],

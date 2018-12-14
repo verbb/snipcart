@@ -142,7 +142,7 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass
+     * @return \stdClass|array|false Response data as an object or array, or false if there was a problem.
      * @throws Exception
      */
     public function listOrders($page = 1, $limit = 25)
@@ -232,6 +232,7 @@ class SnipcartService extends Component
      * @param integer $limit number of results per page
      * 
      * @return array
+     * @throws Exception
      */
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
@@ -262,10 +263,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass
-     * @throws \Exception
+     * @return SnipcartCustomer[]
+     * @throws Exception
      */
-    public function listCustomers($page = 1, $limit = 25)
+    public function listCustomers($page = 1, $limit = 25): array
     {
         $customers = $this->apiRequest('customers', [
             'offset' => ($page - 1) * $limit,
@@ -448,29 +449,32 @@ class SnipcartService extends Component
 
         $rateOptions = [];
 
-        $packageDetails = $this->getOrderPackagingDetails($order);
+        $package = $this->getOrderPackagingDetails($order);
 
         if ($includeShipStationRates)
         {
             $to     = Snipcart::$plugin->shipStation->getToFromSnipcartData($order);
             $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartData($order);
 
-            if ( ! empty($packageDetails))
+            if ($package !== null)
             {
-                $dimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartData($packageDetails);
+                // translate SnipcartPackage into ShipStationDimensions
+                $shipStationDimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartPackage($package);
 
-                if ( ! empty($packageDetails['weight']))
+                if ( ! empty($package->weight))
                 {
                     // add the weight of the packaging if it's been specified
-                    $weight->value += $packageDetails['weight'];
+                    $weight->value += $package->weight;
                 }
 
-                if ( ! empty($dimensions['length']) && ! empty($dimensions['width']) && ! empty($dimensions['height']))
+                if ( ! empty($shipStationDimensions->length) && ! empty($shipStationDimensions->width) && ! empty($shipStationDimensions->height))
                 {
-                    $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight, $dimensions);
+                    // pass dimensions for rate quote if we have them
+                    $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight, $shipStationDimensions);
                 }
                 else
                 {
+                    // otherwise just get the quote based on weight only
                     $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
                 }
             }
@@ -494,7 +498,7 @@ class SnipcartService extends Component
             $event = new WebhookEvent([
                 'rates'     => $rateOptions,
                 'order'     => $order,
-                'packaging' => $packageDetails
+                'packaging' => $package
             ]);
 
             $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $event);
@@ -556,7 +560,6 @@ class SnipcartService extends Component
      * 
      * @return bool
      */
-
     public function isLinked(): bool
     {
         return $this->isLinked;
@@ -600,7 +603,7 @@ class SnipcartService extends Component
     /**
      * Have Craft send email order notifications.
      *
-     * @param Element[]  $elements  Craft Elements that represent order items.
+     * @param Entry[]  $elements  Craft Elements that represent order items.
      * @param SnipcartOrder $order
      *
      * @return array|bool
@@ -696,10 +699,8 @@ class SnipcartService extends Component
     }
 
 
-    // ------------------------------------------------------------------------
     // Private Methods
-    // ------------------------------------------------------------------------
-
+    // =========================================================================
 
     /**
      * Return a Craft Element that matches Snipcart's supplied product ID.
@@ -740,9 +741,9 @@ class SnipcartService extends Component
      * @param  array  $inData   any data that should be sent with the request; will be formatted as URL parameters or POST data
      * @param  bool   $useCache whether or not to cache responses
      * 
-     * @return \stdClass|array|false|null  query response data, which can be a single object, an array,
-     *                                     false if we're not linked, or void
-     * @throws Exception
+     * @return \stdClass|array|null  Response data which can be a single object or an array,
+     *                               or null if there was a problematic response.
+     * @throws Exception             Thrown if configuration doesn't allow interaction.
      */
 
     // TODO: clean up these response types
@@ -755,7 +756,7 @@ class SnipcartService extends Component
         }
 
         if ( ! empty($inData))
-        {			
+        {
             $query .= '?' . http_build_query($inData);
         }
 
@@ -774,9 +775,9 @@ class SnipcartService extends Component
         {
             $response = $this->client->get($query);
 
-            if ($response->getStatusCode() !== 200)
+            if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
             {
-                return;
+                return null;
             }
 
             $responseData = json_decode($response->getBody());
@@ -787,10 +788,11 @@ class SnipcartService extends Component
             }
 
             return $responseData;
-        } 
+        }
         catch(\Exception $e)
         {
-            return;
+            // TODO: log exception
+            return null;
         }
     }
 }

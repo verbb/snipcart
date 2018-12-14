@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\models\SnipcartPackage;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ShipStationAddress;
 use workingconcept\snipcart\models\ShipStationOrderItem;
@@ -172,18 +173,51 @@ class ShipStationService extends Component
             \GuzzleHttp\RequestOptions::JSON => $payload
         ]);
 
-        if ($response->getStatusCode() !== 200)
+        /**
+         * Handle problematic responses, where 200 and 201 are expectd to be fine.
+         * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
+         */
+        if ($response->getStatusCode() > 201)
         {
+            /*
+            switch ($response->getStatusCode())
+            {
+                case 204:
+                    // No Content - The request was successful but there is no representation to return (that is, the response is empty).
+                    break;
+                case 400:
+                    // Bad Request - The request could not be understood or was missing required parameters.
+                    break;
+                case 401:
+                    // Unauthorized - Authentication failed or user does not have permissions for the requested operation.
+                    break;
+                case 403:
+                    // Forbidden - Access denied.
+                    break;
+                case 404:
+                    // Not Found - Resource was not found.
+                    break;
+                case 405:
+                    // Method Not Allowed - Requested method is not supported for the specified resource.
+                    break;
+                case 429:
+                    // Too Many Requests - Exceeded ShipStation API limits. When the limit is reached, your application should stop making requests until X-Rate-Limit-Reset seconds have elapsed.
+                    break;
+                case 500:
+                    // Internal Server Error - ShipStation has encountered an error.
+                    break;
+            }
+            */
+
             // something bad happened!
-            // TODO: expose this!
-            return;
+            Craft::warning($response->getBody(), 'snipcart');
+            return null;
         }
 
         $responseData = json_decode($response->getBody(), true);
 
         return $this->populateModelFromResponseData($responseData);
     }
-
 
     /**
      * Attempt to figure out which shipping method the customer chose.
@@ -364,7 +398,7 @@ class ShipStationService extends Component
      *
      * @param SnipcartOrder $snipcartOrder
      *
-     * @return ShipStationOrder|false|array Created order, false, or error array.
+     * @return ShipStationOrder Order model, which will have an ->id if successful or be populated with errors.
      * @throws
      */
     public function sendSnipcartOrder(SnipcartOrder $snipcartOrder)
@@ -502,9 +536,10 @@ class ShipStationService extends Component
         {
             if (Craft::$app->getConfig()->general->devMode)
             {
-                // don't actually send orders to ShipStation in devMode
-                // TODO: simulate created order
-                return false;
+                // don't actually send orders to ShipStation in devMode, set a fake order ID
+                $shipstationOrder->orderId = 99999999;
+
+                return $shipstationOrder;
             }
 
             if ($createdOrder = $this->createOrder($shipstationOrder))
@@ -515,12 +550,13 @@ class ShipStationService extends Component
             else
             {
                 Craft::error('Failed to create ShipStation order for ' . $shipstationOrder->orderNumber);
-                return false;
+                return $shipstationOrder;
             }
         }
         else
         {
-            return $snipcartOrder->getErrors();
+            // model has validation errors
+            return $shipstationOrder;
         }
     }
 
@@ -673,11 +709,11 @@ class ShipStationService extends Component
     /**
      * Translate Snipcart order data into to array for Shipstation.
      *
-     * @param array $packageDetails
+     * @param SnipcartPackage $packageDetails
      *
      * @return ShipStationDimensions
      */
-    public function getDimensionsFromSnipcartData($packageDetails): ShipStationDimensions
+    public function getDimensionsFromSnipcartPackage($packageDetails): ShipStationDimensions
     {
         return new ShipStationDimensions([
             'length' => $packageDetails['length'],
