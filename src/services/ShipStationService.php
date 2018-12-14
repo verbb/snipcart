@@ -667,7 +667,10 @@ class ShipStationService extends Component
         {
             if ($customField->name === $this->settings->orderGiftNoteFieldName)
             {
-                return $customField->value;
+                if ( ! empty($customField->value))
+                {
+                    return $customField->value;
+                }
             }
         }
 
