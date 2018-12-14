@@ -464,7 +464,7 @@ class ShipStationOrder extends Model
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'default', 'value' => 0],
             [['orderNumber', 'orderStatus', 'orderDate', 'createDate', 'modifyDate', 'paymentDate', 'shipByDate', 'shipDate', 'holdUntilDate'], 'string'], // TODO: figure out how to validate and/or transform these
-            [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string', 'max' => 255],
+            [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string'],
             [['customerEmail'], 'email'],
             [['gift', 'externallyFulfilled'], 'boolean'],
             [['gift', 'externallyFulfilled'], 'default', 'value' => false],
