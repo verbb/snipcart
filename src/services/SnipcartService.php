@@ -408,6 +408,12 @@ class SnipcartService extends Component
         return isset($response->token) && $response->token === $token;
     }
 
+    /**
+     * Get the beginning of the chosen date range.
+     *
+     * @return false|int|mixed
+     * @throws \craft\errors\MissingComponentException
+     */
     public function dateRangeStart()
     {
         $param   = Craft::$app->request->getParam('startDate', false);
@@ -431,6 +437,12 @@ class SnipcartService extends Component
         return $startDate;
     }
 
+    /**
+     * Get the end of the chosen date range.
+     *
+     * @return int|mixed
+     * @throws \craft\errors\MissingComponentException
+     */
     public function dateRangeEnd()
     {
         $param    = Craft::$app->request->getParam('endDate', false);
@@ -454,14 +466,23 @@ class SnipcartService extends Component
         return $endDate;
     }
 
+    /**
+     * Return search keywords, checking params and then session vars.
+     *
+     * @return mixed|string
+     * @throws \craft\errors\MissingComponentException
+     */
     public function searchKeywords()
     {
-        $param  = Craft::$app->request->getParam('searchKeywords', false);
-        $stored = Craft::$app->session->get('snipcartSearchKeywords');
+        $param   = Craft::$app->getRequest()->getParam('searchKeywords', false);
+        $session = Craft::$app->getSession();
 
-        $keywords = $param ?? $stored ?? '';
+        $keywords = $param ?? $session->get('snipcartSearchKeywords') ?? '';
 
-        Craft::$app->session->set('snipcartSearchKeywords', $keywords);
+        if ($session)
+        {
+            $session->set('snipcartSearchKeywords', $keywords);
+        }
 
         return $keywords;
     }
