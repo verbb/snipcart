@@ -17,10 +17,10 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function listOrders($pageNumber = 1): \stdClass
+    public function listOrders($pageNumber = 1)
     {
         return Snipcart::$plugin->snipcart->listOrders($pageNumber);
     }
@@ -46,28 +46,28 @@ class SnipcartVariable
     }
 
     /**
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function listDiscounts(): \stdClass
+    public function listDiscounts()
     {
         return Snipcart::$plugin->snipcart->listDiscounts();
     }
 
     /**
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function listAbandoned(): \stdClass
+    public function listAbandoned()
     {
         return Snipcart::$plugin->snipcart->listAbandoned();
     }
 
     /**
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function listSubscriptions(): \stdClass
+    public function listSubscriptions()
     {
         return Snipcart::$plugin->snipcart->listSubscriptions();
     }
