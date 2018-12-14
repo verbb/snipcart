@@ -130,8 +130,7 @@ class VerifyController extends Controller
         $view = Craft::$app->getView();
         $oldTemplateMode = $view->getTemplateMode();
         $view->setTemplateMode($view::TEMPLATE_MODE_CP);
-        $siteName = Craft::$app->getConfig()->siteName;
-        
+
         $message = new Message();
 
         foreach ($emailAddresses as $address)
@@ -140,7 +139,7 @@ class VerifyController extends Controller
 
             $message->setFrom([$settings['fromEmail'] => $settings['fromName']]);
             $message->setTo($address);
-            $message->setSubject('Recovered ' . $siteName . ' Orders');
+            $message->setSubject('Recovered Snipcart Orders');
             $message->setHtmlBody($view->renderPageTemplate('snipcart/email/recovery', [
                 'orders' => $snipcartOrders,
             ]));
