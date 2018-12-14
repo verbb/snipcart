@@ -770,7 +770,7 @@ class SnipcartService extends Component
      * @param  array  $inData   any data that should be sent with the request; will be formatted as URL parameters or POST data
      * @param  bool   $useCache whether or not to cache responses
      * 
-     * @return \stdClass|null Response data object or array.
+     * @return \stdClass|array Response data object or array.
      *
      * @throws Exception Thrown if configuration doesn't allow interaction.
      */
