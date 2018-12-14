@@ -35,10 +35,10 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass
+     * @return array
      * @throws \Exception
      */
-    public function listCustomers($pageNumber = 1)
+    public function listCustomers($pageNumber = 1): array
     {
         return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
     }

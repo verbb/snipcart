@@ -61,7 +61,7 @@ class ShipStationCustomsItem extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['customsItemId', 'description', 'harmonizedTariffCode', 'countryOfOrigin'], 'string'],

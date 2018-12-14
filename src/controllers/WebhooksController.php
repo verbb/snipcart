@@ -228,6 +228,7 @@ class WebhooksController extends Controller
             ]));
         }
 
+        // is ShipStation an enabled provider?
         $sendToShipStation = in_array(
             Settings::PROVIDER_SHIPSTATION,
             $this->settings->enabledProviders,
@@ -259,7 +260,7 @@ class WebhooksController extends Controller
             // successful orders have a populated ->orderId, and with tests ->orderId = 99999999
             $responseData['shipstation_order_id'] = $shipStationOrder->orderId ?? '';
 
-            if ( ! empty($shipStationOrder->getErrors()))
+            if (count($shipStationOrder->getErrors()) > 0)
             {
                 $responseData['shipstation_errors'] = $shipStationOrder->getErrors();
             }
@@ -267,7 +268,6 @@ class WebhooksController extends Controller
 
         return $this->asJson($responseData);
     }
-
 
     /**
      * Store webhook details to the database for later scrutiny.
@@ -284,7 +284,6 @@ class WebhooksController extends Controller
 
         $webhookLog->save();
     }
-
 
     /**
      * Ask Snipcart whether the request's token is genuine.

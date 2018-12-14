@@ -119,7 +119,7 @@ class SnipcartAddress extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'companyName', 'address1', 'address2', 'city', 'country', 'province', 'postalCode', 'phone', 'email'], 'string', 'max' => 255],

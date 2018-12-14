@@ -46,7 +46,7 @@ class ShipStationWebhook extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['resource_url', 'resource_type'], 'string', 'max' => 200],

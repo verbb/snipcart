@@ -457,7 +457,7 @@ class ShipStationOrder extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         /**
          * TODO: validate and transform dates properly

@@ -48,7 +48,7 @@ class SnipcartShippingRate extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['guaranteedDaysToDelivery'], 'number', 'integerOnly' => true],
@@ -61,7 +61,7 @@ class SnipcartShippingRate extends Model
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $return = [
             'cost',

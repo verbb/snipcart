@@ -91,7 +91,7 @@ class ShipStationProduct extends Model
     public $active;
 
     /**
-     * @var ProductCategory|null The Product Category used to organize and report on similar products. See knowledge base for more information on Product Categories.
+     * @var ShipStationProductCategory|null The Product Category used to organize and report on similar products. See knowledge base for more information on Product Categories.
      */
     public $productCategory;
 
@@ -171,7 +171,7 @@ class ShipStationProduct extends Model
     public $noCustoms;
 
     /**
-     * @var ProductTag|null The Product Tag used to organize and visually identify products. See knowledge base for more information on Product Defaults and tags.
+     * @var ShipStationProductTag|null The Product Tag used to organize and visually identify products. See knowledge base for more information on Product Defaults and tags.
      */
     public $tags;
 
@@ -182,7 +182,7 @@ class ShipStationProduct extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['sku', 'name', 'internalNotes', 'fulfillmentSku', 'createDate', 'modifyDate', 'productType', 'warehouseLocation', 'defaultCarrierCode', 'defaultServiceCode', 'defaultPackageCode', 'defaultIntlCarrierCode', 'defaultIntlServiceCode', 'defaultIntlPackageCode', 'defaultConfirmation', 'defaultIntlConfirmation', 'customsDescription', 'customsTariffNo', 'customsCountryCode'], 'string'],

@@ -37,7 +37,7 @@ class ShipStationProductTag extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['tagId'], 'number', 'integerOnly' => true],

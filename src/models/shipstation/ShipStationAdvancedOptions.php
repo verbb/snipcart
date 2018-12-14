@@ -122,7 +122,7 @@ class ShipStationAdvancedOptions extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true],

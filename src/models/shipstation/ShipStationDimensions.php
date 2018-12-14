@@ -54,7 +54,7 @@ class ShipStationDimensions extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['length', 'width', 'height'], 'number', 'integerOnly' => true],

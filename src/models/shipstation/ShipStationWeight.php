@@ -50,7 +50,7 @@ class ShipStationWeight extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['value'], 'number', 'integerOnly' => true],

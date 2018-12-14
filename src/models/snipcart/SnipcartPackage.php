@@ -71,7 +71,7 @@ class SnipcartPackage extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],

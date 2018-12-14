@@ -38,7 +38,7 @@ class SnipcartCustomerStatistics extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['ordersCount'], 'number', 'integerOnly' => true],

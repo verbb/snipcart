@@ -121,13 +121,12 @@ class ShipStationOrderItem extends Model
     /**
      * Returns the item’s weight.
      *
-     * @return ShipStationWeight The item’s weight.
+     * @return ShipStationWeight|null The item’s weight.
      */
-    public function getWeight(): ShipStationWeight
+    public function getWeight()
     {
         return $this->_weight;
     }
-
 
     /**
      * Sets the item’s weight.
@@ -188,7 +187,7 @@ class ShipStationOrderItem extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['orderItemId', 'quantity', 'productId'], 'number', 'integerOnly' => true],

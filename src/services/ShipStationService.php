@@ -403,11 +403,11 @@ class ShipStationService extends Component
      */
     public function sendSnipcartOrder(SnipcartOrder $snipcartOrder)
     {
-        $shipstationOrder = new ShipStationOrder();
+        $shipStationOrder = new ShipStationOrder();
 
         $packageDetails = Snipcart::$plugin->snipcart->getOrderPackagingDetails($snipcartOrder);
 
-        $shipstationOrder->setAttributes([
+        $shipStationOrder->setAttributes([
             'orderNumber'              => $snipcartOrder->invoiceNumber,
             'orderKey'                 => $snipcartOrder->token,
             'serviceCode'              => null, // to be updated below
@@ -424,12 +424,12 @@ class ShipStationService extends Component
         ]);
 
         // if the newly-created ShipStation order includes a gift message, mark it as a gift
-        if ($shipstationOrder->giftMessage !== null)
+        if ($shipStationOrder->giftMessage !== null)
         {
-            $shipstationOrder->gift = true;
+            $shipStationOrder->gift = true;
         }
 
-        $shipstationOrder->shipTo = new ShipStationAddress([
+        $shipStationOrder->shipTo = new ShipStationAddress([
             'name'       => $snipcartOrder->shippingAddressName,
             'street1'    => $snipcartOrder->shippingAddressAddress1,
             'street2'    => $snipcartOrder->shippingAddressAddress2,
@@ -439,9 +439,9 @@ class ShipStationService extends Component
             'phone'      => $snipcartOrder->shippingAddressPhone
         ]);
 
-        $shipstationOrder->shipTo->validate();
+        $shipStationOrder->shipTo->validate();
 
-        $shipstationOrder->billTo = new ShipStationAddress([
+        $shipStationOrder->billTo = new ShipStationAddress([
             'name'       => $snipcartOrder->billingAddressName,
             'street1'    => $snipcartOrder->billingAddressAddress1,
             'street2'    => $snipcartOrder->billingAddressAddress2,
@@ -451,7 +451,7 @@ class ShipStationService extends Component
             'phone'      => $snipcartOrder->billingAddressPhone
         ]);
 
-        $shipstationOrder->billTo->validate();
+        $shipStationOrder->billTo->validate();
 
         $orderWeight = $snipcartOrder->totalWeight;
 
@@ -461,23 +461,23 @@ class ShipStationService extends Component
             $orderWeight += $packageDetails['weight'];
         }
 
-        $shipstationOrder->weight = new ShipStationWeight([
+        $shipStationOrder->weight = new ShipStationWeight([
             'value' => $orderWeight,
             'units' => ShipStationWeight::UNIT_GRAMS
         ]);
 
-        $shipstationOrder->weight->validate();
+        $shipStationOrder->weight->validate();
 
         if ( ! empty($packageDetails['length']) && ! empty($packageDetails['width']) && ! empty($packageDetails['height']))
         {
-            $shipstationOrder->dimensions = new ShipStationDimensions([
+            $shipStationOrder->dimensions = new ShipStationDimensions([
                 'length' => $packageDetails['length'],
                 'width'  => $packageDetails['width'],
                 'height' => $packageDetails['height'],
                 'units'  => ShipStationDimensions::UNIT_INCHES,
             ]);
 
-            $shipstationOrder->dimensions->validate();
+            $shipStationOrder->dimensions->validate();
         }
 
         $orderItems = [];
@@ -525,38 +525,38 @@ class ShipStationService extends Component
             $orderItems[] = $orderItem;
         }
 
-        $shipstationOrder->items = $orderItems;
+        $shipStationOrder->items = $orderItems;
 
-        if ($shippingMethod = $this->getShippingMethodFromOrder($shipstationOrder, $snipcartOrder->shippingMethod))
+        if ($shippingMethod = $this->getShippingMethodFromOrder($shipStationOrder, $snipcartOrder->shippingMethod))
         {
-            $shipstationOrder->serviceCode = $shippingMethod->serviceCode;
+            $shipStationOrder->serviceCode = $shippingMethod->serviceCode;
         }
 
-        if ($shipstationOrder->validate())
+        if ($shipStationOrder->validate())
         {
             if (Craft::$app->getConfig()->general->devMode)
             {
                 // don't actually send orders to ShipStation in devMode, set a fake order ID
-                $shipstationOrder->orderId = 99999999;
+                $shipStationOrder->orderId = 99999999;
 
-                return $shipstationOrder;
+                return $shipStationOrder;
             }
 
-            if ($createdOrder = $this->createOrder($shipstationOrder))
+            if ($createdOrder = $this->createOrder($shipStationOrder))
             {
                 // TODO: delete related rate quotes when order makes it to ShipStation
                 return $createdOrder;
             }
             else
             {
-                Craft::error('Failed to create ShipStation order for ' . $shipstationOrder->orderNumber);
-                return $shipstationOrder;
+                Craft::error('Failed to create ShipStation order for ' . $shipStationOrder->orderNumber);
+                return $shipStationOrder;
             }
         }
         else
         {
             // model has validation errors
-            return $shipstationOrder;
+            return $shipStationOrder;
         }
     }
 
