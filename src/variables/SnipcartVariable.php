@@ -117,7 +117,7 @@ class SnipcartVariable
      * @return array
      * @throws \Exception
      */
-    public function getCustomerOrders($customerId): array
+    public function getCustomerOrders($customerId)
     {
         return Snipcart::$plugin->snipcart->getCustomerOrders($customerId);
     }

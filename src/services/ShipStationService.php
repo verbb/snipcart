@@ -22,7 +22,6 @@ use workingconcept\snipcart\models\ShipStationRate;
 
 use Craft;
 use craft\base\Component;
-use yii\base\ErrorException;
 use yii\base\Exception;
 use GuzzleHttp\Client;
 

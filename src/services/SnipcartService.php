@@ -115,10 +115,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return \stdClass Snipcart response object
+     * @return \stdClass|array Snipcart response object
      * @throws Exception
      */
-    public function getOrderNotifications($orderId): \stdClass
+    public function getOrderNotifications($orderId)
     {
         return $this->apiRequest('orders/' . $orderId . '/notifications');
     }
@@ -128,10 +128,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return \stdClass Snipcart response object
+     * @return \stdClass|array Snipcart response object
      * @throws Exception
      */
-    public function getOrderRefunds($orderId): \stdClass
+    public function getOrderRefunds($orderId)
     {
         return $this->apiRequest('orders/' . $orderId . '/refunds');
     }
@@ -380,10 +380,10 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * 
-     * @return array
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function getCustomerOrders($customerId): array
+    public function getCustomerOrders($customerId)
     {
         return $this->apiRequest('customers/' . $customerId . '/orders');
     }

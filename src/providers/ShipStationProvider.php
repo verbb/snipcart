@@ -8,12 +8,9 @@
 
 namespace workingconcept\snipcart\providers;
 
-use Craft;
-use craft\base\Model;
-
 class ShipStationProvider extends ShippingProvider
 {
-    protected $name = "ShipStation";
+    protected $name = 'ShipStation';
 
     public $apiKey;
     public $apiSecret;

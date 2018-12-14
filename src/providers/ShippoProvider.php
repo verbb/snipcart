@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\providers;
 
-use Craft;
-use craft\base\Model;
-
 class ShippoProvider extends ShippingProvider
 {
-    public $name = "Shippo";
+    public $name = 'Shippo';
 }
