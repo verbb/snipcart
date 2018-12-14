@@ -7,6 +7,7 @@
  */
 namespace workingconcept\snipcart\console\controllers;
 
+use craft\helpers\DateTimeHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use yii\console\Controller;
@@ -34,9 +35,9 @@ class VerifyController extends Controller
         $limit    = 3;
         $failures = [];
 
-        $this->stdout("-------------------------------------\n");
-        $this->stdout("Checking last $limit orders...\n");
-        $this->stdout("-------------------------------------\n");
+        $this->stdout('-------------------------------------' . PHP_EOL);
+        $this->stdout("Checking last $limit orders..." . PHP_EOL);
+        $this->stdout('-------------------------------------' . PHP_EOL);
 
         $snipcartOrders    = $this->getSnipcartOrders($limit);
         $shipStationOrders = $this->getShipStationOrders($limit * 2);
@@ -56,7 +57,7 @@ class VerifyController extends Controller
 
             $shipStationStatusString = $success ? '✓' : '✗';
 
-            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]\n");
+            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]" . PHP_EOL);
             
             if ( ! $success)
             {
@@ -71,12 +72,12 @@ class VerifyController extends Controller
             $this->sendAdminNotification($failures);
         }
 
-        $this->stdout("-------------------------------------\n");
+        $this->stdout('-------------------------------------' . PHP_EOL);
 
         $endTime       = microtime(true);
         $executionTime = ($endTime - $startTime);
 
-        $this->stdout("Executed in ${executionTime} seconds.");
+        $this->stdout("Executed in ${executionTime} seconds." . PHP_EOL);
 
         return ExitCode::OK;
     }
@@ -87,12 +88,17 @@ class VerifyController extends Controller
      * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
      *
      * @return int
+     * @throws
      */
     private function reFeedToShipStation($snipcartOrders): int
     {
         foreach ($snipcartOrders as $snipcartOrder)
         {
-            // TODO: feed each order to ShipStation
+            // try again, but not forever
+            if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '30 minutes'))
+            {
+                Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
+            }
         }
 
         return ExitCode::OK;
@@ -109,23 +115,6 @@ class VerifyController extends Controller
     {
         // TODO: consolidate with SnipcartService
 
-        $settings = Snipcart::$plugin->getSettings();
-        $notificationEmails = $settings->notificationEmails;
-
-        if (is_array($notificationEmails))
-        {
-            $emailAddresses = $notificationEmails;
-        }
-        elseif (is_string($notificationEmails))
-        {
-            $emailAddresses = explode(',', $notificationEmails);
-        }
-        else
-        {
-            $this->stderr("Email notification setting must be string or array.\n");
-            return ExitCode::UNSPECIFIED_ERROR;
-        }
-
         // temporarily change template modes so we can render the plugin's template
         $view = Craft::$app->getView();
         $oldTemplateMode = $view->getTemplateMode();
@@ -133,7 +122,7 @@ class VerifyController extends Controller
 
         $message = new Message();
 
-        foreach ($emailAddresses as $address)
+        foreach (Snipcart::$plugin->getSettings()->notificationEmails as $address)
         {
             $settings = Craft::$app->systemSettings->getSettings('email');
 
@@ -146,7 +135,7 @@ class VerifyController extends Controller
 
             if ( ! Craft::$app->mailer->send($message))
             {
-                $this->stderr("Notification failed to send to {$address}!\n");
+                $this->stderr("Notification failed to send to {$address}!". PHP_EOL);
                 return ExitCode::UNSPECIFIED_ERROR;
             }
         }
@@ -186,9 +175,6 @@ class VerifyController extends Controller
      */
     private function getShipStationOrders($limit = 5): array
     {
-        $shipStation       = new \workingconcept\snipcart\services\ShipStationService;
-        $shipStationOrders = $shipStation->listOrders($limit);
-
-        return $shipStationOrders;
+        return Snipcart::$plugin->shipStation->listOrders($limit);
     }
 }

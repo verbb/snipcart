@@ -344,17 +344,18 @@ class ShipStationService extends Component
      *
      * @return ShipstationOrder[]|null
      */
-    public function listOrders($limit = 25)
+    public function listOrders($limit = 25): array
     {
         $response = $this->client->get('orders?pageSize=' . $limit . '&sortBy=OrderDate&sortDir=DESC');
-        $orders = [];
 
-        if ($response->getStatusCode() !== 200)
+        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
         {
             // something bad happened!
-            return null;
+            Craft::warning('Failed to fetch ShipStation orders: ' . $response->getStatusCode());
+            return [];
         }
 
+        $orders = [];
         $responseData = json_decode($response->getBody(), true);
 
         foreach ($responseData['orders'] as $order)
@@ -544,7 +545,7 @@ class ShipStationService extends Component
 
             if ($createdOrder = $this->createOrder($shipStationOrder))
             {
-                // TODO: delete related rate quotes when order makes it to ShipStation
+                // TODO: delete related rate quotes when order makes it to ShipStation, or after a sensible amount of time
                 return $createdOrder;
             }
             else
