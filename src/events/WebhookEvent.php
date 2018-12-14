@@ -35,7 +35,7 @@ class WebhookEvent extends Event
     public $rates;
 
     /**
-     * @var SnipcartPackage[]
+     * @var SnipcartPackage
      */
     public $packaging;
 
