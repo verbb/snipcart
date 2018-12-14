@@ -270,7 +270,7 @@ class WebhooksController extends Controller
      *
      * @param $postBody
      */
-    private function logWebhookTransaction($postBody): void
+    private function logWebhookTransaction($postBody)
     {
         $webhookLog = new WebhookLog();
 
@@ -285,7 +285,8 @@ class WebhooksController extends Controller
      * Ask Snipcart whether the request's token is genuine.
      *
      * @return boolean
-     * @throws BadRequestHttpException
+     * @throws BadRequestHttpException  Thrown if the servery key is missing from the request.
+     * @throws \Exception               Thrown if there's a problem with the actual API call.
      */
     protected function validateRequest(): bool
     {
@@ -297,19 +298,14 @@ class WebhooksController extends Controller
             return true;
         }
 
-        if (!isset($_SERVER[$key]))
+        if ( ! isset($_SERVER[$key]))
         {
             throw new BadRequestHttpException('Invalid request: no request token');
         }
 
         if ($token = $_SERVER[$key])
         {
-            $response = Snipcart::$plugin->snipcart->validateToken($token);
-
-            if (isset($response->token) && $response->token === $token)
-            {
-                return true;
-            }
+            return Snipcart::$plugin->snipcart->tokenIsValid($token);
         }
 
         return false;

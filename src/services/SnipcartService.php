@@ -142,10 +142,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws Exception
      */
-    public function listOrders($page = 1, $limit = 25): \stdClass
+    public function listOrders($page = 1, $limit = 25)
     {
         $response = $this->apiRequest('orders', [
             'offset' => ($page - 1) * $limit,
@@ -221,10 +221,10 @@ class SnipcartService extends Component
      *
      * @param array $params
      *
-     * @return \stdClass API response object.
+     * @return \stdClass|array API response object or array of objects.
      * @throws Exception
      */
-    private function fetchOrders($params = []): \stdClass
+    private function fetchOrders($params = [])
     {
         $validParams = [
             'offset',
@@ -330,10 +330,10 @@ class SnipcartService extends Component
     /**
      * List available coupons (not implemented)
      * 
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws \Exception
      */
-    public function listDiscounts(): \stdClass
+    public function listDiscounts()
     {
         return $this->apiRequest('discounts');
     }
@@ -341,10 +341,10 @@ class SnipcartService extends Component
     /**
      * List abandoned carts (not implemented)
      *
-     * @return \stdClass
-     * @throws \Exception
+     * @return \stdClass|array
+     * @throws Exception
      */
-    public function listAbandoned(): \stdClass
+    public function listAbandoned()
     {
         return $this->apiRequest('carts/abandoned');
     }
@@ -352,10 +352,10 @@ class SnipcartService extends Component
     /**
      * List subscriptions (not implemented)
      *
-     * @return \stdClass
-     * @throws \Exception
+     * @return \stdClass|array
+     * @throws Exception
      */
-    public function listSubscriptions(): \stdClass
+    public function listSubscriptions()
     {
         return $this->apiRequest('subscriptions');
     }
@@ -381,7 +381,7 @@ class SnipcartService extends Component
      * @param int $customerId Snipcart customer ID
      * 
      * @return \stdClass|array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCustomerOrders($customerId)
     {
@@ -393,17 +393,19 @@ class SnipcartService extends Component
      * (We use this for webhook posts to be sure they came from Snipcart)
      *
      * Tokens are deleted after this call, so it can only be used once to verify,
-     * and tokens also expire in one hour—expect a 404 if the token is deleted
-     * or if it expires
+     * and tokens also expire in one hour. Expect a 404 if the token is deleted
+     * or if it expires.
      * 
-     * @param string  $token  $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
+     * @param string  $token  token to be validated, probably from $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
      * 
-     * @return \stdClass
-     * @throws \Exception
+     * @return bool
+     * @throws Exception
      */
-    public function validateToken($token): \stdClass
+    public function tokenIsValid($token)
     {
-        return $this->apiRequest('requestvalidation/' . $token, null, false);
+        $response = $this->apiRequest('requestvalidation/' . $token, null, false);
+
+        return isset($response->token) && $response->token === $token;
     }
 
     public function dateRangeStart()
