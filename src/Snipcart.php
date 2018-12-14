@@ -113,7 +113,7 @@ class Snipcart extends Plugin
      */
     protected function createSettingsModel()
     {
-    	return new Settings();
+        return new Settings();
     }
 
     /**
@@ -121,59 +121,59 @@ class Snipcart extends Plugin
      */
     protected function settingsHtml(): string
     {
-    	$allFields = Craft::$app->fields->getAllFields();
+        $allFields = Craft::$app->fields->getAllFields();
 
-    	// TODO: be a bit more civilized about this
+        // TODO: be a bit more civilized about this
 
-    	$productIdentifierOptions = [
-        	null => 'Select Field...',
-			'id' => 'Element ID',
-		];
+        $productIdentifierOptions = [
+            null => 'Select Field...',
+            'id' => 'Element ID',
+        ];
 
-    	$supportedProductIdentifierTypes = [
-        	PlainText::class,
-			Number::class,
-		];
+        $supportedProductIdentifierTypes = [
+            PlainText::class,
+            Number::class,
+        ];
 
-		$productInventoryFieldOptions = [
-			null => 'Select Field...',
-		];
+        $productInventoryFieldOptions = [
+            null => 'Select Field...',
+        ];
 
-		$orderNoteFieldOptions = [
-			null => 'Select Field...',
-		];
+        $orderNoteFieldOptions = [
+            null => 'Select Field...',
+        ];
 
-		$giftNoteFieldOptions = [
-			null => 'Select Field...',
-		];
+        $giftNoteFieldOptions = [
+            null => 'Select Field...',
+        ];
 
-		$supportedProductInventoryFieldTypes = [
-			Number::class,
-		];
+        $supportedProductInventoryFieldTypes = [
+            Number::class,
+        ];
 
-		foreach ($allFields as $field)
-		{
-        	if (in_array(get_class($field), $supportedProductIdentifierTypes, true))
-        	{
-				// disallow multiline text as an option
-				if (isset($field->multiline) && $field->multiline)
-				{
-					continue;
-				}
+        foreach ($allFields as $field)
+        {
+            if (in_array(get_class($field), $supportedProductIdentifierTypes, true))
+            {
+                // disallow multiline text as an option
+                if (isset($field->multiline) && $field->multiline)
+                {
+                    continue;
+                }
 
-				$productIdentifierOptions[$field->handle] = $field->name;
-			}
+                $productIdentifierOptions[$field->handle] = $field->name;
+            }
 
-			if (in_array(get_class($field), $supportedProductInventoryFieldTypes, true))
-			{
-				$productInventoryFieldOptions[$field->handle] = $field->name;
-				$orderNoteFieldOptions[$field->handle] = $field->name;
-				$giftNoteFieldOptions[$field->handle] = $field->name;
-			}
-		}
+            if (in_array(get_class($field), $supportedProductInventoryFieldTypes, true))
+            {
+                $productInventoryFieldOptions[$field->handle] = $field->name;
+                $orderNoteFieldOptions[$field->handle] = $field->name;
+                $giftNoteFieldOptions[$field->handle] = $field->name;
+            }
+        }
 
 
-		return Craft::$app->view->renderTemplate(
+        return Craft::$app->view->renderTemplate(
             'snipcart/_settings',
             [
                 'productIdentifierOptions' => $productIdentifierOptions,
