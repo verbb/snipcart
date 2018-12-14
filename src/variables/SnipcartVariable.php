@@ -17,10 +17,10 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass|null
+     * @return \stdClass
      * @throws \Exception
      */
-    public function listOrders($pageNumber = 1)
+    public function listOrders($pageNumber = 1): \stdClass
     {
         return Snipcart::$plugin->snipcart->listOrders($pageNumber);
     }
@@ -37,37 +37,37 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass|null
+     * @return \stdClass
      * @throws \Exception
      */
-    public function listCustomers($pageNumber = 1)
+    public function listCustomers($pageNumber = 1): \stdClass
     {
         return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
     }
 
     /**
-     * @return array
+     * @return \stdClass
      * @throws \Exception
      */
-    public function listDiscounts(): array
+    public function listDiscounts(): \stdClass
     {
         return Snipcart::$plugin->snipcart->listDiscounts();
     }
 
     /**
-     * @return array
+     * @return \stdClass
      * @throws \Exception
      */
-    public function listAbandoned(): array
+    public function listAbandoned(): \stdClass
     {
         return Snipcart::$plugin->snipcart->listAbandoned();
     }
 
     /**
-     * @return array
+     * @return \stdClass
      * @throws \Exception
      */
-    public function listSubscriptions(): array
+    public function listSubscriptions(): \stdClass
     {
         return Snipcart::$plugin->snipcart->listSubscriptions();
     }
@@ -84,20 +84,20 @@ class SnipcartVariable
 
     /**
      * @param $orderId
-     * @return \stdClass|null
+     * @return \stdClass
      * @throws \Exception
      */
-    public function getOrderNotifications($orderId)
+    public function getOrderNotifications($orderId): \stdClass
     {
         return Snipcart::$plugin->snipcart->getOrderNotifications($orderId);
     }
 
     /**
      * @param $orderId
-     * @return \stdClass|null
+     * @return \stdClass
      * @throws \yii\base\Exception
      */
-    public function getOrderRefunds($orderId)
+    public function getOrderRefunds($orderId): \stdClass
     {
         return Snipcart::$plugin->snipcart->getOrderRefunds($orderId);
     }
@@ -114,10 +114,10 @@ class SnipcartVariable
 
     /**
      * @param $customerId
-     * @return \stdClass
+     * @return array
      * @throws \Exception
      */
-    public function getCustomerOrders($customerId)
+    public function getCustomerOrders($customerId): array
     {
         return Snipcart::$plugin->snipcart->getCustomerOrders($customerId);
     }

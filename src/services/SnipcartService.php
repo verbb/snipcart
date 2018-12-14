@@ -115,10 +115,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return \stdClass|null Snipcart response object
+     * @return \stdClass Snipcart response object
      * @throws Exception
      */
-    public function getOrderNotifications($orderId)
+    public function getOrderNotifications($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/notifications');
     }
@@ -128,10 +128,10 @@ class SnipcartService extends Component
      * 
      * @param int $orderId Snipcart order ID
      * 
-     * @return \stdClass|null Snipcart response object
+     * @return \stdClass Snipcart response object
      * @throws Exception
      */
-    public function getOrderRefunds($orderId)
+    public function getOrderRefunds($orderId): \stdClass
     {
         return $this->apiRequest('orders/' . $orderId . '/refunds');
     }
@@ -142,10 +142,10 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass|array|false Response data as an object or array, or false if there was a problem.
+     * @return \stdClass
      * @throws Exception
      */
-    public function listOrders($page = 1, $limit = 25)
+    public function listOrders($page = 1, $limit = 25): \stdClass
     {
         $response = $this->apiRequest('orders', [
             'offset' => ($page - 1) * $limit,
@@ -380,10 +380,10 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * 
-     * @return \stdClass
+     * @return array
      * @throws \Exception
      */
-    public function getCustomerOrders($customerId)
+    public function getCustomerOrders($customerId): array
     {
         return $this->apiRequest('customers/' . $customerId . '/orders');
     }
@@ -770,7 +770,7 @@ class SnipcartService extends Component
      * @param  array  $inData   any data that should be sent with the request; will be formatted as URL parameters or POST data
      * @param  bool   $useCache whether or not to cache responses
      * 
-     * @return \stdClass|array Response data object or array.
+     * @return \stdClass|array Response data object or array of objects.
      *
      * @throws Exception Thrown if configuration doesn't allow interaction.
      */
@@ -781,16 +781,16 @@ class SnipcartService extends Component
             throw new Exception('Snipcart plugin is not configured.');
         }
 
-        $cacheService = Craft::$app->getCache();
-        $cacheKey = 'snicart:' . $query;
-
-        // make sure our broader settings *and* local preference both allow cache use
-        $useCache = $useCache && $this->settings->cacheResponses;
-
         if ( ! empty($inData))
         {
             $query .= '?' . http_build_query($inData);
         }
+
+        $cacheService = Craft::$app->getCache();
+        $cacheKey = 'snicart_' . $query;
+
+        // make sure our broader settings *and* local preference both allow cache use
+        $useCache = $useCache && $this->settings->cacheResponses;
 
         if ($useCache && $cachedResponseData = $cacheService->get($cacheKey))
         {
@@ -805,7 +805,8 @@ class SnipcartService extends Component
             throw new Exception('Uh oh! Snipcart responded with ' . $statusCode . '.');
         }
 
-        $responseData = json_decode($response->getBody());
+        // get response data as object
+        $responseData = json_decode($response->getBody(), false);
 
         if ($this->settings->cacheResponses && $useCache)
         {
