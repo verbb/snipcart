@@ -14,7 +14,6 @@ use craft\base\Model;
  * ShipStation Webhook Model
  * https://www.shipstation.com/developer-api/#/reference/model-webhook
  */
-
 class ShipStationWebhook extends Model
 {
     // Constants
@@ -30,12 +29,14 @@ class ShipStationWebhook extends Model
     // =========================================================================
 
     /**
-     * @var string This URL can be used to get the resource which triggered the webhook. 200 character limit. The URL can be accessed with ShipStation API Basic Authentication credentials.
+     * @var string This URL can be used to get the resource which triggered the webhook. 200 character limit.
+     *             The URL can be accessed with ShipStation API Basic Authentication credentials.
      */
     public $resource_url;
 
     /**
-     * @var The event type that triggered the webhook. Will be one of the following values: ORDER_NOTIFY, ITEM_ORDER_NOTIFY, SHIP_NOTIFY, ITEM_SHIP_NOTIFY
+     * @var string The event type that triggered the webhook. Will be one of the following values:
+     *             ORDER_NOTIFY, ITEM_ORDER_NOTIFY, SHIP_NOTIFY, ITEM_SHIP_NOTIFY
      */
     public $resource_type;
 
@@ -51,7 +52,12 @@ class ShipStationWebhook extends Model
         return [
             [['resource_url', 'resource_type'], 'string', 'max' => 200],
             [['resource_url'], 'url'],
-            [['resource_type'], 'in', 'range' => [self::TYPE_ORDER_NOTIFY, self::TYPE_ITEM_ORDER_NOTIFY, self::TYPE_SHIP_NOTIFY, self::TYPE_ITEM_SHIP_NOTIFY]],
+            [['resource_type'], 'in', 'range' => [
+                self::TYPE_ORDER_NOTIFY,
+                self::TYPE_ITEM_ORDER_NOTIFY,
+                self::TYPE_SHIP_NOTIFY,
+                self::TYPE_ITEM_SHIP_NOTIFY
+            ]],
         ];
     }
 
