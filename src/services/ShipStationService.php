@@ -137,7 +137,7 @@ class ShipStationService extends Component
                 \GuzzleHttp\RequestOptions::JSON => $shipmentInfo
             ]);
         }
-        catch(\GuzzleHttp\Exception\ServerException $e)
+        catch (\GuzzleHttp\Exception\ServerException $e)
         {
             // ShipStation returns a 500 error with a message if there aren't any service options
             Craft::error($e, 'snipcart');
@@ -212,7 +212,7 @@ class ShipStationService extends Component
 
             foreach ($quoteRecord->rates as $rate)
             {
-                if ((float)$rate->cost === $order->shippingAmount && $rate->description === $order->requestedShippingService)
+                if ((float) $rate->cost === $order->shippingAmount && $rate->description === $order->requestedShippingService)
                 {
                     return new ShipStationRate([
                         'serviceName'  => $rate->description,
@@ -565,7 +565,7 @@ class ShipStationService extends Component
             $newItem = new ShipStationOrderItem($item);
             $newOptions = [];
 
-            foreach	($item['options'] as $option)
+            foreach ($item['options'] as $option)
             {
                 $newOptions[] = new ShipStationItemOption($option);
             }
@@ -592,7 +592,7 @@ class ShipStationService extends Component
     {
         unset($payload['orderId']);
 
-        foreach($payload['items'] as &$item)
+        foreach ($payload['items'] as &$item)
         {
             unset($item['orderItemId']);
             unset($item['adjustment']);
