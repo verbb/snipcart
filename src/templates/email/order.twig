@@ -1,5 +1,17 @@
 {% extends 'snipcart/email/_layout' %}
 
+{% set heroImage = craft.app.assetManager.getPublishedUrl(
+    '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png',
+    true
+) %}
+
+{% if craft.app.getConfig().general.devMode %}
+    {% set heroImage = craft.app.assetManager.getPublishedUrl(
+        '@workingconcept/snipcart/assetbundles/dist/img/order-complete-devmode.png',
+        true
+    ) %}
+{% endif %}
+
 {% block hero %}
     <tr>
         <td style="background-color: #F6E767;">

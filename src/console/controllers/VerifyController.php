@@ -97,6 +97,7 @@ class VerifyController extends Controller
             // try again, but not forever
             if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '30 minutes'))
             {
+                $this->stdout("Attempting to re-send order to ShipStation." . PHP_EOL);
                 Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
             }
         }

@@ -496,55 +496,23 @@ class SnipcartService extends Component
      */
     public function processShippingRates(SnipcartOrder $order): array
     {
+        $rateOptions = []; // to be populated
+        $package     = $this->getOrderPackagingDetails($order);
+
         $includeShipStationRates = in_array(
             Settings::PROVIDER_SHIPSTATION,
-            $this->settings->enabledProviders, true
+            $this->settings->enabledProviders, 
+            true
         );
-
-        $rateOptions = [];
-
-        $package = $this->getOrderPackagingDetails($order);
 
         if ($includeShipStationRates)
         {
-            $to     = Snipcart::$plugin->shipStation->getToFromSnipcartOrder($order);
-            $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartOrder($order);
-
-            if ($package !== null)
-            {                
-                // translate SnipcartPackage into ShipStationDimensions
-                $shipStationDimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartPackage($package);
-
-                if ( ! empty($package->weight))
-                {
-                    // add the weight of the packaging if it's been specified
-                    $weight->value += $package->weight;
-                }
-
-                if ($shipStationDimensions->hasPhysicalDimensions())
-                {
-                    // pass dimensions for rate quote if we have them
-                    $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight, $shipStationDimensions);
-                }
-                else
-                {
-                    // otherwise just get the quote based on weight only
-                    $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
-                }
-            }
-            else
-            {
-                $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
-            }
-
-            foreach ($shipStationRates as $shipStationRate)
-            {
-                $rateOptions[] = new SnipcartShippingRate([
-                    'cost'        => number_format($shipStationRate->shipmentCost + $shipStationRate->otherCost, 2),
-                    'description' => $shipStationRate->serviceName,
-                    'code'        => $shipStationRate->serviceCode
-                ]);
-            }
+            $shipStationRates = $this->getShipStationRatesForSnipcartOrder($order, $package);
+            
+            $rateOptions = array_merge(
+                $rateOptions,
+                $shipStationRates
+            );
         }
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES))
@@ -581,7 +549,7 @@ class SnipcartService extends Component
         if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES))
         {
             $event = new WebhookEvent([
-                'order' => $order,
+                'order'     => $order,
                 'packaging' => $packageDetails,
             ]);
 
@@ -658,8 +626,12 @@ class SnipcartService extends Component
         return true;
     }
 
+
+    // Private Methods
+    // =========================================================================
+
     /**
-     * Have Craft send email order notifications.
+     * Have Craft email order notifications.
      *
      * @param Entry[]  $elements  Craft Elements that represent order items.
      * @param SnipcartOrder $order
@@ -670,72 +642,32 @@ class SnipcartService extends Component
      */
     private function sendOrderEmailNotification($elements, $order)
     {
-        if (is_array($this->settings->notificationEmails))
-        {
-            $emailAddresses = $this->settings->notificationEmails;
-        }
-        elseif (is_string($this->settings->notificationEmails))
-        {
-            $emailAddresses = explode(',', $this->settings->notificationEmails);
-        }
-        else
-        {
-            throw new Exception('Email notification setting must be string or array.');
-        }
-
-        $emails = [];
-
-        foreach ($emailAddresses as $email)
-        {
-            $email = trim($email);
-
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-            {
-                $emails[] = $email;
-            }
-        }
-
-        $errors  = [];
-        $message = new Message();
-
-        // temporarily change template modes so we can render the plugin's template
+        $errors        = [];
+        $emailSettings = Craft::$app->systemSettings->getSettings('email');
+        
+        // temporarily change template mode so we can render the plugin's template
         $view = Craft::$app->getView();
-        $oldTemplateMode = $view->getTemplateMode();
+        $templateMode  = $view->getTemplateMode();
         $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
-        if (Craft::$app->getConfig()->general->devMode)
-        {
-            $heroImage = Craft::$app->assetManager->getPublishedUrl(
-                '@workingconcept/snipcart/assetbundles/dist/img/order-complete-devmode.png',
-                true
-            );
-        }
-        else
-        {
-            $heroImage = Craft::$app->assetManager->getPublishedUrl(
-                '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png',
-                true
-            );
-        }
+        // render the message
+        $messageHtml = $view->renderPageTemplate('snipcart/email/order', [
+            'order'     => $order,
+            'elements'  => $elements,
+            'settings'  => $this->settings
+        ]);
+        
+        // inline the message's styles so they have a fighting chance at rendering well
+        $emogrifier = new \Pelago\Emogrifier($messageHtml);
+        $mergedHtml = $emogrifier->emogrify();
 
-        foreach ($emails as $address)
+        foreach ($this->settings->notificationEmails as $address)
         {
-            $settings = Craft::$app->systemSettings->getSettings('email');
+            $message = new Message();
 
-            $message->setFrom([$settings['fromEmail'] => $settings['fromName']]);
+            $message->setFrom([$emailSettings['fromEmail'] => $emailSettings['fromName']]);
             $message->setTo($address);
             $message->setSubject($order->billingAddressName . ' just placed an order');
-
-            $messageHtml = $view->renderPageTemplate('snipcart/email/order', [
-                'heroImage' => $heroImage,
-                'order'     => $order,
-                'elements'  => $elements,
-                'settings'  => $this->settings
-            ]);
-
-            $emogrifier = new \Pelago\Emogrifier($messageHtml);
-            $mergedHtml = $emogrifier->emogrify();
-
             $message->setHtmlBody($mergedHtml);
 
             if ( ! Craft::$app->mailer->send($message))
@@ -746,7 +678,7 @@ class SnipcartService extends Component
             }
         }
 
-        $view->setTemplateMode($oldTemplateMode);
+        $view->setTemplateMode($templateMode);
 
         if (count($errors))
         {
@@ -756,9 +688,59 @@ class SnipcartService extends Component
         return true;
     }
 
+    /**
+     * Get shipping rates from ShipStation based on the provided Snipcart
+     * order and package.
+     *
+     * @param SnipcartOrder   $order
+     * @param SnipcartPackage $package
+     * 
+     * @return SnipcartShippingRate[]
+     */
+    private function getShipStationRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package)
+    {
+        $rates  = [];
+        $to     = Snipcart::$plugin->shipStation->getToFromSnipcartOrder($order);
+        $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartOrder($order);
 
-    // Private Methods
-    // =========================================================================
+        if ($package !== null)
+        {
+            // translate SnipcartPackage into ShipStationDimensions
+            $shipStationDimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartPackage($package);
+
+            if ( ! empty($package->weight))
+            {
+                // add the weight of the packaging if it's been specified
+                $weight->value += $package->weight;
+            }
+
+            if ($shipStationDimensions->hasPhysicalDimensions())
+            {
+                // pass dimensions for rate quote if we have them
+                $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight, $shipStationDimensions);
+            }
+            else
+            {
+                // otherwise just get the quote based on weight only
+                $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
+            }
+        }
+        else
+        {
+            $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
+        }
+
+        foreach ($shipStationRates as $shipStationRate)
+        {
+            $rates[] = new SnipcartShippingRate([
+                'cost'        => number_format($shipStationRate->shipmentCost + $shipStationRate->otherCost, 2),
+                'description' => $shipStationRate->serviceName,
+                'code'        => $shipStationRate->serviceCode
+            ]);
+        }
+
+        return $rates;
+    }
 
     /**
      * Return a Craft Element that matches Snipcart's supplied product ID.
