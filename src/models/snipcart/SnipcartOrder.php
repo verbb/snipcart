@@ -18,7 +18,7 @@ use craft\base\Model;
  *
  * @property SnipcartAddress $billingAddress
  * @property SnipcartAddress $shippingAddress
- * @property SnipcartCustomer $user
+ * @property SnipcartCustomer|null $user
  * @property SnipcartDiscount[] $discounts
  * @property SnipcartPlan[] $plans
  * @property SnipcartItem[] $items
@@ -107,7 +107,7 @@ class SnipcartOrder extends Model
     public $email;
 
     /**
-     * @var SnipcartCustomer
+     * @var SnipcartCustomer|null
      */
     private $_user;
 
@@ -164,22 +164,22 @@ class SnipcartOrder extends Model
     /**
      * @var SnipcartDiscount[]
      */
-    private $_discounts;
+    private $_discounts = [];
 
     /**
      * @var SnipcartPlan[]
      */
-    private $_plans;
+    private $_plans = [];
 
     /**
      * @var SnipcartItem[]
      */
-    private $_items;
+    private $_items = [];
 
     /**
      * @var SnipcartRefund[]
      */
-    private $_refunds;
+    private $_refunds = [];
 
     /**
      * @var array
@@ -459,9 +459,9 @@ class SnipcartOrder extends Model
     }
 
     /**
-     * @return SnipcartCustomer
+     * @return SnipcartCustomer|null
      */
-    public function getUser(): SnipcartCustomer
+    public function getUser()
     {
         return $this->_user;
     }
@@ -1024,4 +1024,40 @@ class SnipcartOrder extends Model
             [['finalGrandTotal', 'shippingFees', 'rebateAmount'], 'number', 'integerOnly' => false],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields()
+    {
+        return [
+            'billingAddress',
+            'shippingAddress',
+            'user',
+            'discounts',
+            'plans',
+            'items',
+            'billingAddressName',
+            'billingAddressFirstName',
+            'billingAddressCompanyName',
+            'billingAddressAddress1',
+            'billingAddressAddress2',
+            'billingAddressCity',
+            'billingAddressCountry',
+            'billingAddressProvince',
+            'billingAddressPostalCode',
+            'billingAddressPhone',
+            'shippingAddressName',
+            'shippingAddressFirstName',
+            'shippingAddressCompanyName',
+            'shippingAddressAddress1',
+            'shippingAddressAddress2',
+            'shippingAddressCity',
+            'shippingAddressCountry',
+            'shippingAddressProvince',
+            'shippingAddressPostalCode',
+            'shippingAddressPhone',
+        ];
+    }
+
 }

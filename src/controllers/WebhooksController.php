@@ -56,6 +56,8 @@ class WebhooksController extends Controller
         self::WEBHOOK_CUSTOMER_UPDATED,
     ];
 
+    const WEBHOOK_MODE_LIVE = 'Live';
+    const WEBHOOK_MODE_TEST = 'Test';
 
     // Properties
     // =========================================================================
@@ -69,6 +71,14 @@ class WebhooksController extends Controller
 
     // Public Methods
     // =========================================================================
+
+    public function init()
+    {
+        parent::init();
+
+        // return all output as JSON
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    }
 
     /**
      * Validate and handle Snipcart's post according to the declared event type.
@@ -87,7 +97,7 @@ class WebhooksController extends Controller
         if ($this->validateWebhook && ! $this->validateRequest())
         {
             // reject requests that can't be validated
-            return $this->badResponse([
+            return $this->badRequestResponse([
                 'reason' => "Couldn't validate the webhook request. Are you sure this is Snipcart calling?"
             ]);
         }
@@ -97,8 +107,24 @@ class WebhooksController extends Controller
         if ($postData === null || !isset($postData->eventName))
         {
             // every Snipcart post should have an eventName, so we've got empty data or a bad format
-            return $this->badResponse([
-                'reason' => 'NULL response body or missing eventName.'
+            return $this->badRequestResponse([
+                'reason' => 'NULL request body or missing eventName.'
+            ]);
+        }
+
+        if (!isset($postData->content))
+        {
+            // every Snipcart post should have content
+            return $this->badRequestResponse([
+                'reason' => 'Request missing content.'
+            ]);
+        }
+
+        if (! in_array($postData->eventName, self::WEBHOOK_EVENTS))
+        {
+            // only handle proper `eventName`s
+            return $this->badRequestResponse([
+                'reason' => 'Invalid event.'
             ]);
         }
 
@@ -155,11 +181,9 @@ class WebhooksController extends Controller
      */
     private function handleShippingRateFetchEvent(SnipcartOrder $order): Response
     {
-        $options = Snipcart::$plugin->snipcart->processShippingRates($order);
+        $rateInfo = Snipcart::$plugin->snipcart->processShippingRates($order);
 
-        $response = $this->asJson([
-            'rates' => $options
-        ]);
+        $response = $this->asJson($rateInfo);
 
         if ($this->settings->logCustomRates)
         {
@@ -167,7 +191,7 @@ class WebhooksController extends Controller
             $shippingQuoteLog->siteId = Craft::$app->sites->currentSite->id;
             $shippingQuoteLog->token  = $order->token;
             $shippingQuoteLog->body   = $response->data;
-            $shippingQuoteLog->save();    
+            $shippingQuoteLog->save();
         }
 
         return $response;
@@ -180,7 +204,7 @@ class WebhooksController extends Controller
      *
      * @return Response
      */
-    private function badResponse(array $errors): Response
+    private function badRequestResponse(array $errors): Response
     {
         $response = Craft::$app->getResponse();
 

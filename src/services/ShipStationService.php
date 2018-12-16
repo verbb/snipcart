@@ -118,9 +118,9 @@ class ShipStationService extends Component
             //'serviceCode'  => '',
             'packageCode'    => $this->providerSettings['defaultPackageCode'],
             'fromPostalCode' => $shipFrom['postalCode'],
-            'toPostalCode'   => $to['zip'],
             'toCity'         => $to['city'],
             'toState'        => $to['state'], // two-character state/province abbreviation
+            'toPostalCode'   => $to['zip'],
             'toCountry'      => $to['country'], // two-character ISO country code
             'weight'         => $weight->toArray(),
             'confirmation'   => $this->providerSettings['defaultOrderConfirmation'],
@@ -643,6 +643,11 @@ class ShipStationService extends Component
      */
     private function getOrderNotesFromCustomFields($customFields)
     {
+        if ( ! is_array($customFields))
+        {
+            return null;
+        }
+
         foreach ($customFields as $customField)
         {
             if ($customField->name === $this->settings->orderCommentsFieldName)
@@ -663,6 +668,11 @@ class ShipStationService extends Component
      */
     private function getGiftNoteFromCustomFields($customFields)
     {
+        if ( ! is_array($customFields))
+        {
+            return null;
+        }
+
         foreach ($customFields as $customField)
         {
             if ($customField->name === $this->settings->orderGiftNoteFieldName && ! empty($customField->value))

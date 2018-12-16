@@ -511,7 +511,7 @@ class SnipcartService extends Component
             $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartOrder($order);
 
             if ($package !== null)
-            {
+            {                
                 // translate SnipcartPackage into ShipStationDimensions
                 $shipStationDimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartPackage($package);
 
@@ -560,7 +560,10 @@ class SnipcartService extends Component
             $rateOptions = $event->rates;
         }
 
-        return $rateOptions;
+        return [
+            'rates'   => $rateOptions,
+            'package' => $package,
+        ];
     }
 
     /**
@@ -579,6 +582,7 @@ class SnipcartService extends Component
         {
             $event = new WebhookEvent([
                 'order' => $order,
+                'packaging' => $packageDetails,
             ]);
 
             $this->trigger(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES, $event);
@@ -720,7 +724,7 @@ class SnipcartService extends Component
 
             $message->setFrom([$settings['fromEmail'] => $settings['fromName']]);
             $message->setTo($address);
-            $message->setSubject($order->cardHolderName . ' just placed an order');
+            $message->setSubject($order->billingAddressName . ' just placed an order');
 
             $messageHtml = $view->renderPageTemplate('snipcart/email/order', [
                 'heroImage' => $heroImage,

@@ -450,7 +450,16 @@ class ShipStationOrder extends Model
      */
     public function extraFields()
     {
-        return ['billTo', 'shipTo', 'items', 'weight', 'dimensions', 'insuranceOptions', 'internationalOptions', 'advancedOptions'];
+        return [
+            'billTo',
+            'shipTo',
+            'items',
+            'weight',
+            'dimensions',
+            'insuranceOptions',
+            'internationalOptions',
+            'advancedOptions'
+        ];
     }
 
 

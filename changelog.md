@@ -1,5 +1,16 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.7 - 2018-12-15
+### Changed
+- Use billingAddressName instead of cardholderName in order notification emails.
+- Add package detail to Snipcart rate response.
+- Return JSON for all webhook requests.
+- Keep ShipStation service from failing if Snipcart order has `null` value for custom fields.
+- Fix type issues with SnipcartOrder model.
+- Return magic variables when SnipcartOrder is treated as an array.
+- Respond calmly to missing webhook event names or content and don't allow logging.
+- Rename webhook controller's `badResponse()` to `badRequestResponse()`.
+
 ## 1.0.0-beta.6 - 2018-12-14
 ### Changed
 - Changed ShipStation service method names to better reflect what they do.
