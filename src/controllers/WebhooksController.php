@@ -77,7 +77,7 @@ class WebhooksController extends Controller
         parent::init();
 
         // return all output as JSON
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = Response::FORMAT_JSON;
     }
 
     /**
@@ -120,7 +120,7 @@ class WebhooksController extends Controller
             ]);
         }
 
-        if (! in_array($postData->eventName, self::WEBHOOK_EVENTS))
+        if (! in_array($postData->eventName, self::WEBHOOK_EVENTS, true))
         {
             // only handle proper `eventName`s
             return $this->badRequestResponse([
@@ -142,9 +142,6 @@ class WebhooksController extends Controller
         /**
          * Respond to different types of Snipcart events.
          */
-
-        // TODO: gracefully handle failure to populate models
-
         switch ($postData->eventName)
         {
             case self::WEBHOOK_ORDER_COMPLETED:
@@ -181,7 +178,7 @@ class WebhooksController extends Controller
      */
     private function handleShippingRateFetchEvent(SnipcartOrder $order): Response
     {
-        $rateInfo = Snipcart::$plugin->snipcart->processShippingRates($order);
+        $rateInfo = Snipcart::$plugin->snipcart->getShippingRatesForOrder($order);
 
         $response = $this->asJson($rateInfo);
 
@@ -329,7 +326,7 @@ class WebhooksController extends Controller
 
         if ($token = $_SERVER[$key])
         {
-            return Snipcart::$plugin->snipcart->tokenIsValid($token);
+            return Snipcart::$plugin->api->tokenIsValid($token);
         }
 
         return false;

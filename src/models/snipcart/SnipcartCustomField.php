@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartCustomField extends Model
+class SnipcartCustomField extends \craft\base\Model
 {
     // Constants
     // =========================================================================

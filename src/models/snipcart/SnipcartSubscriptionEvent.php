@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartSubscriptionEvent extends Model
+class SnipcartSubscriptionEvent extends \craft\base\Model
 {
  // Properties
  // =========================================================================

@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartDimensions extends Model
+class SnipcartDimensions extends \craft\base\Model
 {
     // Constants
     // =========================================================================

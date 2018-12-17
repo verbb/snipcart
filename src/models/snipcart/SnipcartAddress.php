@@ -8,14 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * Class SnipcartAddress
  *
  * @package workingconcept\snipcart\models
  */
-class SnipcartAddress extends Model
+class SnipcartAddress extends \craft\base\Model
 {
     // Constants
     // =========================================================================

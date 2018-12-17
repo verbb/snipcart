@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartPaymentSchedule extends Model
+class SnipcartPaymentSchedule extends \craft\base\Model
 {
     // Properties
     // =========================================================================

@@ -8,13 +8,10 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartCustomerStatistics extends Model
+class SnipcartCustomerStatistics extends \craft\base\Model
 {
 
-    // Contants
+    // Constants
     // =========================================================================
 
 

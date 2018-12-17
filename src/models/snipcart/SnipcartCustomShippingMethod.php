@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
 /**
  * https://docs.snipcart.com/api-reference/custom-shipping-methods
  */
 
-class SnipcartCustomShippingMethod extends Model
+class SnipcartCustomShippingMethod extends \craft\base\Model
 {
     // Constants
     // =========================================================================

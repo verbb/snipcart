@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
 /**
  * https://docs.snipcart.com/api-reference/abandoned-carts
  */
 
-class SnipcartAbandonedCart extends Model
+class SnipcartAbandonedCart extends \craft\base\Model
 {
 
     // Properties
@@ -70,6 +67,8 @@ class SnipcartAbandonedCart extends Model
      * @var
      */
     public $invoiceNumber;
+
+    public $shippingInformation;
     /*
     "shippingInformation": {
       "provider": null,
@@ -77,7 +76,10 @@ class SnipcartAbandonedCart extends Model
       "method": "Fast custom shipping"
     },
     */
+
     public $paymentMethod;
+
+    public $summary;
     /*
     summary": {
       "subtotal": 20,

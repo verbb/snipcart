@@ -10,7 +10,12 @@ namespace workingconcept\snipcart\services;
 
 use craft\helpers\DateTimeHelper;
 use workingconcept\snipcart\models\Settings;
+use workingconcept\snipcart\models\SnipcartAbandonedCart;
 use workingconcept\snipcart\models\SnipcartCustomer;
+use workingconcept\snipcart\models\SnipcartDiscount;
+use workingconcept\snipcart\models\SnipcartRefund;
+use workingconcept\snipcart\models\SnipcartNotification;
+use workingconcept\snipcart\models\SnipcartSubscription;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\SnipcartShippingRate;
 use workingconcept\snipcart\events\WebhookEvent;
@@ -22,16 +27,19 @@ use Craft;
 use craft\base\Component;
 use craft\elements\Entry;
 use craft\mail\Message;
-use GuzzleHttp\Client;
 use yii\base\Exception;
 
 /**
  * Class SnipcartService
  *
+ * For interacting with Snipcart via complete data models.
+ *
  * @package workingconcept\snipcart\services
  */
 class SnipcartService extends Component
 {
+    // TODO: clean up interfaces to be more Craft-y and obscure pagination concerns
+    // TODO: return models with proper DateTime values
 
     // Constants
     // =========================================================================
@@ -40,150 +48,94 @@ class SnipcartService extends Component
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
     const EVENT_PRODUCT_INVENTORY_CHANGE      = 'productInventoryChange';
 
-    /**
-     * @var string
-     */
-    protected static $apiBaseUrl = 'https://app.snipcart.com/api/';
 
-    /**
-     * @var
-     */
-    protected $settings;
-
-    /**
-     * @var bool
-     */
-    protected $isLinked;
-
-    /**
-     * @var Client
-     */
-    protected $client;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->settings = Snipcart::$plugin->getSettings();
-        $this->isLinked = isset($this->settings->secretApiKey);
-
-        if ($this->isLinked)
-        {
-            $this->client = $this->getClient();
-        }
-    }
-
-
-    // Public Method
+    // Public Methods
     // =========================================================================
 
-    public function getClient(): Client
-    {
-        return $this->client = new Client([
-            'base_uri' => self::$apiBaseUrl,
-            'auth' => [
-                $this->settings->secretApiKey,
-                'password'
-            ],
-            'headers' => [
-                'Content-Type' => 'application/json; charset=utf-8',
-                'Accept'       => 'application/json, text/javascript, */*; q=0.01',
-            ],
-            'verify' => false,
-            'debug' => false
-        ]);
-    }
-
     /**
-     * Get an order from Snipcart
+     * Get a Snipcart order.
      * 
-     * @param int $orderId Snipcart order ID
-     * 
+     * @param string $orderToken Snipcart order GUID
      * @return SnipcartOrder
-     * @throws Exception
+     * @throws Exception         Thrown when we don't have an API key with which to make calls.
      */
-    public function getOrder($orderId): SnipcartOrder
+    public function getOrder($orderToken): SnipcartOrder
     {
-        return new SnipcartOrder($this->apiRequest("orders/{$orderId}"));
-    }
-
-    /**
-     * Get an order's notifications from Snipcart
-     * 
-     * @param int $orderId Snipcart order ID
-     * 
-     * @return \stdClass|array Snipcart response object
-     * @throws Exception
-     */
-    public function getOrderNotifications($orderId)
-    {
-        return $this->apiRequest('orders/' . $orderId . '/notifications');
-    }
-
-    /**
-     * Get an order's refunds from Snipcart
-     * 
-     * @param int $orderId Snipcart order ID
-     * 
-     * @return \stdClass|array Snipcart response object
-     * @throws Exception
-     */
-    public function getOrderRefunds($orderId)
-    {
-        return $this->apiRequest('orders/' . $orderId . '/refunds');
-    }
-
-    /**
-     * List Snipcart orders by a range of dates supplied in $_POST (defaults to 30 days)
-     * 
-     * @param integer $page  page of results
-     * @param integer $limit number of results per page
-     * 
-     * @return \stdClass|array
-     * @throws Exception
-     */
-    public function listOrders($page = 1, $limit = 25)
-    {
-        $response = $this->apiRequest('orders', [
-            'offset' => ($page - 1) * $limit,
-            'limit'  => $limit,
-            'from'   => date('c', $this->dateRangeStart()),
-            'to'     => date('c', $this->dateRangeEnd())
-        ]);
-
-        foreach ($response->items as &$orderData)
-        {
-            $orderData = new SnipcartOrder($orderData);
-        }
-
-        return $response;
+        return new SnipcartOrder(Snipcart::$plugin->api->get("orders/{$orderToken}"));
     }
 
     /**
      * Get Snipcart orders.
      *
      * @param array $params
-     *
      * @return SnipcartOrder[]
-     * @throws Exception
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     public function getOrders($params = []): array
     {
-        $response = $this->fetchOrders($params);
-        $orders = [];
-
         // TODO: support higher limit with multiple API calls
         // TODO: support params similar to Craft Elements
 
-        foreach ($response->items as $orderData)
-        {
-            $orders[] = new SnipcartOrder($orderData);
-        }
+        return $this->populateArrayWithModels(
+            $this->fetchOrders($params),
+            SnipcartOrder::class
+        );
+    }
 
-        return $orders;
+    /**
+     * Get the notifications Snipcart has sent regarding a specific order.
+     * 
+     * @param string $orderToken Snipcart order ID
+     * @return SnipcartNotification[]
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     */
+    public function getOrderNotifications($orderToken): array
+    {
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get("orders/{$orderToken}/notifications"),
+            SnipcartNotification::class
+        );
+    }
+
+    /**
+     * Get a Snipcart order's refunds.
+     * 
+     * @param int $orderToken Snipcart order ID
+     * @return SnipcartRefund[]
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     */
+    public function getOrderRefunds($orderToken): array
+    {
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get("orders/{$orderToken}/refunds"),
+            SnipcartRefund::class
+        );
+    }
+
+    /**
+     * List Snipcart orders by a range of dates supplied in $_POST or $_SESSION (defaults to 30 days).
+     * 
+     * @param integer $page  page of results
+     * @param integer $limit number of results per page
+     * 
+     * @return \stdClass
+     * @throws \craft\errors\MissingComponentException Thrown if there's trouble getting a session further down.
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     */
+    public function listOrders($page = 1, $limit = 25): \stdClass
+    {
+        // TODO: rely on getPaginatedOrders for control panel views and get rid of this method
+
+        $response = Snipcart::$plugin->api->get('orders', [
+            'offset' => ($page - 1) * $limit,
+            'limit'  => $limit,
+            'from'   => date('c', $this->dateRangeStart()),
+            'to'     => date('c', $this->dateRangeEnd())
+        ]);
+
+        $response->items = $this->populateArrayWithModels($response->items, SnipcartOrder::class);
+
+        return $response;
     }
 
     /**
@@ -192,37 +144,77 @@ class SnipcartService extends Component
      * @param int   $page
      * @param int   $limit
      * @param array $params
+     *
      * @return \stdClass
-     * @throws Exception
+     *              ->items (SnipcartOrder[])
+     *              ->totalItems (int)
+     *              ->offset (int)
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     public function getPaginatedOrders($page = 1, $limit = 25, $params = []): \stdClass
     {
-        // TODO: replace uses of listOrders with this
-
+        /**
+         * define offset and limit since that's pretty much all we're doing here
+         */
         $params['offset'] = ($page - 1) * $limit;
         $params['limit']  = $limit;
 
         $response = $this->fetchOrders($params);
 
-        foreach ($response->items as &$item)
-        {
-            $item = new SnipcartOrder($item);
-        }
-
         return (object) [
-            'items'      => $response->items,
+            'items'      => $this->populateArrayWithModels($response->items, SnipcartOrder::class),
             'totalItems' => $response->totalItems,
             'offset'     => $response->offset,
         ];
     }
 
     /**
+     * List Snipcart orders by a range of dates supplied in $_POST (defaults to 30 days)
+     *
+     * @param integer $page  page of results
+     * @param integer $limit number of results per page
+     *
+     * @return array
+     * @throws \craft\errors\MissingComponentException Thrown if there's trouble getting a session further down.
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     */
+    public function listOrdersByDay($page = 1, $limit = 25): array
+    {
+        // TODO: remove reliance on $_POST or $_SESSION
+
+        $orders = $this->listOrders($page, $limit);
+        $ordersByDay = [];
+
+        foreach ($orders as $order)
+        {
+            $orderDate = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $order->creationDate);
+            $key = $orderDate->format('Y-m-d');
+
+            if (isset($ordersByDay[$key]))
+            {
+                ++$ordersByDay[$key];
+            }
+            else
+            {
+                $ordersByDay[$key] = 1;
+            }
+        }
+
+        return $ordersByDay;
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
      * Query the API for orders with the provided parameters.
+     * Invalid parameters are ignored and not sent to Snipcart.
      *
      * @param array $params
      *
      * @return \stdClass|array API response object or array of objects.
-     * @throws Exception
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     private function fetchOrders($params = [])
     {
@@ -246,53 +238,25 @@ class SnipcartService extends Component
             }
         }
 
-        return $this->apiRequest('orders', $apiParams);
+        return Snipcart::$plugin->api->get('orders', $apiParams);
     }
 
     /**
-     * List Snipcart orders by a range of dates supplied in $_POST (defaults to 30 days)
-     * 
-     * @param integer $page  page of results
-     * @param integer $limit number of results per page
-     * 
-     * @return array
-     * @throws Exception
-     */
-    public function listOrdersByDay($page = 1, $limit = 25): array
-    {
-        $orders = $this->listOrders($page, $limit);
-        $ordersByDay = [];
-
-        foreach ($orders->items as $order)
-        {
-            $orderDate = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $order->creationDate);
-            $key = $orderDate->format('Y-m-d');
-
-            if (isset($ordersByDay[$key]))
-            {
-                ++$ordersByDay[$key];
-            }
-            else
-            {
-                $ordersByDay[$key] = 1;
-            }
-        }
-
-        return ! empty($ordersByDay) ? $ordersByDay : [];
-    }
-
-    /**
-     * List Snipcart customers
+     * List Snipcart customers.
      * 
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
      * @return \stdClass
-     * @throws Exception
+     *              ->totalItems (int)
+     *              ->offset (int)
+     *              ->limit (int)
+     *              ->items (SnipcartCustomer[])
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     public function listCustomers($page = 1, $limit = 25): \stdClass
     {
-        $customers = $this->apiRequest('customers', [
+        $customers = Snipcart::$plugin->api->get('customers', [
             'offset' => ($page - 1) * $limit,
             'limit'  => $limit
         ]);
@@ -315,7 +279,7 @@ class SnipcartService extends Component
      */
     public function searchCustomers($keywords): \stdClass
     {
-        $customers = $this->apiRequest('customers', [
+        $customers = Snipcart::$plugin->api->get('customers', [
             'name' => $keywords
         ]);
 
@@ -328,51 +292,57 @@ class SnipcartService extends Component
     }
 
     /**
-     * List available coupons (not implemented)
+     * List discounts.
      * 
-     * @return \stdClass|array
-     * @throws \Exception
+     * @return SnipcartDiscount[]
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
-    public function listDiscounts()
+    public function listDiscounts(): array
     {
-        return $this->apiRequest('discounts');
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get('discounts'),
+            SnipcartDiscount::class
+        );
     }
 
     /**
-     * List abandoned carts (not implemented)
+     * List abandoned carts.
      *
-     * @return \stdClass|array
-     * @throws Exception
+     * @return SnipcartAbandonedCart[]
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
-    public function listAbandoned()
+    public function listAbandoned(): array
     {
-        return $this->apiRequest('carts/abandoned');
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get('carts/abandoned'),
+            SnipcartAbandonedCart::class
+        );
     }
 
     /**
-     * List subscriptions (not implemented)
+     * List subscriptions.
      *
-     * @return \stdClass|array
-     * @throws Exception
+     * @return SnipcartSubscription[]
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
-    public function listSubscriptions()
+    public function listSubscriptions(): array
     {
-        return $this->apiRequest('subscriptions');
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get('subscriptions'),
+            SnipcartSubscription::class
+        );
     }
 
     /**
      * Get a customer from Snipcart
      * 
      * @param int $customerId Snipcart customer ID
-     * 
      * @return SnipcartCustomer
-     * @throws \Exception
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     public function getCustomer($customerId): SnipcartCustomer
     {
-        $response = $this->apiRequest('customers/' . $customerId);
-
-        return new SnipcartCustomer($response);
+        return new SnipcartCustomer(Snipcart::$plugin->api->get("customers/{$customerId}"));
     }
 
     /**
@@ -381,31 +351,14 @@ class SnipcartService extends Component
      * @param int $customerId Snipcart customer ID
      * 
      * @return \stdClass|array
-     * @throws Exception
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     public function getCustomerOrders($customerId)
     {
-        return $this->apiRequest('customers/' . $customerId . '/orders');
-    }
-
-    /**
-     * Ask Snipcart whether its provided token is genuine
-     * (We use this for webhook posts to be sure they came from Snipcart)
-     *
-     * Tokens are deleted after this call, so it can only be used once to verify,
-     * and tokens also expire in one hour. Expect a 404 if the token is deleted
-     * or if it expires.
-     * 
-     * @param string  $token  token to be validated, probably from $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
-     * 
-     * @return bool
-     * @throws Exception
-     */
-    public function tokenIsValid($token)
-    {
-        $response = $this->apiRequest('requestvalidation/' . $token, null, false);
-
-        return isset($response->token) && $response->token === $token;
+        return $this->populateArrayWithModels(
+            Snipcart::$plugin->api->get("customers/{$customerId}/orders"),
+            SnipcartOrder::class
+        );
     }
 
     /**
@@ -416,6 +369,8 @@ class SnipcartService extends Component
      */
     public function dateRangeStart()
     {
+        // TODO: move this away from service; helper?
+
         $param   = Craft::$app->request->getParam('startDate', false);
         $default = strtotime('-1 month');
         $session = Craft::$app->getSession();
@@ -445,6 +400,8 @@ class SnipcartService extends Component
      */
     public function dateRangeEnd()
     {
+        // TODO: move this away from service; helper?
+
         $param    = Craft::$app->request->getParam('endDate', false);
         $default  = time();
         $session  = Craft::$app->getSession();
@@ -491,17 +448,16 @@ class SnipcartService extends Component
      * Return custom shipping rates for a nearly-finalized Snipcart order.
      *
      * @param SnipcartOrder $order
-     *
      * @return SnipcartShippingRate[]
      */
-    public function processShippingRates(SnipcartOrder $order): array
+    public function getShippingRatesForOrder(SnipcartOrder $order): array
     {
         $rateOptions = []; // to be populated
         $package     = $this->getOrderPackagingDetails($order);
 
         $includeShipStationRates = in_array(
             Settings::PROVIDER_SHIPSTATION,
-            $this->settings->enabledProviders, 
+            Snipcart::$plugin->getSettings()->enabledProviders,
             true
         );
 
@@ -582,16 +538,6 @@ class SnipcartService extends Component
     }
 
     /**
-     * See whether we're linked up to Snipcart
-     * 
-     * @return bool
-     */
-    public function isLinked(): bool
-    {
-        return $this->isLinked;
-    }
-
-    /**
      * Get Craft Elements that relate to order items, updating quantities and sending a notification if relevant.
      *
      * @param SnipcartOrder $order
@@ -606,19 +552,19 @@ class SnipcartService extends Component
         // store up related entries, reducing inventory counts if needed
         foreach ($order->items as $item)
         {
-            if ($this->settings->productIdentifier && $element = $this->getProductElementById($item->id))
+            if (Snipcart::$plugin->getSettings()->productIdentifier && $element = $this->getProductElementById($item->id))
             {
                 $elements[] = $element;
 
-                if ($this->settings->reduceQuantitiesOnOrder && $this->settings->productInventoryField)
+                if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder && Snipcart::$plugin->getSettings()->productInventoryField)
                 {
-                    Snipcart::$plugin->snipcart->reduceProductInventory($element, $item->quantity);
+                    $this->reduceProductInventory($element, $item->quantity);
                     // TODO: reduce product inventory in ShipStation if necessary
                 }
             }
         }
 
-        if (isset($this->settings->notificationEmails))
+        if (isset(Snipcart::$plugin->getSettings()->notificationEmails))
         {
             return $this->sendOrderEmailNotification($elements, $order);
         }
@@ -629,6 +575,25 @@ class SnipcartService extends Component
 
     // Private Methods
     // =========================================================================
+
+
+    /**
+     * Take an array of objects and turn each top-level element into an instance
+     * of the given data model.
+     *
+     * @param array   $array  array where each item can be transformed into model
+     * @param string  $class  name of desired model class
+     * @return array
+     */
+    private function populateArrayWithModels(array $array, $class): array
+    {
+        foreach ($array as &$item)
+        {
+            $item = new $class($item);
+        }
+
+        return $array;
+    }
 
     /**
      * Have Craft email order notifications.
@@ -654,14 +619,14 @@ class SnipcartService extends Component
         $messageHtml = $view->renderPageTemplate('snipcart/email/order', [
             'order'     => $order,
             'elements'  => $elements,
-            'settings'  => $this->settings
+            'settings'  => Snipcart::$plugin->getSettings()
         ]);
         
         // inline the message's styles so they have a fighting chance at rendering well
         $emogrifier = new \Pelago\Emogrifier($messageHtml);
         $mergedHtml = $emogrifier->emogrify();
 
-        foreach ($this->settings->notificationEmails as $address)
+        foreach (Snipcart::$plugin->getSettings()->notificationEmails as $address)
         {
             $message = new Message();
 
@@ -697,7 +662,7 @@ class SnipcartService extends Component
      * 
      * @return SnipcartShippingRate[]
      */
-    private function getShipStationRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package)
+    private function getShipStationRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package): array
     {
         $rates  = [];
         $to     = Snipcart::$plugin->shipStation->getToFromSnipcartOrder($order);
@@ -753,7 +718,9 @@ class SnipcartService extends Component
     {
         // TODO: support any Element type, not just Entry
 
-        if ($this->settings->productIdentifier === 'id')
+        $productIdentifier = Snipcart::$plugin->getSettings()->productIdentifier;
+
+        if ($productIdentifier === 'id')
         {
             $element = Entry::find()
                 ->id($id)
@@ -762,7 +729,7 @@ class SnipcartService extends Component
         else
         {
             $element = Entry::find()
-                ->where($this->settings->productIdentifier, $id)
+                ->where($productIdentifier, $id)
                 ->one();
         }
 
@@ -777,58 +744,5 @@ class SnipcartService extends Component
         }
 
         return false;
-    }
-
-    /**
-     * Query the Snipcart API via Guzzle
-     * 
-     * @param  string $query    Snipcart API method (segment) to query
-     * @param  array  $inData   any data that should be sent with the request; will be formatted as URL parameters or POST data
-     * @param  bool   $useCache whether or not to cache responses
-     * 
-     * @return \stdClass|array Response data object or array of objects.
-     *
-     * @throws Exception Thrown if configuration doesn't allow interaction.
-     */
-    private function apiRequest($query = '', $inData = [], $useCache = true)
-    {
-        if ( ! $this->isLinked)
-        {
-            throw new Exception('Snipcart plugin is not configured.');
-        }
-
-        if ( ! empty($inData))
-        {
-            $query .= '?' . http_build_query($inData);
-        }
-
-        $cacheService = Craft::$app->getCache();
-        $cacheKey = 'snicart_' . $query;
-
-        // make sure our broader settings *and* local preference both allow cache use
-        $useCache = $useCache && $this->settings->cacheResponses;
-
-        if ($useCache && $cachedResponseData = $cacheService->get($cacheKey))
-        {
-            return $cachedResponseData;
-        }
-
-        $response = $this->client->get($query);
-        $statusCode = $response->getStatusCode();
-
-        if ($statusCode !== 200 && $statusCode !== 201)
-        {
-            throw new Exception('Uh oh! Snipcart responded with ' . $statusCode . '.');
-        }
-
-        // get response data as object
-        $responseData = json_decode($response->getBody(), false);
-
-        if ($this->settings->cacheResponses && $useCache)
-        {
-            $cacheService->set($cacheKey, $responseData, $this->settings->cacheDurationLimit);
-        }
-
-        return $responseData;
     }
 }

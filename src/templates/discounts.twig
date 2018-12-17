@@ -6,15 +6,9 @@
 
 {% block content %}
 
-	{% if craft.snipcart.isLinked %}
-		<p id="noredirects"{% if discounts|length %} class="hidden"{% endif %}>
-			{{ "There aren't any discounts yet."|t }}
-		</p>
-	{% else %}
-		<p>
-			{{ "Add your Snipcart Private API Key in the plugin settings."|t }}
-		</p>
-	{% endif %}
+	<p id="noredirects"{% if discounts|length %} class="hidden"{% endif %}>
+		{{ "There aren't any discounts yet."|t }}
+	</p>
 
 	{% if discounts|length %}
 

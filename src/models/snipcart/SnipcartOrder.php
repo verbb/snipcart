@@ -8,8 +8,6 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * Snipcart Order model
  * https://docs.snipcart.com/api-reference/orders
@@ -43,7 +41,7 @@ use craft\base\Model;
  * @property string $shippingAddressPostalCode;
  * @property string $shippingAddressPhone;
  */
-class SnipcartOrder extends Model
+class SnipcartOrder extends \craft\base\Model
 {
     const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
     const PAYMENT_STATUS_PAID = 'Paid';

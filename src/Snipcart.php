@@ -10,6 +10,7 @@ namespace workingconcept\snipcart;
 
 use craft\fields\Number;
 use craft\fields\PlainText;
+use workingconcept\snipcart\services\ApiService;
 use workingconcept\snipcart\services\SnipcartService;
 use workingconcept\snipcart\services\ShipStationService;
 use workingconcept\snipcart\variables\SnipcartVariable;
@@ -32,6 +33,7 @@ use yii\base\Event;
  * @since     1.0.0
  *
  * @property  SnipcartService $snipcart
+ * @property  ApiService $api
  * @property  ShipStationService shipStation
  */
 class Snipcart extends Plugin
@@ -65,6 +67,7 @@ class Snipcart extends Plugin
         self::$plugin = $this;
 
         $this->setComponents([
+            'api'         => ApiService::class,
             'snipcart'    => SnipcartService::class,
             'shipStation' => ShipStationService::class,
         ]);

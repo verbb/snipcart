@@ -19,19 +19,9 @@
 
 {% block content %}
 
-	{% if craft.snipcart.isLinked %}
-
 	<p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
 		{{ "There aren't any customers with accounts yet."|t }}
 	</p>
-
-	{% else %}
-
-	<p>
-		{{ "Add your Snipcart Private API Key in the plugin settings."|t }}
-	</p>
-
-	{% endif %}
 
 	<div class="callout" style="background: #eee; padding: 10px; margin-bottom: 25px;">
 

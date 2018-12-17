@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartProductVariant extends Model
+class SnipcartProductVariant extends \craft\base\Model
 {
     // Properties
     // =========================================================================

@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartShippingEvent extends Model
+class SnipcartShippingEvent extends \craft\base\Model
 {
     // Properties
     // =========================================================================

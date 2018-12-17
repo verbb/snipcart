@@ -8,13 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * Snipcart Customer model
  * https://docs.snipcart.com/api-reference/customers
  */
-class SnipcartCustomer extends Model
+class SnipcartCustomer extends \craft\base\Model
 {
     // Constants
     // =========================================================================

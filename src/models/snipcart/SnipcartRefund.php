@@ -8,12 +8,32 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
-class SnipcartRefund extends Model
+class SnipcartRefund extends \craft\base\Model
 {
     // Properties
+    // =========================================================================
+
+    /**
+     * @var string "2223490d-84c1-480c-b713-50cb0b819313"
+     */
+    public $id;
+
+    /**
+     * @var float
+     */
+    public $amount;
+
+    /**
+     * @var string
+     */
+    public $comment;
+
+    /**
+     * @var bool
+     */
+    public $refundedByPaymentGateway;
+
+    // Public Methods
     // =========================================================================
 
 }

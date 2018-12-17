@@ -1,5 +1,13 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.8 - 2018-12-16
+### Added
+- Separated parts of SnipcartService into ApiService.
+### Changed
+- Changed the way API exceptions are handled to reduce disruption and log failures.
+- Refactored SnipcartService to be cleaner.
+- Renamed SnipcartService's `processShippingRates()` to `getShippingRatesForOrder()`.
+
 ## 1.0.0-beta.7 - 2018-12-15
 ### Changed
 - Use billingAddressName instead of cardholderName in order notification emails.

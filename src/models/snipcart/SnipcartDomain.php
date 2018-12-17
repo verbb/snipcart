@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use Craft;
-use craft\base\Model;
-
 /**
  * https://docs.snipcart.com/api-reference/domains
  */
 
-class SnipcartDomain extends Model
+class SnipcartDomain extends \craft\base\Model
 {
     // Constants
     // =========================================================================
