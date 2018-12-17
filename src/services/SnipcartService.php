@@ -44,9 +44,20 @@ class SnipcartService extends Component
     // Constants
     // =========================================================================
 
-    const EVENT_BEFORE_RETURN_SHIPPING_RATES  = 'beforeReturnShippingRates';
+    /**
+     * @event WebhookEvent Triggered before shipping rates are requested from any third parties.
+     */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
-    const EVENT_PRODUCT_INVENTORY_CHANGE      = 'productInventoryChange';
+
+    /**
+     * @event WebhookEvent Triggered before shipping rates are returned to Snipcart.
+     */
+    const EVENT_BEFORE_RETURN_SHIPPING_RATES  = 'beforeReturnShippingRates';
+
+    /**
+     * @event InventoryEvent Triggered when a product's inventory has changed as the result of an order.
+     */
+    const EVENT_PRODUCT_INVENTORY_CHANGE = 'productInventoryChange';
 
 
     // Public Methods

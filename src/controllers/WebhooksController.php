@@ -25,6 +25,9 @@ class WebhooksController extends Controller
     // Constants
     // =========================================================================
 
+    /**
+     * @event WebhookEvent Triggered before a completed event is handled by the plugin.
+     */
     const EVENT_BEFORE_PROCESS_COMPLETED_ORDER = 'beforeProcessCompletedOrder';
     
     /**
