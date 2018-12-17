@@ -13,6 +13,7 @@ use Craft;
 use yii\console\Controller;
 use craft\mail\Message;
 use yii\console\ExitCode;
+use yii\base\Exception;
 
 class VerifyController extends Controller
 {
@@ -157,11 +158,12 @@ class VerifyController extends Controller
      * @param integer $limit
      *
      * @return array
+     * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
     private function getSnipcartOrders($limit = 5): array
     {
-        $snipcart       = new \workingconcept\snipcart\services\SnipcartService;
-        $snipcartClient = $snipcart->getClient();
+        $api       = new \workingconcept\snipcart\services\ApiService();
+        $snipcartClient = $api->getClient();
         $response       = $snipcartClient->get('orders?limit=' . $limit);
 
         return json_decode($response->getBody())->items;

@@ -187,7 +187,7 @@ class ApiService extends Component
      */
     public function tokenIsValid($token): bool
     {
-        $response = $this->getClient()->get("requestvalidation/{$token}", null, false);
+        $response = $this->get("requestvalidation/{$token}", null, false);
 
         return isset($response->token) && $response->token === $token;
     }
