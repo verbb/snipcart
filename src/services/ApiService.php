@@ -23,6 +23,7 @@ use yii\base\Exception;
  * For interaction directly with the Snipcart API and getting back response data.
  *
  * @package workingconcept\snipcart\services
+ * @property bool $isLinked
  */
 class ApiService extends Component
 {
