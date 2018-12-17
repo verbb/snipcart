@@ -169,7 +169,7 @@ class SnipcartVariable
      */
     public function isLinked(): bool
     {
-        return Snipcart::$plugin->snipcart->isLinked();
+        return Snipcart::$plugin->api->isLinked;
     }
 
 }
