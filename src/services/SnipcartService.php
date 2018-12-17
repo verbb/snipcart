@@ -40,6 +40,7 @@ class SnipcartService extends Component
 {
     // TODO: clean up interfaces to be more Craft-y and obscure pagination concerns
     // TODO: return models with proper DateTime values
+    // TODO: return null for invalid single-object requests, otherwise empty arrays
 
     // Constants
     // =========================================================================
@@ -68,7 +69,7 @@ class SnipcartService extends Component
      * 
      * @param string $orderToken Snipcart order GUID
      * @return SnipcartOrder
-     * @throws Exception         Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getOrder($orderToken): SnipcartOrder
     {
@@ -80,7 +81,7 @@ class SnipcartService extends Component
      *
      * @param array $params
      * @return SnipcartOrder[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getOrders($params = []): array
     {
@@ -98,7 +99,7 @@ class SnipcartService extends Component
      * 
      * @param string $orderToken Snipcart order ID
      * @return SnipcartNotification[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getOrderNotifications($orderToken): array
     {
@@ -113,7 +114,7 @@ class SnipcartService extends Component
      * 
      * @param int $orderToken Snipcart order ID
      * @return SnipcartRefund[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getOrderRefunds($orderToken): array
     {
@@ -160,7 +161,7 @@ class SnipcartService extends Component
      *              ->items (SnipcartOrder[])
      *              ->totalItems (int)
      *              ->offset (int)
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getPaginatedOrders($page = 1, $limit = 25, $params = []): \stdClass
     {
@@ -187,7 +188,7 @@ class SnipcartService extends Component
      *
      * @return array
      * @throws \craft\errors\MissingComponentException Thrown if there's trouble getting a session further down.
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
@@ -225,7 +226,7 @@ class SnipcartService extends Component
      * @param array $params
      *
      * @return \stdClass|array API response object or array of objects.
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     private function fetchOrders($params = [])
     {
@@ -263,7 +264,7 @@ class SnipcartService extends Component
      *              ->offset (int)
      *              ->limit (int)
      *              ->items (SnipcartCustomer[])
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listCustomers($page = 1, $limit = 25): \stdClass
     {
@@ -306,7 +307,7 @@ class SnipcartService extends Component
      * List discounts.
      * 
      * @return SnipcartDiscount[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listDiscounts(): array
     {
@@ -320,7 +321,7 @@ class SnipcartService extends Component
      * List abandoned carts.
      *
      * @return SnipcartAbandonedCart[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listAbandoned(): array
     {
@@ -334,7 +335,7 @@ class SnipcartService extends Component
      * List subscriptions.
      *
      * @return SnipcartSubscription[]
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listSubscriptions(): array
     {
@@ -349,7 +350,7 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * @return SnipcartCustomer
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getCustomer($customerId): SnipcartCustomer
     {
@@ -362,7 +363,7 @@ class SnipcartService extends Component
      * @param int $customerId Snipcart customer ID
      * 
      * @return \stdClass|array
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getCustomerOrders($customerId)
     {

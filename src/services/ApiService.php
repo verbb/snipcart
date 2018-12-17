@@ -16,7 +16,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use yii\base\Exception;
 
-
 /**
  * Class ApiService
  *
@@ -30,6 +29,9 @@ class ApiService extends Component
     // Constants
     // =========================================================================
 
+    /**
+     * @var string Characters to prepend to any cache keys that are used.
+     */
     const CACHE_KEY_PREFIX = 'snipcart_';
 
     // Properties
@@ -67,7 +69,7 @@ class ApiService extends Component
      * Get an instance of the Guzzle client.
      *
      * @return Client
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getClient(): Client
     {
@@ -103,8 +105,8 @@ class ApiService extends Component
      * @param  array  $parameters  array of parameters to be URL formatted
      * @param  bool   $useCache    whether or not to cache responses
      *
-     * @return \stdClass|array     Response as single object or array of objects
-     * @throws Exception           Thrown when we don't have an API key with which to make calls.
+     * @return \stdClass|array|null  Response as single object or array of objects, or null for an invalid response.
+     * @throws \Exception            Thrown when there isn't an API key to authenticate requests.
      */
     public function get(string $endpoint = '', array $parameters = [], bool $useCache = true)
     {
@@ -126,20 +128,15 @@ class ApiService extends Component
             return $cachedResponseData;
         }
 
-        try
-        {
-            $response     = $this->getClient()->get($endpoint);
-            $responseData = $this->prepResponseData($response->getBody());
-        }
-        catch(RequestException $exception)
-        {
-            $this->handleRequestException($exception, $endpoint);
-            return [];
-        }
+        $responseData = $this->_getRequest($endpoint);
 
-        if ($useCache)
+        if ($responseData && $useCache)
         {
-            $cacheService->set($cacheKey, $responseData, Snipcart::$plugin->getSettings()->cacheDurationLimit);
+            $cacheService->set(
+                $cacheKey,
+                $responseData,
+                Snipcart::$plugin->getSettings()->cacheDurationLimit
+            );
         }
 
         return $responseData;
@@ -152,25 +149,11 @@ class ApiService extends Component
      * @param  array  $data        array of post values to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
-     * @throws Exception           Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception           Thrown when we don't have an API key with which to make calls.
      */
     public function post(string $endpoint = '', array $data = [])
     {
-        try
-        {
-            $response = $this->getClient()->post($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
-            ]);
-
-            $responseData = $this->prepResponseData($response->getBody());
-        }
-        catch (RequestException $exception)
-        {
-            $this->handleRequestException($exception, $endpoint);
-            return [];
-        }
-
-        return $responseData;
+        return $this->_postRequest($endpoint, $data);
     }
 
     /**
@@ -184,7 +167,7 @@ class ApiService extends Component
      * @param string  $token  token to be validated, probably from $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
      *
      * @return bool
-     * @throws Exception      Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception Thrown when there isn't an API key to authenticate requests.
      */
     public function tokenIsValid($token): bool
     {
@@ -198,13 +181,61 @@ class ApiService extends Component
     // =========================================================================
 
     /**
+     * Send a get request to the Snipcart API.
+     * 
+     * @param string $endpoint
+     *
+     * @return mixed
+     * @throws \Exception Thrown if we don't have an API key to make an authenticated request.
+     */
+    private function _getRequest(string $endpoint)
+    {
+        try
+        {
+            $response     = $this->getClient()->get($endpoint);
+            $responseData = $this->_prepResponseData($response->getBody());
+
+            return $responseData;
+        }
+        catch(RequestException $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
+     * Send a post request to the Snipcart API.
+     * 
+     * @param string $endpoint
+     * @param array  $data
+     *
+     * @return mixed
+     * @throws \Exception Thrown if we don't have an API key to make an authenticated request.
+     */
+    private function _postRequest(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->post($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->_prepResponseData($response->getBody());
+        }
+        catch (RequestException $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
      * Take the raw response body and give it back as data that's ready to use.
      *
      * @param $body
      *
-     * @return \stdClass|array
+     * @return mixed Appropriate PHP type, or null if json cannot be decoded or encoded data is deeper than the recursion limit.
      */
-    private function prepResponseData($body)
+    private function _prepResponseData($body)
     {
         /**
          * get response data as object, not an associative array
@@ -217,8 +248,10 @@ class ApiService extends Component
      *
      * @param RequestException $exception  the exception that was thrown
      * @param string           $endpoint   the endpoint that was queried
+     *
+     * @return null
      */
-    private function handleRequestException(RequestException $exception, string $endpoint)
+    private function _handleRequestException(RequestException $exception, string $endpoint)
     {
         // get the status code, which should have been 200 or 201 if all went well
         $statusCode = $exception->getResponse()->getStatusCode() ?? null;
@@ -234,5 +267,7 @@ class ApiService extends Component
         {
             Craft::warning(sprintf('Snipcart API request to %s failed.', $endpoint));
         }
+
+        return null;
     }
 }
