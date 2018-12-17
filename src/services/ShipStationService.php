@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\models\SnipcartAddress;
 use workingconcept\snipcart\models\SnipcartPackage;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ShipStationAddress;
@@ -429,28 +430,10 @@ class ShipStationService extends Component
             $shipStationOrder->gift = true;
         }
 
-        $shipStationOrder->shipTo = new ShipStationAddress([
-            'name'       => $snipcartOrder->shippingAddress->name,
-            'street1'    => $snipcartOrder->shippingAddress->address1,
-            'street2'    => $snipcartOrder->shippingAddress->address2,
-            'city'       => $snipcartOrder->shippingAddress->city,
-            'state'      => $snipcartOrder->shippingAddress->province,
-            'postalCode' => $snipcartOrder->shippingAddress->postalCode,
-            'phone'      => $snipcartOrder->shippingAddress->phone
-        ]);
-
+        $shipStationOrder->shipTo = $this->translateSnipcartAddressToShipStationAddress($snipcartOrder->shippingAddress);
         $shipStationOrder->shipTo->validate();
 
-        $shipStationOrder->billTo = new ShipStationAddress([
-            'name'       => $snipcartOrder->billingAddress->name,
-            'street1'    => $snipcartOrder->billingAddress->address1,
-            'street2'    => $snipcartOrder->billingAddress->address2,
-            'city'       => $snipcartOrder->billingAddress->city,
-            'state'      => $snipcartOrder->billingAddress->province,
-            'postalCode' => $snipcartOrder->billingAddress->postalCode,
-            'phone'      => $snipcartOrder->billingAddress->phone
-        ]);
-
+        $shipStationOrder->billTo = $this->translateSnipcartAddressToShipStationAddress($snipcartOrder->billingAddress);
         $shipStationOrder->billTo->validate();
 
         $orderWeight = $snipcartOrder->totalWeight;
@@ -564,7 +547,6 @@ class ShipStationService extends Component
     // Private Methods
     // =========================================================================
 
-
     /**
      * Build a new ShipStationOrder using data we got back from the ShipStation API.
      *
@@ -608,6 +590,25 @@ class ShipStationService extends Component
         $order->items = $orderItems;
 
         return $order;
+    }
+
+    /**
+     * Turn a SnipcartAddress into a ShipStationAddress
+     *
+     * @param SnipcartAddress $snipcartAddress
+     * @return ShipStationAddress
+     */
+    private function translateSnipcartAddressToShipStationAddress(SnipcartAddress $snipcartAddress): ShipStationAddress
+    {
+        return new ShipStationAddress([
+            'name'       => $snipcartAddress->name,
+            'street1'    => $snipcartAddress->address1,
+            'street2'    => $snipcartAddress->address2,
+            'city'       => $snipcartAddress->city,
+            'state'      => $snipcartAddress->province,
+            'postalCode' => $snipcartAddress->postalCode,
+            'phone'      => $snipcartAddress->phone
+        ]);
     }
 
     /**
