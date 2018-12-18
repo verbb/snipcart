@@ -47,17 +47,17 @@
                         {%- endfor %})
                         {%- endif -%}
                     </td>
-                    <td class="align-right normal-cell-padding nowrap">{{ item.price | currency(order.currency|upper) }}</td>
-                    <td class="align-right last-cell-padding nowrap">{{ (item.price * item.quantity) | currency(order.currency|upper) }}</td>
+                    <td class="align-right normal-cell-padding nowrap"><nobr>{{ item.price | currency(order.currency|upper) }}</nobr></td>
+                    <td class="align-right last-cell-padding nowrap"><nobr>{{ (item.price * item.quantity) | currency(order.currency|upper) }}</nobr></td>
                 </tr>
             {% endfor %}
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">{{ order.shippingMethod }}<br><span class="muted mono">{{ order.totalWeight | number_format }} {{ "grams"|t }}</span></td>
-                <td class="align-right last-cell-padding nowrap">{{ order.shippingFees | currency(order.currency|upper) }}</td>
+                <td class="align-right last-cell-padding nowrap"><nobr>{{ order.shippingFees | currency(order.currency|upper) }}</nobr></td>
             </tr>
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">Tax</td>
-                <td class="align-right last-cell-padding nowrap">{{ order.taxesTotal | currency(order.currency|upper) }}</td>
+                <td class="align-right last-cell-padding nowrap"><nobr>{{ order.taxesTotal | currency(order.currency|upper) }}</nobr></td>
             </tr>
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">
@@ -67,7 +67,7 @@
                     </span>
                 </td>
                 <td class="align-right last-cell-padding nowrap">
-                    <b>{{ order.finalGrandTotal | currency(order.currency|upper) -}}</b>
+                    <nobr><b>{{ order.finalGrandTotal | currency(order.currency|upper) -}}</b></nobr>
                 </td>
             </tr>
         </tbody>
