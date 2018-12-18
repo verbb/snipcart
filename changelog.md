@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.12 - 2018-12-18
+### Changed
+- Fixed missing ShipStation fields, prevent wrapping additional email prices.
+
 ## 1.0.0-beta.11 - 2018-12-17
 ### Changed
 - Fixed token verification.

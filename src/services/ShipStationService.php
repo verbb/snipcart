@@ -632,7 +632,10 @@ class ShipStationService extends Component
 
         foreach ($removeIfNull as $removeKey)
         {
-            unset($payload[$removeKey]);
+            if ($payload[$removeKey] === null)
+            {
+                unset($payload[$removeKey]);
+            }
         }
 
         unset($payload['orderId'], $payload['createDate'], $payload['modifyDate'], $payload['externallyFulfilled']);
