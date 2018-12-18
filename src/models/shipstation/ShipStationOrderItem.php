@@ -175,16 +175,16 @@ class ShipStationOrderItem extends \craft\base\Model
     /**
      * Populate model from SnipcartItem.
      *
-     * @param \stdClass $snipcartItem
+     * @param SnipcartItem $snipcartItem
      *
      * @return ShipStationOrderItem
      */
     public function populateFromSnipcartItem($snipcartItem): ShipStationOrderItem
     {
         $this->lineItemKey = $snipcartItem->id;
-        $this->name = $snipcartItem->name;
-        $this->quantity = $snipcartItem->quantity;
-        $this->unitPrice = $snipcartItem->price;
+        $this->name        = $snipcartItem->name;
+        $this->quantity    = $snipcartItem->quantity;
+        $this->unitPrice   = $snipcartItem->price;
 
         $itemWeight = new ShipStationWeight();
         $itemWeight->setAttributes([
@@ -231,10 +231,8 @@ class ShipStationOrderItem extends \craft\base\Model
      */
     public function fields()
     {
-        return parent::fields();
-        //$parentFields = parent::fields();
-        $currentFields = array_keys(Yii::getObjectVars($this));
-        $fields = array_merge($parentFields, ['weight', 'options']);
+        $fields = array_keys(\Yii::getObjectVars($this));
+        $fields = array_merge($fields, ['weight', 'options']);
         return array_combine($fields, $fields);
     }
 

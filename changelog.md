@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.9 - 2018-12-17
+### Changed
+- Fixed type error that impacted VerifyController.
+- Reverted ShipStationOrderItem `fields()`.
+- Added explicit type coercion in a few places.
+
+
 ## 1.0.0-beta.8 - 2018-12-17
 ### Added
 - Separated parts of SnipcartService into ApiService.

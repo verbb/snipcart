@@ -47,7 +47,7 @@ class VerifyController extends Controller
             $this->stdout("Snipcart $snipcartOrder->invoiceNumber ... ");
             $shipStationStatusString = '✓';
 
-            if ( ! $shipStationOrder = Snipcart::$plugin->shipStation->getOrderByOrderNumber($snipcartOrder->invoiceNumber))
+            if ( ! Snipcart::$plugin->shipStation->getOrderByOrderNumber($snipcartOrder->invoiceNumber))
             {
                 $shipStationStatusString = '✗';
                 $failures[] = $snipcartOrder;

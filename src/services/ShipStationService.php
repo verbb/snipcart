@@ -523,7 +523,6 @@ class ShipStationService extends Component
             {
                 // don't actually send orders to ShipStation in devMode, set a fake order ID
                 $shipStationOrder->orderId = 99999999;
-
                 return $shipStationOrder;
             }
 
@@ -599,7 +598,7 @@ class ShipStationService extends Component
     /**
      * Extract optional customer's note from a custom order comment field.
      *
-     * @param array $customFields Custom fields data from Snipcart, an array of objects
+     * @param array|null $customFields Custom fields data from Snipcart, an array of objects
      *
      * @return string|null
      */
@@ -624,7 +623,7 @@ class ShipStationService extends Component
     /**
      * Extract optional gift note from a custom order comment field.
      *
-     * @param array $customFields Custom fields data from Snipcart, an array of objects
+     * @param array|null $customFields Custom fields data from Snipcart, an array of objects
      *
      * @return string|null
      */

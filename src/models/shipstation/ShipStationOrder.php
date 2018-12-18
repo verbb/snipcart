@@ -329,7 +329,7 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Gets the order’s weight.
      *
-     * @return ShipStationWeight
+     * @return ShipStationWeight|null
      */
     public function getWeight()
     {
@@ -339,11 +339,11 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Sets the order’s weight.
      *
-     * @param ShipStationWeight|array $weight The item’s weight.
+     * @param ShipStationWeight|array|null $weight The item’s weight.
      *
-     * @return ShipStationWeight
+     * @return ShipStationWeight|null
      */
-    public function setWeight($weight): ShipStationWeight
+    public function setWeight($weight)
     {
         if (is_array($weight))
         {
@@ -356,7 +356,7 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Gets the order’s dimensions.
      *
-     * @return ShipStationDimensions
+     * @return ShipStationDimensions|null
      */
     public function getDimensions()
     {
@@ -366,11 +366,11 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Sets the order’s dimensions.
      *
-     * @param ShipStationDimensions|array $dimensions The order’s dimensions.
+     * @param ShipStationDimensions|array|null $dimensions The order’s dimensions.
      *
-     * @return ShipStationDimensions
+     * @return ShipStationDimensions|null
      */
-    public function setDimensions($dimensions): ShipStationDimensions
+    public function setDimensions($dimensions)
     {
         if (is_array($dimensions))
         {
@@ -383,7 +383,7 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Gets the order’s insurance options.
      *
-     * @return ShipStationInsuranceOptions
+     * @return ShipStationInsuranceOptions|null
      */
     public function getInsuranceOptions()
     {
@@ -393,11 +393,11 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Sets the order’s insurance options.
      *
-     * @param ShipStationInsuranceOptions|array $insuranceOptions The order’s insurance options.
+     * @param ShipStationInsuranceOptions|array|null $insuranceOptions The order’s insurance options.
      *
-     * @return ShipStationInsuranceOptions
+     * @return ShipStationInsuranceOptions|null
      */
-    public function setInsuranceOptions($insuranceOptions): ShipStationInsuranceOptions
+    public function setInsuranceOptions($insuranceOptions)
     {
         if (is_array($insuranceOptions))
         {
@@ -410,7 +410,7 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Gets the order’s international options.
      *
-     * @return ShipStationInternationalOptions
+     * @return ShipStationInternationalOptions|null
      */
     public function getInternationalOptions()
     {
@@ -420,11 +420,11 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Sets the order’s international options.
      *
-     * @param ShipStationInternationalOptions|array $internationalOptions The order’s international options.
+     * @param ShipStationInternationalOptions|array|null $internationalOptions The order’s international options.
      *
-     * @return ShipStationInternationalOptions
+     * @return ShipStationInternationalOptions|null
      */
-    public function setInternationalOptions($internationalOptions): ShipStationInternationalOptions
+    public function setInternationalOptions($internationalOptions)
     {
         if (is_array($internationalOptions))
         {
@@ -437,7 +437,7 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Gets the order’s advanced options.
      *
-     * @return ShipStationAdvancedOptions
+     * @return ShipStationAdvancedOptions|null
      */
     public function getAdvancedOptions()
     {
@@ -447,11 +447,11 @@ class ShipStationOrder extends \craft\base\Model
     /**
      * Sets the order’s advanced options.
      *
-     * @param ShipStationAdvancedOptions|array $advancedOptions The order’s advanced options.
+     * @param ShipStationAdvancedOptions|array|null $advancedOptions The order’s advanced options.
      *
-     * @return ShipStationAdvancedOptions
+     * @return ShipStationAdvancedOptions|null
      */
-    public function setAdvancedOptions($advancedOptions): ShipStationAdvancedOptions
+    public function setAdvancedOptions($advancedOptions)
     {
         if (is_array($advancedOptions))
         {

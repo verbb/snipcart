@@ -75,7 +75,7 @@ class SnipcartService extends Component
     {
         if ($orderData = Snipcart::$plugin->api->get("orders/{$orderToken}"))
         {
-            return new SnipcartOrder($orderData);
+            return new SnipcartOrder((array)$orderData);
         }
 
         return null;
@@ -94,7 +94,7 @@ class SnipcartService extends Component
         // TODO: support params similar to Craft Elements
 
         return $this->populateArrayWithModels(
-            $this->fetchOrders($params),
+            (array)$this->fetchOrders($params),
             SnipcartOrder::class
         );
     }
@@ -109,7 +109,7 @@ class SnipcartService extends Component
     public function getOrderNotifications($orderToken): array
     {
         return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get("orders/{$orderToken}/notifications"),
+            (array)Snipcart::$plugin->api->get("orders/{$orderToken}/notifications"),
             SnipcartNotification::class
         );
     }
@@ -124,7 +124,7 @@ class SnipcartService extends Component
     public function getOrderRefunds($orderToken): array
     {
         return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get("orders/{$orderToken}/refunds"),
+            (array)Snipcart::$plugin->api->get("orders/{$orderToken}/refunds"),
             SnipcartRefund::class
         );
     }
@@ -273,17 +273,17 @@ class SnipcartService extends Component
      */
     public function listCustomers($page = 1, $limit = 25): \stdClass
     {
-        $customers = Snipcart::$plugin->api->get('customers', [
+        $customerData = Snipcart::$plugin->api->get('customers', [
             'offset' => ($page - 1) * $limit,
             'limit'  => $limit
         ]);
 
-        foreach ($customers->items as &$customer)
-        {
-            $customer = new SnipcartCustomer($customer);
-        }
+        $customerData->items = $this->populateArrayWithModels(
+            (array)$customerData->items,
+            SnipcartCustomer::class
+        );
 
-        return $customers;
+        return $customerData;
     }
 
     /**
@@ -296,16 +296,16 @@ class SnipcartService extends Component
      */
     public function searchCustomers($keywords): \stdClass
     {
-        $customers = Snipcart::$plugin->api->get('customers', [
+        $customerData = Snipcart::$plugin->api->get('customers', [
             'name' => $keywords
         ]);
 
-        foreach ($customers->items as &$customer)
-        {
-            $customer = new SnipcartCustomer($customer);
-        }
+        $customerData->items = $this->populateArrayWithModels(
+            (array)$customerData->items,
+            SnipcartCustomer::class
+        );
 
-        return $customers;
+        return $customerData;
     }
 
     /**
@@ -317,7 +317,7 @@ class SnipcartService extends Component
     public function listDiscounts(): array
     {
         return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get('discounts'),
+            (array)Snipcart::$plugin->api->get('discounts'),
             SnipcartDiscount::class
         );
     }
@@ -332,10 +332,10 @@ class SnipcartService extends Component
     {
         $abandonedCartData = Snipcart::$plugin->api->get('carts/abandoned');
 
-        foreach ($abandonedCartData->items as &$abandonedCart)
-        {
-            $abandonedCart = new SnipcartAbandonedCart($abandonedCart);
-        }
+        $abandonedCartData->items = $this->populateArrayWithModels(
+            (array)$abandonedCartData->items,
+            SnipcartAbandonedCart::class
+        );
 
         return $abandonedCartData;
     }
@@ -350,10 +350,10 @@ class SnipcartService extends Component
     {
         $subscriptionData = Snipcart::$plugin->api->get('subscriptions');
 
-        foreach ($subscriptionData->items as &$subscription)
-        {
-            $subscription = new SnipcartSubscription($subscription);
-        }
+        $subscriptionData->items = $this->populateArrayWithModels(
+            (array)$subscriptionData->items,
+            SnipcartSubscription::class
+        );
 
         return $subscriptionData;
     }
@@ -369,7 +369,7 @@ class SnipcartService extends Component
     {
         if ($customerData = Snipcart::$plugin->api->get("customers/{$customerId}"))
         {
-            return new SnipcartCustomer($customerData);
+            return new SnipcartCustomer((array)$customerData);
         }
 
         return null;
@@ -386,7 +386,7 @@ class SnipcartService extends Component
     public function getCustomerOrders($customerId): array
     {
         return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get("customers/{$customerId}/orders"),
+            (array)Snipcart::$plugin->api->get("customers/{$customerId}/orders"),
             SnipcartOrder::class
         );
     }
