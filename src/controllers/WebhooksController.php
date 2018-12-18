@@ -69,7 +69,6 @@ class WebhooksController extends Controller
 
     protected $allowAnonymous  = true; // allow all endpoints in this controller to be used publicly
     protected $validateWebhook = true;
-    protected $settings;
 
 
     // Public Methods
@@ -93,9 +92,6 @@ class WebhooksController extends Controller
     {
         // only take post requests
         $this->requirePostRequest();
-
-        // keep a reference to the plugin settings
-        $this->settings = Snipcart::$plugin->getSettings();
 
         if ($this->validateWebhook && ! $this->validateRequest())
         {
@@ -137,7 +133,7 @@ class WebhooksController extends Controller
         // TODO: consider response for any timestamp that's not very recent
         // $createdOn = $postData->createdOn;
 
-        if ($this->settings->logWebhookRequests)
+        if (Snipcart::$plugin->getSettings()->logWebhookRequests)
         {
             $this->logWebhookTransaction($postData);
         }
@@ -185,7 +181,7 @@ class WebhooksController extends Controller
 
         $response = $this->asJson($rateInfo);
 
-        if ($this->settings->logCustomRates)
+        if (Snipcart::$plugin->getSettings()->logCustomRates)
         {
             $shippingQuoteLog         = new ShippingQuoteLog();
             $shippingQuoteLog->siteId = Craft::$app->sites->currentSite->id;
@@ -256,7 +252,7 @@ class WebhooksController extends Controller
         // is ShipStation an enabled provider?
         $sendToShipStation = in_array(
             Settings::PROVIDER_SHIPSTATION,
-            $this->settings->enabledProviders,
+            Snipcart::$plugin->getSettings()->enabledProviders,
             false
         );
 
