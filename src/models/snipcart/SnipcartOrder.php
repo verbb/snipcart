@@ -961,9 +961,9 @@ class SnipcartOrder extends \craft\base\Model
     /**
      * Get the URL for the order in the Snipcart customer dashboard.
      *
-     * @return string
+     * @return string|null
      */
-    public function getDashboardUrl(): string
+    public function getDashboardUrl()
     {
         if (! isset($this->token))
         {

@@ -37,10 +37,10 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
-     * @return \stdClass
+     * @return \stdClass|array|null
      * @throws \Exception
      */
-    public function listCustomers($pageNumber = 1): \stdClass
+    public function listCustomers($pageNumber = 1)
     {
         return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
     }
@@ -95,7 +95,7 @@ class SnipcartVariable
     /**
      * @param $orderId
      * @return \stdClass|array
-     * @throws \yii\base\Exception
+     * @throws \Exception
      */
     public function getOrderRefunds($orderId)
     {
@@ -132,6 +132,7 @@ class SnipcartVariable
 
     /**
      * @return bool|\DateTime
+     * @throws
      */
     public function startDate()
     {
@@ -140,6 +141,7 @@ class SnipcartVariable
 
     /**
      * @return bool|\DateTime
+     * @throws
      */
     public function endDate()
     {
@@ -148,6 +150,7 @@ class SnipcartVariable
 
     /**
      * @return mixed|string
+     * @throws
      */
     public function searchKeywords()
     {
@@ -156,10 +159,10 @@ class SnipcartVariable
 
     /**
      * @param $keywords
-     * @return \stdClass
+     * @return \stdClass|array|null
      * @throws \Exception
      */
-    public function searchCustomers($keywords): \stdClass
+    public function searchCustomers($keywords)
     {
         return Snipcart::$plugin->snipcart->searchCustomers($keywords);
     }

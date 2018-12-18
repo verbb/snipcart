@@ -97,7 +97,7 @@ class VerifyController extends Controller
                 $this->stdout('Attempting to re-send order ' . $snipcartOrder->invoiceNumber . ' to ShipStation ... ');
                 $result = Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
 
-                $succeeded = isset($result->id) && empty($result->getErrors());
+                $succeeded = isset($result->orderId) && empty($result->getErrors());
 
                 $statusString = $succeeded ? '✓' : '✗';
                 $this->stdout($statusString . PHP_EOL);
