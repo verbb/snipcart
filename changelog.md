@@ -5,7 +5,7 @@
 - Fixed type error that impacted VerifyController.
 - Reverted ShipStationOrderItem `fields()`.
 - Added explicit type coercion in a few places.
-
+- Spiffed up and added re-feed attempt status to order failure notifications.
 
 ## 1.0.0-beta.8 - 2018-12-17
 ### Added

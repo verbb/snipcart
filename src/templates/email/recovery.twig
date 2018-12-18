@@ -1,7 +1,25 @@
-<p>The following completed Snipcart orders don't exist in ShipStation. Each needs to be re-fed immediately.</p>
+{% extends 'snipcart/email/_layout' %}
 
-<ul>
-{% for order in orders %}
-    <li><a href="https://app.snipcart.com/dashboard/orders/{{ order.token }}">{{ order.invoiceNumber }}</a> from {{ order.creationDate }}</li>
-{% endfor %}
-</ul>
+{% block content %}
+
+    <h1 style="margin: 0 0 25px 0; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
+        The following Snipcart order{% if orders | length != 1 %}s{% endif %} didn't intially
+        make it to ShipStation. {% if orders | length != 1 %}They{% else %}It{% endif %} may need attention.
+    </h1>
+
+    <ul>
+    {% for order in orders %}
+        <li>
+            <a href="{{ order.dashboardUrl}}">{{ order.invoiceNumber }}</a> from {{ order.creationDate.diff(now)|duration(false) }} ago
+            {%- if reattempt[order.invoiceNumber] is defined %}
+                {%- if reattempt[order.invoiceNumber] == true -%}
+                    , re-sent to ShipStation successfully.
+                {%- elseif reattempt[order.invoiceNumber] == false -%}
+                    , attempted re-send to ShipStation failed.
+                {%- endif -%}
+            {%- endif -%}
+        </li>
+    {% endfor %}
+    </ul>
+
+{% endblock content %}

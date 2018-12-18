@@ -13,7 +13,6 @@ use Craft;
 use yii\console\Controller;
 use craft\mail\Message;
 use yii\console\ExitCode;
-use yii\base\Exception;
 
 class VerifyController extends Controller
 {
@@ -31,18 +30,17 @@ class VerifyController extends Controller
      */
     public function actionCheckOrders(): int
     {
-        $startTime = microtime(true);
-
-        $limit    = 3;
-        $failures = [];
+        $startTime    = microtime(true);
+        $limit        = 3;
+        $failedOrders = [];
 
         $this->stdout('-------------------------------------' . PHP_EOL);
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        $snipcartOrders = $this->_getSnipcartOrders($limit);
+        $snipcartOrders = Snipcart::$plugin->snipcart->getOrders([ 'limit' => $limit ]);
 
-        foreach ($snipcartOrders as $snipcartOrder) 
+        foreach ($snipcartOrders as $snipcartOrder)
         {
             $this->stdout("Snipcart $snipcartOrder->invoiceNumber ... ");
             $shipStationStatusString = '✓';
@@ -50,16 +48,16 @@ class VerifyController extends Controller
             if ( ! Snipcart::$plugin->shipStation->getOrderByOrderNumber($snipcartOrder->invoiceNumber))
             {
                 $shipStationStatusString = '✗';
-                $failures[] = $snipcartOrder;
+                $failedOrders[] = $snipcartOrder;
             }
 
             $this->stdout("ShipStation [$shipStationStatusString]" . PHP_EOL);
         }
 
-        if (count($failures) > 0)
+        if (count($failedOrders) > 0)
         {
-            $this->_reFeedToShipStation($failures);
-            $this->_sendAdminNotification($failures);
+            $reFeedResults = $this->_reFeedToShipStation($failedOrders);
+            $this->_sendAdminNotification($failedOrders, $reFeedResults);
         }
 
         $this->stdout('-------------------------------------' . PHP_EOL);
@@ -67,11 +65,10 @@ class VerifyController extends Controller
         $endTime       = microtime(true);
         $executionTime = ($endTime - $startTime);
 
-        $this->stdout("Finished in ${executionTime} seconds." . PHP_EOL);
+        $this->stdout("Finished in ${executionTime} seconds." . PHP_EOL . PHP_EOL);
 
         return ExitCode::OK;
     }
-
 
 
     // Private Methods
@@ -82,32 +79,46 @@ class VerifyController extends Controller
      *
      * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
      *
-     * @return int
+     * @return array If attempts were made to try re-sending the orders to ShipStation,
+     *               they'll be in this array where the key is the invoice number
+     *               and the value is true if successful.
      * @throws
      */
-    private function _reFeedToShipStation($snipcartOrders): int
+    private function _reFeedToShipStation($snipcartOrders): array
     {
+        $reFeedResult = [];
+
         foreach ($snipcartOrders as $snipcartOrder)
         {
             // try again, but only briefly
             if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '10 minutes'))
             {
-                $this->stdout('Attempting to re-send order ' . $snipcartOrder->invoiceNumber . '  to ShipStation.' . PHP_EOL);
-                Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
+                $this->stdout('-------------------------------------' . PHP_EOL);
+                $this->stdout('Attempting to re-send order ' . $snipcartOrder->invoiceNumber . ' to ShipStation ... ');
+                $result = Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
+
+                $succeeded = isset($result->id) && empty($result->getErrors());
+
+                $statusString = $succeeded ? '✓' : '✗';
+                $this->stdout($statusString . PHP_EOL);
+
+                $reFeedResult[$snipcartOrder->invoiceNumber] = $succeeded;
             }
         }
 
-        return ExitCode::OK;
+        return $reFeedResult;
     }
 
     /**
      * Let somebody know that one or more orders didn't make it to ShipStation.
      *
      * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
+     * @param array $reFeedResults
+     *
      * @return int
      * @throws
      */
-    private function _sendAdminNotification($snipcartOrders): int
+    private function _sendAdminNotification($snipcartOrders, $reFeedResults): int
     {
         // TODO: consolidate with SnipcartService
 
@@ -126,7 +137,8 @@ class VerifyController extends Controller
             $message->setTo($address);
             $message->setSubject('Recovered Snipcart Orders');
             $message->setHtmlBody($view->renderPageTemplate('snipcart/email/recovery', [
-                'orders' => $snipcartOrders,
+                'orders'    => $snipcartOrders,
+                'reattempt' => $reFeedResults,
             ]));
 
             if ( ! Craft::$app->mailer->send($message))
@@ -139,24 +151,6 @@ class VerifyController extends Controller
         $view->setTemplateMode($oldTemplateMode);
 
         return ExitCode::OK;
-    }
-
-    /**
-     * Fetch recent Snipcart orders.
-     * TODO: refactor to rely on service for actual SnipcartOrder models
-     *
-     * @param integer $limit
-     *
-     * @return array
-     * @throws \Exception Thrown when we don't have an API key with which to make calls.
-     */
-    private function _getSnipcartOrders($limit = 5): array
-    {
-        $api            = new \workingconcept\snipcart\services\ApiService();
-        $snipcartClient = $api->getClient();
-        $response       = $snipcartClient->get('orders?limit=' . $limit);
-
-        return json_decode($response->getBody())->items;
     }
 
 }

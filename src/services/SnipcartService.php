@@ -94,7 +94,7 @@ class SnipcartService extends Component
         // TODO: support params similar to Craft Elements
 
         return $this->populateArrayWithModels(
-            (array)$this->fetchOrders($params),
+            (array)$this->fetchOrders($params)->items,
             SnipcartOrder::class
         );
     }
@@ -135,7 +135,7 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass
+     * @return \stdClass|array|null
      * @throws \craft\errors\MissingComponentException Thrown if there's trouble getting a session further down.
      * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
@@ -264,14 +264,14 @@ class SnipcartService extends Component
      * @param integer $page  page of results
      * @param integer $limit number of results per page
      * 
-     * @return \stdClass
+     * @return \stdClass|array|null
      *              ->totalItems (int)
      *              ->offset (int)
      *              ->limit (int)
      *              ->items (SnipcartCustomer[])
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function listCustomers($page = 1, $limit = 25): \stdClass
+    public function listCustomers($page = 1, $limit = 25)
     {
         $customerData = Snipcart::$plugin->api->get('customers', [
             'offset' => ($page - 1) * $limit,
@@ -291,10 +291,10 @@ class SnipcartService extends Component
      *
      * @param integer $keywords  search term
      *
-     * @return \stdClass
+     * @return \stdClass|array|null
      * @throws \Exception
      */
-    public function searchCustomers($keywords): \stdClass
+    public function searchCustomers($keywords)
     {
         $customerData = Snipcart::$plugin->api->get('customers', [
             'name' => $keywords
@@ -325,7 +325,7 @@ class SnipcartService extends Component
     /**
      * List abandoned carts.
      *
-     * @return \stdClass|null
+     * @return \stdClass|array|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listAbandonedCarts()
@@ -343,7 +343,7 @@ class SnipcartService extends Component
     /**
      * List subscriptions.
      *
-     * @return \stdClass|null
+     * @return \stdClass|array|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function listSubscriptions()

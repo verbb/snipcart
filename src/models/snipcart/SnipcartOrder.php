@@ -20,26 +20,27 @@ namespace workingconcept\snipcart\models;
  * @property SnipcartDiscount[] $discounts
  * @property SnipcartPlan[] $plans
  * @property SnipcartItem[] $items
- * @property string $billingAddressName;
- * @property string $billingAddressFirstName;
- * @property string $billingAddressCompanyName;
- * @property string $billingAddressAddress1;
- * @property string $billingAddressAddress2;
- * @property string $billingAddressCity;
- * @property string $billingAddressCountry;
- * @property string $billingAddressProvince;
- * @property string $billingAddressPostalCode;
- * @property string $billingAddressPhone;
- * @property string $shippingAddressName;
- * @property string $shippingAddressFirstName;
- * @property string $shippingAddressCompanyName;
- * @property string $shippingAddressAddress1;
- * @property string $shippingAddressAddress2;
- * @property string $shippingAddressCity;
- * @property string $shippingAddressCountry;
- * @property string $shippingAddressProvince;
- * @property string $shippingAddressPostalCode;
- * @property string $shippingAddressPhone;
+ * @property string $billingAddressName
+ * @property string $billingAddressFirstName
+ * @property string $billingAddressCompanyName
+ * @property string $billingAddressAddress1
+ * @property string $billingAddressAddress2
+ * @property string $billingAddressCity
+ * @property string $billingAddressCountry
+ * @property string $billingAddressProvince
+ * @property string $billingAddressPostalCode
+ * @property string $billingAddressPhone
+ * @property string $shippingAddressName
+ * @property string $shippingAddressFirstName
+ * @property string $shippingAddressCompanyName
+ * @property string $shippingAddressAddress1
+ * @property string $shippingAddressAddress2
+ * @property string $shippingAddressCity
+ * @property string $shippingAddressCountry
+ * @property string $shippingAddressProvince
+ * @property string $shippingAddressPostalCode
+ * @property string $shippingAddressPhone
+ * @property string $dashboardUrl
  */
 class SnipcartOrder extends \craft\base\Model
 {
@@ -955,6 +956,21 @@ class SnipcartOrder extends \craft\base\Model
         }
 
         return $this->_shippingAddress->phone = $phone;
+    }
+
+    /**
+     * Get the URL for the order in the Snipcart customer dashboard.
+     *
+     * @return string
+     */
+    public function getDashboardUrl(): string
+    {
+        if (! isset($this->token))
+        {
+            return null;
+        }
+
+        return 'https://app.snipcart.com/dashboard/orders/' . $this->token;
     }
 
     /**
