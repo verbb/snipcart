@@ -246,6 +246,7 @@ class SnipcartService extends Component
         ];
 
         $apiParams = [];
+        $cacheSetting = isset($params['cache']) && is_bool($params['cache']) ? $params['cache'] : true;
 
         foreach ($params as $key => $value)
         {
@@ -255,7 +256,7 @@ class SnipcartService extends Component
             }
         }
 
-        return Snipcart::$plugin->api->get('orders', $apiParams);
+        return Snipcart::$plugin->api->get('orders', $apiParams, $cacheSetting);
     }
 
     /**

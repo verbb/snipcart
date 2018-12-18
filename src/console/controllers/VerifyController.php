@@ -38,7 +38,10 @@ class VerifyController extends Controller
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        $snipcartOrders = Snipcart::$plugin->snipcart->getOrders([ 'limit' => $limit ]);
+        $snipcartOrders = Snipcart::$plugin->snipcart->getOrders([ 
+            'limit' => $limit, 
+            'cache' => false 
+        ]);
 
         foreach ($snipcartOrders as $snipcartOrder)
         {

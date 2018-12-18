@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.10 - 2018-12-17
+### Changed
+- VerifyController requests un-cached Snipcart orders.
+
 ## 1.0.0-beta.9 - 2018-12-17
 ### Changed
 - Fixed type error that impacted VerifyController.
