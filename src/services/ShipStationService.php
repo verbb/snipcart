@@ -16,6 +16,7 @@ use workingconcept\snipcart\models\ShipStationWeight;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\SnipcartOrder;
 use workingconcept\snipcart\models\ShipStationRate;
+use workingconcept\snipcart\models\SnipcartShippingRate;
 
 use Craft;
 use craft\base\Component;
@@ -88,15 +89,15 @@ class ShipStationService extends Component
      * Get shipping rates for the supplied order details.
      * https://www.shipstation.com/developer-api/#/reference/shipments/get-rates
      *
-     * @param array                  $to [
-     *                          		'city' => 'Seattle',
-     *                          		'state' => 'WA',
-     *                          		'country' => 'US'
-     *                          		'zip' => '98103'
-     *                         	     ]
-     * @param ShipStationWeight      $weight
-     * @param ShipStationDimensions  $dimensions (optional)
-     * @param array                  $from (optional; defaults to standard shipFrom)
+     * @param array                       $to [
+     *                          		      'city'    => 'Seattle',
+     *                          		      'state'   => 'WA',
+     *                          		      'country' => 'US'
+     *                          		      'zip'     => '98103'
+     *                         	          ]
+     * @param ShipStationWeight           $weight
+     * @param ShipStationDimensions|null  $dimensions (optional)
+     * @param array                       $from (optional; defaults to standard shipFrom)
      * 
      * @return array
      * @throws \GuzzleHttp\Exception\ServerException
@@ -431,7 +432,60 @@ class ShipStationService extends Component
     }
 
     /**
-     * Register a webhook subscription. (NOT IMPLEMENTED!)
+     * Get shipping rates based on the provided Snipcart order and package.
+     *
+     * @param SnipcartOrder   $order
+     * @param SnipcartPackage $package
+     *
+     * @return SnipcartShippingRate[]
+     */
+    public function getRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package): array
+    {
+        $rates  = [];
+        $to     = $this->getToFromSnipcartOrder($order);
+        $weight = $this->getWeightFromSnipcartOrder($order);
+
+        if ($package !== null)
+        {
+            // translate SnipcartPackage into ShipStationDimensions
+            $dimensions = $this->getDimensionsFromSnipcartPackage($package);
+
+            if ( ! empty($package->weight))
+            {
+                // add the weight of the packaging if it's been specified
+                $weight->value += $package->weight;
+            }
+
+            /**
+             * pass dimensions for rate quote if we have them,
+             * otherwise just get the quote based on weight only
+             */
+            $shipStationRates = $this->getRates(
+                $to,
+                $weight,
+                $dimensions->hasPhysicalDimensions() ? $dimensions : null
+            );
+        }
+        else
+        {
+            $shipStationRates = $this->getRates($to, $weight);
+        }
+
+        foreach ($shipStationRates as $shipStationRate)
+        {
+            $rates[] = new SnipcartShippingRate([
+                'cost'        => number_format($shipStationRate->shipmentCost + $shipStationRate->otherCost, 2),
+                'description' => $shipStationRate->serviceName,
+                'code'        => $shipStationRate->serviceCode
+            ]);
+        }
+
+        return $rates;
+    }
+
+
+    /**
+     * Register a webhook subscription.
      *
      * @param $webhook
      */

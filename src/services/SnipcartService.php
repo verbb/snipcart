@@ -478,7 +478,7 @@ class SnipcartService extends Component
      * Return custom shipping rates for a nearly-finalized Snipcart order.
      *
      * @param SnipcartOrder $order
-     * @return array [ ShipStationRate[], SnipcartPackage ]
+     * @return array [ SnipcartShippingRate[], SnipcartPackage ]
      */
     public function getShippingRatesForOrder(SnipcartOrder $order): array
     {
@@ -493,7 +493,7 @@ class SnipcartService extends Component
 
         if ($includeShipStationRates)
         {
-            $shipStationRates = $this->getShipStationRatesForSnipcartOrder($order, $package);
+            $shipStationRates = Snipcart::$plugin->shipStation->getRatesForSnipcartOrder($order, $package);
             
             $rateOptions = array_merge(
                 $rateOptions,
@@ -680,60 +680,6 @@ class SnipcartService extends Component
         }
 
         return true;
-    }
-
-    /**
-     * Get shipping rates from ShipStation based on the provided Snipcart
-     * order and package.
-     *
-     * @param SnipcartOrder   $order
-     * @param SnipcartPackage $package
-     * 
-     * @return SnipcartShippingRate[]
-     */
-    private function getShipStationRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package): array
-    {
-        $rates  = [];
-        $to     = Snipcart::$plugin->shipStation->getToFromSnipcartOrder($order);
-        $weight = Snipcart::$plugin->shipStation->getWeightFromSnipcartOrder($order);
-
-        if ($package !== null)
-        {
-            // translate SnipcartPackage into ShipStationDimensions
-            $shipStationDimensions = Snipcart::$plugin->shipStation->getDimensionsFromSnipcartPackage($package);
-
-            if ( ! empty($package->weight))
-            {
-                // add the weight of the packaging if it's been specified
-                $weight->value += $package->weight;
-            }
-
-            if ($shipStationDimensions->hasPhysicalDimensions())
-            {
-                // pass dimensions for rate quote if we have them
-                $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight, $shipStationDimensions);
-            }
-            else
-            {
-                // otherwise just get the quote based on weight only
-                $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
-            }
-        }
-        else
-        {
-            $shipStationRates = Snipcart::$plugin->shipStation->getRates($to, $weight);
-        }
-
-        foreach ($shipStationRates as $shipStationRate)
-        {
-            $rates[] = new SnipcartShippingRate([
-                'cost'        => number_format($shipStationRate->shipmentCost + $shipStationRate->otherCost, 2),
-                'description' => $shipStationRate->serviceName,
-                'code'        => $shipStationRate->serviceCode
-            ]);
-        }
-
-        return $rates;
     }
 
     /**

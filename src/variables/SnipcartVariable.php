@@ -104,10 +104,10 @@ class SnipcartVariable
 
     /**
      * @param $customerId
-     * @return SnipcartCustomer
+     * @return SnipcartCustomer|null
      * @throws \Exception
      */
-    public function getCustomer($customerId): SnipcartCustomer
+    public function getCustomer($customerId)
     {
         return Snipcart::$plugin->snipcart->getCustomer($customerId);
     }
