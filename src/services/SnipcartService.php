@@ -139,7 +139,7 @@ class SnipcartService extends Component
      * @throws \craft\errors\MissingComponentException Thrown if there's trouble getting a session further down.
      * @throws Exception Thrown when we don't have an API key with which to make calls.
      */
-    public function listOrders($page = 1, $limit = 25): \stdClass
+    public function listOrders($page = 1, $limit = 25)
     {
         // TODO: rely on getPaginatedOrders for control panel views and get rid of this method
 
@@ -365,7 +365,7 @@ class SnipcartService extends Component
      * @return SnipcartCustomer|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function getCustomer($customerId): SnipcartCustomer
+    public function getCustomer($customerId)
     {
         if ($customerData = Snipcart::$plugin->api->get("customers/{$customerId}"))
         {
@@ -478,7 +478,7 @@ class SnipcartService extends Component
      * Return custom shipping rates for a nearly-finalized Snipcart order.
      *
      * @param SnipcartOrder $order
-     * @return SnipcartShippingRate[]
+     * @return array [ ShipStationRate[], SnipcartPackage ]
      */
     public function getShippingRatesForOrder(SnipcartOrder $order): array
     {
