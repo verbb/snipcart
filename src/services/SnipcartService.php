@@ -515,6 +515,8 @@ class SnipcartService extends Component
             $rateOptions = $event->rates;
         }
 
+        // TODO: do something loudly here if no rates are available!
+
         return [
             'rates'   => $rateOptions,
             'package' => $package,

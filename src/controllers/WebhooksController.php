@@ -286,6 +286,8 @@ class WebhooksController extends Controller
             }
         }
 
+        // TODO: send notifications here instead of from updateElementsFromOrder()
+
         if (count($responseData['errors']) === 0)
         {
             unset($responseData['errors']);

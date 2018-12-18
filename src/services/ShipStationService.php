@@ -115,6 +115,8 @@ class ShipStationService extends Component
             $shipFrom = $this->shipFrom;
         }
 
+        // TODO: validate $to details so we're not wasting a request
+
         $shipmentInfo = [
             'carrierCode'    => $this->providerSettings['defaultCarrierCode'],
             //'serviceCode'  => '',
@@ -142,8 +144,14 @@ class ShipStationService extends Component
         }
         catch (\GuzzleHttp\Exception\ServerException $e)
         {
-            // ShipStation returns a 500 error with a message if there aren't any service options
+            /**
+             * ShipStation returns a 500 error with a message if there aren't any service options.
+             * It may also return a 500 if its app or one of its providers experiences a technical problem,
+             * which can include changed (and newly incorrect) sub-account credentials.
+             */
             Craft::error($e, 'snipcart');
+            // More detail in $e->getResponse()->getBody();
+            // TODO: log full, non-truncated error message from API
             return $rates;
         }
 
