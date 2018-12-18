@@ -442,34 +442,34 @@ class ShipStationService extends Component
     public function getRatesForSnipcartOrder(SnipcartOrder $order, SnipcartPackage $package): array
     {
         $rates  = [];
-        $to     = $this->getToFromSnipcartOrder($order);
-        $weight = $this->getWeightFromSnipcartOrder($order);
+        $weight = new ShipStationWeight([
+            'value' => $order->totalWeight,
+            'units' => ShipStationWeight::UNIT_GRAMS,
+        ]);
 
         if ($package !== null)
         {
             // translate SnipcartPackage into ShipStationDimensions
-            $dimensions = $this->getDimensionsFromSnipcartPackage($package);
+            $dimensions = new ShipStationDimensions();
+            $dimensions->populateFromSnipcartPackage($package);
 
             if ( ! empty($package->weight))
             {
                 // add the weight of the packaging if it's been specified
                 $weight->value += $package->weight;
             }
+        }
 
-            /**
-             * pass dimensions for rate quote if we have them,
-             * otherwise just get the quote based on weight only
-             */
-            $shipStationRates = $this->getRates(
-                $to,
-                $weight,
-                $dimensions->hasPhysicalDimensions() ? $dimensions : null
-            );
-        }
-        else
-        {
-            $shipStationRates = $this->getRates($to, $weight);
-        }
+        /**
+         * pass dimensions for rate quote if we have them,
+         * otherwise just get the quote based on weight only
+         */
+        $shipStationRates = $this->getRates(
+            $this->getToFromSnipcartOrder($order),
+            $weight,
+            isset($dimensions) && $dimensions->hasPhysicalDimensions() ? $dimensions : null
+        );
+
 
         foreach ($shipStationRates as $shipStationRate)
         {
@@ -585,17 +585,13 @@ class ShipStationService extends Component
                 // TODO: delete related rate quotes when order makes it to ShipStation, or after a sensible amount of time
                 return $createdOrder;
             }
-            else
-            {
-                Craft::error('Failed to create ShipStation order for ' . $shipStationOrder->orderNumber);
-                return $shipStationOrder;
-            }
-        }
-        else
-        {
-            // model has validation errors
+
+            Craft::error('Failed to create ShipStation order for ' . $shipStationOrder->orderNumber);
             return $shipStationOrder;
         }
+
+        // model has validation errors
+        return $shipStationOrder;
     }
 
 
@@ -714,38 +710,6 @@ class ShipStationService extends Component
             'country' => $order->shippingAddress->country,
             'zip'     => $order->shippingAddress->postalCode,
         ];
-    }
-
-    /**
-     * Translate SnipcartOrder data into ShipStationWeight.
-     *
-     * @param SnipcartOrder $order
-     *
-     * @return ShipStationWeight
-     */
-    public function getWeightFromSnipcartOrder($order): ShipStationWeight
-    {
-        return new ShipStationWeight([
-            'value' => $order->totalWeight,
-            'units' => ShipStationWeight::UNIT_GRAMS,
-        ]);
-    }
-
-    /**
-     * Translate SSnipcartPackage into ShipStationDimensions.
-     *
-     * @param SnipcartPackage $packageDetails
-     *
-     * @return ShipStationDimensions
-     */
-    public function getDimensionsFromSnipcartPackage($packageDetails): ShipStationDimensions
-    {
-        return new ShipStationDimensions([
-            'length' => $packageDetails['length'],
-            'width'  => $packageDetails['width'],
-            'height' => $packageDetails['height'],
-            'units'  => ShipStationDimensions::UNIT_INCHES
-        ]);
     }
 
     /*

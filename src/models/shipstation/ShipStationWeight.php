@@ -45,6 +45,14 @@ class ShipStationWeight extends \craft\base\Model
     // Public Methods
     // =========================================================================
 
+    public function populateFromSnipcartOrder(SnipcartOrder $order)
+    {
+        $this->value = $order->totalWeight;
+        $this->units = self::UNIT_GRAMS;
+
+        return $this;
+    }
+
     /**
      * @inheritdoc
      */

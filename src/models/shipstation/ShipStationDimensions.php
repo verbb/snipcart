@@ -61,6 +61,22 @@ class ShipStationDimensions extends \craft\base\Model
     }
 
     /**
+     * Populate this model from a SnipcartPackage.
+     *
+     * @param SnipcartPackage $package
+     * @return $this
+     */
+    public function populateFromSnipcartPackage(SnipcartPackage $package): ShipStationDimensions
+    {
+        $this->length = $package->length;
+        $this->width  = $package->width;
+        $this->height = $package->height;
+        $this->units  = self::UNIT_INCHES;
+
+        return $this;
+    }
+
+    /**
      * True if valid, non-zero length, width, and height are all present.
      *
      * @return bool
