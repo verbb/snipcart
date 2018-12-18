@@ -8,14 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Weight Model
  * https://www.shipstation.com/developer-api/#/reference/model-weight
  */
 
-class ShipStationWeight extends Model
+class ShipStationWeight extends \craft\base\Model
 {
     // Constants
     // =========================================================================

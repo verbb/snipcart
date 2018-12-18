@@ -21,17 +21,48 @@ class SnipcartCustomShippingMethod extends \craft\base\Model
     // Properties
     // =========================================================================
 
+    /**
+     * @var
+     */
     public $id;
+
+    /**
+     * @var \DateTime
+     */
     public $creationDate;
+
+    /**
+     * @var
+     */
     public $name;
+
+    /**
+     * @var \DateTime
+     */
     public $modificationDate;
+
+    /**
+     * @var
+     */
     public $postalCodeRegex;
+
+    /**
+     * @var
+     */
     public $guaranteedEstimatedDelivery;
         // minimumDaysForDelivery 10
         // maximumDaysForDelivery null
+
+    /**
+     * @var
+     */
     public $location;
         // country null,
         // province null
+
+    /**
+     * @var
+     */
     public $rates;
         // {
         //   "cost": 20,
@@ -55,5 +86,13 @@ class SnipcartCustomShippingMethod extends \craft\base\Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate'];
+    }
 
 }

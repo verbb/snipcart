@@ -153,7 +153,7 @@ class SnipcartItem extends \craft\base\Model
     public $addedOn;
 
     /**
-     * @var string
+     * @var \DateTime
      */
     public $modificationDate;
 
@@ -185,5 +185,13 @@ class SnipcartItem extends \craft\base\Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['modificationDate'];
+    }
 
 }

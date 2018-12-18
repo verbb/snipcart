@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Rate Model
  * https://www.shipstation.com/developer-api/#/reference/shipments/get-rates/get-rates
  */
-
-class ShipStationRate extends Model
+class ShipStationRate extends \craft\base\Model
 {
     // Properties
     // =========================================================================

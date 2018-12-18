@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Advanced Options Model
  * https://www.shipstation.com/developer-api/#/reference/model-advancedoptions
  */
-
-class ShipStationAdvancedOptions extends Model
+class ShipStationAdvancedOptions extends \craft\base\Model
 {
     // Constants
     // =========================================================================

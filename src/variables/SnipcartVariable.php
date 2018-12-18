@@ -58,9 +58,9 @@ class SnipcartVariable
      * @return \stdClass|array
      * @throws \Exception
      */
-    public function listAbandoned()
+    public function listAbandonedCarts()
     {
-        return Snipcart::$plugin->snipcart->listAbandoned();
+        return Snipcart::$plugin->snipcart->listAbandonedCarts();
     }
 
     /**
@@ -74,10 +74,10 @@ class SnipcartVariable
 
     /**
      * @param $orderId
-     * @return SnipcartOrder
+     * @return SnipcartOrder|null
      * @throws \Exception
      */
-    public function getOrder($orderId): SnipcartOrder
+    public function getOrder($orderId)
     {
         return Snipcart::$plugin->snipcart->getOrder($orderId);
     }

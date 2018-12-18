@@ -8,14 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Item Option Model
  * https://www.shipstation.com/developer-api/#/reference/model-itemoption
  */
 
-class ShipStationItemOption extends Model
+class ShipStationItemOption extends \craft\base\Model
 {
     // Properties
     // =========================================================================

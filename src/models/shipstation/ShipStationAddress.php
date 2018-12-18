@@ -8,13 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Address Model
  * https://www.shipstation.com/developer-api/#/reference/model-address
  */
-class ShipStationAddress extends Model
+class ShipStationAddress extends \craft\base\Model
 {
     // Constants
     // =========================================================================
@@ -91,6 +89,17 @@ class ShipStationAddress extends Model
 
     // Public Methods
     // =========================================================================
+
+    public function populateFromSnipcartAddress(SnipcartAddress $snipcartAddress)
+    {
+        $this->name       = $snipcartAddress->name;
+        $this->street1    = $snipcartAddress->address1;
+        $this->street2    = $snipcartAddress->address2;
+        $this->city       = $snipcartAddress->city;
+        $this->state      = $snipcartAddress->province;
+        $this->postalCode = $snipcartAddress->postalCode;
+        $this->phone      = $snipcartAddress->phone;
+    }
 
     /**
      * @inheritdoc

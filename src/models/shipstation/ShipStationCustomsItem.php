@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation CustomsItem Model
  * https://www.shipstation.com/developer-api/#/reference/model-customsitem
  */
-
-class ShipStationCustomsItem extends Model
+class ShipStationCustomsItem extends \craft\base\Model
 {
     // Constants
     // =========================================================================

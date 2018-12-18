@@ -1,10 +1,15 @@
 {% extends "snipcart/_layout" %}
 
-{% set order              = craft.snipcart.getOrder(orderId) %}
+{% set order = craft.snipcart.getOrder(orderId) %}
+
+{% if order is null %}
+	{% exit 404 %}
+{% endif %}
+
 {#% set orderNotifications = craft.snipcart.getOrderNotifications(orderId) %#}
 {#% set orderRefunds       = craft.snipcart.getOrderRefunds(orderId) %#}
-{% set title              = "Snipcart Order "~order.invoiceNumber %}
-{% set selectedTab        = "orders" %}
+{% set title = "Snipcart Order " ~ order.invoiceNumber %}
+{% set selectedTab = "orders" %}
 
 {% block content %}
 

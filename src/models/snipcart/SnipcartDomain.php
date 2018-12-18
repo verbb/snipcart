@@ -21,7 +21,14 @@ class SnipcartDomain extends \craft\base\Model
     // Properties
     // =========================================================================
 
+    /**
+     * @var
+     */
     public $domain;
+
+    /**
+     * @var
+     */
     public $protocol;
 
 

@@ -14,6 +14,10 @@ namespace workingconcept\snipcart\models;
 
 class SnipcartAbandonedCart extends \craft\base\Model
 {
+    // Constants
+    // =========================================================================
+
+    const STATUS_IN_PROGRESS = 'InProgress';
 
     // Properties
     // =========================================================================
@@ -21,7 +25,22 @@ class SnipcartAbandonedCart extends \craft\base\Model
     /**
      * @var
      */
+    public $id;
+
+    /**
+     * @var
+     */
     public $token;
+
+    /**
+     * @var
+     */
+    public $accountId;
+
+    /**
+     * @var
+     */
+    public $location;
 
     /**
      * @var string
@@ -49,7 +68,7 @@ class SnipcartAbandonedCart extends \craft\base\Model
     public $billingAddress;
 
     /**
-     * @var
+     * @var \DateTime
      */
     public $modificationDate;
 
@@ -59,7 +78,7 @@ class SnipcartAbandonedCart extends \craft\base\Model
     public $shippingAddress;
 
     /**
-     * @var
+     * @var \DateTime
      */
     public $completionDate;
 
@@ -135,4 +154,152 @@ class SnipcartAbandonedCart extends \craft\base\Model
      * @var
      */
     public $total;
+
+    /**
+     * @var
+     */
+    public $ipAddress;
+
+    /**
+     * @var
+     */
+    public $userAgent;
+
+    /**
+     * @var
+     */
+    public $lang;
+
+    /**
+     * @var
+     */
+    public $version;
+
+    /**
+     * @var
+     */
+    public $recoveryCampaignStatus;
+
+    /**
+     * @var
+     */
+    public $hasItemsShippable;
+
+    /**
+     * @var
+     */
+    public $taxes;
+
+    /**
+     * @var
+     */
+    public $defaultTaxes;
+
+    /**
+     * @var
+     */
+    public $baseTotal;
+
+    /**
+     * @var
+     */
+    public $discountsTotal;
+
+    /**
+     * @var
+     */
+    public $itemsTotal;
+
+    /**
+     * @var
+     */
+    public $itemsTotalWithoutTaxes;
+
+    /**
+     * @var
+     */
+    public $taxesTotal;
+
+    /**
+     * @var
+     */
+    public $taxProvider;
+
+    /**
+     * @var
+     */
+    public $paymentGatewayUsed;
+
+    /**
+     * @var
+     */
+    public $gatewayResponseData;
+
+    /**
+     * @var
+     */
+    public $paymentGatewayTransactionId;
+
+    /**
+     * @var
+     */
+    public $paymentGatewayInvoiceId;
+
+    /**
+     * @var
+     */
+    public $exported;
+
+    /**
+     * @var
+     */
+    public $isRecurringInvoice;
+
+    /**
+     * @var
+     */
+    public $parentCartId;
+
+    /**
+     * @var
+     */
+    public $guest;
+
+    /**
+     * @var
+     */
+    public $shippingCharged;
+
+    /**
+     * @var
+     */
+    public $partitionKey;
+
+    /**
+     * @var
+     */
+    public $creationDate;
+
+    /**
+     * @var
+     */
+    public $_etag;
+
+    /**
+     * @var
+     */
+    public $userId;
+
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['modificationDate', 'completionDate'];
+    }
+
 }

@@ -8,13 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Webhook Model
  * https://www.shipstation.com/developer-api/#/reference/model-webhook
  */
-class ShipStationWebhook extends Model
+class ShipStationWebhook extends \craft\base\Model
 {
     // Constants
     // =========================================================================

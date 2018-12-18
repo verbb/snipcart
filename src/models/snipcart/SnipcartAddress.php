@@ -101,6 +101,9 @@ class SnipcartAddress extends \craft\base\Model
     // Public Methods
     // =========================================================================
 
+    /**
+     * @return string|null
+     */
     public function getFormattedPhone()
     {
         $num = $this->phone;

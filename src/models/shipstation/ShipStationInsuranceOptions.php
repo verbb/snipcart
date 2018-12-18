@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Insurance Options Model
  * https://www.shipstation.com/developer-api/#/reference/model-insuranceoptions
  */
-
-class ShipStationInsuranceOptions extends Model
+class ShipStationInsuranceOptions extends \craft\base\Model
 {
     // Constants
     // =========================================================================

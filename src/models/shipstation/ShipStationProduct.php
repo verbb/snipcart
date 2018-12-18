@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Product Model
  * https://www.shipstation.com/developer-api/#/reference/model-product
  */
-
-class ShipStationProduct extends Model
+class ShipStationProduct extends \craft\base\Model
 {
     // Properties
     // =========================================================================
@@ -76,12 +73,12 @@ class ShipStationProduct extends Model
     public $fulfillmentSku;
 
     /**
-     * @var string|null The timestamp the product record was created in ShipStation's database. Read-Only.
+     * @var \DateTime|null The timestamp the product record was created in ShipStation's database. Read-Only.
      */
     public $createDate;
 
     /**
-     * @var string|null The timestamp the product record was modified in ShipStation. Read-Only.
+     * @var \DateTime|null The timestamp the product record was modified in ShipStation. Read-Only.
      */
     public $modifyDate;
 
@@ -178,6 +175,14 @@ class ShipStationProduct extends Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['createDate', 'modifyDate'];
+    }
 
     /**
      * @inheritdoc

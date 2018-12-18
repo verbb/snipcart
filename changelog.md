@@ -1,12 +1,17 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.8 - 2018-12-16
+## 1.0.0-beta.8 - 2018-12-17
 ### Added
 - Separated parts of SnipcartService into ApiService.
 ### Changed
 - Changed the way API exceptions are handled to reduce disruption and log failures.
 - Refactored SnipcartService to be cleaner.
 - Renamed SnipcartService's `processShippingRates()` to `getShippingRatesForOrder()`.
+- Models now use proper DateTime values.
+- Minor fix for mobile order email price wrapping.
+- Improved ShipStation order verifier accuracy.
+- Updated webhook controller's `handleOrderCompletedEvent()` to continue through problems and report errors by model. Any errors at all will result in `success: false`.
+- Renamed `listAbandoned` template variable to `listAbandonedCarts`.
 
 ## 1.0.0-beta.7 - 2018-12-15
 ### Changed

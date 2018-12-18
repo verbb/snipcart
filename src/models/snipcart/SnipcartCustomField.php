@@ -17,12 +17,39 @@ class SnipcartCustomField extends \craft\base\Model
     // Properties
     // =========================================================================
 
+    /**
+     * @var
+     */
     public $name;
+
+    /**
+     * @var
+     */
     public $operation;
+
+    /**
+     * @var
+     */
     public $type;
+
+    /**
+     * @var
+     */
     public $options;
+
+    /**
+     * @var
+     */
     public $required;
+
+    /**
+     * @var
+     */
     public $value;
+
+    /**
+     * @var
+     */
     public $optionsArray;
 
 

@@ -14,29 +14,104 @@ namespace workingconcept\snipcart\models;
 
 class SnipcartProduct extends \craft\base\Model
 {
-  // Properties
-  // =========================================================================
+    // Properties
+    // =========================================================================
 
-  public $id;
+    /**
+     * @var
+     */
+    public $id;
+
+    /**
+     * @var \DateTime
+     */
     public $creationDate;
+
+    /**
+     * @var \DateTime
+     */
     public $modificationDate;
+
+    /**
+     * @var
+     */
     public $mode;
+
+    /**
+     * @var
+     */
     public $userDefinedId;
+
+    /**
+     * @var
+     */
     public $url;
+
+    /**
+     * @var
+     */
     public $price;
+
+    /**
+     * @var
+     */
     public $name;
+
+    /**
+     * @var
+     */
     public $description;
+
+    /**
+     * @var
+     */
     public $image;
+
+    /**
+     * @var
+     */
     public $archived;
+
+    /**
+     * @var
+     */
     public $statistics;
         // numberOfSales
         // totalSales
+
+    /**
+     * @var
+     */
     public $customFields;
+
+    /**
+     * @var
+     */
     public $metaData;
+
+    /**
+     * @var
+     */
     public $inventoryManagementMethod;
+
+    /**
+     * @var
+     */
     public $stock;
+
+    /**
+     * @var
+     */
     public $totalStock;
+
+    /**
+     * @var
+     */
     public $allowOutOfStockPurchases;
+
+    /**
+     * @var
+     */
     public $variants;
 
     /*
@@ -84,4 +159,16 @@ class SnipcartProduct extends \craft\base\Model
       }
     ]
       */
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate'];
+    }
+
 }

@@ -8,15 +8,11 @@
 
 namespace workingconcept\snipcart\services;
 
-use workingconcept\snipcart\models\SnipcartAddress;
 use workingconcept\snipcart\models\SnipcartPackage;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\ShipStationAddress;
-use workingconcept\snipcart\models\ShipStationOrderItem;
 use workingconcept\snipcart\models\ShipStationDimensions;
 use workingconcept\snipcart\models\ShipStationOrder;
 use workingconcept\snipcart\models\ShipStationWeight;
-use workingconcept\snipcart\models\ShipStationItemOption;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\SnipcartOrder;
 use workingconcept\snipcart\models\ShipStationRate;
@@ -26,9 +22,13 @@ use craft\base\Component;
 use yii\base\Exception;
 use GuzzleHttp\Client;
 
+/**
+ * Class ShipStationService
+ *
+ * @package workingconcept\snipcart\services
+ */
 class ShipStationService extends Component
 {
-
     // Constants
     // =========================================================================
 
@@ -163,10 +163,16 @@ class ShipStationService extends Component
      * @param ShipStationOrder $order
      *
      * @return ShipStationOrder|null decoded response data, with ->labelData base64-encoded PDF body
+     * @throws \Exception from Guzzle
      */
     public function createOrder(ShipStationOrder $order)
     {
-        $payload = $order->toArray([], $order->extraFields(), true);
+        $payload = $order->toArray(
+            [],
+            $order->extraFields(),
+            true
+        );
+
         $payload = $this->removeReadOnlyFieldsFromPayload($payload);
 
         $response = $this->client->post('orders/createorder', [
@@ -174,7 +180,7 @@ class ShipStationService extends Component
         ]);
 
         /**
-         * Handle problematic responses, where 200 and 201 are expectd to be fine.
+         * Handle problematic responses, where 200 and 201 are expected to be fine.
          * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
          */
         if ($response->getStatusCode() > 201)
@@ -216,7 +222,7 @@ class ShipStationService extends Component
 
         $responseData = json_decode($response->getBody(), true);
 
-        return $this->populateModelFromResponseData($responseData);
+        return new ShipStationOrder($responseData);
     }
 
     /**
@@ -358,12 +364,70 @@ class ShipStationService extends Component
         $orders = [];
         $responseData = json_decode($response->getBody(), true);
 
-        foreach ($responseData['orders'] as $order)
+        foreach ($responseData['orders'] as $orderData)
         {
-            $orders[] = $this->populateModelFromResponseData($order);
+            $orders[] = new ShipStationOrder($orderData);
         }
 
         return $orders;
+    }
+
+    /**
+     * Get an order by its order number, which is the Snipcart invoice number.
+     *
+     * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
+     *
+     * @param $orderNumber
+     *
+     * @return ShipStationOrder|null
+     */
+    public function getOrderByOrderNumber($orderNumber)
+    {
+        $response = $this->client->get('orders?orderNumber=' . $orderNumber);
+
+        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
+        {
+            // something bad happened!
+            Craft::warning('Failed to fetch ShipStation orders: ' . $response->getStatusCode());
+            return null;
+        }
+
+        $responseData = json_decode($response->getBody(), true);
+
+        if (count($responseData['orders']) === 1)
+        {
+            return new ShipStationOrder($responseData['orders'][0]);
+        }
+
+        return null;
+    }
+
+    /**
+     * https://www.shipstation.com/developer-api/#/reference/orders/getdelete-order/get-order
+     *
+     * @param int $orderId
+     *
+     * @return ShipStationOrder|null
+     */
+    public function getOrder($orderId)
+    {
+        $response = $this->client->get("order/{$orderId}");
+
+        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
+        {
+            // something bad happened!
+            Craft::warning('Failed to fetch ShipStation order ' . $orderId. ': ' . $response->getStatusCode());
+            return null;
+        }
+
+        $responseData = json_decode($response->getBody(), true);
+
+        if ( ! empty($responseData))
+        {
+            return new ShipStationOrder($responseData);
+        }
+
+        return null;
     }
 
     /**
@@ -408,21 +472,12 @@ class ShipStationService extends Component
 
         $packageDetails = Snipcart::$plugin->snipcart->getOrderPackagingDetails($snipcartOrder);
 
-        $shipStationOrder->setAttributes([
-            'orderNumber'              => $snipcartOrder->invoiceNumber,
-            'orderKey'                 => $snipcartOrder->token,
-            'serviceCode'              => null, // to be updated below
-            'carrierCode'              => $this->providerSettings['defaultCarrierCode'],
-            'orderDate'                => $snipcartOrder->creationDate,
-            'paymentDate'              => $snipcartOrder->creationDate,
-            'customerEmail'            => $snipcartOrder->email,
-            'amountPaid'               => $snipcartOrder->total,
-            'shippingAmount'           => $snipcartOrder->shippingFees,
-            'requestedShippingService' => $snipcartOrder->shippingMethod,
-            'customerNotes'            => $this->getOrderNotesFromCustomFields($snipcartOrder->customFields),
-            'giftMessage'              => $this->getGiftNoteFromCustomFields($snipcartOrder->customFields),
-            'orderStatus'              => ShipStationOrder::STATUS_AWAITING_SHIPMENT
-        ]);
+        $shipStationOrder->populateFromSnipcartOrder($snipcartOrder);
+
+        $shipStationOrder->orderStatus   = ShipStationOrder::STATUS_AWAITING_SHIPMENT;
+        $shipStationOrder->customerNotes = $this->getOrderNotesFromCustomFields($snipcartOrder->customFields);
+        $shipStationOrder->giftMessage   = $this->getGiftNoteFromCustomFields($snipcartOrder->customFields);
+        $shipStationOrder->carrierCode   = $this->providerSettings['defaultCarrierCode'];
 
         // if the newly-created ShipStation order includes a gift message, mark it as a gift
         if ($shipStationOrder->giftMessage !== null)
@@ -430,18 +485,12 @@ class ShipStationService extends Component
             $shipStationOrder->gift = true;
         }
 
-        $shipStationOrder->shipTo = $this->translateSnipcartAddressToShipStationAddress($snipcartOrder->shippingAddress);
-        $shipStationOrder->shipTo->validate();
-
-        $shipStationOrder->billTo = $this->translateSnipcartAddressToShipStationAddress($snipcartOrder->billingAddress);
-        $shipStationOrder->billTo->validate();
-
         $orderWeight = $snipcartOrder->totalWeight;
 
-        if ( ! empty($packageDetails['weight']))
+        if ( ! empty($packageDetails->weight))
         {
             // add the weight of packing materials
-            $orderWeight += $packageDetails['weight'];
+            $orderWeight += $packageDetails->weight;
         }
 
         $shipStationOrder->weight = new ShipStationWeight([
@@ -462,53 +511,6 @@ class ShipStationService extends Component
 
             $shipStationOrder->dimensions->validate();
         }
-
-        $orderItems = [];
-
-        foreach ($snipcartOrder->items as $item)
-        {
-            $orderItem = new ShipStationOrderItem();
-
-            $orderItem->setAttributes([
-                'lineItemKey' => $item->id,
-                'name'        => $item->name,
-                'quantity'    => $item->quantity,
-                'unitPrice'   => $item->price,
-            ]);
-
-            $itemWeight = new ShipStationWeight();
-            $itemWeight->setAttributes([
-                'value' => $item->weight,
-                'units' => ShipStationWeight::UNIT_GRAMS,
-            ]);
-            $itemWeight->validate();
-
-            $orderItem->weight = $itemWeight;
-
-            if ( ! empty($item->customFields))
-            {
-                $itemOptions = [];
-
-                foreach ($item->customFields as $customField)
-                {
-                    $itemOption = new ShipStationItemOption();
-
-                    $itemOption->name  = $customField->name;
-                    $itemOption->value = $customField->value;
-                    $itemOption->validate();
-
-                    $itemOptions[] = $itemOption;
-                }
-
-                $orderItem->setOptions($itemOptions);
-            }
-
-            $orderItem->validate();
-
-            $orderItems[] = $orderItem;
-        }
-
-        $shipStationOrder->items = $orderItems;
 
         if ($shippingMethod = $this->getShippingMethodFromOrder($shipStationOrder, $snipcartOrder->shippingMethod))
         {
@@ -548,70 +550,6 @@ class ShipStationService extends Component
     // =========================================================================
 
     /**
-     * Build a new ShipStationOrder using data we got back from the ShipStation API.
-     *
-     * @param array $data associative array of API response data
-     *
-     * @return ShipStationOrder
-     */
-    private function populateModelFromResponseData($data): ShipstationOrder
-    {
-        $order = new ShipStationOrder();
-        $order->attributes = $data;
-
-        $order->billTo     = new ShipStationAddress($data['billTo']);
-        $order->shipTo     = new ShipStationAddress($data['shipTo']);
-        $order->weight     = new ShipStationWeight($data['weight']);
-        $order->dimensions = new ShipStationDimensions($data['dimensions']);
-
-        // TODO: support insurance options
-        // TODO: support international options
-        //$order->insuranceOptions = new ShipStationInsuranceOptions($data['insuranceOptions']);
-        //$order->internationalOptions = new ShipStationInternationalOptions($data['insuranceOptions']);
-
-        $orderItems = [];
-
-        foreach ($data['items'] as $item)
-        {
-            $newItem = new ShipStationOrderItem($item);
-            $newOptions = [];
-
-            foreach ($item['options'] as $option)
-            {
-                $newOptions[] = new ShipStationItemOption($option);
-            }
-
-            $newItem->weight  = new ShipStationWeight($item['weight']);
-            $newItem->options = $newOptions;
-
-            $orderItems[] = $newItem;
-        }
-
-        $order->items = $orderItems;
-
-        return $order;
-    }
-
-    /**
-     * Turn a SnipcartAddress into a ShipStationAddress
-     *
-     * @param SnipcartAddress $snipcartAddress
-     * @return ShipStationAddress
-     */
-    private function translateSnipcartAddressToShipStationAddress(SnipcartAddress $snipcartAddress): ShipStationAddress
-    {
-        return new ShipStationAddress([
-            'name'       => $snipcartAddress->name,
-            'street1'    => $snipcartAddress->address1,
-            'street2'    => $snipcartAddress->address2,
-            'city'       => $snipcartAddress->city,
-            'state'      => $snipcartAddress->province,
-            'postalCode' => $snipcartAddress->postalCode,
-            'phone'      => $snipcartAddress->phone
-        ]);
-    }
-
-    /**
      * Modify an array about to be sent via API to remove read-only fields that can't be set.
      *
      * @param $payload
@@ -620,16 +558,39 @@ class ShipStationService extends Component
      */
     private function removeReadOnlyFieldsFromPayload($payload): array
     {
-        unset($payload['orderId']);
+        // TODO: move this into a scenario on the model
+
+        $removeIfNull = [
+            'shipByDate',
+            'customerId',
+            'customerUsername',
+            'internalNotes',
+            'giftMessage',
+            'paymentMethod',
+            'packageCode',
+            'confirmation',
+            'shipDate',
+            'holdUntilDate',
+            'tagIds',
+            'userId',
+            'externallyFulfilledBy',
+            'labelMessages',
+            'insuranceOptions',
+            'internationalOptions',
+            'advancedOptions',
+            'orderTotal',
+        ];
+
+        foreach ($removeIfNull as $removeKey)
+        {
+            unset($payload[$removeKey]);
+        }
+
+        unset($payload['orderId'], $payload['createDate'], $payload['modifyDate'], $payload['externallyFulfilled']);
 
         foreach ($payload['items'] as &$item)
         {
-            unset(
-                $item['orderItemId'],
-                $item['adjustment'],
-                $item['createDate'],
-                $item['modifyDate']
-            );
+            unset($item['orderItemId'], $item['adjustment'], $item['createDate'], $item['modifyDate']);
         }
 
         return $payload;

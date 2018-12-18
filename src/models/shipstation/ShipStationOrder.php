@@ -8,8 +8,6 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Order Model
  * https://www.shipstation.com/developer-api/#/reference/model-order
@@ -23,15 +21,15 @@ use craft\base\Model;
  * @property ShipStationInternationalOptions $internationalOptions
  * @property ShipStationAdvancedOptions $advancedOptions
  */
-class ShipStationOrder extends Model
+class ShipStationOrder extends \craft\base\Model
 {
     // Constants
     // =========================================================================
 
-    const STATUS_AWAITING_PAYMENT  = 'awaiting_payment';
+    const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
     const STATUS_AWAITING_SHIPMENT = 'awaiting_shipment';
-    const STATUS_ON_HOLD           = 'on_hold';
-    const STATUS_CANCELLED         = 'cancelled';
+    const STATUS_ON_HOLD = 'on_hold';
+    const STATUS_CANCELLED = 'cancelled';
 
 
     // Properties
@@ -53,30 +51,30 @@ class ShipStationOrder extends Model
     public $orderKey;
 
     /**
-     * @var string|null Order Date ("2015-06-29T08:46:27.0000000")
+     * @var \DateTime|null Order Date ("2015-06-29T08:46:27.0000000")
      */
     public $orderDate;
 
     /**
-     * @var string|null Record Creation Date ("2015-06-29T08:46:27.0000000", read-only)
+     * @var \DateTime|null Record Creation Date ("2015-06-29T08:46:27.0000000", read-only)
      */
     public $createDate;
 
     /**
-     * @var string|null Record Last Modified Date ("2015-06-29T08:46:27.0000000", read-only)
+     * @var \DateTime|null Record Last Modified Date ("2015-06-29T08:46:27.0000000", read-only)
      */
     public $modifyDate;
 
     /**
-     * @var string|null Order Payment Date ("2015-06-29T08:46:27.0000000")
+     * @var \DateTime|null Order Payment Date ("2015-06-29T08:46:27.0000000")
      */
     public $paymentDate;
 
     /**
-     * @var string|null Order Ship By Date ("2015-06-29T08:46:27.0000000")
+     * @var \DateTime|null Order Ship By Date ("2015-06-29T08:46:27.0000000")
      */
     public $shipByDate;
-    
+
     /**
      * @var string|null Order Status
      */
@@ -121,7 +119,7 @@ class ShipStationOrder extends Model
      * @var float|null Total amount paid for the order.
      */
     public $amountPaid;
-    
+
     /**
      * @var float|null Tax amount for the order.
      */
@@ -131,7 +129,7 @@ class ShipStationOrder extends Model
      * @var float|null Shipping amount paid by customer, if any.
      */
     public $shippingAmount;
-    
+
     /**
      * @var string|null Notes left by the customer when placing the order.
      */
@@ -141,12 +139,12 @@ class ShipStationOrder extends Model
      * @var string|null Private notes that are only visible to the seller.
      */
     public $internalNotes;
-    
+
     /**
      * @var bool|null Specifies whether or not this Order is a gift
      */
     public $gift;
-    
+
     /**
      * @var string|null Gift message left by the customer when placing the order.
      */
@@ -161,7 +159,7 @@ class ShipStationOrder extends Model
      * @var string|null Identifies the shipping service selected by the customer when placing this order. This value is given to ShipStation by the marketplace/cart. If value is "null" then the marketplace or cart does not support this field in ShipStation.
      */
     public $requestedShippingService;
-    
+
     /**
      * @var string|null The code for the carrier that is to be used(or was used) when this order is shipped (was shipped).
      */
@@ -183,12 +181,12 @@ class ShipStationOrder extends Model
     public $confirmation;
 
     /**
-     * @var string|null The date the order was shipped. ("2015-06-29T08:46:27.0000000")
+     * @var \DateTime|null The date the order was shipped. ("2015-06-29T08:46:27.0000000")
      */
     public $shipDate;
-    
+
     /**
-     * @var string|null If placed on hold, this date is the expiration date for this order's hold status. The order is moved back to awaiting_shipment on this date. ("2015-06-29T08:46:27.0000000")
+     * @var \DateTime|null If placed on hold, this date is the expiration date for this order's hold status. The order is moved back to awaiting_shipment on this date. ("2015-06-29T08:46:27.0000000")
      */
     public $holdUntilDate;
 
@@ -237,6 +235,11 @@ class ShipStationOrder extends Model
      */
     public $externallyFulfilledBy;
 
+    /**
+     * @var
+     */
+    public $labelMessages;
+
 
     // Public Methods
     // =========================================================================
@@ -251,19 +254,22 @@ class ShipStationOrder extends Model
         return $this->_billTo;
     }
 
-
     /**
      * Sets the order’s billing address.
      *
-     * @param ShipStationAddress $address The order's billing address.
+     * @param ShipStationAddress|array $address The order's billing address.
      *
      * @return ShipStationAddress
      */
-    public function setBillTo(ShipStationAddress $address): ShipStationAddress
+    public function setBillTo($address): ShipStationAddress
     {
+        if (is_array($address))
+        {
+            $address = new ShipStationAddress($address);
+        }
+
         return $this->_billTo = $address;
     }
-
 
     /**
      * Gets the order’s shipping address.
@@ -275,19 +281,22 @@ class ShipStationOrder extends Model
         return $this->_shipTo;
     }
 
-
     /**
      * Sets the order’s shipping address.
      *
-     * @param ShipStationAddress $address The order's shipping address.
+     * @param ShipStationAddress|array $address The order's shipping address.
      *
      * @return ShipStationAddress
      */
-    public function setShipTo(ShipStationAddress $address): ShipStationAddress
+    public function setShipTo($address): ShipStationAddress
     {
+        if (is_array($address))
+        {
+            $address = new ShipStationAddress($address);
+        }
+
         return $this->_shipTo = $address;
     }
-
 
     /**
      * Gets the order’s items.
@@ -296,8 +305,7 @@ class ShipStationOrder extends Model
      */
     public function getItems(): array
     {
-        if ($this->_items !== null)
-        {
+        if ($this->_items !== null) {
             return $this->_items;
         }
 
@@ -305,7 +313,6 @@ class ShipStationOrder extends Model
 
         return $this->_items;
     }
-
 
     /**
      * Sets the order’s items.
@@ -319,7 +326,6 @@ class ShipStationOrder extends Model
         $this->_items = $items;
     }
 
-
     /**
      * Gets the order’s weight.
      *
@@ -330,11 +336,10 @@ class ShipStationOrder extends Model
         return $this->_weight;
     }
 
-
     /**
      * Sets the order’s weight.
      *
-     * @param array|ShipStationWeight $weight The item’s weight.
+     * @param ShipStationWeight|array $weight The item’s weight.
      *
      * @return ShipStationWeight
      */
@@ -348,7 +353,6 @@ class ShipStationOrder extends Model
         return $this->_weight = $weight;
     }
 
-
     /**
      * Gets the order’s dimensions.
      *
@@ -359,19 +363,22 @@ class ShipStationOrder extends Model
         return $this->_dimensions;
     }
 
-
     /**
      * Sets the order’s dimensions.
      *
-     * @param ShipStationDimensions $dimensions The order’s dimensions.
+     * @param ShipStationDimensions|array $dimensions The order’s dimensions.
      *
      * @return ShipStationDimensions
      */
-    public function setDimensions(ShipStationDimensions $dimensions): ShipStationDimensions
+    public function setDimensions($dimensions): ShipStationDimensions
     {
+        if (is_array($dimensions))
+        {
+            $dimensions = new ShipStationDimensions($dimensions);
+        }
+
         return $this->_dimensions = $dimensions;
     }
-
 
     /**
      * Gets the order’s insurance options.
@@ -383,19 +390,22 @@ class ShipStationOrder extends Model
         return $this->_insuranceOptions;
     }
 
-
     /**
      * Sets the order’s insurance options.
      *
-     * @param ShipStationInsuranceOptions $insuranceOptions The order’s insurance options.
+     * @param ShipStationInsuranceOptions|array $insuranceOptions The order’s insurance options.
      *
      * @return ShipStationInsuranceOptions
      */
-    public function setInsuranceOptions(ShipStationInsuranceOptions $insuranceOptions): ShipStationInsuranceOptions
+    public function setInsuranceOptions($insuranceOptions): ShipStationInsuranceOptions
     {
+        if (is_array($insuranceOptions))
+        {
+            $insuranceOptions = new ShipStationInsuranceOptions($insuranceOptions);
+        }
+
         return $this->_insuranceOptions = $insuranceOptions;
     }
-
 
     /**
      * Gets the order’s international options.
@@ -407,19 +417,22 @@ class ShipStationOrder extends Model
         return $this->_internationalOptions;
     }
 
-
     /**
      * Sets the order’s international options.
      *
-     * @param ShipStationInternationalOptions $internationalOptions The order’s international options.
+     * @param ShipStationInternationalOptions|array $internationalOptions The order’s international options.
      *
      * @return ShipStationInternationalOptions
      */
-    public function setInternationalOptions(ShipStationInternationalOptions $internationalOptions): ShipStationInternationalOptions
+    public function setInternationalOptions($internationalOptions): ShipStationInternationalOptions
     {
+        if (is_array($internationalOptions))
+        {
+            $internationalOptions = new ShipStationInternationalOptions($internationalOptions);
+        }
+
         return $this->_internationalOptions = $internationalOptions;
     }
-
 
     /**
      * Gets the order’s advanced options.
@@ -431,24 +444,84 @@ class ShipStationOrder extends Model
         return $this->_advancedOptions;
     }
 
-
     /**
      * Sets the order’s advanced options.
      *
-     * @param ShipStationAdvancedOptions $advancedOptions The order’s advanced options.
+     * @param ShipStationAdvancedOptions|array $advancedOptions The order’s advanced options.
      *
      * @return ShipStationAdvancedOptions
      */
-    public function setAdvancedOptions(ShipStationAdvancedOptions $advancedOptions): ShipStationAdvancedOptions
+    public function setAdvancedOptions($advancedOptions): ShipStationAdvancedOptions
     {
+        if (is_array($advancedOptions))
+        {
+            $advancedOptions = new ShipStationAdvancedOptions($advancedOptions);
+        }
+
         return $this->_advancedOptions = $advancedOptions;
     }
 
+    /**
+     * Map SnipcartOrder properties to this model.
+     *
+     * @param SnipcartOrder $snipcartOrder
+     */
+    public function populateFromSnipcartOrder(SnipcartOrder $snipcartOrder)
+    {
+        $this->orderNumber              = $snipcartOrder->invoiceNumber;
+        $this->orderKey                 = $snipcartOrder->token;
+        $this->orderDate                = $snipcartOrder->creationDate;
+        $this->paymentDate              = $snipcartOrder->completionDate;
+        $this->customerEmail            = $snipcartOrder->email;
+        $this->amountPaid               = $snipcartOrder->total;
+        $this->shippingAmount           = $snipcartOrder->shippingFees;
+        $this->requestedShippingService = $snipcartOrder->shippingMethod;
+        $this->taxAmount                = $snipcartOrder->taxesTotal;
+
+        $shipTo = new ShipStationAddress();
+        $shipTo->populateFromSnipcartAddress($snipcartOrder->shippingAddress);
+        $shipTo->validate();
+
+        $this->shipTo = $shipTo;
+
+        $billTo = new ShipStationAddress();
+        $billTo->populateFromSnipcartAddress($snipcartOrder->billingAddress);
+        $billTo->validate();
+
+        $this->billTo = $billTo;
+
+        $orderItems = [];
+
+        foreach ($snipcartOrder->items as $item)
+        {
+            $orderItem = new ShipStationOrderItem();
+            $orderItem->populateFromSnipcartItem($item);
+            $orderItems[] = $orderItem;
+        }
+
+        $this->items = $orderItems;
+    }
 
     /**
      * @inheritdoc
      */
-    public function extraFields()
+    public function datetimeAttributes(): array
+    {
+        return [
+            'orderDate',
+            'createDate',
+            'modifyDate',
+            'paymentDate',
+            'shipByDate',
+            'shipDate',
+            'holdUntilDate',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
     {
         return [
             'billTo',
@@ -462,15 +535,12 @@ class ShipStationOrder extends Model
         ];
     }
 
-
     /**
      * @inheritdoc
      */
     public function rules(): array
     {
         /**
-         * TODO: validate and transform dates properly
-         *
          * ShipStation uses the ISO 8601 combined format for dateTime stamps being submitted to and returned from the API.
          * `2016-11-29 23:59:59`
          * The time zone represented in all API responses is PST/PDT. Similarly, ShipStation asks that you make all time zone conversions and submit any dateTime requests in PST/PDT.
@@ -479,7 +549,7 @@ class ShipStationOrder extends Model
             [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
             [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'default', 'value' => 0],
-            [['orderNumber', 'orderStatus', 'orderDate', 'createDate', 'modifyDate', 'paymentDate', 'shipByDate', 'shipDate', 'holdUntilDate'], 'string'],
+            [['orderNumber', 'orderStatus'], 'string'],
             [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string'],
             [['customerEmail'], 'email'],
             [['gift', 'externallyFulfilled'], 'boolean'],

@@ -60,17 +60,17 @@ class SnipcartOrder extends \craft\base\Model
     public $parentToken;
 
     /**
-     * @var string Date order was created. ("2018-12-05T18:37:19Z")
+     * @var \DateTime Date order was created. ("2018-12-05T18:37:19Z")
      */
     public $creationDate;
 
     /**
-     * @var string Date order was last modified. ("2018-12-05T18:37:19Z")
+     * @var \DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
      */
     public $modificationDate;
 
     /**
-     * @var string
+     * @var \DateTime
      */
     public $completionDate;
 
@@ -957,6 +957,13 @@ class SnipcartOrder extends \craft\base\Model
         return $this->_shippingAddress->phone = $phone;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate', 'completionDate'];
+    }
 
     /**
      * @inheritdoc
@@ -1019,6 +1026,7 @@ class SnipcartOrder extends \craft\base\Model
                 'shippingMethodComplete',
                 'isRecurringOrder'
              ], 'boolean'],
+            //[['creationDate', 'modificationDate', 'completionDate'], 'date', 'format' => 'php:c'],
             [['finalGrandTotal', 'shippingFees', 'rebateAmount'], 'number', 'integerOnly' => false],
         ];
     }

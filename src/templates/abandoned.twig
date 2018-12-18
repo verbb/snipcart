@@ -1,20 +1,14 @@
 {% extends "snipcart/_layout" %}
 
 {% set title       = "Snipcart Abandoned Carts"|t %}
-{% set carts       = craft.snipcart.listAbandoned() %}
+{% set carts       = craft.snipcart.listAbandonedCarts() %}
 {% set selectedTab = "abandoned" %}
 
 {% block content %}
 
-	{% if craft.snipcart.isLinked %}
-		<p id="noredirects"{% if carts.items | length %} class="hidden"{% endif %}>
-			{{ "There aren't any abandoned carts yet."|t }}
-		</p>
-	{% else %}
-		<p>
-			{{ "Add your Snipcart Private API Key in the plugin settings."|t }}
-		</p>
-	{% endif %}
+	<p id="noredirects"{% if carts.items | length %} class="hidden"{% endif %}>
+		{{ "There aren't any abandoned carts yet."|t }}
+	</p>
 
 	{% if carts.items | length %}
 

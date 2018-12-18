@@ -30,10 +30,10 @@
 
     <table class="content-table">
         <thead>
-            <th class="align-left no-left-margin first-cell-padding">{{ "Quantity"|t }}</th>
+            <th class="align-left no-left-margin first-cell-padding">{{ "Qty"|t }}</th>
             <th class="align-left normal-cell-padding" width="50%">{{ "Item"|t }}</th>
-            <th class="align-right normal-cell-padding">{{ "Price"|t }}</th>
-            <th class="align-right no-right-margin last-cell-padding">{{ "Subtotal"|t }}</th>
+            <th class="align-right normal-cell-padding nowrap">{{ "Price"|t }}</th>
+            <th class="align-right no-right-margin last-cell-padding nowrap">{{ "Subtotal"|t }}</th>
         </thead>
         <tbody>
             {% for item in order.items %}

@@ -241,6 +241,11 @@ class WebhooksController extends Controller
      */
     private function handleOrderCompletedEvent(SnipcartOrder $order): Response
     {
+        $responseData = [
+            'success' => true,
+            'errors' => [],
+        ];
+
         if ($this->hasEventHandlers(self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER))
         {
             $this->trigger(self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER, new WebhookEvent([
@@ -263,17 +268,11 @@ class WebhooksController extends Controller
 
         if ( ! $entryUpdateResult = Snipcart::$plugin->snipcart->updateElementsFromOrder($order))
         {
-            return $this->asJson(
-                [
-                    'success' => false,
-                    'errors'  => $entryUpdateResult
-                ]
-            );
+            $responseData['success']  = false;
+            $responseData['errors'][] = [
+                'elements' => $entryUpdateResult
+            ];
         }
-
-        $responseData = [
-            'success' => true
-        ];
 
         if (isset($shipStationOrder))
         {
@@ -283,7 +282,17 @@ class WebhooksController extends Controller
             if (count($shipStationOrder->getErrors()) > 0)
             {
                 $responseData['shipstation_errors'] = $shipStationOrder->getErrors();
+
+                $responseData['success']  = false;
+                $responseData['errors'][] = [
+                    'shipstation' => $entryUpdateResult
+                ];
             }
+        }
+
+        if (count($responseData['errors']) === 0)
+        {
+            unset($responseData['errors']);
         }
 
         return $this->asJson($responseData);

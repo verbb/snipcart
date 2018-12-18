@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Dimensions Model
  * https://www.shipstation.com/developer-api/#/reference/model-dimensions
  */
-
-class ShipStationDimensions extends Model
+class ShipStationDimensions extends \craft\base\Model
 {
     // Constants
     // =========================================================================

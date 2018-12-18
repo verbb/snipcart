@@ -8,14 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Product Tag Model
  * https://www.shipstation.com/developer-api/#/reference/model-product-tag
  */
 
-class ShipStationProductTag extends Model
+class ShipStationProductTag extends \craft\base\Model
 {
     // Properties
     // =========================================================================

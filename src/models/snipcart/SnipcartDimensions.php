@@ -17,9 +17,24 @@ class SnipcartDimensions extends \craft\base\Model
     // Properties
     // =========================================================================
 
+    /**
+     * @var
+     */
     public $width;
+
+    /**
+     * @var
+     */
     public $height;
+
+    /**
+     * @var
+     */
     public $length;
+
+    /**
+     * @var
+     */
     public $weight;
 
 

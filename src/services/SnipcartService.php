@@ -68,12 +68,17 @@ class SnipcartService extends Component
      * Get a Snipcart order.
      * 
      * @param string $orderToken Snipcart order GUID
-     * @return SnipcartOrder
+     * @return SnipcartOrder|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function getOrder($orderToken): SnipcartOrder
+    public function getOrder($orderToken)
     {
-        return new SnipcartOrder(Snipcart::$plugin->api->get("orders/{$orderToken}"));
+        if ($orderData = Snipcart::$plugin->api->get("orders/{$orderToken}"))
+        {
+            return new SnipcartOrder($orderData);
+        }
+
+        return null;
     }
 
     /**
@@ -192,7 +197,7 @@ class SnipcartService extends Component
      */
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
-        // TODO: remove reliance on $_POST or $_SESSION
+        // TODO: move reliance on $_POST/$_SESSION to controller
 
         $orders = $this->listOrders($page, $limit);
         $ordersByDay = [];
@@ -320,41 +325,54 @@ class SnipcartService extends Component
     /**
      * List abandoned carts.
      *
-     * @return SnipcartAbandonedCart[]
+     * @return \stdClass|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function listAbandoned(): array
+    public function listAbandonedCarts()
     {
-        return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get('carts/abandoned'),
-            SnipcartAbandonedCart::class
-        );
+        $abandonedCartData = Snipcart::$plugin->api->get('carts/abandoned');
+
+        foreach ($abandonedCartData->items as &$abandonedCart)
+        {
+            $abandonedCart = new SnipcartAbandonedCart($abandonedCart);
+        }
+
+        return $abandonedCartData;
     }
 
     /**
      * List subscriptions.
      *
-     * @return SnipcartSubscription[]
+     * @return \stdClass|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function listSubscriptions(): array
+    public function listSubscriptions()
     {
-        return $this->populateArrayWithModels(
-            Snipcart::$plugin->api->get('subscriptions'),
-            SnipcartSubscription::class
-        );
+        $subscriptionData = Snipcart::$plugin->api->get('subscriptions');
+
+        foreach ($subscriptionData->items as &$subscription)
+        {
+            $subscription = new SnipcartSubscription($subscription);
+        }
+
+        return $subscriptionData;
     }
 
     /**
      * Get a customer from Snipcart
      * 
      * @param int $customerId Snipcart customer ID
-     * @return SnipcartCustomer
+     * @return SnipcartCustomer|null
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
     public function getCustomer($customerId): SnipcartCustomer
     {
-        return new SnipcartCustomer(Snipcart::$plugin->api->get("customers/{$customerId}"));
+        if ($customerData = Snipcart::$plugin->api->get("customers/{$customerId}"))
+        {
+            return new SnipcartCustomer($customerData);
+        }
+
+        return null;
     }
 
     /**
@@ -362,10 +380,10 @@ class SnipcartService extends Component
      * 
      * @param int $customerId Snipcart customer ID
      * 
-     * @return \stdClass|array
+     * @return SnipcartOrder[]
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function getCustomerOrders($customerId)
+    public function getCustomerOrders($customerId): array
     {
         return $this->populateArrayWithModels(
             Snipcart::$plugin->api->get("customers/{$customerId}/orders"),
@@ -381,7 +399,7 @@ class SnipcartService extends Component
      */
     public function dateRangeStart()
     {
-        // TODO: move this away from service; helper?
+        // TODO: move this to helper or controller
 
         $param   = Craft::$app->request->getParam('startDate', false);
         $default = strtotime('-1 month');
@@ -412,7 +430,7 @@ class SnipcartService extends Component
      */
     public function dateRangeEnd()
     {
-        // TODO: move this away from service; helper?
+        // TODO: move this to helper or controller
 
         $param    = Craft::$app->request->getParam('endDate', false);
         $default  = time();
@@ -587,7 +605,6 @@ class SnipcartService extends Component
 
     // Private Methods
     // =========================================================================
-
 
     /**
      * Take an array of objects and turn each top-level element into an instance

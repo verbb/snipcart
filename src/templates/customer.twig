@@ -1,8 +1,13 @@
 {% extends "snipcart/_layout" %}
 
 {% set customer = craft.snipcart.getCustomer(customerId) %}
-{% set orders   = craft.snipcart.getCustomerOrders(customerId) %}
-{% set title    = "Snipcart Customer " ~ customer.email ~ " (" ~ (customer.status | lower) ~ ")" %}
+
+{% if customer is null %}
+	{% exit 404 %}
+{% endif %}
+
+{% set orders = craft.snipcart.getCustomerOrders(customerId) %}
+{% set title = "Snipcart Customer " ~ customer.email ~ " (" ~ (customer.status | lower) ~ ")" %}
 
 {% set selectedTab = "customers" %}
 

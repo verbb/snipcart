@@ -31,7 +31,7 @@ class SnipcartNotification extends \craft\base\Model
     public $id;
 
     /**
-     * @var string "2017-07-09T14:59:57.987Z"
+     * @var \DateTime "2017-07-09T14:59:57.987Z"
      */
     public $creationDate;
 
@@ -68,5 +68,14 @@ class SnipcartNotification extends \craft\base\Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate'];
+    }
+
 
 }

@@ -40,37 +40,26 @@ class VerifyController extends Controller
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        $snipcartOrders    = $this->getSnipcartOrders($limit);
-        $shipStationOrders = $this->getShipStationOrders($limit * 2);
+        $snipcartOrders = $this->_getSnipcartOrders($limit);
 
         foreach ($snipcartOrders as $snipcartOrder) 
         {
-            $success = false;
+            $this->stdout("Snipcart $snipcartOrder->invoiceNumber ... ");
+            $shipStationStatusString = '✓';
 
-            foreach ($shipStationOrders as $shipStationOrder)
+            if ( ! $shipStationOrder = Snipcart::$plugin->shipStation->getOrderByOrderNumber($snipcartOrder->invoiceNumber))
             {
-                if ($shipStationOrder->orderNumber === $snipcartOrder->invoiceNumber)
-                {
-                    $success = true;
-                    continue;
-                }
-            }
-
-            $shipStationStatusString = $success ? '✓' : '✗';
-
-            $this->stdout("Snipcart $snipcartOrder->invoiceNumber → ShipStation [$shipStationStatusString]" . PHP_EOL);
-            
-            if ( ! $success)
-            {
+                $shipStationStatusString = '✗';
                 $failures[] = $snipcartOrder;
             }
+
+            $this->stdout("ShipStation [$shipStationStatusString]" . PHP_EOL);
         }
 
         if (count($failures) > 0)
         {
-            $this->reFeedToShipStation($failures);
-            // TODO: reconfirm updated orders
-            $this->sendAdminNotification($failures);
+            $this->_reFeedToShipStation($failures);
+            $this->_sendAdminNotification($failures);
         }
 
         $this->stdout('-------------------------------------' . PHP_EOL);
@@ -78,10 +67,15 @@ class VerifyController extends Controller
         $endTime       = microtime(true);
         $executionTime = ($endTime - $startTime);
 
-        $this->stdout("Executed in ${executionTime} seconds." . PHP_EOL);
+        $this->stdout("Finished in ${executionTime} seconds." . PHP_EOL);
 
         return ExitCode::OK;
     }
+
+
+
+    // Private Methods
+    // =========================================================================
 
     /**
      * Try re-feeding missing orders into ShipStation.
@@ -91,14 +85,14 @@ class VerifyController extends Controller
      * @return int
      * @throws
      */
-    private function reFeedToShipStation($snipcartOrders): int
+    private function _reFeedToShipStation($snipcartOrders): int
     {
         foreach ($snipcartOrders as $snipcartOrder)
         {
-            // try again, but not forever
-            if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '30 minutes'))
+            // try again, but only briefly
+            if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '10 minutes'))
             {
-                $this->stdout("Attempting to re-send order to ShipStation." . PHP_EOL);
+                $this->stdout('Attempting to re-send order ' . $snipcartOrder->invoiceNumber . '  to ShipStation.' . PHP_EOL);
                 Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
             }
         }
@@ -113,7 +107,7 @@ class VerifyController extends Controller
      * @return int
      * @throws
      */
-    private function sendAdminNotification($snipcartOrders): int
+    private function _sendAdminNotification($snipcartOrders): int
     {
         // TODO: consolidate with SnipcartService
 
@@ -147,10 +141,6 @@ class VerifyController extends Controller
         return ExitCode::OK;
     }
 
-
-    // Private Methods
-    // =========================================================================
-
     /**
      * Fetch recent Snipcart orders.
      * TODO: refactor to rely on service for actual SnipcartOrder models
@@ -158,26 +148,15 @@ class VerifyController extends Controller
      * @param integer $limit
      *
      * @return array
-     * @throws Exception Thrown when we don't have an API key with which to make calls.
+     * @throws \Exception Thrown when we don't have an API key with which to make calls.
      */
-    private function getSnipcartOrders($limit = 5): array
+    private function _getSnipcartOrders($limit = 5): array
     {
-        $api       = new \workingconcept\snipcart\services\ApiService();
+        $api            = new \workingconcept\snipcart\services\ApiService();
         $snipcartClient = $api->getClient();
         $response       = $snipcartClient->get('orders?limit=' . $limit);
 
         return json_decode($response->getBody())->items;
     }
 
-    /**
-     * Fetch recent ShipStation orders.
-     *
-     * @param integer $limit
-     *
-     * @return array
-     */
-    private function getShipStationOrders($limit = 5): array
-    {
-        return Snipcart::$plugin->shipStation->listOrders($limit);
-    }
 }

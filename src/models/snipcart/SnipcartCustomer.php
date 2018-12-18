@@ -157,7 +157,7 @@ class SnipcartCustomer extends \craft\base\Model
     public $statistics;
 
     /**
-     * @var
+     * @var string
      */
     public $gravatarUrl;
 
@@ -167,7 +167,7 @@ class SnipcartCustomer extends \craft\base\Model
     public $mode;
 
     /**
-     * @var
+     * @var \DateTime
      */
     public $creationDate;
 
@@ -188,5 +188,14 @@ class SnipcartCustomer extends \craft\base\Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate'];
+    }
+
 
 }

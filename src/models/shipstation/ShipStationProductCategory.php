@@ -8,14 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation Product Category Model
  * https://www.shipstation.com/developer-api/#/reference/model-product-category
  */
 
-class ShipStationProductCategory extends Model
+class ShipStationProductCategory extends \craft\base\Model
 {
     // Properties
     // =========================================================================

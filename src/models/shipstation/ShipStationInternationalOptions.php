@@ -8,14 +8,11 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\base\Model;
-
 /**
  * ShipStation International Options Model
  * https://www.shipstation.com/developer-api/#/reference/model-internationaloptions
  */
-
-class ShipStationInternationalOptions extends Model
+class ShipStationInternationalOptions extends \craft\base\Model
 {
     // Constants
     // =========================================================================
@@ -73,11 +70,11 @@ class ShipStationInternationalOptions extends Model
     /**
      * Sets customs items.
      *
-     * @param ShipStationCustomsItem[] $customsItems Customs items to be set.
+     * @param ShipStationCustomsItem[]|null $customsItems Customs items to be set.
      *
-     * @return ShipStationCustomsItem[]
+     * @return ShipStationCustomsItem[]|null
      */
-    public function setCustomsItems(array $customsItems)
+    public function setCustomsItems($customsItems)
     {
         return $this->_customsItems = $customsItems;
     }
