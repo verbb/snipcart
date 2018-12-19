@@ -369,7 +369,14 @@ class WebhooksController extends Controller
             throw new BadRequestHttpException('Invalid request: no request token');
         }
 
-        return Snipcart::$plugin->api->tokenIsValid($headers->get($key));
+        $token = $headers->get($key);
+
+        if ( ! is_string($token))
+        {
+            throw new BadRequestHttpException('Invalid request: token can only be a string');
+        }
+
+        return Snipcart::$plugin->api->tokenIsValid($token);
     }
 
 }
