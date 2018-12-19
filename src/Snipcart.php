@@ -87,7 +87,6 @@ class Snipcart extends Plugin
             'orders'        => Orders::class,
             'products'      => Products::class,
             'shipments'     => Shipments::class,
-            'shipStation'   => ShipStation::class,
             'subscriptions' => Subscriptions::class,
         ]);
 
@@ -134,7 +133,6 @@ class Snipcart extends Plugin
             $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
         }
     }
-
 
     // Protected Methods
     // =========================================================================

@@ -14,10 +14,8 @@ use workingconcept\snipcart\models\Notification;
 use workingconcept\snipcart\models\Refund;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\events\WebhookEvent;
 use craft\mail\Message;
-use craft\elements\Entry;
 use Craft;
 use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
@@ -41,11 +39,6 @@ class Orders extends \craft\base\Component
      * @event WebhookEvent Triggered before shipping rates are requested from any third parties.
      */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
-
-    /**
-     * @event WebhookEvent Triggered before shipping rates are returned to Snipcart.
-     */
-    const EVENT_BEFORE_RETURN_SHIPPING_RATES  = 'beforeReturnShippingRates';
 
     // Public Methods
     // =========================================================================
@@ -230,55 +223,6 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Return custom shipping rates for a nearly-finalized Snipcart order.
-     *
-     * @param Order $order
-     *
-     * @return array [ ShippingRate[], Package ]
-     */
-    public function getOrderShippingRates(Order $order): array
-    {
-        $rateOptions = []; // to be populated
-        $package     = $this->getOrderPackaging($order);
-
-        $includeShipStationRates = in_array(
-            Settings::PROVIDER_SHIPSTATION,
-            Snipcart::$plugin->getSettings()->enabledProviders,
-            true
-        );
-
-        if ($includeShipStationRates)
-        {
-            $shipStationRates = Snipcart::$plugin->shipStation->getRatesForSnipcartOrder($order, $package);
-
-            $rateOptions = array_merge(
-                $rateOptions,
-                $shipStationRates
-            );
-        }
-
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES))
-        {
-            $event = new WebhookEvent([
-                'rates'   => $rateOptions,
-                'order'   => $order,
-                'package' => $package
-            ]);
-
-            $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $event);
-
-            $rateOptions = $event->rates;
-        }
-
-        // TODO: make noise if no rates were available
-
-        return [
-            'rates'   => $rateOptions,
-            'package' => $package,
-        ];
-    }
-
-    /**
      * Get Craft Elements that relate to order items, updating quantities
      * and sending a notification if relevant.
      *
@@ -326,11 +270,9 @@ class Orders extends \craft\base\Component
         {
             $event = new WebhookEvent([
                 'order'   => $order,
-                'package' => $package,
+                'package' => $package
             ]);
-
             $this->trigger(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES, $event);
-
             $package = $event->package;
         }
 
@@ -344,17 +286,24 @@ class Orders extends \craft\base\Component
      * @param array $extra Additional variables for email template.
      *
      * @return array|bool
-     * @throws \Throwable
-     * @throws \yii\base\Exception
+     * @throws \Throwable if there's a template mode exception.
      */
     public function sendOrderEmailNotification($order, $extra = [])
     {
         $errors        = [];
         $emailSettings = Craft::$app->systemSettings->getSettings('email');
 
-        // temporarily change template mode so we can render the plugin's template
+        /**
+         * Temporarily change the template mode so we can render
+         * the plugin's template.
+         */
         $view         = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
+
+        /**
+         * This could technically throw an exception over an invalid
+         * template mode, but we're not worried.
+         */
         $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
         $emailVars = array_merge([

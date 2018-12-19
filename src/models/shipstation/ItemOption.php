@@ -8,6 +8,8 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
+use workingconcept\snipcart\models\CustomField;
+
 /**
  * ShipStation Item Option Model
  * https://www.shipstation.com/developer-api/#/reference/model-itemoption
@@ -41,6 +43,19 @@ class ItemOption extends \craft\base\Model
             [['name', 'value'], 'string'],
             [['name', 'value'], 'required'],
         ];
+    }
+
+    /**
+     * @param CustomField|\stdClass $item
+     * @return ItemOption
+     * @todo strictly use CustomField as param
+     */
+    public static function populateFromSnipcartCustomField($item): ItemOption
+    {
+        return new self([
+            'name' => $item->name,
+            'value' => $item->value,
+        ]);
     }
 
 }

@@ -12,6 +12,15 @@
     ) %}
 {% endif %}
 
+{% set primaryDetails = {
+    'Order Number': order.invoiceNumber,
+    'Order Email': order.email
+} %}
+
+{% if providerOrders.shipStation is defined %}
+    {% set primaryDetails = primaryDetails | merge({ 'ShipStation #': providerOrders.shipStation.orderId }) %}
+{% endif %}
+
 {% block hero %}
     <tr>
         <td style="background-color: #F6E767;">
@@ -25,12 +34,10 @@
         {{- order.billingAddressName }} {{ "just placed an order"|t }}.
     </h1>
 
-    <p class="no-margin" style="color: #333;"><b>Order Number:</b> {{ order.invoiceNumber }}</p>
-    <p class="{% if shipStationOrder is not defined %}no-top-margin{% else %}no-margin{% endif %}" style="color: #333;{% if shipStationOrder is not defined %} margin-bottom: 35px;{% endif %}"><b>Order Email:</b> {{ order.email }}</p>
-    {% if shipStationOrder is defined %}
-        <p class="no-top-margin" style="color: #333; margin-bottom: 35px;"><b>ShipStation #:</b> {{ shipStationOrder.orderId }}</p>
-    {% endif %}
-
+    {% for label, value in primaryDetails %}
+        {% set pClass = loop.last ? "no-top-margin large-bottom-margin" : "no-margin" %}
+        <p class="primary-detail {{ pClass }}"><b>{{ label }}:</b> {{ value }}</p>
+    {% endfor %}
 
     <table class="content-table">
         <thead>

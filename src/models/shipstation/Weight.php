@@ -8,6 +8,8 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
+use workingconcept\snipcart\models\Item as SnipcartItem;
+
 /**
  * ShipStation Weight Model
  * https://www.shipstation.com/developer-api/#/reference/model-weight
@@ -45,12 +47,16 @@ class Weight extends \craft\base\Model
     // Public Methods
     // =========================================================================
 
-    public function populateFromSnipcartOrder(SnipcartOrder $order)
+    /**
+     * @param SnipcartItem|\stdClass $item
+     * @return Weight
+     */
+    public static function populateFromSnipcartItem($item): Weight
     {
-        $this->value = $order->totalWeight;
-        $this->units = self::UNIT_GRAMS;
-
-        return $this;
+        return new self([
+            'value' => $item->totalWeight,
+            'units' => self::UNIT_GRAMS,
+        ]);
     }
 
     /**

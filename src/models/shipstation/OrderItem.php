@@ -181,43 +181,26 @@ class OrderItem extends \craft\base\Model
      *
      * @return OrderItem
      */
-    public function populateFromSnipcartItem($item): OrderItem
+    public static function populateFromSnipcartItem($item): OrderItem
     {
-        $this->lineItemKey = $item->id;
-        $this->name        = $item->name;
-        $this->quantity    = $item->quantity;
-        $this->unitPrice   = $item->price;
-
-        $itemWeight = new Weight();
-        $itemWeight->setAttributes([
-            'value' => $item->weight,
-            'units' => Weight::UNIT_GRAMS,
-        ]);
-        $itemWeight->validate();
-
-        $this->weight = $itemWeight;
-
         if ( ! empty($item->customFields))
         {
             $itemOptions = [];
 
             foreach ($item->customFields as $customField)
             {
-                $itemOption = new ItemOption();
-
-                $itemOption->name  = $customField->name;
-                $itemOption->value = $customField->value;
-                $itemOption->validate();
-
-                $itemOptions[] = $itemOption;
+                $itemOptions[] = ItemOption::populateFromSnipcartCustomField($customField);
             }
-
-            $this->setOptions($itemOptions);
         }
 
-        $this->validate();
-
-        return $this;
+        return new self([
+            'lineItemKey' => $item->id,
+            'name' => $item->name,
+            'quantity' => $item->quantity,
+            'unitPrice' => $item->price,
+            'weight' => Weight::populateFromSnipcartItem($item),
+            'options' => $itemOptions ?? null
+        ]);
     }
 
     /**

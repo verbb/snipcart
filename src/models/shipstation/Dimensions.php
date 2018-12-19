@@ -66,16 +66,16 @@ class Dimensions extends \craft\base\Model
      * Populate this model from a Package.
      *
      * @param SnipcartPackage $package
-     * @return $this
+     * @return Dimensions
      */
-    public function populateFromSnipcartPackage(SnipcartPackage $package): Dimensions
+    public static function populateFromSnipcartPackage(SnipcartPackage $package): Dimensions
     {
-        $this->length = $package->length;
-        $this->width  = $package->width;
-        $this->height = $package->height;
-        $this->units  = self::UNIT_INCHES;
-
-        return $this;
+        return new self([
+            'length' => $package->length,
+            'width' => $package->width,
+            'height' => $package->height,
+            'units' => self::UNIT_INCHES,
+        ]);
     }
 
     /**

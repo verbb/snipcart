@@ -8,10 +8,7 @@
 
 namespace workingconcept\snipcart\providers;
 
-class ShipStationProvider extends ShippingProvider
+class Shippo extends ShippingProvider
 {
-    protected $name = 'ShipStation';
-
-    public $apiKey;
-    public $apiSecret;
+    public $name = 'Shippo';
 }

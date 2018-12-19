@@ -173,11 +173,10 @@ class Api extends Component
      */
     public function tokenIsValid($token): bool
     {
-        $response = $this->get(
-            sprintf('requestvalidation/%s', $token),
-            [],
-            false
-        );
+        $response = $this->_getRequest(sprintf(
+            'requestvalidation/%s',
+            $token
+        ));
 
         return isset($response->token) && $response->token === $token;
     }

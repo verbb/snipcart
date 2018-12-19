@@ -472,41 +472,35 @@ class Order extends \craft\base\Model
      * Map Order properties to this model.
      *
      * @param SnipcartOrder $order
+     * @return Order
      */
-    public function populateFromSnipcartOrder(SnipcartOrder $order)
+    public static function populateFromSnipcartOrder(SnipcartOrder $order): Order
     {
-        $this->orderNumber              = $order->invoiceNumber;
-        $this->orderKey                 = $order->token;
-        $this->orderDate                = $order->creationDate;
-        $this->paymentDate              = $order->completionDate;
-        $this->customerEmail            = $order->email;
-        $this->amountPaid               = $order->total;
-        $this->shippingAmount           = $order->shippingFees;
-        $this->requestedShippingService = $order->shippingMethod;
-        $this->taxAmount                = $order->taxesTotal;
-
-        $shipTo = new Address();
-        $shipTo->populateFromSnipcartAddress($order->shippingAddress);
-        $shipTo->validate();
-
-        $this->shipTo = $shipTo;
-
-        $billTo = new Address();
-        $billTo->populateFromSnipcartAddress($order->billingAddress);
-        $billTo->validate();
-
-        $this->billTo = $billTo;
-
-        $orderItems = [];
+        $items = [];
 
         foreach ($order->items as $item)
         {
-            $orderItem = new OrderItem();
-            $orderItem->populateFromSnipcartItem($item);
-            $orderItems[] = $orderItem;
+            $items[] = OrderItem::populateFromSnipcartItem($item);
         }
 
-        $this->items = $orderItems;
+        return new self([
+            'orderNumber' => $order->invoiceNumber,
+            'orderKey' => $order->token,
+            'orderDate' => $order->creationDate,
+            'paymentDate' => $order->completionDate,
+            'customerEmail' => $order->email,
+            'amountPaid' => $order->total,
+            'shippingAmount' => $order->shippingFees,
+            'requestedShippingService' => $order->shippingMethod,
+            'taxAmount' => $order->taxesTotal,
+            'shipTo' => Address::populateFromSnipcartAddress(
+                $order->shippingAddress
+            ),
+            'billTo' => Address::populateFromSnipcartAddress(
+                $order->billingAddress
+            ),
+            'items' => $items
+        ]);
     }
 
     /**

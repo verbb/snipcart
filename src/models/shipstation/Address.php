@@ -94,16 +94,19 @@ class Address extends \craft\base\Model
 
     /**
      * @param SnipcartAddress $address
+     * @return Address
      */
-    public function populateFromSnipcartAddress(SnipcartAddress $address)
+    public static function populateFromSnipcartAddress(SnipcartAddress $address): Address
     {
-        $this->name       = $address->name;
-        $this->street1    = $address->address1;
-        $this->street2    = $address->address2;
-        $this->city       = $address->city;
-        $this->state      = $address->province;
-        $this->postalCode = $address->postalCode;
-        $this->phone      = $address->phone;
+        return new self([
+            'name'       => $address->name,
+            'street1'    => $address->address1,
+            'street2'    => $address->address2,
+            'city'       => $address->city,
+            'state'      => $address->province,
+            'postalCode' => $address->postalCode,
+            'phone'      => $address->phone,
+        ]);
     }
 
     /**

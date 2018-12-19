@@ -2,10 +2,14 @@
 
 ## 1.0.0-beta.13 - 2018-12-18
 ### Changed
-- Massively refactored services and models, which is a **hugely breaking change if you're working with any services or models in your own code**!
+- **Breaking changes for everyone!**
+- Massively refactored services and models, which will definitely break any services or models you're using directly.
 - Renamed all ShipStation models and moved them to their own namespace.
 - Renamed all Snipcart models.
 - `WebhookEvent`'s `packaging` property is now `package`.
+- Abstracted ShipStation service into Shipments, meaning it's now accessed via `Snipcart::$plugin->shipments->shipStation`. Note that the intent is for other services to interact directly with Shipments, to which `EVENT_BEFORE_RETURN_SHIPPING_RATES` has moved. Listeners should subscribe to `Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES`.
+- Listeners should now subscribe to `Orders::EVENT_BEFORE_REQUEST_SHIPPING_RATES` instead of `SnipcartService::EVENT_BEFORE_REQUEST_SHIPPING_RATES`.
+- Listeners should now subscribe to `Products::EVENT_PRODUCT_INVENTORY_CHANGE` instead of `SnipcartService::EVENT_PRODUCT_INVENTORY_CHANGE`.
 
 ## 1.0.0-beta.12 - 2018-12-18
 ### Changed

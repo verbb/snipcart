@@ -12,7 +12,6 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\records\WebhookLog;
 use workingconcept\snipcart\records\ShippingQuoteLog;
-use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\models\Order;
 
 use Craft;
@@ -164,18 +163,18 @@ class WebhooksController extends Controller
      * @param  Order $order
      *
      * @return Response
+     * @throws
      */
     private function handleOrderCompleted(Order $order): Response
     {
         $responseData = [
             'success' => true,
-            'errors'  => [],
+            'errors' => [],
         ];
 
         $extraEmailVars = [];
 
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER))
-        {
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER)) {
             $this->trigger(
                 self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER,
                 new WebhookEvent([
@@ -184,19 +183,17 @@ class WebhooksController extends Controller
             );
         }
 
-        // is ShipStation an enabled provider?
-        $sendToShipStation = in_array(
-            Settings::PROVIDER_SHIPSTATION,
-            Snipcart::$plugin->getSettings()->enabledProviders,
-            false
-        );
+        $providerOrders = Snipcart::$plugin->shipments->handleCompletedOrder($order);
 
-        // send order to ShipStation if we need to
-        if ($sendToShipStation)
+        if (! empty($providerOrders->orders))
         {
-            $shipStationOrder = Snipcart::$plugin->shipStation->sendSnipcartOrder($order);
+            $extraEmailVars['providerOrders'] = $providerOrders->orders;
+        }
 
-            $extraEmailVars['shipStationOrder'] = $shipStationOrder;
+        if (! empty($providerOrders->errors))
+        {
+            $responseData['success']  = false;
+            $responseData['errors'][] = $providerOrders->errors;
         }
 
         if ( ! $entryUpdateResult = Snipcart::$plugin->orders->updateElementsFromOrder($order))
@@ -207,23 +204,13 @@ class WebhooksController extends Controller
             ];
         }
 
-        if (isset($shipStationOrder))
+        if (isset($providerOrders->orders['shipStation']))
         {
             /**
              * Successful orders have a populated ->orderId, but with tests
              * we set ->orderId to 99999999.
              */
-            $responseData['shipstation_order_id'] = $shipStationOrder->orderId ?? '';
-
-            if (count($shipStationOrder->getErrors()) > 0)
-            {
-                $responseData['shipstation_errors'] = $shipStationOrder->getErrors();
-
-                $responseData['success']  = false;
-                $responseData['errors'][] = [
-                    'shipstation' => $entryUpdateResult
-                ];
-            }
+            $responseData['shipstation_order_id'] = $providerOrders->orders['shipStation']->orderId ?? '';
         }
 
         if (isset(Snipcart::$plugin->getSettings()->notificationEmails))
@@ -244,14 +231,13 @@ class WebhooksController extends Controller
      * and lets us send back shipping options.
      *
      * @param Order $order
-     *
      * @return Response
+     * @todo be careful to skip if the order isn't shippable
      */
     private function handleShippingRatesFetch(Order $order): Response
     {
-        $rateInfo = Snipcart::$plugin->orders->getOrderShippingRates($order);
-
-        $response = $this->asJson($rateInfo);
+        $rates    = Snipcart::$plugin->shipments->collectRatesForOrder($order);
+        $response = $this->asJson($rates);
 
         if (Snipcart::$plugin->getSettings()->logCustomRates)
         {
@@ -328,7 +314,7 @@ class WebhooksController extends Controller
          */
         if (self::$validateWebhook && ! $this->validateRequest())
         {
-            return "Couldn't validate the webhook request. Are you sure this is Snipcart calling?";
+            return 'Could not validate webhook request. Are you Snipcart?';
         }
 
         /**
@@ -369,25 +355,21 @@ class WebhooksController extends Controller
      */
     protected function validateRequest(): bool
     {
-        $key = 'HTTP_X_SNIPCART_REQUESTTOKEN';
-        
-        if (Craft::$app->getConfig()->general->devMode)
+        $key     = 'x-snipcart-requesttoken';
+        $headers = Craft::$app->getRequest()->getHeaders();
+
+        if ( ! $headers->has($key) && Craft::$app->getConfig()->general->devMode)
         {
             // don't validate if we're in dev mode
             return true;
         }
 
-        if ( ! isset($_SERVER[$key]))
+        if ( ! $headers->has($key))
         {
             throw new BadRequestHttpException('Invalid request: no request token');
         }
 
-        if ($token = $_SERVER[$key])
-        {
-            return Snipcart::$plugin->api->tokenIsValid($token);
-        }
-
-        return false;
+        return Snipcart::$plugin->api->tokenIsValid($headers->get($key));
     }
 
 }
