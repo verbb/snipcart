@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.13 - 2018-12-18
+### Changed
+- Massively refactored services and models, which is a **hugely breaking change if you're working with any services or models in your own code**!
+- Renamed all ShipStation models and moved them to their own namespace.
+- Renamed all Snipcart models.
+- `WebhookEvent`'s `packaging` property is now `package`.
+
 ## 1.0.0-beta.12 - 2018-12-18
 ### Changed
 - Fixed missing ShipStation fields, prevent wrapping additional email prices.

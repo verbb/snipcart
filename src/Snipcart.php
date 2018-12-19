@@ -8,21 +8,28 @@
 
 namespace workingconcept\snipcart;
 
-use craft\fields\Number;
-use craft\fields\PlainText;
-use workingconcept\snipcart\services\ApiService;
-use workingconcept\snipcart\services\SnipcartService;
-use workingconcept\snipcart\services\ShipStationService;
+use workingconcept\snipcart\services\Api;
+use workingconcept\snipcart\services\Carts;
+use workingconcept\snipcart\services\Customers;
+use workingconcept\snipcart\services\Discounts;
+use workingconcept\snipcart\services\Orders;
+use workingconcept\snipcart\services\Products;
+use workingconcept\snipcart\services\Shipments;
+use workingconcept\snipcart\services\ShipStation;
+use workingconcept\snipcart\services\Subscriptions;
 use workingconcept\snipcart\variables\SnipcartVariable;
+use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
-
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\fields\Number;
+use craft\fields\PlainText;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\console\Application as ConsoleApplication;
-
+use craft\services\Dashboard;
 use yii\base\Event;
 
 /**
@@ -32,9 +39,15 @@ use yii\base\Event;
  * @package   Snipcart
  * @since     1.0.0
  *
- * @property  SnipcartService $snipcart
- * @property  ApiService $api
- * @property  ShipStationService shipStation
+ * @property  Api           $api
+ * @property  Carts         $carts
+ * @property  Customers     $customers
+ * @property  Discounts     $discounts
+ * @property  Orders        $orders
+ * @property  Products      $products
+ * @property  Shipments     $shipments
+ * @property  ShipStation   $shipStation
+ * @property  Subscriptions $subscriptions
  */
 class Snipcart extends Plugin
 {
@@ -67,9 +80,15 @@ class Snipcart extends Plugin
         self::$plugin = $this;
 
         $this->setComponents([
-            'api'         => ApiService::class,
-            'snipcart'    => SnipcartService::class,
-            'shipStation' => ShipStationService::class,
+            'api'           => Api::class,
+            'carts'         => Carts::class,
+            'customers'     => Customers::class,
+            'discounts'     => Discounts::class,
+            'orders'        => Orders::class,
+            'products'      => Products::class,
+            'shipments'     => Shipments::class,
+            'shipStation'   => ShipStation::class,
+            'subscriptions' => Subscriptions::class,
         ]);
 
         Event::on(
@@ -80,6 +99,15 @@ class Snipcart extends Plugin
                 $variable->set('snipcart', SnipcartVariable::class);
             }
         );
+
+        Event::on(
+            Dashboard::class,
+            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = OrdersWidget::class;
+            }
+        );
+
 
         if (Craft::$app->getRequest()->isCpRequest)
         {

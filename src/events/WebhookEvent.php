@@ -8,9 +8,9 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\SnipcartOrder;
-use workingconcept\snipcart\models\SnipcartShippingRate;
-use workingconcept\snipcart\models\SnipcartPackage;
+use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\ShippingRate;
+use workingconcept\snipcart\models\Package;
 use yii\base\Event;
 
 /**
@@ -25,18 +25,18 @@ class WebhookEvent extends Event
     // =========================================================================
 
     /**
-     * @var SnipcartOrder
+     * @var Order
      */
     public $order;
 
     /**
-     * @var SnipcartShippingRate[]
+     * @var ShippingRate[]
      */
     public $rates;
 
     /**
-     * @var SnipcartPackage
+     * @var Package
      */
-    public $packaging;
+    public $package;
 
 }

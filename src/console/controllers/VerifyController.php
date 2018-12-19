@@ -33,25 +33,25 @@ class VerifyController extends Controller
         $startTime    = microtime(true);
         $limit        = 3;
         $failedOrders = [];
-
+        
         $this->stdout('-------------------------------------' . PHP_EOL);
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        $snipcartOrders = Snipcart::$plugin->snipcart->getOrders([ 
+        $orders = Snipcart::$plugin->orders->getOrders([
             'limit' => $limit, 
             'cache' => false 
         ]);
 
-        foreach ($snipcartOrders as $snipcartOrder)
+        foreach ($orders as $order)
         {
-            $this->stdout("Snipcart $snipcartOrder->invoiceNumber ... ");
+            $this->stdout("Snipcart $order->invoiceNumber ... ");
             $shipStationStatusString = '✓';
 
-            if ( ! Snipcart::$plugin->shipStation->getOrderByOrderNumber($snipcartOrder->invoiceNumber))
+            if ( ! Snipcart::$plugin->shipStation->getOrderByOrderNumber($order->invoiceNumber))
             {
                 $shipStationStatusString = '✗';
-                $failedOrders[] = $snipcartOrder;
+                $failedOrders[] = $order;
             }
 
             $this->stdout("ShipStation [$shipStationStatusString]" . PHP_EOL);
@@ -80,32 +80,32 @@ class VerifyController extends Controller
     /**
      * Try re-feeding missing orders into ShipStation.
      *
-     * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
+     * @param \workingconcept\snipcart\models\Order[] $orders
      *
      * @return array If attempts were made to try re-sending the orders to ShipStation,
      *               they'll be in this array where the key is the invoice number
      *               and the value is true if successful.
      * @throws
      */
-    private function _reFeedToShipStation($snipcartOrders): array
+    private function _reFeedToShipStation($orders): array
     {
         $reFeedResult = [];
 
-        foreach ($snipcartOrders as $snipcartOrder)
+        foreach ($orders as $order)
         {
             // try again, but only briefly
-            if (DateTimeHelper::isWithinLast($snipcartOrder->creationDate, '10 minutes'))
+            if (DateTimeHelper::isWithinLast($order->creationDate, '10 minutes'))
             {
                 $this->stdout('-------------------------------------' . PHP_EOL);
-                $this->stdout('Attempting to re-send order ' . $snipcartOrder->invoiceNumber . ' to ShipStation ... ');
-                $result = Snipcart::$plugin->shipStation->sendSnipcartOrder($snipcartOrder);
+                $this->stdout('Attempting to re-send order ' . $order->invoiceNumber . ' to ShipStation ... ');
+                $result = Snipcart::$plugin->shipStation->sendSnipcartOrder($order);
 
                 $succeeded = isset($result->orderId) && empty($result->getErrors());
 
                 $statusString = $succeeded ? '✓' : '✗';
                 $this->stdout($statusString . PHP_EOL);
 
-                $reFeedResult[$snipcartOrder->invoiceNumber] = $succeeded;
+                $reFeedResult[$order->invoiceNumber] = $succeeded;
             }
         }
 
@@ -115,7 +115,7 @@ class VerifyController extends Controller
     /**
      * Let somebody know that one or more orders didn't make it to ShipStation.
      *
-     * @param \workingconcept\snipcart\models\SnipcartOrder[] $snipcartOrders
+     * @param \workingconcept\snipcart\models\Order[] $snipcartOrders
      * @param array $reFeedResults
      *
      * @return int

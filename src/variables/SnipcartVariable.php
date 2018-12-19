@@ -8,8 +8,8 @@
 
 namespace workingconcept\snipcart\variables;
 
-use workingconcept\snipcart\models\SnipcartCustomer;
-use workingconcept\snipcart\models\SnipcartOrder;
+use workingconcept\snipcart\models\Customer;
+use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
 
 class SnipcartVariable
@@ -22,7 +22,7 @@ class SnipcartVariable
      */
     public function listOrders($pageNumber = 1)
     {
-        return Snipcart::$plugin->snipcart->listOrders($pageNumber);
+        return Snipcart::$plugin->orders->listOrders($pageNumber);
     }
 
     /**
@@ -32,7 +32,7 @@ class SnipcartVariable
      */
     public function listOrdersByDay($pageNumber = 1): array
     {
-        return Snipcart::$plugin->snipcart->listOrdersByDay($pageNumber);
+        return Snipcart::$plugin->orders->listOrdersByDay($pageNumber);
     }
 
     /**
@@ -42,7 +42,7 @@ class SnipcartVariable
      */
     public function listCustomers($pageNumber = 1)
     {
-        return Snipcart::$plugin->snipcart->listCustomers($pageNumber);
+        return Snipcart::$plugin->customers->listCustomers($pageNumber);
     }
 
     /**
@@ -51,7 +51,7 @@ class SnipcartVariable
      */
     public function listDiscounts()
     {
-        return Snipcart::$plugin->snipcart->listDiscounts();
+        return Snipcart::$plugin->discounts->listDiscounts();
     }
 
     /**
@@ -60,7 +60,7 @@ class SnipcartVariable
      */
     public function listAbandonedCarts()
     {
-        return Snipcart::$plugin->snipcart->listAbandonedCarts();
+        return Snipcart::$plugin->carts->listAbandonedCarts();
     }
 
     /**
@@ -69,17 +69,17 @@ class SnipcartVariable
      */
     public function listSubscriptions()
     {
-        return Snipcart::$plugin->snipcart->listSubscriptions();
+        return Snipcart::$plugin->subscriptions->listSubscriptions();
     }
 
     /**
      * @param $orderId
-     * @return SnipcartOrder|null
+     * @return Order|null
      * @throws \Exception
      */
     public function getOrder($orderId)
     {
-        return Snipcart::$plugin->snipcart->getOrder($orderId);
+        return Snipcart::$plugin->orders->getOrder($orderId);
     }
 
     /**
@@ -89,7 +89,7 @@ class SnipcartVariable
      */
     public function getOrderNotifications($orderId)
     {
-        return Snipcart::$plugin->snipcart->getOrderNotifications($orderId);
+        return Snipcart::$plugin->orders->getOrderNotifications($orderId);
     }
 
     /**
@@ -99,17 +99,17 @@ class SnipcartVariable
      */
     public function getOrderRefunds($orderId)
     {
-        return Snipcart::$plugin->snipcart->getOrderRefunds($orderId);
+        return Snipcart::$plugin->orders->getOrderRefunds($orderId);
     }
 
     /**
      * @param $customerId
-     * @return SnipcartCustomer|null
+     * @return Customer|null
      * @throws \Exception
      */
     public function getCustomer($customerId)
     {
-        return Snipcart::$plugin->snipcart->getCustomer($customerId);
+        return Snipcart::$plugin->customers->getCustomer($customerId);
     }
 
     /**
@@ -119,7 +119,7 @@ class SnipcartVariable
      */
     public function getCustomerOrders($customerId)
     {
-        return Snipcart::$plugin->snipcart->getCustomerOrders($customerId);
+        return Snipcart::$plugin->customers->getCustomerOrders($customerId);
     }
 
     /**
@@ -136,7 +136,7 @@ class SnipcartVariable
      */
     public function startDate()
     {
-        return \DateTime::createFromFormat('U', Snipcart::$plugin->snipcart->dateRangeStart());
+        return \DateTime::createFromFormat('U', Snipcart::$plugin->orders->dateRangeStart());
     }
 
     /**
@@ -145,7 +145,7 @@ class SnipcartVariable
      */
     public function endDate()
     {
-        return \DateTime::createFromFormat('U', Snipcart::$plugin->snipcart->dateRangeEnd());
+        return \DateTime::createFromFormat('U', Snipcart::$plugin->orders->dateRangeEnd());
     }
 
     /**
@@ -154,7 +154,7 @@ class SnipcartVariable
      */
     public function searchKeywords()
     {
-        return Snipcart::$plugin->snipcart->searchKeywords();
+        return Snipcart::$plugin->orders->searchKeywords();
     }
 
     /**
@@ -164,7 +164,7 @@ class SnipcartVariable
      */
     public function searchCustomers($keywords)
     {
-        return Snipcart::$plugin->snipcart->searchCustomers($keywords);
+        return Snipcart::$plugin->customers->searchCustomers($keywords);
     }
 
     /**

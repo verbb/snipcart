@@ -14,8 +14,8 @@ use craft\base\Model;
  * Settings model
  *
  * @package workingconcept\snipcart\models
- * @property SnipcartAddress $shipFrom
- * @property SnipcartPackage[] $packagingTypes
+ * @property Address $shipFrom
+ * @property Package[] $packagingTypes
  */
 class Settings extends Model
 {
@@ -90,7 +90,7 @@ class Settings extends Model
     public $logWebhookRequests = false;
 
     /**
-     * @var SnipcartAddress
+     * @var Address
      */
     private $_shipFrom;
 
@@ -100,7 +100,7 @@ class Settings extends Model
     public $shipFromAddress = [];
 
     /**
-     * @var SnipcartPackage[]
+     * @var Package[]
      */
     private $_packagingTypes = [];
 
@@ -210,7 +210,7 @@ class Settings extends Model
     /**
      * Get custom packaging type definitions.
      *
-     * @return SnipcartPackage[]
+     * @return Package[]
      */
     public function getPackagingTypes(): array
     {
@@ -226,17 +226,17 @@ class Settings extends Model
     /**
      * @param $packagingTypes
      *
-     * @return SnipcartPackage[]
+     * @return Package[]
      */
     public function setPackagingTypes($packagingTypes): array
     {
         foreach ($packagingTypes as $name => $values)
         {
-            if ( ! is_a($values, SnipcartPackage::class))
+            if ( ! is_a($values, Package::class))
             {
                 $values['name'] = $name;
             
-                $this->_packagingTypes[$name] = new SnipcartPackage($values);
+                $this->_packagingTypes[$name] = new Package($values);
             }
         }
 
@@ -267,9 +267,9 @@ class Settings extends Model
     }
 
     /**
-     * @return SnipcartAddress
+     * @return Address
      */
-    public function getShipFrom(): SnipcartAddress
+    public function getShipFrom(): Address
     {
         // use the customPackaging field that would've come from a static config
         if ( ! empty($this->shipFromAddress))
@@ -283,11 +283,11 @@ class Settings extends Model
     /**
      * @param $address
      *
-     * @return SnipcartAddress
+     * @return Address
      */
     public function setShipFrom($address)
     {
-        return $this->_shipFrom = new SnipcartAddress($address);
+        return $this->_shipFrom = new Address($address);
     }
 
 }

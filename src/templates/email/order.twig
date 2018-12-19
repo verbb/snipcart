@@ -26,7 +26,11 @@
     </h1>
 
     <p class="no-margin" style="color: #333;"><b>Order Number:</b> {{ order.invoiceNumber }}</p>
-    <p class="no-top-margin" style="color: #333; margin-bottom: 35px;"><b>Order Email:</b> {{ order.email }}</p>
+    <p class="{% if shipStationOrder is not defined %}no-top-margin{% else %}no-margin{% endif %}" style="color: #333;{% if shipStationOrder is not defined %} margin-bottom: 35px;{% endif %}"><b>Order Email:</b> {{ order.email }}</p>
+    {% if shipStationOrder is defined %}
+        <p class="no-top-margin" style="color: #333; margin-bottom: 35px;"><b>ShipStation #:</b> {{ shipStationOrder.orderId }}</p>
+    {% endif %}
+
 
     <table class="content-table">
         <thead>
@@ -52,7 +56,7 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td class="subtotal align-right first-cell-padding" colspan="3">{{ order.shippingMethod }}<br><span class="muted mono">{{ order.totalWeight | number_format }} {{ "grams"|t }}</span></td>
+                <td class="subtotal align-right first-cell-padding" colspan="3">{{ order.shippingMethod }}<br><span class="muted mono">{{ (shipStationOrder.weight.value ?? order.totalWeight) | number_format }} {{ "grams"|t }}</span></td>
                 <td class="align-right last-cell-padding nowrap"><nobr>{{ order.shippingFees | currency(order.currency|upper) }}</nobr></td>
             </tr>
             <tr>
@@ -128,6 +132,10 @@
 
     {% endif %}
 
+    {#
+
+    TODO: re-add quantity notes, but access Craft Elements via order.items.getRelatedElement()
+
     {% if settings.reduceQuantitiesOnOrder and settings.productInventoryField %}
         <h3>{{ "Remaining Quantities"|t }}</h3>
 
@@ -137,6 +145,7 @@
             {% endfor %}
         </ul>
     {% endif %}
+    #}
 
     <p style="margin-top: 40px;" class="muted mono">{{ order.ipAddress }}<br>{{ order.userAgent }}</p>
 {% endblock content %}
