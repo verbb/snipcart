@@ -15,7 +15,6 @@ use workingconcept\snipcart\services\Discounts;
 use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
 use workingconcept\snipcart\services\Shipments;
-use workingconcept\snipcart\services\ShipStation;
 use workingconcept\snipcart\services\Subscriptions;
 use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
@@ -46,7 +45,6 @@ use yii\base\Event;
  * @property  Orders        $orders
  * @property  Products      $products
  * @property  Shipments     $shipments
- * @property  ShipStation   $shipStation
  * @property  Subscriptions $subscriptions
  */
 class Snipcart extends Plugin
