@@ -190,16 +190,8 @@ class ShipStation extends \craft\base\Component
      */
     public function createOrder(Order $order)
     {
-        $payload = $order->toArray(
-            [],
-            $order->extraFields(),
-            true
-        );
-
-        $payload = $this->removeReadOnlyFieldsFromPayload($payload);
-
         $response = $this->client->post('orders/createorder', [
-            \GuzzleHttp\RequestOptions::JSON => $payload
+            \GuzzleHttp\RequestOptions::JSON => $order->getPayloadForPost()
         ]);
 
         /**
@@ -631,56 +623,6 @@ class ShipStation extends \craft\base\Component
 
     // Private Methods
     // =========================================================================
-
-    /**
-     * Modify an array about to be sent via API to remove read-only fields that can't be set.
-     *
-     * @param $payload
-     *
-     * @return array
-     */
-    private function removeReadOnlyFieldsFromPayload($payload): array
-    {
-        // TODO: move this into a scenario on the model
-
-        $removeIfNull = [
-            'shipByDate',
-            'customerId',
-            'customerUsername',
-            'internalNotes',
-            'giftMessage',
-            'paymentMethod',
-            'packageCode',
-            'confirmation',
-            'shipDate',
-            'holdUntilDate',
-            'tagIds',
-            'userId',
-            'externallyFulfilledBy',
-            'labelMessages',
-            'insuranceOptions',
-            'internationalOptions',
-            'advancedOptions',
-            'orderTotal',
-        ];
-
-        foreach ($removeIfNull as $removeKey)
-        {
-            if ($payload[$removeKey] === null)
-            {
-                unset($payload[$removeKey]);
-            }
-        }
-
-        unset($payload['orderId'], $payload['createDate'], $payload['modifyDate'], $payload['externallyFulfilled']);
-
-        foreach ($payload['items'] as &$item)
-        {
-            unset($item['orderItemId'], $item['adjustment'], $item['createDate'], $item['modifyDate']);
-        }
-
-        return $payload;
-    }
 
     /**
      * Extract optional customer's note from a custom order comment field.

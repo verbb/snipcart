@@ -28,6 +28,11 @@ class Order extends \craft\base\Model
     // Constants
     // =========================================================================
 
+    /**
+     * Used for creating a new Order with the ShipStation API.
+     */
+    const SCENARIO_NEW = 'new';
+
     const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
     const STATUS_AWAITING_SHIPMENT = 'awaiting_shipment';
     const STATUS_ON_HOLD = 'on_hold';
@@ -558,6 +563,88 @@ class Order extends \craft\base\Model
             [['gift', 'externallyFulfilled'], 'default', 'value' => false],
             ['tagIds', 'each', 'rule' => ['integer']],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_NEW] = ['username'];
+        return $scenarios;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayloadForPost()
+    {
+        $payload = $this->toArray(
+            [],
+            $this->extraFields(),
+            true
+        );
+
+        // TODO: turn this into a proper scenario
+
+        $removeIfNull = [
+            'shipByDate',
+            'customerId',
+            'customerUsername',
+            'internalNotes',
+            'giftMessage',
+            'paymentMethod',
+            'packageCode',
+            'confirmation',
+            'shipDate',
+            'holdUntilDate',
+            'tagIds',
+            'userId',
+            'externallyFulfilledBy',
+            'labelMessages',
+            'insuranceOptions',
+            'internationalOptions',
+            'advancedOptions',
+            'orderTotal',
+        ];
+
+        foreach ($removeIfNull as $removeKey)
+        {
+            if ($payload[$removeKey] === null)
+            {
+                unset($payload[$removeKey]);
+            }
+        }
+
+        $remove = [
+            'orderId',
+            'createDate',
+            'modifyDate',
+            'externallyFulfilled',
+        ];
+
+        foreach ($remove as $removeKey)
+        {
+            unset($payload[$removeKey]);
+        }
+
+        $removeFromItems = [
+            'orderItemId',
+            'adjustment',
+            'createDate',
+            'modifyDate'
+        ];
+
+        foreach ($payload['items'] as &$item)
+        {
+            foreach ($removeFromItems as $removeKey)
+            {
+                unset($item[$removeKey]);
+            }
+        }
+
+        return $payload;
     }
 
 }
