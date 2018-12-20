@@ -18,8 +18,15 @@ use workingconcept\snipcart\models\shipstation\Rate;
 use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Craft;
 
+/**
+ * Class ShipStation
+ *
+ * @package workingconcept\snipcart\providers
+ * @todo log exceptions for troubleshooting
+ */
 class ShipStation extends ShippingProvider
 {
     // Properties
@@ -91,7 +98,6 @@ class ShipStation extends ShippingProvider
         $rates = [];
         $shipStationRates = $this->_getRatesForOrder($snipcartOrder, $package);
 
-
         /**
          * Convert response data into ShipStation Rates, then collect as
          * a Snipcart ShippingRate.
@@ -116,7 +122,7 @@ class ShipStation extends ShippingProvider
     public function createOrder(SnipcartOrder $snipcartOrder)
     {
         $package = Snipcart::$plugin->orders->getOrderPackaging($snipcartOrder);
-        $order = Order::populateFromSnipcartOrder($snipcartOrder);
+        $order   = Order::populateFromSnipcartOrder($snipcartOrder);
 
         $order->orderStatus   = Order::STATUS_AWAITING_SHIPMENT;
         $order->customerNotes = $this->_getOrderNotes($snipcartOrder->customFields);
@@ -149,8 +155,7 @@ class ShipStation extends ShippingProvider
             if (Craft::$app->getConfig()->general->devMode)
             {
                 /**
-                 * Don't actually send orders to ShipStation in devMode,
-                 * set a fake order ID.
+                 * Don't transmit orders in devMode, just set a fake order ID.
                  */
                 $order->orderId = 99999999;
                 return $order;
@@ -203,17 +208,7 @@ class ShipStation extends ShippingProvider
         $payload['testLabel']   = $isTest;
         $payload['packageCode'] = $packageCode;
 
-        $response = $this->getClient()->post('orders/createlabelfororder', [
-            \GuzzleHttp\RequestOptions::JSON => $payload
-        ]);
-
-        if ($response->getStatusCode() !== 200)
-        {
-            // something bad happened!
-            return null;
-        }
-
-        return json_decode($response->getBody());
+        return $this->_postRequest('orders/createlabelfororder', $payload);
     }
 
     /**
@@ -225,20 +220,11 @@ class ShipStation extends ShippingProvider
      */
     public function listOrders($limit = 25): array
     {
-        $response = $this->getClient()->get(sprintf(
+        $orders = [];
+        $responseData = $this->_getRequest(sprintf(
             'orders?pageSize=%d&sortBy=OrderDate&sortDir=DESC',
             $limit
         ));
-
-        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
-        {
-            // something bad happened!
-            Craft::warning('Failed to fetch ShipStation orders: ' . $response->getStatusCode());
-            return [];
-        }
-
-        $orders = [];
-        $responseData = json_decode($response->getBody(), true);
 
         foreach ($responseData['orders'] as $orderData)
         {
@@ -259,16 +245,10 @@ class ShipStation extends ShippingProvider
      */
     public function getOrderBySnipcartInvoice(string $snipcartInvoice)
     {
-        $response = $this->getClient()->get('orders?orderNumber=' . $snipcartInvoice);
-
-        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
-        {
-            // something bad happened!
-            Craft::warning('Failed to fetch ShipStation orders: ' . $response->getStatusCode());
-            return null;
-        }
-
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = $this->_getRequest(sprintf(
+            'orders?orderNumber=%s',
+            $snipcartInvoice
+        ));
 
         if (count($responseData['orders']) === 1)
         {
@@ -287,16 +267,10 @@ class ShipStation extends ShippingProvider
      */
     public function getOrderById($providerId)
     {
-        $response = $this->getClient()->get("order/{$providerId}");
-
-        if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201)
-        {
-            // something bad happened!
-            Craft::warning('Failed to fetch ShipStation order ' . $providerId. ': ' . $response->getStatusCode());
-            return null;
-        }
-
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = $this->_getRequest(sprintf(
+            'order/%d',
+            $providerId
+        ));
 
         if ( ! empty($responseData))
         {
@@ -356,52 +330,10 @@ class ShipStation extends ShippingProvider
      */
     private function _sendOrder(Order $order)
     {
-        $response = $this->getClient()->post('orders/createorder', [
-            \GuzzleHttp\RequestOptions::JSON => $order->getPayloadForPost()
-        ]);
-
-        /**
-         * Handle problematic responses, where 200 and 201 are expected to be fine.
-         * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
-         */
-        if ($response->getStatusCode() > 201)
-        {
-            /*
-            switch ($response->getStatusCode())
-            {
-                case 204:
-                    // No Content - The request was successful but there is no representation to return (that is, the response is empty).
-                    break;
-                case 400:
-                    // Bad Request - The request could not be understood or was missing required parameters.
-                    break;
-                case 401:
-                    // Unauthorized - Authentication failed or user does not have permissions for the requested operation.
-                    break;
-                case 403:
-                    // Forbidden - Access denied.
-                    break;
-                case 404:
-                    // Not Found - Resource was not found.
-                    break;
-                case 405:
-                    // Method Not Allowed - Requested method is not supported for the specified resource.
-                    break;
-                case 429:
-                    // Too Many Requests - Exceeded ShipStation API limits. When the limit is reached, your application should stop making requests until X-Rate-Limit-Reset seconds have elapsed.
-                    break;
-                case 500:
-                    // Internal Server Error - ShipStation has encountered an error.
-                    break;
-            }
-            */
-
-            // something bad happened!
-            Craft::warning($response->getBody(), 'snipcart');
-            return null;
-        }
-
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = $this->_postRequest(
+            'orders/createorder',
+            $order->getPayloadForPost()
+        );
 
         return new Order($responseData);
     }
@@ -508,42 +440,20 @@ class ShipStation extends ShippingProvider
             $weight
         );
 
-        try
-        {
-            $response = $this->getClient()->post('shipments/getrates', [
-                \GuzzleHttp\RequestOptions::JSON => $shipmentInfo
-            ]);
-
-            $responseData = json_decode($response->getBody());
-        }
-        catch (\GuzzleHttp\Exception\ServerException $e)
-        {
-            /**
-             * ShipStation returns a 500 error with a message if there aren't
-             * any service options. It may also return a 500 if its app or
-             * one of its providers experiences a technical problem, which can
-             * include changed (and newly incorrect) sub-account credentials.
-             */
-
-            $responseBody = $e->getResponse()->getBody()->getContents() ?? null;
-
-            if ($responseBody !== null)
-            {
-                // log the full, non-truncated error output if it's available
-                Craft::error($e->getResponse()->getBody(), 'snipcart');
-            }
-            else
-            {
-                Craft::error($e, 'snipcart');
-            }
-
-            return [];
-        }
+        $responseData = $this->_postRequest(
+            'shipments/getrates',
+            $shipmentInfo
+        );
 
         foreach ($responseData as $responseItem)
         {
             $rates[] = new Rate($responseItem);
         }
+
+        Craft::info(sprintf(
+            'ShipStation did not return any rates for %s',
+            $snipcartOrder->invoiceNumber
+        ), 'snipcart');
 
         return $rates;
     }
@@ -639,5 +549,157 @@ class ShipStation extends ShippingProvider
         return $closest;
     }
 
+    /**
+     * Send a get request to the ShipStation API.
+     *
+     * @param string $endpoint
+     * @param bool   $returnAssociativeArray  whether to return an array
+     *                                        (default) or object
+     *
+     * @return mixed
+     */
+    private function _getRequest(string $endpoint, $returnAssociativeArray = true)
+    {
+        try
+        {
+            $response = $this->getClient()->get($endpoint);
+            return $this->_prepResponseData(
+                $response->getBody(),
+                $returnAssociativeArray
+            );
+        }
+        catch(\Exception $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
+     * Send a post request to the ShipStation API.
+     *
+     * @param string $endpoint
+     * @param array  $data
+     *
+     * @return mixed
+     */
+    private function _postRequest(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->post($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->_prepResponseData($response->getBody());
+        }
+        catch (\Exception $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
+     * Take the raw response body and give it back as data that's ready to use.
+     *
+     * @param $body
+     * @param bool   $returnAssociativeArray  whether to return an array
+     *                                        (default) or object
+     *
+     * @return mixed Appropriate PHP type, or null if json cannot be decoded
+     *               or encoded data is deeper than the recursion limit.
+     */
+    private function _prepResponseData($body, $returnAssociativeArray = true)
+    {
+        /**
+         * get response data as object, not an associative array
+         */
+        return json_decode($body, $returnAssociativeArray);
+    }
+
+    /**
+     * Handle a failed request.
+     *
+     * @param \Exception  $exception  the exception that was thrown
+     * @param string      $endpoint   the endpoint that was queried
+     *
+     * @return null
+     */
+    private function _handleRequestException(
+        $exception,
+        string $endpoint
+    )
+    {
+        /**
+         * Handle problematic responses, where 200 and 201 are expected to be fine.
+         * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
+         */
+        /*
+        if ($response->getStatusCode() > 201)
+        {
+            switch ($response->getStatusCode())
+            {
+                case 204:
+                    // No Content - The request was successful but there is no representation to return (that is, the response is empty).
+                    break;
+                case 400:
+                    // Bad Request - The request could not be understood or was missing required parameters.
+                    break;
+                case 401:
+                    // Unauthorized - Authentication failed or user does not have permissions for the requested operation.
+                    break;
+                case 403:
+                    // Forbidden - Access denied.
+                    break;
+                case 404:
+                    // Not Found - Resource was not found.
+                    break;
+                case 405:
+                    // Method Not Allowed - Requested method is not supported for the specified resource.
+                    break;
+                case 429:
+                    // Too Many Requests - Exceeded ShipStation API limits. When the limit is reached, your application should stop making requests until X-Rate-Limit-Reset seconds have elapsed.
+                    break;
+                case 500:
+                    // Internal Server Error - ShipStation has encountered an error.
+                    break;
+            }
+
+            // something bad happened!
+            Craft::warning($response->getBody(), 'snipcart');
+            return null;
+        }
+        */
+
+        /**
+         * Get the status code, which should be 200 or 201 if things went well.
+         */
+        $statusCode = $exception->getResponse()->getStatusCode() ?? null;
+
+        /**
+         * If there's a response we'll use its body, otherwise default
+         * to the request URI.
+         */
+        $reason = $exception->getResponse()->getBody() ?? null;
+
+        if ($statusCode !== null && $reason !== null)
+        {
+            // return code and message
+            Craft::warning(sprintf(
+                'ShipStation API responded with %d: %s',
+                $statusCode,
+                $reason
+            ));
+        }
+        else
+        {
+            // report mystery
+            Craft::warning(sprintf(
+                'ShipStation API request to %s failed.',
+                $endpoint
+            ));
+        }
+
+        return null;
+    }
 
 }

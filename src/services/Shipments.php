@@ -13,6 +13,7 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\providers\ShipStation;
+use Craft;
 
 /**
  * Class Shipments
@@ -87,7 +88,10 @@ class Shipments extends \craft\base\Component
             $rates = $event->rates;
         }
 
-        // TODO: make noise if no rates were available
+        Craft::warning(sprintf(
+            'Snipcart plugin did not return any rates for %s',
+            $order->invoiceNumber
+        ), 'snipcart');
 
         return [
             'rates'   => $rates,

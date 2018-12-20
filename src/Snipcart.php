@@ -105,7 +105,6 @@ class Snipcart extends Plugin
             }
         );
 
-
         if (Craft::$app->getRequest()->isCpRequest)
         {
             Event::on(
@@ -130,6 +129,14 @@ class Snipcart extends Plugin
         {
             $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
         }
+
+        $fileTarget = new \craft\log\FileTarget([
+            'logFile' => Craft::getAlias('@storage/logs/snipcart.log'),
+            'categories' => ['snipcart']
+        ]);
+
+        // include the new target file target to the dispatcher
+        Craft::getLogger()->dispatcher->targets[] = $fileTarget;
     }
 
     // Protected Methods
