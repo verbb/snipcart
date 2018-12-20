@@ -570,7 +570,8 @@ class ShipStation extends ShippingProvider
         }
         catch(RequestException $exception)
         {
-            return $this->_handleRequestException($exception, $endpoint);
+            $this->_handleRequestException($exception, $endpoint);
+            return null;
         }
     }
 
@@ -594,7 +595,8 @@ class ShipStation extends ShippingProvider
         }
         catch (RequestException $exception)
         {
-            return $this->_handleRequestException($exception, $endpoint);
+            $this->_handleRequestException($exception, $endpoint);
+            return null;
         }
     }
 
