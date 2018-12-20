@@ -1,0 +1,27 @@
+{
+  "name": "snipcart-craft-plugin",
+  "version": "1.0.0",
+  "description": "Snipcart plugin for Craft CMS.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vuepress": "^0.14.8"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mattstein@github.com/workingconcept/snipcart-craft-plugin.git"
+  },
+  "author": "Working Concept",
+  "bugs": {
+    "url": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
+  },
+  "homepage": "https://github.com/workingconcept/snipcart-craft-plugin#readme"
+}
