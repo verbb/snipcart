@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.13 - 2018-12-18
+## 1.0.0-beta.13 - 2018-12-20
 ### Changed
 - **Breaking changes for everyone!**
 - Massively refactored services and models, which will definitely break any services or models you're using directly.
