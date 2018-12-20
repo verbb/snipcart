@@ -568,7 +568,7 @@ class ShipStation extends ShippingProvider
                 $returnAssociativeArray
             );
         }
-        catch(\Exception $exception)
+        catch(RequestException $exception)
         {
             return $this->_handleRequestException($exception, $endpoint);
         }
@@ -592,7 +592,7 @@ class ShipStation extends ShippingProvider
 
             return $this->_prepResponseData($response->getBody());
         }
-        catch (\Exception $exception)
+        catch (RequestException $exception)
         {
             return $this->_handleRequestException($exception, $endpoint);
         }
@@ -619,8 +619,8 @@ class ShipStation extends ShippingProvider
     /**
      * Handle a failed request.
      *
-     * @param \Exception  $exception  the exception that was thrown
-     * @param string      $endpoint   the endpoint that was queried
+     * @param RequestException  $exception  the exception that was thrown
+     * @param string            $endpoint   the endpoint that was queried
      *
      * @return null
      */
