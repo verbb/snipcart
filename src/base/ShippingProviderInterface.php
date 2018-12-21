@@ -16,6 +16,22 @@ use GuzzleHttp\Client;
 
 interface ShippingProviderInterface extends ComponentInterface
 {
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * Get the "camelCase" name of the provider.
+     * @return string|null
+     */
+    public static function refHandle();
+
+    /**
+     * Get the base URL for the provider's REST API, used by client.
+     * @return string
+     */
+    public static function getApiBaseUrl(): string;
+
+
     // Public Methods
     // =========================================================================
 

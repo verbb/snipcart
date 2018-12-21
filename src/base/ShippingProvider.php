@@ -16,8 +16,8 @@ use workingconcept\snipcart\models\Package;
 class ShippingProvider extends Component implements ShippingProviderInterface
 {
     /**
-     * @var \stdClass Settings specifically for this provider.
-     * @todo consider making this a validated model, one per provider
+     * @var array Settings specifically for this provider.
+     * @todo consider making these validated models
      */
     protected $providerSettings;
 
@@ -25,6 +25,27 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      * @var Client Guzzle client instance.
      */
     protected $client;
+
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function refHandle()
+    {
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getApiBaseUrl(): string
+    {
+        return '';
+    }
+
 
     // Public Methods
     // =========================================================================

@@ -20,7 +20,6 @@ use workingconcept\snipcart\models\shipstation\Rate;
 use workingconcept\snipcart\models\shipstation\Weight;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
  * Class ShipStation
@@ -34,19 +33,29 @@ class ShipStation extends ShippingProvider
     // =========================================================================
 
     /**
-     * @var string ShipStation's base API URL used for all interactions.
-     */
-    protected static $apiBaseUrl = 'https://ssapi.shipstation.com/';
-
-    /**
-     * @var array Settings to be used by the ShipStation provider.
-     */
-    protected $providerSettings;
-
-    /**
      * @var Client
      */
     protected $client;
+
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function refHandle(): string
+    {
+        return 'shipStation';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getApiBaseUrl(): string
+    {
+        return 'https://ssapi.shipstation.com/';
+    }
 
 
     // Public Methods
@@ -58,9 +67,8 @@ class ShipStation extends ShippingProvider
     public function init()
     {
         parent::init();
-
         $pluginSettings = Snipcart::$plugin->getSettings();
-        $this->providerSettings = $pluginSettings->providers['shipStation'];
+        $this->providerSettings = $pluginSettings->providers[self::refHandle()] ?? null;
     }
 
     /**
@@ -83,7 +91,7 @@ class ShipStation extends ShippingProvider
         }
 
         $this->client = new Client([
-            'base_uri' => self::$apiBaseUrl,
+            'base_uri' => self::getApiBaseUrl(),
             'auth' => [
                 $this->providerSettings['apiKey'],
                 $this->providerSettings['apiSecret']
@@ -105,13 +113,12 @@ class ShipStation extends ShippingProvider
     public function getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
     {
         $rates = [];
-        $shipStationRates = $this->_getRatesForOrder($snipcartOrder, $package);
 
         /**
          * Convert response data into ShipStation Rates, then collect as
          * a Snipcart ShippingRate.
          */
-        foreach ($shipStationRates as $responseItem)
+        foreach ($this->_getRatesForOrder($snipcartOrder, $package) as $responseItem)
         {
             $rate = new Rate($responseItem);
 
@@ -478,15 +485,19 @@ class ShipStation extends ShippingProvider
             $shipmentInfo
         );
 
+        if ($responseData === null)
+        {
+            Craft::info(sprintf(
+                'ShipStation did not return any rates for %s',
+                $snipcartOrder->invoiceNumber
+            ), 'snipcart');
+
+            return [];
+        }
         foreach ($responseData as $responseItem)
         {
             $rates[] = new Rate($responseItem);
         }
-
-        Craft::info(sprintf(
-            'ShipStation did not return any rates for %s',
-            $snipcartOrder->invoiceNumber
-        ), 'snipcart');
 
         return $rates;
     }
@@ -639,5 +650,5 @@ class ShipStation extends ShippingProvider
 
         return null;
     }
-    
+
 }
