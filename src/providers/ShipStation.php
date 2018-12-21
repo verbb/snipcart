@@ -10,7 +10,6 @@ namespace workingconcept\snipcart\providers;
 
 use Craft;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use workingconcept\snipcart\models\Order as SnipcartOrder;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
@@ -20,6 +19,7 @@ use workingconcept\snipcart\models\shipstation\Rate;
 use workingconcept\snipcart\models\shipstation\Weight;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\Snipcart;
+use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
  * Class ShipStation
@@ -265,50 +265,6 @@ class ShipStation extends ShippingProvider
         return null;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function get(string $endpoint, array $params = [])
-    {
-        if (count($params) > 0)
-        {
-            $endpoint .= '?' . http_build_query($params);
-        }
-
-        try
-        {
-            $response = $this->getClient()->get($endpoint);
-            return $this->_prepResponseData(
-                $response->getBody()
-            );
-        }
-        catch(RequestException $exception)
-        {
-            $this->_handleRequestException($exception, $endpoint);
-            return null;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function post(string $endpoint, array $data = [])
-    {
-        try
-        {
-            $response = $this->getClient()->post($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
-            ]);
-
-            return $this->_prepResponseData($response->getBody());
-        }
-        catch (RequestException $exception)
-        {
-            $this->_handleRequestException($exception, $endpoint);
-            return null;
-        }
-    }
-
 
     // Private Methods
     // =========================================================================
@@ -395,40 +351,6 @@ class ShipStation extends ShippingProvider
     }
 
     /**
-     * Extract the value from a specific custom field, if it exists.
-     *
-     * @param array|null $customFields Custom fields data from Snipcart,
-     *                                 an array of objects
-     * @param string     $fieldName    Name of the field as seen in the order.
-     * @param bool       $emptyAsNull  Return null rather than an empty value.
-     *                                 (defaults to false)
-     *
-     * @return string|null
-     */
-    private function _getValueFromCustomFields($customFields, $fieldName, $emptyAsNull = false)
-    {
-        if ( ! is_array($customFields))
-        {
-            return null;
-        }
-
-        foreach ($customFields as $customField)
-        {
-            if ($customField->name === $fieldName)
-            {
-                if ($emptyAsNull && empty($customField->value))
-                {
-                    return null;
-                }
-
-                return $customField->value;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Extract optional customer's note from a custom order comment field.
      *
      * @param array|null $customFields Custom fields data from Snipcart,
@@ -438,7 +360,7 @@ class ShipStation extends ShippingProvider
      */
     private function _getOrderNotes($customFields)
     {
-        return $this->_getValueFromCustomFields(
+        return $this->getValueFromCustomFields(
             $customFields,
             Snipcart::$plugin->getSettings()->orderCommentsFieldName,
             true
@@ -455,7 +377,7 @@ class ShipStation extends ShippingProvider
      */
     private function _getGiftNote($customFields)
     {
-        return $this->_getValueFromCustomFields(
+        return $this->getValueFromCustomFields(
             $customFields,
             Snipcart::$plugin->getSettings()->orderGiftNoteFieldName,
             true
@@ -471,7 +393,6 @@ class ShipStation extends ShippingProvider
      */
     private function _getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
     {
-        $rates        = [];
         $dimensions   = Dimensions::populateFromSnipcartPackage($package);
         $weight       = $this->_getOrderWeight($snipcartOrder, $package);
         $shipmentInfo = $this->_prepShipmentInfo(
@@ -494,12 +415,11 @@ class ShipStation extends ShippingProvider
 
             return [];
         }
-        foreach ($responseData as $responseItem)
-        {
-            $rates[] = new Rate($responseItem);
-        }
 
-        return $rates;
+        return ModelHelper::populateArrayWithModels(
+            $responseData,
+            Rate::class
+        );
     }
 
     /**
@@ -591,64 +511,6 @@ class ShipStation extends ShippingProvider
         }
 
         return $closest;
-    }
-
-    /**
-     * Take the raw response body and give it back as data that's ready to use.
-     *
-     * @param mixed  $body The raw response from the REST API.
-     * @return mixed Appropriate PHP type, or null if json cannot be decoded
-     *               or encoded data is deeper than the recursion limit.
-     */
-    private function _prepResponseData($body)
-    {
-        return json_decode($body, false);
-    }
-
-    /**
-     * Handle a failed request.
-     * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
-     *
-     * @param RequestException  $exception  the exception that was thrown
-     * @param string            $endpoint   the endpoint that was queried
-     *
-     * @return null
-     */
-    private function _handleRequestException(
-        $exception,
-        string $endpoint
-    )
-    {
-        /**
-         * Get the status code, which should be 200 or 201 if things went well.
-         */
-        $statusCode = $exception->getResponse()->getStatusCode() ?? null;
-
-        /**
-         * If there's a response we'll use its body, otherwise default
-         * to the request URI.
-         */
-        $reason = $exception->getResponse()->getBody() ?? null;
-
-        if ($statusCode !== null && $reason !== null)
-        {
-            // return code and message
-            Craft::warning(sprintf(
-                'ShipStation API responded with %d: %s',
-                $statusCode,
-                $reason
-            ));
-        }
-        else
-        {
-            // report mystery
-            Craft::warning(sprintf(
-                'ShipStation API request to %s failed.',
-                $endpoint
-            ));
-        }
-
-        return null;
     }
 
 }
