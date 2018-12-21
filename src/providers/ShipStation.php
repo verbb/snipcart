@@ -371,10 +371,12 @@ class ShipStation extends ShippingProvider
      * @param array|null $customFields Custom fields data from Snipcart,
      *                                 an array of objects
      * @param string     $fieldName    Name of the field as seen in the order.
+     * @param bool       $emptyAsNull  Return null rather than an empty value.
+     *                                 (defaults to false)
      *
      * @return string|null
      */
-    private function _getValueFromCustomFields($customFields, $fieldName)
+    private function _getValueFromCustomFields($customFields, $fieldName, $emptyAsNull = false)
     {
         if ( ! is_array($customFields))
         {
@@ -385,6 +387,11 @@ class ShipStation extends ShippingProvider
         {
             if ($customField->name === $fieldName)
             {
+                if (empty($customField->value))
+                {
+                    return null;
+                }
+
                 return $customField->value;
             }
         }
@@ -404,7 +411,7 @@ class ShipStation extends ShippingProvider
     {
         $fieldName = Snipcart::$plugin->getSettings()->orderCommentsFieldName;
 
-        return $this->_getValueFromCustomFields($customFields, $fieldName);
+        return $this->_getValueFromCustomFields($customFields, $fieldName, true);
     }
 
     /**
@@ -419,7 +426,7 @@ class ShipStation extends ShippingProvider
     {
         $fieldName = Snipcart::$plugin->getSettings()->orderGiftNoteFieldName;
 
-        return $this->_getValueFromCustomFields($customFields, $fieldName);
+        return $this->_getValueFromCustomFields($customFields, $fieldName, true);
     }
 
     /**

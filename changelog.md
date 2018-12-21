@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.14 - 2018-12-20
+### Changed
+- ShipStation's `_getOrderNotes()` and `_getGiftNote()` will no longer return empty values.
+
 ## 1.0.0-beta.13 - 2018-12-20
 ### Changed
 - **Breaking changes for everyone!**
