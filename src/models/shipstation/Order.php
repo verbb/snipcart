@@ -270,7 +270,7 @@ class Order extends \craft\base\Model
      */
     public function setBillTo($address): Address
     {
-        if (is_array($address))
+        if ( ! $address instanceof Address)
         {
             $address = new Address($address);
         }
@@ -297,7 +297,7 @@ class Order extends \craft\base\Model
      */
     public function setShipTo($address): Address
     {
-        if (is_array($address))
+        if ( ! $address instanceof Address)
         {
             $address = new Address($address);
         }
@@ -312,7 +312,8 @@ class Order extends \craft\base\Model
      */
     public function getItems(): array
     {
-        if ($this->_items !== null) {
+        if ($this->_items !== null)
+        {
             return $this->_items;
         }
 
@@ -352,7 +353,7 @@ class Order extends \craft\base\Model
      */
     public function setWeight($weight)
     {
-        if (is_array($weight))
+        if ( ! $weight instanceof Weight)
         {
             $weight = new Weight($weight);
         }
@@ -379,7 +380,7 @@ class Order extends \craft\base\Model
      */
     public function setDimensions($dimensions)
     {
-        if (is_array($dimensions))
+        if ( ! $dimensions instanceof Dimensions)
         {
             $dimensions = new Dimensions($dimensions);
         }
@@ -406,7 +407,7 @@ class Order extends \craft\base\Model
      */
     public function setInsuranceOptions($insuranceOptions)
     {
-        if (is_array($insuranceOptions))
+        if ( ! $insuranceOptions instanceof InsuranceOptions)
         {
             $insuranceOptions = new InsuranceOptions($insuranceOptions);
         }
@@ -433,7 +434,7 @@ class Order extends \craft\base\Model
      */
     public function setInternationalOptions($internationalOptions)
     {
-        if (is_array($internationalOptions))
+        if ( ! $internationalOptions instanceof InternationalOptions)
         {
             $internationalOptions = new InternationalOptions($internationalOptions);
         }
@@ -460,7 +461,7 @@ class Order extends \craft\base\Model
      */
     public function setAdvancedOptions($advancedOptions)
     {
-        if (is_array($advancedOptions))
+        if ( ! $advancedOptions instanceof AdvancedOptions)
         {
             $advancedOptions = new AdvancedOptions($advancedOptions);
         }

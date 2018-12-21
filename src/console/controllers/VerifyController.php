@@ -126,7 +126,7 @@ class VerifyController extends Controller
      */
     private function _sendAdminNotification($snipcartOrders, $reFeedResults): int
     {
-        // TODO: consolidate with SnipcartService
+        // TODO: move to Orders or Shipments
 
         // temporarily change template modes so we can render the plugin's template
         $view = Craft::$app->getView();

@@ -46,12 +46,17 @@ class ItemOption extends \craft\base\Model
     }
 
     /**
-     * @param CustomField|\stdClass $item
+     * @param CustomField|\stdClass|array $item
      * @return ItemOption
      * @todo strictly use CustomField as param
      */
     public static function populateFromSnipcartCustomField($item): ItemOption
     {
+        if (is_array($item))
+        {
+            $item = (object)$item;
+        }
+
         return new self([
             'name' => $item->name,
             'value' => $item->value,

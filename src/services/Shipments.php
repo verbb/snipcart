@@ -61,7 +61,7 @@ class Shipments extends \craft\base\Component
     {
         $rates = [];
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
-
+        
         $includeShipStationRates = in_array(
             Settings::PROVIDER_SHIPSTATION,
             Snipcart::$plugin->getSettings()->enabledProviders,

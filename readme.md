@@ -53,8 +53,8 @@ The following should appear in a plugin or module's `init()` method. When the Ev
 
 ```
 Event::on(
-    SnipcartService::class,
-    SnipcartService::EVENT_BEFORE_RETURN_SHIPPING_RATES,
+    Shipments::class,
+    Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES,
     function(WebhookEvent $event) {
         $event->rates = $this->modifyShippingRates(
             $event->rates,
@@ -69,19 +69,19 @@ The event passes `rates`, `order`, and `packaging` details. You can modify any o
 
 #### Available Events
 
-##### `EVENT_BEFORE_REQUEST_SHIPPING_RATES`
+##### `Orders::EVENT_BEFORE_REQUEST_SHIPPING_RATES`
 
 Triggered in response to a `shippingrates.fetch` webhook event, but before shipping rates are requested from a shipping provider. This is a good time to modify the order before a shipping rate request if necessary.
 
-##### `EVENT_BEFORE_RETURN_SHIPPING_RATES`
+##### `Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES`
 
 Triggered before any custom shipping rates are returned to Snipcart so that they may be filtered or modified.
 
-##### `EVENT_BEFORE_PROCESS_COMPLETED_ORDER`
+##### `WebhooksController::EVENT_BEFORE_PROCESS_COMPLETED_ORDER`
 
 Triggered immediately after an order is completed and sent via the `order.completed` webhook event. This is before the order is sent to any providers or inventory adjustments are attempted.
 
-##### `EVENT_PRODUCT_INVENTORY_CHANGE`
+##### `Products::EVENT_PRODUCT_INVENTORY_CHANGE`
 
 Triggered after an order has been completed, and contains references to each relevant Entry and a numeric value that can be used to adjust its quantity.
 

@@ -6,18 +6,20 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\providers;
+namespace workingconcept\snipcart\base;
 
 use workingconcept\snipcart\models\Order as SnipcartOrder;
 use workingconcept\snipcart\models\Package;
-use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
+use craft\base\Component;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Craft;
 
-class ShippingProvider extends \craft\base\Component
+class ShippingProvider extends Component implements ShippingProviderInterface
 {
     /**
-     * @var \stdClass Settings specifically for this provider.
-     * @todo consider making this a validated model, one per provider
+     * @var array Settings specifically for this provider.
+     * @todo consider making these validated models
      */
     protected $providerSettings;
 
@@ -26,16 +28,24 @@ class ShippingProvider extends \craft\base\Component
      */
     protected $client;
 
+
     // Static Methods
     // =========================================================================
 
     /**
-     * Whether the provider is ready to go.
-     * @return bool
+     * @inheritdoc
      */
-    public function isConfigured(): bool
+    public static function refHandle()
     {
-        return false;
+        return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getApiBaseUrl(): string
+    {
+        return '';
     }
 
 
@@ -43,11 +53,15 @@ class ShippingProvider extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Get shipping rates for the provided Snipcart order.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Package       $package
-     * @return SnipcartRate[]
+     * @inheritdoc
+     */
+    public function isConfigured(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
     {
@@ -55,10 +69,7 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Create an equivalent order in the provider's system.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @return mixed|null The created order model.
+     * @inheritdoc
      */
     public function createOrder(SnipcartOrder $snipcartOrder)
     {
@@ -66,9 +77,7 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Get an instance of the Guzzle client.
-     *
-     * @return Client
+     * @inheritdoc
      */
     public function getClient(): Client
     {
@@ -76,40 +85,164 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Get an order by the provider's unique ID.
-     *
-     * @param string|int $providerId
-     * @return mixed provider order model or null
+     * @inheritdoc
      */
     public function getOrderById($providerId)
     {
-
+        return null;
     }
 
     /**
-     * Get an order by Snipcart invoice number.
-     *
-     * @param string $snipcartInvoice
-     * @return mixed provider order model or null
+     * @inheritdoc
      */
     public function getOrderBySnipcartInvoice(string $snipcartInvoice)
     {
-
+        return null;
     }
 
     /**
-     * Create a shipping label for the provided order.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @return string URL to the label
-     * @todo decide on sensible uniform return value
+     * @inheritdoc
      */
     public function createShippingLabelForOrder(SnipcartOrder $snipcartOrder)
     {
-
+        return null;
     }
 
-    // Private Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     */
+    public function get(string $endpoint, array $params = [])
+    {
+        if (count($params) > 0)
+        {
+            $endpoint .= '?' . http_build_query($params);
+        }
+
+        try
+        {
+            $response = $this->getClient()->get($endpoint);
+            return $this->prepResponseData(
+                $response->getBody()
+            );
+        }
+        catch(RequestException $exception)
+        {
+            $this->handleRequestException($exception, $endpoint);
+            return null;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function post(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->post($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->prepResponseData($response->getBody());
+        }
+        catch (RequestException $exception)
+        {
+            $this->handleRequestException($exception, $endpoint);
+            return null;
+        }
+    }
+
+    /**
+     * Extract the value from a specific custom field, if it exists.
+     *
+     * @param array|null $customFields Custom fields data from Snipcart,
+     *                                 an array of objects
+     * @param string     $fieldName    Name of the field as seen in the order.
+     * @param bool       $emptyAsNull  Return null rather than an empty value.
+     *                                 (defaults to false)
+     *
+     * @return string|null
+     */
+    public function getValueFromCustomFields($customFields, $fieldName, $emptyAsNull = false)
+    {
+        if ( ! is_array($customFields))
+        {
+            return null;
+        }
+
+        foreach ($customFields as $customField)
+        {
+            if ($customField->name === $fieldName)
+            {
+                if ($emptyAsNull && empty($customField->value))
+                {
+                    return null;
+                }
+
+                return $customField->value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Take the raw response body and give it back as data that's ready to use.
+     *
+     * @param mixed  $body The raw response from the REST API.
+     * @return mixed Appropriate PHP type, or null if json cannot be decoded
+     *               or encoded data is deeper than the recursion limit.
+     */
+    public function prepResponseData($body)
+    {
+        return json_decode($body, false);
+    }
+
+    /**
+     * Handle a failed request.
+     *
+     * @param RequestException  $exception  the exception that was thrown
+     * @param string            $endpoint   the endpoint that was queried
+     *
+     * @return null
+     */
+    public function handleRequestException(
+        $exception,
+        string $endpoint
+    )
+    {
+        /**
+         * Get the status code, which should be 200 or 201 if things went well.
+         */
+        $statusCode = $exception->getResponse()->getStatusCode() ?? null;
+
+        /**
+         * If there's a response we'll use its body, otherwise default
+         * to the request URI.
+         */
+        $reason = $exception->getResponse()->getBody() ?? null;
+
+        if ($statusCode !== null && $reason !== null)
+        {
+            // return code and message
+            Craft::warning(sprintf(
+                '%s API responded with %d: %s',
+                self::displayName(),
+                $statusCode,
+                $reason
+            ), 'snipcart');
+        }
+        else
+        {
+            // report mystery
+            Craft::warning(sprintf(
+                '%s API request to %s failed.',
+                self::displayName(),
+                $endpoint
+            ), 'snipcart');
+        }
+
+        return null;
+    }
 
 }

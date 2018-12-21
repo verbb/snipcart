@@ -8,6 +8,9 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\behaviors\BillingAddressBehavior;
+use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
+
 /**
  * Snipcart Order model
  * https://docs.snipcart.com/api-reference/orders
@@ -474,13 +477,6 @@ class Order extends \craft\base\Model
         return $this->_user = $user;
     }
 
-    /**
-     * @return Address
-     */
-    public function getBillingAddress(): Address
-    {
-        return $this->_billingAddress;
-    }
 
     /**
      * @param Address|array $address
@@ -497,234 +493,6 @@ class Order extends \craft\base\Model
     }
 
     /**
-     * @return string
-     */
-    public function getBillingAddressName()
-    {
-        return $this->getBillingAddress()->name;
-    }
-
-    /**
-     * @param $name
-     * @return string
-     */
-    public function setBillingAddressName($name)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressFirstName()
-    {
-        return $this->getBillingAddress()->firstName;
-    }
-
-    /**
-     * @param $firstName
-     * @return string
-     */
-    public function setBillingAddressFirstName($firstName)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->firstName = $firstName;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressCompanyName()
-    {
-        return $this->getBillingAddress()->companyName;
-    }
-
-    /**
-     * @param $companyName
-     * @return string
-     */
-    public function setBillingAddressCompanyName($companyName)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->companyName = $companyName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressAddress1()
-    {
-        return $this->getBillingAddress()->address1;
-    }
-
-    /**
-     * @param $address1
-     * @return string
-     */
-    public function setBillingAddressAddress1($address1)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->address1 = $address1;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressAddress2()
-    {
-        return $this->getBillingAddress()->address2;
-    }
-
-    /**
-     * @param $address2
-     * @return string
-     */
-    public function setBillingAddressAddress2($address2)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->address2 = $address2;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressCity(): string
-    {
-        return $this->getBillingAddress()->city;
-    }
-
-    /**
-     * @param $city
-     * @return string
-     */
-    public function setBillingAddressCity($city)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->city = $city;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressCountry()
-    {
-        return $this->getBillingAddress()->country;
-    }
-
-    /**
-     * @param $country
-     * @return string
-     */
-    public function setBillingAddressCountry($country)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->country = $country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressProvince()
-    {
-        return $this->getBillingAddress()->province;
-    }
-
-    /**
-     * @param $province
-     * @return string
-     */
-    public function setBillingAddressProvince($province)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->province = $province;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBillingAddressPostalCode()
-    {
-        return $this->getBillingAddress()->postalCode;
-    }
-
-    /**
-     * @param $postalCode
-     * @return string
-     */
-    public function setBillingAddressPostalCode($postalCode)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->postalCode = $postalCode;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressPhone()
-    {
-        return $this->getBillingAddress()->phone;
-    }
-
-    /**
-     * @param $phone
-     * @return string
-     */
-    public function setBillingAddressPhone($phone)
-    {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
-        }
-
-        return $this->_billingAddress->phone = $phone;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getShippingAddress(): Address
-    {
-        return $this->_shippingAddress;
-    }
-
-    /**
      * @param Address|array $address
      * @return Address
      */
@@ -736,226 +504,6 @@ class Order extends \craft\base\Model
         }
 
         return $this->_shippingAddress = $address;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressName()
-    {
-        return $this->getShippingAddress()->name;
-    }
-
-    /**
-     * @param $name
-     * @return string
-     */
-    public function setShippingAddressName($name)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressFirstName()
-    {
-        return $this->getShippingAddress()->firstName;
-    }
-
-    /**
-     * @param $firstName
-     * @return string
-     */
-    public function setShippingAddressFirstName($firstName)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->firstName = $firstName;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressCompanyName()
-    {
-        return $this->getShippingAddress()->companyName;
-    }
-
-    /**
-     * @param $companyName
-     * @return string
-     */
-    public function setShippingAddressCompanyName($companyName)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->companyName = $companyName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressAddress1()
-    {
-        return $this->getShippingAddress()->address1;
-    }
-
-    /**
-     * @param $address1
-     * @return string
-     */
-    public function setShippingAddressAddress1($address1)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->address1 = $address1;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressAddress2()
-    {
-        return $this->getShippingAddress()->address2;
-    }
-
-    /**
-     * @param $address2
-     * @return string
-     */
-    public function setShippingAddressAddress2($address2)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->address2 = $address2;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressCity()
-    {
-        return $this->getShippingAddress()->city;
-    }
-
-    /**
-     * @param $city
-     * @return string
-     */
-    public function setShippingAddressCity($city)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->city = $city;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressCountry()
-    {
-        return $this->getShippingAddress()->country;
-    }
-
-    /**
-     * @param $country
-     * @return string
-     */
-    public function setShippingAddressCountry($country)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->country = $country;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressProvince()
-    {
-        return $this->getShippingAddress()->province;
-    }
-
-    /**
-     * @param $province
-     * @return string
-     */
-    public function setShippingAddressProvince($province)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->province = $province;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShippingAddressPostalCode()
-    {
-        return $this->getShippingAddress()->postalCode;
-    }
-
-    /**
-     * @param $postalCode
-     * @return string
-     */
-    public function setShippingAddressPostalCode($postalCode)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->postalCode = $postalCode;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressPhone()
-    {
-        return $this->getShippingAddress()->phone;
-    }
-
-    /**
-     * @param $phone
-     * @return string
-     */
-    public function setShippingAddressPhone($phone)
-    {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
-        }
-
-        return $this->_shippingAddress->phone = $phone;
     }
 
     /**
@@ -983,6 +531,27 @@ class Order extends \craft\base\Model
 
     /**
      * @inheritdoc
+     *
+     * Proxy all our billingAddress* and shippingAddress* fields without having
+     * to use a whole bunch of getters and setters on this model.
+     */
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['billingAddress'] = [
+            'class' => BillingAddressBehavior::class
+        ];
+
+        $behaviors['shippingAddress'] = [
+            'class' => ShippingAddressBehavior::class
+        ];
+
+        return $behaviors;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules(): array
     {
@@ -1001,25 +570,6 @@ class Order extends \craft\base\Model
                 'cardHolderName',
                 'creditCardLast4Digits',
                 'notes',
-                'billingAddressName',
-                'billingAddressFirstName',
-                'billingAddressCompanyName',
-                'billingAddressAddress1',
-                'billingAddressAddress2',
-                'billingAddressCity',
-                'billingAddressCountry',
-                'billingAddressProvince',
-                'billingAddressPostalCode',
-                'billingAddressPhone',
-                'shippingAddressName',
-                'shippingAddressCompanyName',
-                'shippingAddressAddress1',
-                'shippingAddressAddress2',
-                'shippingAddressCity',
-                'shippingAddressCountry',
-                'shippingAddressProvince',
-                'shippingAddressPostalCode',
-                'shippingAddressPhone',
                 'shippingMethod',
                 'shippingMethod',
                 'subscriptionId',
