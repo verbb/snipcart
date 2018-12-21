@@ -8,18 +8,19 @@
 
 namespace workingconcept\snipcart\providers;
 
-use workingconcept\snipcart\models\Order as SnipcartOrder;
-use workingconcept\snipcart\models\shipstation\Order;
-use workingconcept\snipcart\models\Package;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\shipstation\Weight;
-use workingconcept\snipcart\models\shipstation\Dimensions;
-use workingconcept\snipcart\models\shipstation\Rate;
-use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
-use workingconcept\snipcart\records\ShippingQuoteLog;
+use Craft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Craft;
+use workingconcept\snipcart\models\Order as SnipcartOrder;
+use workingconcept\snipcart\models\Package;
+use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
+use workingconcept\snipcart\models\shipstation\Dimensions;
+use workingconcept\snipcart\models\shipstation\Order;
+use workingconcept\snipcart\models\shipstation\Rate;
+use workingconcept\snipcart\models\shipstation\Weight;
+use workingconcept\snipcart\records\ShippingQuoteLog;
+use workingconcept\snipcart\Snipcart;
+use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
  * Class ShipStation
@@ -36,7 +37,15 @@ class ShipStation extends ShippingProvider
      * @var string ShipStation's base API URL used for all interactions.
      */
     protected static $apiBaseUrl = 'https://ssapi.shipstation.com/';
+
+    /**
+     * @var array Settings to be used by the ShipStation provider.
+     */
     protected $providerSettings;
+
+    /**
+     * @var Client
+     */
     protected $client;
 
 
@@ -208,66 +217,16 @@ class ShipStation extends ShippingProvider
         $payload['testLabel']   = $isTest;
         $payload['packageCode'] = $packageCode;
 
-        return $this->_postRequest('orders/createlabelfororder', $payload);
+        return $this->post('orders/createlabelfororder', $payload);
     }
 
     /**
-     * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-w/o-parameters
-     *
-     * @param int $limit
-     *
-     * @return Order[]|null
-     */
-    public function listOrders($limit = 25): array
-    {
-        $orders = [];
-        $responseData = $this->_getRequest(sprintf(
-            'orders?pageSize=%d&sortBy=OrderDate&sortDir=DESC',
-            $limit
-        ));
-
-        foreach ($responseData['orders'] as $orderData)
-        {
-            $orders[] = new Order($orderData);
-        }
-
-        return $orders;
-    }
-
-    /**
-     * Get an order by its order number, which is the Snipcart invoice number.
-     *
-     * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
-     *
-     * @param string $snipcartInvoice Snipcart invoice number
-     *
-     * @return Order|null
-     */
-    public function getOrderBySnipcartInvoice(string $snipcartInvoice)
-    {
-        $responseData = $this->_getRequest(sprintf(
-            'orders?orderNumber=%s',
-            $snipcartInvoice
-        ));
-
-        if (count($responseData['orders']) === 1)
-        {
-            return new Order($responseData['orders'][0]);
-        }
-
-        return null;
-    }
-
-    /**
+     * @inheritdoc
      * https://www.shipstation.com/developer-api/#/reference/orders/getdelete-order/get-order
-     *
-     * @param int $providerId ShipStation order ID
-     *
-     * @return Order|null
      */
     public function getOrderById($providerId)
     {
-        $responseData = $this->_getRequest(sprintf(
+        $responseData = $this->get(sprintf(
             'order/%d',
             $providerId
         ));
@@ -278,6 +237,69 @@ class ShipStation extends ShippingProvider
         }
 
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
+     */
+    public function getOrderBySnipcartInvoice(string $snipcartInvoice)
+    {
+        $responseData = $this->get(sprintf(
+            'orders?orderNumber=%s',
+            $snipcartInvoice
+        ));
+
+        if (count($responseData->orders) === 1)
+        {
+            return new Order($responseData->orders[0]);
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function get(string $endpoint, array $params = [])
+    {
+        if (count($params) > 0)
+        {
+            $endpoint .= '?' . http_build_query($params);
+        }
+
+        try
+        {
+            $response = $this->getClient()->get($endpoint);
+            return $this->_prepResponseData(
+                $response->getBody()
+            );
+        }
+        catch(RequestException $exception)
+        {
+            $this->_handleRequestException($exception, $endpoint);
+            return null;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function post(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->post($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->_prepResponseData($response->getBody());
+        }
+        catch (RequestException $exception)
+        {
+            $this->_handleRequestException($exception, $endpoint);
+            return null;
+        }
     }
 
 
@@ -330,7 +352,7 @@ class ShipStation extends ShippingProvider
      */
     private function _sendOrder(Order $order)
     {
-        $responseData = $this->_postRequest(
+        $responseData = $this->post(
             'orders/createorder',
             $order->getPayloadForPost()
         );
@@ -409,9 +431,11 @@ class ShipStation extends ShippingProvider
      */
     private function _getOrderNotes($customFields)
     {
-        $fieldName = Snipcart::$plugin->getSettings()->orderCommentsFieldName;
-
-        return $this->_getValueFromCustomFields($customFields, $fieldName, true);
+        return $this->_getValueFromCustomFields(
+            $customFields,
+            Snipcart::$plugin->getSettings()->orderCommentsFieldName,
+            true
+        );
     }
 
     /**
@@ -424,9 +448,11 @@ class ShipStation extends ShippingProvider
      */
     private function _getGiftNote($customFields)
     {
-        $fieldName = Snipcart::$plugin->getSettings()->orderGiftNoteFieldName;
-
-        return $this->_getValueFromCustomFields($customFields, $fieldName, true);
+        return $this->_getValueFromCustomFields(
+            $customFields,
+            Snipcart::$plugin->getSettings()->orderGiftNoteFieldName,
+            true
+        );
     }
 
     /**
@@ -447,7 +473,7 @@ class ShipStation extends ShippingProvider
             $weight
         );
 
-        $responseData = $this->_postRequest(
+        $responseData = $this->post(
             'shipments/getrates',
             $shipmentInfo
         );
@@ -557,69 +583,15 @@ class ShipStation extends ShippingProvider
     }
 
     /**
-     * Send a get request to the ShipStation API.
-     *
-     * @param string $endpoint
-     * @param bool   $returnAssociativeArray  whether to return an array
-     *                                        (default) or object
-     *
-     * @return mixed
-     */
-    private function _getRequest(string $endpoint, $returnAssociativeArray = true)
-    {
-        try
-        {
-            $response = $this->getClient()->get($endpoint);
-            return $this->_prepResponseData(
-                $response->getBody(),
-                $returnAssociativeArray
-            );
-        }
-        catch(RequestException $exception)
-        {
-            $this->_handleRequestException($exception, $endpoint);
-            return null;
-        }
-    }
-
-    /**
-     * Send a post request to the ShipStation API.
-     *
-     * @param string $endpoint
-     * @param array  $data
-     *
-     * @return mixed
-     */
-    private function _postRequest(string $endpoint, array $data = [])
-    {
-        try
-        {
-            $response = $this->getClient()->post($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
-            ]);
-
-            return $this->_prepResponseData($response->getBody());
-        }
-        catch (RequestException $exception)
-        {
-            $this->_handleRequestException($exception, $endpoint);
-            return null;
-        }
-    }
-
-    /**
      * Take the raw response body and give it back as data that's ready to use.
      *
-     * @param $body
-     * @param bool   $returnAssociativeArray  whether to return an array
-     *                                        (default) or object
-     *
+     * @param mixed  $body The raw response from the REST API.
      * @return mixed Appropriate PHP type, or null if json cannot be decoded
      *               or encoded data is deeper than the recursion limit.
      */
-    private function _prepResponseData($body, $returnAssociativeArray = true)
+    private function _prepResponseData($body)
     {
-        return json_decode($body, $returnAssociativeArray);
+        return json_decode($body, false);
     }
 
     /**
@@ -666,6 +638,17 @@ class ShipStation extends ShippingProvider
         }
 
         return null;
+    }
+
+    /**
+     * Recursively converts an object or an array into an associative array.
+     *
+     * @param \stdClass|array $thing
+     * @return array
+     */
+    private function _objectToArray($thing)
+    {
+        return json_decode(json_encode($thing), true);
     }
 
 }

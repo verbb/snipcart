@@ -8,12 +8,12 @@
 
 namespace workingconcept\snipcart\providers;
 
+use craft\base\Component;
+use GuzzleHttp\Client;
 use workingconcept\snipcart\models\Order as SnipcartOrder;
 use workingconcept\snipcart\models\Package;
-use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
-use GuzzleHttp\Client;
 
-class ShippingProvider extends \craft\base\Component
+class ShippingProvider extends Component implements ShippingProviderInterface
 {
     /**
      * @var \stdClass Settings specifically for this provider.
@@ -26,28 +26,19 @@ class ShippingProvider extends \craft\base\Component
      */
     protected $client;
 
-    // Static Methods
+    // Public Methods
     // =========================================================================
 
     /**
-     * Whether the provider is ready to go.
-     * @return bool
+     * @inheritdoc
      */
     public function isConfigured(): bool
     {
         return false;
     }
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Get shipping rates for the provided Snipcart order.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Package       $package
-     * @return SnipcartRate[]
+     * @inheritdoc
      */
     public function getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
     {
@@ -55,10 +46,7 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Create an equivalent order in the provider's system.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @return mixed|null The created order model.
+     * @inheritdoc
      */
     public function createOrder(SnipcartOrder $snipcartOrder)
     {
@@ -66,9 +54,7 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Get an instance of the Guzzle client.
-     *
-     * @return Client
+     * @inheritdoc
      */
     public function getClient(): Client
     {
@@ -76,40 +62,43 @@ class ShippingProvider extends \craft\base\Component
     }
 
     /**
-     * Get an order by the provider's unique ID.
-     *
-     * @param string|int $providerId
-     * @return mixed provider order model or null
+     * @inheritdoc
      */
     public function getOrderById($providerId)
     {
-
+        return null;
     }
 
     /**
-     * Get an order by Snipcart invoice number.
-     *
-     * @param string $snipcartInvoice
-     * @return mixed provider order model or null
+     * @inheritdoc
      */
     public function getOrderBySnipcartInvoice(string $snipcartInvoice)
     {
-
+        return null;
     }
 
     /**
-     * Create a shipping label for the provided order.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @return string URL to the label
-     * @todo decide on sensible uniform return value
+     * @inheritdoc
      */
     public function createShippingLabelForOrder(SnipcartOrder $snipcartOrder)
     {
-
+        return null;
     }
 
-    // Private Methods
-    // =========================================================================
+    /**
+     * @inheritdoc
+     */
+    public function get(string $endpoint, array $params = [])
+    {
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function post(string $endpoint, array $data = [])
+    {
+        return null;
+    }
 
 }
