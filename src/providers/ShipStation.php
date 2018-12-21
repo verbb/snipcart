@@ -639,16 +639,5 @@ class ShipStation extends ShippingProvider
 
         return null;
     }
-
-    /**
-     * Recursively converts an object or an array into an associative array.
-     *
-     * @param \stdClass|array $thing
-     * @return array
-     */
-    private function _objectToArray($thing)
-    {
-        return json_decode(json_encode($thing), true);
-    }
-
+    
 }
