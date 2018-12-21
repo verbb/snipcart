@@ -387,7 +387,7 @@ class ShipStation extends ShippingProvider
         {
             if ($customField->name === $fieldName)
             {
-                if (empty($customField->value))
+                if ($emptyAsNull && empty($customField->value))
                 {
                     return null;
                 }
