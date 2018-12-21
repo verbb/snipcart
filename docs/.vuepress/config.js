@@ -33,19 +33,22 @@ module.exports = {
             {
                 title: 'Templating',
                 children: [
-                    '/'
+                    '/templating/template-tags',
+                    '/templating/fields'
                 ]
             },
             {
                 title: 'Examples',
                 children: [
-                    '/'
+                    '/examples/config',
+                    '/examples/webhooks'
                 ]
             },
             {
                 title: 'Testing',
                 children: [
                     '/testing/overview',
+                    '/testing/webhooks',
                     '/testing/going-live'
                 ]
             },
@@ -60,7 +63,7 @@ module.exports = {
             {
                 title: 'Shipments',
                 children: [
-                    '/'
+                    '/shipments/overview'
                 ]
             },
             {
