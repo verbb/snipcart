@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\providers;
+namespace workingconcept\snipcart\base;
 
 use craft\base\ComponentInterface;
 use workingconcept\snipcart\models\Order as SnipcartOrder;

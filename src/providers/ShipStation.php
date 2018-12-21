@@ -20,6 +20,7 @@ use workingconcept\snipcart\models\shipstation\Weight;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
+use workingconcept\snipcart\base\ShippingProvider;
 
 /**
  * Class ShipStation
