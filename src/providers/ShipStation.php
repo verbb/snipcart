@@ -627,6 +627,7 @@ class ShipStation extends ShippingProvider
 
     /**
      * Handle a failed request.
+     * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
      *
      * @param RequestException  $exception  the exception that was thrown
      * @param string            $endpoint   the endpoint that was queried
@@ -638,47 +639,6 @@ class ShipStation extends ShippingProvider
         string $endpoint
     )
     {
-        /**
-         * Handle problematic responses, where 200 and 201 are expected to be fine.
-         * https://www.shipstation.com/developer-api/#/introduction/shipstation-api-requirements/server-responses
-         */
-        /*
-        if ($response->getStatusCode() > 201)
-        {
-            switch ($response->getStatusCode())
-            {
-                case 204:
-                    // No Content - The request was successful but there is no representation to return (that is, the response is empty).
-                    break;
-                case 400:
-                    // Bad Request - The request could not be understood or was missing required parameters.
-                    break;
-                case 401:
-                    // Unauthorized - Authentication failed or user does not have permissions for the requested operation.
-                    break;
-                case 403:
-                    // Forbidden - Access denied.
-                    break;
-                case 404:
-                    // Not Found - Resource was not found.
-                    break;
-                case 405:
-                    // Method Not Allowed - Requested method is not supported for the specified resource.
-                    break;
-                case 429:
-                    // Too Many Requests - Exceeded ShipStation API limits. When the limit is reached, your application should stop making requests until X-Rate-Limit-Reset seconds have elapsed.
-                    break;
-                case 500:
-                    // Internal Server Error - ShipStation has encountered an error.
-                    break;
-            }
-
-            // something bad happened!
-            Craft::warning($response->getBody(), 'snipcart');
-            return null;
-        }
-        */
-
         /**
          * Get the status code, which should be 200 or 201 if things went well.
          */
