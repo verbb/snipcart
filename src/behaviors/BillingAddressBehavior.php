@@ -246,4 +246,5 @@ class BillingAddressBehavior extends Behavior
 
         return $this->_billingAddress->phone = $phone;
     }
+
 }
