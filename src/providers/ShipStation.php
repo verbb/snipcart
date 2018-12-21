@@ -619,9 +619,6 @@ class ShipStation extends ShippingProvider
      */
     private function _prepResponseData($body, $returnAssociativeArray = true)
     {
-        /**
-         * get response data as object, not an associative array
-         */
         return json_decode($body, $returnAssociativeArray);
     }
 
