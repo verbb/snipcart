@@ -13,6 +13,7 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\providers\ShipStation;
+use workingconcept\snipcart\records\ShippingQuoteLog;
 use Craft;
 
 /**
@@ -149,6 +150,20 @@ class Shipments extends \craft\base\Component
         }
 
         return $response;
+    }
+
+    /**
+     * Get the last shipping rate quote that was returned for the given order.
+     *
+     * @param $order
+     * @return array|ShippingQuoteLog|\yii\db\ActiveRecord|null
+     */
+    public function getQuoteLogForOrder($order)
+    {
+        return ShippingQuoteLog::find()
+            ->where(['token' => $order->token])
+            ->orderBy(['dateCreated' => SORT_DESC])
+            ->one();
     }
 
     // Private Methods
