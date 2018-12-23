@@ -19,10 +19,12 @@ use workingconcept\snipcart\services\Subscriptions;
 use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
+use workingconcept\snipcart\fields\ProductDetails;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\services\Fields;
 use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\web\UrlManager;
@@ -102,6 +104,15 @@ class Snipcart extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = OrdersWidget::class;
+            }
+        );
+
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event)
+            {
+                $event->types[] = ProductDetails::class;
             }
         );
 

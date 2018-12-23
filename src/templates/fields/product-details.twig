@@ -1,0 +1,100 @@
+{% import "_includes/forms" as forms %}
+
+<div class="snipcart-product-details-outer">
+    <div class="snipcart-product-details-field-group snipcart-product-details-sku-group">
+        <div class="label">
+            <label for="sku" class="required">
+                {{- "SKU"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            <input type="text" class="text code fullwidth">
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-shippable-group">
+        <div class="label">
+            <label for="shippable" class="required">
+                {{- "Shippable"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ forms.lightswitch({
+                id: 'shippable',
+                required: false,
+                name: 'shippable',
+                on: field.shippable,
+                value: true,
+                errors: field.getErrors('shippable'),
+            }) }}
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-weight-group">
+        <div class="label">
+            <label for="weight">
+                {{- "Weight"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            <input type="text" class="text" name="weight">
+            <div class="select">
+                <select>
+                    <option value="">grams</option>
+                    <option value="">pounds</option>
+                    <option value="">ounces</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-dimensions-group">
+        <div class="label">
+            <label>
+                {{- "Dimensions"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            <input type="text" class="text dimension-input" name="length" placeholder="L"> ×
+            <input type="text" class="text dimension-input" name="width" placeholder="W"> ×
+            <input type="text" class="text dimension-input" name="height" placeholder="H">
+            <div class="select">
+                <select>
+                    <option value="">inches</option>
+                    <option value="">centimeters</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .snipcart-product-details-outer {
+        background-image: linear-gradient(-180deg, #FEFEFE 0%, #FAFAFA 100%);
+        border: 1px solid #D8DEE2;
+        border-radius: 2px;
+    }
+
+    .snipcart-product-details-field-group {
+        display: block;
+        overflow: hidden;
+        clear: both;
+        padding: 15px;
+        border-bottom: 1px dotted #E5E5E7;
+    }
+
+    .snipcart-product-details-field-group .label {
+        width: 15%;
+        float: left;
+    }
+
+    .snipcart-product-details-field-group .inputs {
+        width: 75%;
+        float: right;
+    }
+
+    .snipcart-product-details-dimensions-group {
+        border-bottom: 0;
+    }
+
+    .snipcart-product-details-dimensions-group .dimension-input {
+        width: 75px;
+    }
+</style>
