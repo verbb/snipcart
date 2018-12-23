@@ -18,8 +18,10 @@ use yii\base\Exception;
 
 /**
  * Class Api
- *
- * For interaction directly with the Snipcart API and getting back response data.
+ * 
+ * The API service is for interacting with Snipcart's REST API. It provides a
+ * configured Guzzle client, can optionally cache GET requests, and validates
+ * tokens.
  *
  * @package workingconcept\snipcart\services
  * @property bool $isLinked
@@ -66,7 +68,7 @@ class Api extends Component
     }
 
     /**
-     * Get an instance of the Guzzle client.
+     * Returns a configured Guzzle client.
      *
      * @return Client
      * @throws \Exception if our API key is missing.

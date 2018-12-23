@@ -33,14 +33,21 @@ class Shipments extends \craft\base\Component
      */
     const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
+    
     // Private Properties
     // =========================================================================
 
     private $_shipStation;
 
+
     // Public Methods
     // =========================================================================
 
+    /**
+     * Returns an instance of the ShipStation provider.
+     *
+     * @return ShipStation
+     */
     public function getShipStation(): ShipStation
     {
         if ($this->_shipStation === null)
@@ -59,6 +66,16 @@ class Shipments extends \craft\base\Component
      */
     public function collectRatesForOrder(Order $order): array
     {
+        if ($order->hasShippableItems() === false)
+        {
+            Craft::warning(sprintf(
+                'Snipcart order %s did not contain any shippable items.',
+                $order->invoiceNumber ?? $order->token
+            ), 'snipcart');
+
+            return [];
+        }
+
         $rates = [];
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
         
