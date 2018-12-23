@@ -1,1 +1,1 @@
-## Adding Snipcart to Your Site
+# Adding Snipcart to Your Site

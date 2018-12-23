@@ -28,11 +28,20 @@
         "pelago/emogrifier": "*",
         "ext-json": "*"
     },
+    "require-dev": {
+        "workingconcept/yii2-apidoc": "@dev"
+    },
     "autoload": {
         "psr-4": {
             "workingconcept\\snipcart\\": "src/"
         }
     },
+    "repositories": [
+        {
+          "type": "git",
+          "url": "https://github.com/workingconcept/yii2-apidoc"
+        }
+    ],
     "extra": {
         "name": "Snipcart",
         "handle": "snipcart",

@@ -5,7 +5,10 @@ module.exports = {
             title: 'Snipcart Plugin Documentation',
         }
     },
+    theme: 'craftdocs',
     themeConfig: {
+        repo: 'workingconcept/snipcart-craft-plugin',
+        docsBranch: 'master',
         docsDir: 'docs',
         sidebar: [
             {
@@ -74,10 +77,56 @@ module.exports = {
                     '/dev/services',
                     '/dev/models',
                 ]
+            }
+            /*
+            {
+                title: 'Services',
+                children: [
+                    '/api/services/api',
+                    '/api/services/carts',
+                    '/api/services/customers',
+                    '/api/services/discounts',
+                    '/api/services/orders',
+                    '/api/services/products',
+                    '/api/services/shipments',
+                    '/api/services/subscriptions',
+                ]
             },
+            {
+                title: 'Models',
+                children: [
+                    '/api/models/settings',
+                    '/api/models/abandonedcart',
+                    '/api/models/address',
+                    '/api/models/category',
+                    '/api/models/customer',
+                    '/api/models/customerstatistics',
+                    '/api/models/customfield',
+                    '/api/models/dimensions',
+                    '/api/models/discount',
+                    '/api/models/domain',
+                    '/api/models/item',
+                    '/api/models/notification',
+                    '/api/models/order',
+                    '/api/models/orderevent',
+                    '/api/models/package',
+                    '/api/models/paymentschedule',
+                    '/api/models/plan',
+                    '/api/models/product',
+                    '/api/models/productvariant',
+                    '/api/models/refund',
+                    '/api/models/shippingevent',
+                    '/api/models/shippingmethod',
+                    '/api/models/subscription',
+                    '/api/models/subscriptionevent',
+                    '/api/models/tax',
+                    '/api/models/taxesevent',
+                    '/api/models/usersession',
+                ]
+            }
+            */
         ],
         nav: [
-            { text: 'GitHub Repo', link: 'https://github.com/workingconcept/snipcart-craft-plugin' },
             { text: 'Working Concept', link: 'https://workingconcept.com/' }
         ]
     }
