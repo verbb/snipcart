@@ -601,7 +601,6 @@ class Order extends \craft\base\Model
             'insuranceOptions',
             'internationalOptions',
             'advancedOptions',
-            'orderTotal',
         ];
 
         foreach ($removeIfNull as $removeKey)
@@ -617,6 +616,7 @@ class Order extends \craft\base\Model
             'createDate',
             'modifyDate',
             'externallyFulfilled',
+            'orderTotal', // read-only field
         ];
 
         foreach ($remove as $removeKey)
@@ -637,7 +637,11 @@ class Order extends \craft\base\Model
             {
                 unset($item[$removeKey]);
             }
+
+            unset($item['weight']['WeightUnits']);
         }
+
+        unset($payload['weight']['WeightUnits']);
 
         return $payload;
     }

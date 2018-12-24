@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.15 - 2018-12-24
+### Changed
+- Fixed incorrect item weights when converting a Snipcart order into a ShipStation order.
+- Refactored ShippingProvider to expose REST API methods.
+- Various code quality improvements.
+
 ## 1.0.0-beta.14 - 2018-12-20
 ### Changed
 - ShipStation's `_getOrderNotes()` and `_getGiftNote()` will no longer return empty values.
