@@ -1,0 +1,22 @@
+<a href="{{ templateParams.href }}"
+    class="{{ templateParams.class }}"
+    {% if templateParams.target %}target="{{ templateParams.target }}"{% endif %}
+    {% if templateParams.title %}title="{{ templateParams.title|t }}"{% endif %}
+    {% if templateParams.rel %}rel="{{ templateParams.rel }}"{% endif %}
+    data-item-id="{{ fieldData.sku }}"
+    data-item-name="{{ fieldData.element.title }}"
+    data-item-price="{{ fieldData.price }}"
+    data-item-weight="{{ fieldData.getWeightInGrams() }}"
+    data-item-url="{{ fieldData.element.url }}"
+    data-item-quantity="{{ templateParams.quantity }}"
+    data-item-taxable="{{ fieldData.taxable ? 'true' : 'false' }}"
+    {%- for customOption in templateParams.customOptions -%}
+    data-item-custom{{ loop.index }}-name="{{ customOption.name }}"
+    data-item-custom{{ loop.index }}-required="{{ customOption.required ? 'true' : 'false' }}"
+    data-item-custom{{ loop.index }}-options="{% for option in customOption.options -%}
+        {{ option.name }}[+{{ option.price }}]
+        {%- if loop.last != true %}|{% endif %}{% endfor %}"
+    {%- endfor -%}
+    >
+        {{- text|t -}}
+</a>

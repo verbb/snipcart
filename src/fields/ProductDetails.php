@@ -8,69 +8,28 @@
 
 namespace workingconcept\snipcart\fields;
 
+use workingconcept\snipcart\fields\data\ProductDetailsData;
 use Craft;
 use craft\base\ElementInterface;
+use yii\db\Schema;
 
+/**
+ * ProductDetails
+ * 
+ * @todo make sure every SKU is unique
+ * @todo establish and honor field settings
+ * @todo validate field values
+ */
 class ProductDetails extends \craft\base\Field
 {
-    // Constants
-    // =========================================================================
-
-    const WEIGHT_UNIT_GRAMS  = 'grams';
-    const WEIGHT_UNIT_POUNDS = 'pounds';
-    const WEIGHT_UNIT_OUNCES = 'ounces';
-    const DIMENSIONS_UNIT_CENTIMETERS = 'centimeters';
-    const DIMENSIONS_UNIT_INCHES = 'inches';
-
-
     // Public Properties
     // =========================================================================
 
-    /**
-     * @var string Unique product identifier passed on to Snipcart.
-     */
-    public $sku;
-
-    /**
-     * @var bool Whether or not the product is something that can be shipped.
-     */
-    public $shippable = false;
-
-    /**
-     * @var bool Whether or not the product should be taxed.
-     */
-    public $taxable = false;
-
-    /**
-     * @var float Total product shipping weight.
-     */
-    public $weight;
-
-    /**
-     * @var string Unit that applies to provided weight.
-     */
-    public $weightUnit;
-
-    /**
-     * @var float Total product shipping length.
-     */
-    public $length;
-
-    /**
-     * @var float Total product shipping width.
-     */
-    public $width;
-
-    /**
-     * @var float Total product shipping height.
-     */
-    public $height;
-
-    /**
-     * @var string Unit that applies to provided length, width,
-     *             and height dimensions.
-     */
-    public $dimensionsUnit;
+    public $displayShippableSwitch = false;
+    public $displayTaxableSwitch = false;
+    public $shippableDefault = false;
+    public $taxableDefault = false;
+    public $skuDefault = '';
 
 
     // Static Methods
@@ -91,57 +50,51 @@ class ProductDetails extends \craft\base\Field
     /**
      * @inheritdoc
      */
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
-        return [
-            [['sku', 'weightUnit', 'dimensionsUnit'], 'string'],
-            [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],
-            [['shippable'], 'boolean'],
-            [['taxable'], 'boolean'],
-            [['sku', 'shippable'], 'required'],
-            [['weight', 'weightUnit'], 'required', 'when' => function($model){
-                return $model->shippable === true;
-            }],
-            [['weightUnit'], 'in', 'range' => [
-                self::WEIGHT_UNIT_GRAMS,
-                self::WEIGHT_UNIT_OUNCES,
-                self::WEIGHT_UNIT_POUNDS
-            ]],
-            [['dimensionsUnit'], 'in', 'range' => [
-                self::DIMENSIONS_UNIT_CENTIMETERS,
-                self::DIMENSIONS_UNIT_INCHES
-            ]],
-            [['length', 'width', 'height'], 'required', 'when' => function($model){
-                return $this->hasDimensions($model);
-            }],
-            [['dimensionsUnit'], 'required', 'when' => function($model){
-                return $this->hasAllDimensions($model);
-            }],
-        ];
+        return [];
     }
 
-    /**
-     * Returns true if at least one dimension (length, width, height) has a
-     * non-zero value.
-     *
-     * @param null $model
-     * @return bool
-     */
-    public function hasDimensions($model = null): bool
+    public function prepCurrencyValue($value)
     {
-        $instance = $model ?? $this;
-        return ! empty($instance->length) || ! empty($instance->width) || ! empty($instance->height);
+        $data = str_replace('$', '', $data);
+
+        if ($data === '')
+        {
+            return 0;
+        }
+        else
+        {
+            return LocalizationHelper::normalizeNumber($data);
+        }
     }
 
+    // public function formatCurrencyValue($value)
+    // {
+    //     return number_format(craft()->numberFormatter->formatDecimal($value, false));
+    // }
+
     /**
-     * Returns true if each dimension (length, width, height) as a non-zero value.
-     * @param null $model
-     * @return bool
+     * @inheritdoc
      */
-    public function hasAllDimensions($model = null): bool
+    public function normalizeValue($value, ElementInterface $element = null)
     {
-        $instance = $model ?? $this;
-        return ! empty($instance->length) && ! empty($instance->width) && ! empty($instance->height);
+        if ( ! $value instanceof ProductDetailsData)
+        {
+            $valueData = json_decode($value);
+            $valueData->element = $element;
+            return new ProductDetailsData($valueData);
+        }
+
+        return $value;
     }
 
     /**
@@ -149,12 +102,44 @@ class ProductDetails extends \craft\base\Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details',
+        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/field',
             [
-                'name'  => $this->handle,
+                'name' => $this->handle,
+                'field' => $this,
+                'value' => $value,
+                'settings' => $this->getSettings(),
+                'weightUnitOptions' => [
+                    ProductDetailsData::WEIGHT_UNIT_GRAMS,
+                    ProductDetailsData::WEIGHT_UNIT_OUNCES,
+                    ProductDetailsData::WEIGHT_UNIT_POUNDS,
+                ],
+                'dimensionsUnitOptions' => [
+                    ProductDetailsData::DIMENSIONS_UNIT_INCHES,
+                    ProductDetailsData::DIMENSIONS_UNIT_CENTIMETERS,
+                ],
+            ]
+        );
+    }
+
+    public function getSettingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'snipcart/fields/product-details/settings',
+            [
                 'field' => $this,
             ]
         );
+    }
+
+    /**
+     * @param mixed                 $value
+     * @param ElementInterface|null $element
+     *
+     * @return string
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        return json_encode($value);
     }
 
 }
