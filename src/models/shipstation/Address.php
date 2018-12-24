@@ -105,6 +105,7 @@ class Address extends \craft\base\Model
             'city'       => $address->city,
             'state'      => $address->province,
             'postalCode' => $address->postalCode,
+            'country'    => $address->country,
             'phone'      => $address->phone,
         ]);
     }

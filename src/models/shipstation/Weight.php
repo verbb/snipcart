@@ -54,7 +54,7 @@ class Weight extends \craft\base\Model
     public static function populateFromSnipcartItem($item): Weight
     {
         return new self([
-            'value' => $item->totalWeight,
+            'value' => $item->weight,
             'units' => self::UNIT_GRAMS,
         ]);
     }
