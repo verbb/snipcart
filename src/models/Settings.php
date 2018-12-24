@@ -8,7 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\fields\ProductDetails;
+use Craft;
 use craft\base\Model;
+use yii\base\InvalidConfigException;
+use craft\fields\PlainText;
+use craft\fields\Number;
 
 /**
  * Settings model
@@ -297,6 +302,124 @@ class Settings extends Model
     public function setShipFrom($address)
     {
         return $this->_shipFrom = new Address($address);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCurrencyOptions(): array
+    {
+        return [
+            self::CURRENCY_USD => 'U.S. Dollar',
+            self::CURRENCY_CAD => 'Canadian Dollar',
+            self::CURRENCY_EUR => 'Euro',
+        ];
+    }
+
+    /**
+     * Get the default (first listed) currency.
+     *
+     * @return string
+     */
+    public function getDefaultCurrency(): string
+    {
+        return $this->enabledCurrencies[0];
+    }
+
+    /**
+     * Set the array of enabled currencies to the supplied value, since we
+     * don't yet support setting multiple currencies.
+     *
+     * @param $value
+     * @return array
+     */
+    public function setCurrency($value): array
+    {
+        return $this->enabledCurrencies = [ $value ];
+    }
+
+    /**
+     * Return field options that can be used as Snipcart product IDs.
+     * Includes `Element ID` as the first item, since it's a fabulous
+     * unique identifier we already have.
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getProductIdentifierOptions(): array
+    {
+        return $this->_getSupportedFieldTypeOptionsForField(
+            'productIdentifier'
+        );
+    }
+
+    /**
+     * Return numeric field options that can be used for storing a product's
+     * inventory count.
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getProductInventoryFieldOptions()
+    {
+        return $this->_getSupportedFieldTypeOptionsForField(
+            'productInventoryField'
+        );
+    }
+
+    /**
+     * Return class names of fields that can be used as options for the provided
+     * Settings field.
+     * 
+     * @param $fieldName
+     * @return array
+     * @throws InvalidConfigException
+     */
+    private function _getSupportedFieldTypeOptionsForField($fieldName): array
+    {
+        $allFields = Craft::$app->fields->getAllFields();
+
+        $supportedMap = [
+            'productIdentifier' => [
+                ProductDetails::class,
+                PlainText::class,
+                Number::class,
+            ],
+            'productInventoryField' => [
+                Number::class,
+            ],
+        ];
+
+        if ( ! array_key_exists($fieldName, $supportedMap))
+        {
+            throw new InvalidConfigException(
+                'Cannot get options for `' . $fieldName .'` field.`'
+            );
+        }
+
+        $availableOptions = [];
+        $supportedFieldClasses = $supportedMap[$fieldName];
+
+        if ($fieldName === 'productIdentifier')
+        {
+            $availableOptions['id'] = 'Element ID';
+        }
+
+        foreach ($allFields as $field)
+        {
+            if (in_array(get_class($field), $supportedFieldClasses, true))
+            {
+                // disallow multiline text as an option
+                if (isset($field->multiline) && $field->multiline)
+                {
+                    continue;
+                }
+
+                $availableOptions[$field->handle] = $field->name;
+            }
+        }
+
+        return $availableOptions;
     }
 
 }

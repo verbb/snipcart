@@ -35,11 +35,23 @@
         id: 'productIdentifier',
         required: true,
         name: 'productIdentifier',
-        options: productIdentifierOptions,
+        options: settings.getProductIdentifierOptions(),
         value: settings.productIdentifier,
         placeholder: 'id',
         errors: settings.getErrors('productIdentifier'),
-        instructions: "Specify the property you provide for a Snipcart product's `data-item-id`, to be used for identifying items and reducing quantities as orders come in."
+        instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Currency'|t,
+        id: 'currency',
+        required: true,
+        name: 'currency',
+        options: settings.getCurrencyOptions,
+        value: settings.defaultCurrency ?? null,
+        placeholder: 'id',
+        errors: settings.getErrors('productIdentifier'),
+        instructions: "Specify your store's currency."
     }) }}
 </div>
 
@@ -75,7 +87,7 @@
         id: 'productInventoryField',
         required: false,
         name: 'productInventoryField',
-        options: productInventoryFieldOptions,
+        options: settings.getProductInventoryFieldOptions(),
         value: settings.productInventoryField,
         placeholder: 'productInventory',
         errors: settings.getErrors('productInventoryField'),
