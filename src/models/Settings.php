@@ -25,6 +25,10 @@ class Settings extends Model
     const PROVIDER_SHIPSTATION = 'shipStation';
     const PROVIDER_SHIPPO = 'shippo';
 
+    const CURRENCY_USD = 'usd';
+    const CURRENCY_CAD = 'cad';
+    const CURRENCY_EUR = 'eur';
+
 
     // Properties
     // =========================================================================
@@ -43,6 +47,11 @@ class Settings extends Model
      * @var array valid email addresses
      */
     public $notificationEmails = [];
+
+    /**
+     * @var array
+     */
+    public $enabledCurrencies = [ self::CURRENCY_USD ];
 
     /**
      * @var string

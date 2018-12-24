@@ -12,6 +12,7 @@ use workingconcept\snipcart\fields\data\ProductDetailsData;
 use Craft;
 use craft\base\ElementInterface;
 use yii\db\Schema;
+use craft\helpers\Localization;
 
 /**
  * ProductDetails
@@ -65,7 +66,8 @@ class ProductDetails extends \craft\base\Field
 
     public function prepCurrencyValue($value)
     {
-        $data = str_replace('$', '', $data);
+        // remove all non-numeric characters
+        $data = preg_replace('/[^0-9.]/', '', $value);
 
         if ($data === '')
         {
@@ -73,7 +75,7 @@ class ProductDetails extends \craft\base\Field
         }
         else
         {
-            return LocalizationHelper::normalizeNumber($data);
+            return Localization::normalizeNumber($data);
         }
     }
 
