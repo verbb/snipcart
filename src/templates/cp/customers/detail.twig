@@ -22,7 +22,7 @@
         <tr valign="top">
             <td style="vertical-align: top;">
 
-                <h3>Billing</h3>
+                <h3>{{ "Billing"|t }}</h3>
 
                 <p><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></p>
 
@@ -38,7 +38,7 @@
             </td>
             <td style="vertical-align: top;">
 
-                <h3>Shipping{% if customer.shippingAddressSameAsBilling %} (same as billing){% endif %}</h3>
+                <h3>{{ "Shipping"|t }}{% if customer.shippingAddressSameAsBilling %} {{ "(same as billing)"|t }}{% endif %}</h3>
 
                 <p>
                     {% if customer.shippingAddressName %}{{ customer.shippingAddressName }}<br>{% endif %}
@@ -52,15 +52,19 @@
             </td>
             <td style="vertical-align: top;">
 
-                <h3>Orders</h3>
+                <h3>{{ "Orders"|t }}</h3>
 
-                <p>{{ customer.statistics.ordersCount }} order{% if customer.statistics.ordersCount != 1 %}s{% endif %}, {{ customer.statistics.ordersAmount }} spent</p>
+                <p>
+                    {{- customer.statistics.ordersCount }} order
+                    {%- if customer.statistics.ordersCount != 1 %}s{% endif %}, 
+                    {{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }} spent
+                </p>
 
                 <table class="data" style="width: 100%">
                     <thead>
-                        <th>Invoice</th>
-                        <th>Date</th>
-                        <th>Amount</th>
+                        <th>{{ "Invoice"|t }}</th>
+                        <th>{{ "Date"|t }}</th>
+                        <th>{{ "Amount"|t }}</th>
                     </thead>
                     <tbody>
                         {% for order in orders %}

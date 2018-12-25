@@ -41,12 +41,12 @@ class Discount extends \craft\base\Model
     public $name;
 
     /**
-     * @var \DateTime|null The date when this discount should expires, if null, the discount will never expires.
+     * @var \DateTime|null The date when this discount should expire, if null, the discount will never expires.
      */
     public $expires;
 
     /**
-     * @var int|null The maximum number of usges for the discount, if null, customers will be able to use this discount indefinitely.
+     * @var int|null The maximum number of usages for the discount, if null, customers will be able to use this discount indefinitely.
      */
     public $maxNumberOfUsages;
 

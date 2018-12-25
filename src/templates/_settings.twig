@@ -110,7 +110,7 @@
             }) }}
 
             {{ forms.textField({
-                label: 'Order Comments Custom Snipcart Field Name'|t,
+                label: 'Order Comments Field Name'|t,
                 id: 'orderCommentsFieldName',
                 class: 'code',
                 required: false,
@@ -118,11 +118,11 @@
                 value: settings.orderCommentsFieldName,
                 autofocus: true,
                 errors: settings.getErrors('orderCommentsFieldName'),
-                instructions: ""
+                instructions: "If you're supplying Snipcart with a custom field for order comments at checkout, add the exact name of that field here."
             }) }}
 
             {{ forms.textField({
-                label: 'Order Gift Note Custom Snipcart Field Name'|t,
+                label: 'Order Gift Note Field Name'|t,
                 id: 'orderGiftNoteFieldName',
                 class: 'code',
                 required: false,
@@ -130,7 +130,7 @@
                 value: settings.orderGiftNoteFieldName,
                 autofocus: true,
                 errors: settings.getErrors('orderGiftNoteFieldName'),
-                instructions: ""
+                instructions: "If you're supplying Snipcart with a custom field for gift notes at checkout, add the exact name of that field here."
             }) }}
         </div>
 
@@ -169,7 +169,7 @@
                 value: true,
                 placeholder: 'id',
                 errors: settings.getErrors('cacheResponses'),
-                instructions: ""
+                instructions: "Switch on to have some REST API requests cached, which will make things zippier in the control panel."
             }) }}
 
             {{ forms.textField({
@@ -178,7 +178,7 @@
                 name: 'cacheDurationLimit',
                 class: 'code',
                 value: settings.cacheDurationLimit,
-                instructions: "seconds"
+                instructions: "Specify the maximum number of seconds cached responses will be used, if enabled."
             }) }}
 
             {{ forms.lightswitchField({
@@ -190,7 +190,7 @@
                 value: true,
                 placeholder: 'id',
                 errors: settings.getErrors('logCustomRates'),
-                instructions: ""
+                instructions: "Switch on to log webhook rate responses to the database for troubleshooting and order shipping rate validation."
             }) }}
 
             {{ forms.lightswitchField({
@@ -202,13 +202,16 @@
                 value: true,
                 placeholder: 'id',
                 errors: settings.getErrors('logWebhookRequests'),
-                instructions: ""
+                instructions: "Switch on to look valid webhook posts to the database for troubleshooting."
             }) }}
         </div>
 
         <div id="shipping" class="hidden">
+
+            <h2>{{ "Ship From"|t }}</h2>
+
             {{ forms.textField({
-                label: 'Ship From Name'|t,
+                label: 'Name'|t,
                 id: 'shipFromName',
                 name: 'shipFrom[name]',
                 value: settings.shipFrom.name ?? '',
@@ -216,7 +219,7 @@
             }) }}
 
             {{ forms.textField({
-                label: 'Ship From Company Name'|t,
+                label: 'Company Name'|t,
                 id: 'shipFromCompanyName',
                 name: 'shipFrom[companyName]',
                 value: settings.shipFrom.companyName ?? '',
@@ -224,55 +227,68 @@
             }) }}
 
             {{ forms.textField({
-                label: 'Ship From Address 1'|t,
+                label: 'Address'|t,
                 id: 'shipFromAddress1',
                 name: 'shipFrom[address1]',
+                placeholder: 'Address Line 1'|t,
                 value: settings.shipFrom.address1 ?? '',
                 instructions: ""
             }) }}
 
             {{ forms.textField({
-                label: 'Ship From Address 2'|t,
                 id: 'shipFromAddress2',
                 name: 'shipFrom[address2]',
+                placeholder: 'Address Line 2'|t,
                 value: settings.shipFrom.address2 ?? '',
                 instructions: ""
             }) }}
 
-            {{ forms.textField({
-                label: 'Ship From City'|t,
-                id: 'shipFromCity',
-                name: 'shipFrom[city]',
-                value: settings.shipFrom.city ?? '',
-                instructions: ""
-            }) }}
+            <div class="input-row">
+                <div class="column city">
+                    {{ forms.textField({
+                        id: 'shipFromCity',
+                        name: 'shipFrom[city]',
+                        size: 30,
+                        placeholder: 'City',
+                        value: settings.shipFrom.city ?? '',
+                        instructions: ""
+                    }) }}
+                </div>
+                <div class="column province">
+                    {{ forms.textField({
+                        id: 'shipFromProvince',
+                        name: 'shipFrom[province]',
+                        placeholder: 'Province'|t,
+                        size: 8,
+                        maxlength: 2,
+                        value: settings.shipFrom.province ?? '',
+                        instructions: ""
+                    }) }}
+                </div>
+                <div class="column postal-code">
+                    {{ forms.textField({
+                        id: 'shipFromPostalCode',
+                        name: 'shipFrom[postalCode]',
+                        placeholder: 'Postal Code'|t,
+                        value: settings.shipFrom.postalCode ?? '',
+                        instructions: ""
+                    }) }}
+                </div>
+                <div class="column country">
+                    {{ forms.textField({
+                        id: 'shipFromCountry',
+                        name: 'shipFrom[country]',
+                        placeholder: 'Country'|t,
+                        size: 8,
+                        maxlength: 2,
+                        value: settings.shipFrom.country ?? '',
+                        instructions: ""
+                    }) }}
+                </div>
+            </div>
 
             {{ forms.textField({
-                label: 'Ship From Province'|t,
-                id: 'shipFromProvince',
-                name: 'shipFrom[province]',
-                value: settings.shipFrom.province ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Ship From Postal Code'|t,
-                id: 'shipFromPostalCode',
-                name: 'shipFrom[postalCode]',
-                value: settings.shipFrom.postalCode ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Ship From Country'|t,
-                id: 'shipFromCountry',
-                name: 'shipFrom[country]',
-                value: settings.shipFrom.country ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Ship From Phone'|t,
+                label: 'Phone'|t,
                 id: 'shipFromPhone',
                 name: 'shipFrom[phone]',
                 value: settings.shipFrom.phone ?? '',
@@ -280,12 +296,14 @@
             }) }}
 
             {{ forms.textField({
-                label: 'Ship From Email'|t,
+                label: 'Email'|t,
                 id: 'shipFromEmail',
                 name: 'shipFrom[email]',
                 value: settings.shipFrom.email ?? '',
                 instructions: ""
             }) }}
+
+            <h2>{{ "Packaging Types"|t }}</h2>
 
             {{ forms.editableTableField({
                 label: 'Packaging Types'|t,
@@ -303,6 +321,8 @@
                 errors: settings.getErrors('packagingTypes'),
                 instructions: ""
             }) }}
+
+            <h2>{{ "Providers"|t }}</h2>
 
             {% if settings.enabledProviders | length %}
                 <h3>

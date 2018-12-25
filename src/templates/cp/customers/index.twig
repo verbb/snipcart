@@ -61,7 +61,7 @@
                         <td>{{ customer.email }}</td>
                         <td>{{ customer.billingAddressAddress1 }}</td>
                         <td>{{ customer.statistics.ordersCount }}</td>
-                        <td>{{ customer.statistics.ordersAmount | number_format(2) }}</td>
+                        <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

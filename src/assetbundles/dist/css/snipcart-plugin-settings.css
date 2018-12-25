@@ -27,3 +27,13 @@
     opacity: 1;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
+.input-row {
+    display: block;
+    overflow: hidden;
+}
+
+.input-row .column {
+    display: inline-block;
+    margin-right: 20px;
+}
