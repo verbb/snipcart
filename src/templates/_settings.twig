@@ -139,9 +139,9 @@
                 label: 'Webhook Endpoint'|t,
                 id: 'webhookEndpoint',
                 name: 'webhookEndpoint',
-                class: 'code',
+                class: 'code webhook-endpoint',
                 value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
-                disabled: true,
+                readonly: true,
                 instructions: "Configure Snipcart to use this endpoint if you'd like this site to receive webhook data."
             }) }}
 

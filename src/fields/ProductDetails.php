@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\fields;
 
 use workingconcept\snipcart\fields\data\ProductDetailsData;
+use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
 use yii\db\Schema;
@@ -166,11 +167,16 @@ class ProductDetails extends \craft\base\Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/field',
+        Craft::$app->getView()->registerAssetBundle(
+            ProductDetailsFieldAsset::class
+        );
+
+        return Craft::$app->getView()->renderTemplate(
+            'snipcart/fields/product-details/field',
             [
-                'name' => $this->handle,
-                'field' => $this,
-                'value' => $value,
+                'name'     => $this->handle,
+                'field'    => $this,
+                'value'    => $value,
                 'settings' => $this->getSettings(),
                 'weightUnitOptions' => [
                     ProductDetailsData::WEIGHT_UNIT_GRAMS,
@@ -190,6 +196,10 @@ class ProductDetails extends \craft\base\Field
      */
     public function getSettingsHtml(): string
     {
+        Craft::$app->getView()->registerAssetBundle(
+            ProductDetailsFieldAsset::class
+        );
+
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/settings',
             [

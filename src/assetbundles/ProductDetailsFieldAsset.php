@@ -16,7 +16,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   Snipcart
  * @since     1.0.0
  */
-class SnipcartAsset extends AssetBundle
+class ProductDetailsFieldAsset extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -29,8 +29,14 @@ class SnipcartAsset extends AssetBundle
         $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
 
         $this->depends = [];
-        $this->js = [];
-        $this->css = [];
+
+        $this->js = [
+            'js/product-details-field.js'
+        ];
+
+        $this->css = [
+            'css/product-details-field.css'
+        ];
 
         parent::init();
     }

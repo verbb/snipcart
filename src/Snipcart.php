@@ -20,6 +20,7 @@ use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\fields\ProductDetails;
+use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -166,6 +167,10 @@ class Snipcart extends Plugin
 
     public function getSettingsResponse()
     {
+        Craft::$app->getView()->registerAssetBundle(
+            PluginSettingsAsset::class
+        );
+
         return \Craft::$app->controller->renderTemplate(
             'snipcart/_settings',
             [

@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\widgets;
 
-use workingconcept\snipcart\assetbundles\snipcart\OrdersWidgetAsset;
+use workingconcept\snipcart\assetbundles\OrdersWidgetAsset;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\base\Widget;
