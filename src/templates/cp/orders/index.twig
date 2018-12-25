@@ -1,0 +1,148 @@
+{% extends "snipcart/cp/_layout" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Snipcart"|t %}
+
+{% if pageNumber is not defined %}
+    {% set pageNumber = 1 %}
+{% endif %}
+
+{% set orders = craft.snipcart.listOrders(pageNumber) %}
+
+{% if orders.totalItems <= orders.limit and pageNumber > 1 %}
+    {% redirect url('snipcart') %}
+{% endif %}
+
+{% set selectedTab = "orders" %}
+
+{% block content %}
+
+    <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
+        {{- "There aren't any orders to show. Time to sell some things!"|t -}}
+    </p>
+
+    {% if orders|length %}
+        {#
+        <div class="row">
+            <div id="area" class="chart-container" style="height: 300px;"></div>
+        </div>
+        #}
+        <div class="callout" style="background: #eee; padding: 10px; margin-bottom: 25px;">
+
+            <form action="" method="post">
+
+                {% set startDate = now | date_modify("-1 month")%}
+                {% set endDate = now %}
+
+                {{ csrfInput() }}
+
+                {{ forms.date({
+                    first: true,
+                    label: 'Start Date'|t,
+                    id: 'startDate',
+                    required: true,
+                    name: 'startDate',
+                    defaultDate: craft.snipcart.startDate,
+                    value: craft.snipcart.startDate
+                }) }}
+
+                <em>to</em>
+
+                {{ forms.date({
+                    label: 'End Date'|t,
+                    id: 'endDate',
+                    required: true,
+                    name: 'endDate',
+                    defaultDate: craft.snipcart.endDate,
+                    value: craft.snipcart.endDate
+                }) }}
+
+                <input type="submit" class="btn submit" name="submit" value="Update">
+
+            </form>
+        </div>
+
+        <table id="orders" class="data" style="width: 100%;">
+            <thead>
+                <th scope="col">{{ "Invoice"|t }}</th>
+                <th scope="col">{{ "Placed"|t }}</th>
+                <th scope="col">{{ "Cardholder"|t }}</th>
+                <th scope="col">{{ "Email"|t }}</th>
+                <th scope="col">{{ "Total"|t }}</th>
+                <th scope="col">{{ "Status"|t }}</th>
+            </thead>
+            <tbody>
+
+                {% for order in orders.items %}
+                    <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
+                        <td><a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a></td>
+                        <td>{{ order.creationDate | date('n/j/Y') }}</td>
+                        <td>{{ order.cardHolderName }}</td>
+                        <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
+                        <td>{{ order.finalGrandTotal | currency(order.currency|upper) }}</td>
+                        <td>
+                            {% if order.status == "Open" %}
+                            <div class="status"></div>
+                            {% elseif order.status == "Processed" %}
+                            <div class="status active"></div>
+                            {% endif %}
+                            {{ order.status }}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% set totalPages = (orders.totalItems / orders.limit) | round(0,'ceil') %}
+        {% set maxVisible = 10 %}
+
+        {% include "snipcart/cp/_parts/pagination" with {
+            currentPage: pageNumber,
+            totalPages: totalPages,
+            maxVisible: maxVisible,
+            path: 'snipcart/orders/'
+        } %}
+
+    {% endif %}
+
+{% endblock %}
+
+{#
+{% js %}
+
+    var $chart = $('#area');
+
+    this.chart = new Craft.charts.Area(this.$chart);
+
+    var chartDataTable = new Craft.charts.DataTable({
+        columns: [
+            { label: "Date", type: 'date' },
+            { label: "Orders", type: 'number' },
+        ],
+        rows: [
+            {% for day, count in craft.snipcart.listOrdersByDay() %}
+            ['{{ day }}', {{ count }}],
+            {% endfor %}
+        ]
+    });
+
+    var chartSettings = {
+        formats: {
+            shortDateFormats: {
+                day:"%-m\/%-d",
+                month:"%-m\/%y",
+                year:"%y"
+            },
+            decimalFormat:",.3f",
+            percentFormat:",.2%",
+            currencyFormat:"$,.2f"
+        },
+        orientation:"ltr",
+        scale:"day"
+    };
+
+    this.chart.draw(chartDataTable, chartSettings);
+
+{% endjs %}
+#}

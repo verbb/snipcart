@@ -147,7 +147,23 @@ class Settings extends Model
     ];
 
 
-    // Methods
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @return array
+     */
+    public static function getCurrencyOptions(): array
+    {
+        return [
+            self::CURRENCY_USD => Craft::t('snipcart', 'U.S. Dollar'),
+            self::CURRENCY_CAD => Craft::t('snipcart','Canadian Dollar'),
+            self::CURRENCY_EUR => Craft::t('snipcart','Euro'),
+        ];
+    }
+
+
+    // Public Methods
     // =========================================================================
 
     /**
@@ -166,10 +182,10 @@ class Settings extends Model
             [['logCustomRates'], 'default', 'value' => false],
             [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
-            [['enabledProviders'], 'in', 'range' => [
-                self::PROVIDER_SHIPSTATION,
-                self::PROVIDER_SHIPPO
-            ]],
+//            [['enabledProviders'], 'in', 'range' => [
+//                self::PROVIDER_SHIPSTATION,
+//                self::PROVIDER_SHIPPO
+//            ]],
 
             // TODO: validate shipFrom
             // TODO: validate packagingTypes
@@ -305,18 +321,6 @@ class Settings extends Model
     }
 
     /**
-     * @return array
-     */
-    public static function getCurrencyOptions(): array
-    {
-        return [
-            self::CURRENCY_USD => 'U.S. Dollar',
-            self::CURRENCY_CAD => 'Canadian Dollar',
-            self::CURRENCY_EUR => 'Euro',
-        ];
-    }
-
-    /**
      * Get the default (first listed) currency.
      *
      * @return string
@@ -324,6 +328,29 @@ class Settings extends Model
     public function getDefaultCurrency(): string
     {
         return $this->enabledCurrencies[0];
+    }
+
+    /**
+     * Get the symbol for the default currency.
+     *
+     * @return string
+     */
+    public function getDefaultCurrencySymbol(): string
+    {
+        if (
+            $this->getDefaultCurrency() === self::CURRENCY_USD ||
+            $this->getDefaultCurrency() === self::CURRENCY_CAD
+        )
+        {
+            return '$';
+        }
+
+        if ($this->getDefaultCurrency() === self::CURRENCY_EUR)
+        {
+            return '€';
+        }
+
+        return '';
     }
 
     /**
@@ -360,17 +387,20 @@ class Settings extends Model
      * @return array
      * @throws InvalidConfigException
      */
-    public function getProductInventoryFieldOptions()
+    public function getProductInventoryFieldOptions(): array
     {
         return $this->_getSupportedFieldTypeOptionsForField(
             'productInventoryField'
         );
     }
 
+    // Private Methods
+    // =========================================================================
+
     /**
      * Return class names of fields that can be used as options for the provided
      * Settings field.
-     * 
+     *
      * @param $fieldName
      * @return array
      * @throws InvalidConfigException
@@ -403,6 +433,11 @@ class Settings extends Model
         if ($fieldName === 'productIdentifier')
         {
             $availableOptions['id'] = 'Element ID';
+        }
+
+        if ($fieldName === 'productInventoryField')
+        {
+            $availableOptions[] = 'Choose …';
         }
 
         foreach ($allFields as $field)

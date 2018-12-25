@@ -1,0 +1,59 @@
+{% extends "snipcart/cp/_layout" %}
+
+{% set title       = "Snipcart Customers"|t %}
+{% set discounts   = craft.snipcart.listDiscounts() %}
+{% set selectedTab = "discounts" %}
+
+{% block actionButton %}
+    <a id="newdiscountmenubtn" class="btn submit add icon" href="{{ url('snipcart/discounts/new') }}">
+        {{- 'New Discount'|t('snipcart') -}}
+    </a>
+{% endblock %}
+
+{% block content %}
+
+    <p id="noredirects"{% if discounts|length %} class="hidden"{% endif %}>
+        {{ "There aren't any discounts yet."|t }}
+    </p>
+
+    {% if discounts|length %}
+
+        <table id="discounts" class="data" style="width: 100%;">
+            <thead>
+                <th scope="col">{{ "Name"|t }}</th>
+                <th scope="col">{{ "Trigger"|t }}</th>
+                <th scope="col">{{ "Code"|t }}</th>
+                <th scope="col">{{ "Type"|t }}</th>
+                <th scope="col">{{ "Rate"|t }}</th>
+                <th scope="col">{{ "Amount"|t }}</th>
+                <th scope="col">{{ "Uses"|t }}</th>
+            </thead>
+            <tbody>
+                {% for discount in discounts %}
+                    <tr data-id="{{ discount.id }}" data-name="{{ discount.id }}">
+                        <td>{{ discount.name }}</td>
+                        <td>{{ discount.trigger }}</td>
+                        <td>{{ discount.code }}</td>
+                        <td>{{ discount.type }}</td>
+                        <td>{{ discount.rate }}</td>
+                        <td>{{ discount.amount }}</td>
+                        <td>{{ discount.numberOfUsages }} / {{ discount.maxNumberOfUsages }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {#
+            {{ discount.totalToReach }}
+            {{ discount.alternatePrice }}
+            {{ discount.alternatePrice }}
+            {{ discount.expires }}
+            {{ discount.numberOfUsagesUncompleted }}
+            {{ discount.shippingDescription }}
+            {{ discount.shippingCost }}
+            {{ discount.shippingGuaranteedDaysToDelivery }}
+        #}
+
+    {% endif %}
+
+{% endblock %}

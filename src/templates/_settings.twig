@@ -1,312 +1,331 @@
+{% requireAdmin %}
+
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') },
+    { label: "Plugins"|t('app'), url: url('settings/plugins') }
+] %}
+
+{% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
+
+{% set title = "Snipcart Plugin Settings"|t %}
+{% set fullPageForm = true %}
 
 {# TODO: note use of static config here! #}
 
-<h2>{{ "Account & Product"|t }}</h2>
+{% set tabs = {
+    account:  { label: "Snipcart Account"|t, url: '#account' },
+    products: { label: "Products"|t, url: '#products' },
+    webhooks: { label: "Ordering & Webhooks"|t, url: '#webhooks' },
+    logging:  { label: "Logging & Caching"|t, url: '#logging' },
+    shipping: { label: "Shipping"|t, url: '#shipping' },
+} %}
 
-<div class="form-group">
-    {{ forms.textField({
-        first: true,
-        label: 'Snipcart Public API Key'|t,
-        class: 'code',
-        id: 'publicApiKey',
-        required: true,
-        name: 'publicApiKey',
-        value: settings.publicApiKey,
-        autofocus: true,
-        errors: settings.getErrors('publicApiKey'),
-        instructions: "Add your public Snipcart API key. You can find this on your account page in Snipcart."
-    }) }}
+{#
 
-    {{ forms.textField({
-        label: 'Snipcart Secret API Key'|t,
-        id: 'secretApiKey',
-        class: 'code',
-        required: true,
-        name: 'secretApiKey',
-        value: settings.secretApiKey,
-        autofocus: true,
-        errors: settings.getErrors('secretApiKey'),
-        instructions: "Add your secret Snipcart API key. You can find this on your account page in Snipcart."
-    }) }}
+{% include "_includes/tabs" with { tabs: tabs } %}
+#}
 
-    {{ forms.selectField({
-        label: 'Product Identifier'|t,
-        id: 'productIdentifier',
-        required: true,
-        name: 'productIdentifier',
-        options: settings.getProductIdentifierOptions(),
-        value: settings.productIdentifier,
-        placeholder: 'id',
-        errors: settings.getErrors('productIdentifier'),
-        instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
-    }) }}
+{% block content %}
+    <input type="hidden" name="action" value="plugins/save-plugin-settings">
+    <input type="hidden" name="pluginHandle" value="snipcart">
+    {{ redirectInput('settings') }}
 
-    {{ forms.selectField({
-        label: 'Currency'|t,
-        id: 'currency',
-        required: true,
-        name: 'currency',
-        options: settings.getCurrencyOptions,
-        value: settings.defaultCurrency ?? null,
-        placeholder: 'id',
-        errors: settings.getErrors('productIdentifier'),
-        instructions: "Specify your store's currency."
-    }) }}
-</div>
+    <div class="form-wrap">
 
+        <div id="account" class="">
+            {{ forms.textField({
+                first: true,
+                label: 'Snipcart Public API Key'|t,
+                class: 'code',
+                id: 'publicApiKey',
+                required: true,
+                name: 'publicApiKey',
+                value: settings.publicApiKey,
+                autofocus: true,
+                errors: settings.getErrors('publicApiKey'),
+                instructions: "Add your public Snipcart API key. You can find this on your account page in Snipcart."
+            }) }}
 
-<h2>{{ "Ordering & Webhooks"|t }}</h2>
+            {{ forms.textField({
+                label: 'Snipcart Secret API Key'|t,
+                id: 'secretApiKey',
+                class: 'code',
+                required: true,
+                name: 'secretApiKey',
+                value: settings.secretApiKey,
+                autofocus: true,
+                errors: settings.getErrors('secretApiKey'),
+                instructions: "Add your secret Snipcart API key. You can find this on your account page in Snipcart."
+            }) }}
 
-<div class="form-group">
-    {{ forms.textField({
-        label: 'Webhook Endpoint'|t,
-        id: 'webhookEndpoint',
-        name: 'webhookEndpoint',
-        class: 'code',
-        value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
-        disabled: true,
-        instructions: "Configure Snipcart to use this endpoint if you'd like this site to receive webhook data."
-    }) }}
+            {{ forms.selectField({
+                label: 'Currency'|t,
+                id: 'currency',
+                required: true,
+                name: 'currency',
+                options: settings.getCurrencyOptions,
+                value: settings.defaultCurrency ?? null,
+                placeholder: 'id',
+                errors: settings.getErrors('productIdentifier'),
+                instructions: "Specify your store's currency."
+            }) }}
+        </div>
 
-    {{ forms.editableTableField({
-        label: 'Notification Emails'|t,
-        id: 'notificationEmails',
-        cols: { 
-            0: { heading: 'Email Address'|t, type: 'singleline' }
-        },
-        required: false,
-        name: 'notificationEmails',
-        rows: settings.getNotificationEmailsForTable(),
-        errors: settings.getErrors('notificationEmails'),
-        instructions: "Add comma-separated email addresses that should receive email notifications as orders come in through the web hook."
-    }) }}
+        <div id="products" class="hidden">
+            {{ forms.selectField({
+                label: 'Product Identifier'|t,
+                id: 'productIdentifier',
+                required: true,
+                name: 'productIdentifier',
+                options: settings.getProductIdentifierOptions(),
+                value: settings.productIdentifier,
+                placeholder: 'id',
+                errors: settings.getErrors('productIdentifier'),
+                instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
+            }) }}
 
-    {{ forms.selectField({
-        label: 'Product Inventory Field'|t,
-        id: 'productInventoryField',
-        required: false,
-        name: 'productInventoryField',
-        options: settings.getProductInventoryFieldOptions(),
-        value: settings.productInventoryField,
-        placeholder: 'productInventory',
-        errors: settings.getErrors('productInventoryField'),
-        instructions: "Specify the field handle used to define product quantities within Entries."
-    }) }}
+            {{ forms.selectField({
+                label: 'Product Inventory Field'|t,
+                id: 'productInventoryField',
+                required: false,
+                name: 'productInventoryField',
+                options: settings.getProductInventoryFieldOptions(),
+                value: settings.productInventoryField,
+                placeholder: 'productInventory',
+                errors: settings.getErrors('productInventoryField'),
+                instructions: "Specify the field handle used to define product quantities within Entries."
+            }) }}
 
-    {{ forms.lightswitchField({
-        label: 'Reduce Item Quantities on Order?'|t,
-        id: 'reduceQuantitiesOnOrder',
-        required: false,
-        name: 'reduceQuantitiesOnOrder',
-        on: settings.reduceQuantitiesOnOrder,
-        value: true,
-        placeholder: 'id',
-        errors: settings.getErrors('reduceQuantitiesOnOrder'),
-        instructions: "Switch on if you've configured web hooks, set the Product Identifier + Inventory Field, and want to reduce item quantities as orders come in."
-    }) }}
+            {{ forms.lightswitchField({
+                label: 'Reduce Item Quantities on Order?'|t,
+                id: 'reduceQuantitiesOnOrder',
+                required: false,
+                name: 'reduceQuantitiesOnOrder',
+                on: settings.reduceQuantitiesOnOrder,
+                value: true,
+                placeholder: 'id',
+                errors: settings.getErrors('reduceQuantitiesOnOrder'),
+                instructions: "Switch on if you've configured web hooks, set the Product Identifier + Inventory Field, and want to reduce item quantities as orders come in."
+            }) }}
 
-    {{ forms.textField({
-        label: 'Order Comments Custom Snipcart Field Name'|t,
-        id: 'orderCommentsFieldName',
-        class: 'code',
-        required: false,
-        name: 'orderCommentsFieldName',
-        value: settings.orderCommentsFieldName,
-        autofocus: true,
-        errors: settings.getErrors('orderCommentsFieldName'),
-        instructions: ""
-    }) }}
+            {{ forms.textField({
+                label: 'Order Comments Custom Snipcart Field Name'|t,
+                id: 'orderCommentsFieldName',
+                class: 'code',
+                required: false,
+                name: 'orderCommentsFieldName',
+                value: settings.orderCommentsFieldName,
+                autofocus: true,
+                errors: settings.getErrors('orderCommentsFieldName'),
+                instructions: ""
+            }) }}
 
-    {{ forms.textField({
-        label: 'Order Gift Note Custom Snipcart Field Name'|t,
-        id: 'orderGiftNoteFieldName',
-        class: 'code',
-        required: false,
-        name: 'orderGiftNoteFieldName',
-        value: settings.orderGiftNoteFieldName,
-        autofocus: true,
-        errors: settings.getErrors('orderGiftNoteFieldName'),
-        instructions: ""
-    }) }}
-</div>
+            {{ forms.textField({
+                label: 'Order Gift Note Custom Snipcart Field Name'|t,
+                id: 'orderGiftNoteFieldName',
+                class: 'code',
+                required: false,
+                name: 'orderGiftNoteFieldName',
+                value: settings.orderGiftNoteFieldName,
+                autofocus: true,
+                errors: settings.getErrors('orderGiftNoteFieldName'),
+                instructions: ""
+            }) }}
+        </div>
 
-<h2>{{ "Logging & Caching"|t }}</h2>
+        <div id="webhooks" class="hidden">
+            {{ forms.textField({
+                label: 'Webhook Endpoint'|t,
+                id: 'webhookEndpoint',
+                name: 'webhookEndpoint',
+                class: 'code',
+                value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
+                disabled: true,
+                instructions: "Configure Snipcart to use this endpoint if you'd like this site to receive webhook data."
+            }) }}
 
-<div class="form-group">
-    {{ forms.lightswitchField({
-        label: 'Cache API Responses?'|t,
-        id: 'cacheResponses',
-        required: false,
-        name: 'cacheResponses',
-        on: settings.cacheResponses,
-        value: true,
-        placeholder: 'id',
-        errors: settings.getErrors('cacheResponses'),
-        instructions: ""
-    }) }}
+            {{ forms.editableTableField({
+                label: 'Notification Emails'|t,
+                id: 'notificationEmails',
+                cols: {
+                    0: { heading: 'Email Address'|t, type: 'singleline' }
+                },
+                required: false,
+                name: 'notificationEmails',
+                rows: settings.getNotificationEmailsForTable(),
+                errors: settings.getErrors('notificationEmails'),
+                instructions: "Add comma-separated email addresses that should receive email notifications as orders come in through the web hook."
+            }) }}
+        </div>
 
-    {{ forms.textField({
-        label: 'Cache Duration Limit'|t,
-        id: 'cacheDurationLimit',
-        name: 'cacheDurationLimit',
-        class: 'code',
-        value: settings.cacheDurationLimit,
-        instructions: "seconds"
-    }) }}
+        <div id="logging" class="hidden">
+            {{ forms.lightswitchField({
+                label: 'Cache API Responses?'|t,
+                id: 'cacheResponses',
+                required: false,
+                name: 'cacheResponses',
+                on: settings.cacheResponses,
+                value: true,
+                placeholder: 'id',
+                errors: settings.getErrors('cacheResponses'),
+                instructions: ""
+            }) }}
 
-    {{ forms.lightswitchField({
-        label: 'Log Custom Rates?'|t,
-        id: 'logCustomRates',
-        required: false,
-        name: 'logCustomRates',
-        on: settings.logCustomRates,
-        value: true,
-        placeholder: 'id',
-        errors: settings.getErrors('logCustomRates'),
-        instructions: ""
-    }) }}
+            {{ forms.textField({
+                label: 'Cache Duration Limit'|t,
+                id: 'cacheDurationLimit',
+                name: 'cacheDurationLimit',
+                class: 'code',
+                value: settings.cacheDurationLimit,
+                instructions: "seconds"
+            }) }}
 
-    {{ forms.lightswitchField({
-        label: 'Log Webhook Requests?'|t,
-        id: 'logWebhookRequests',
-        required: false,
-        name: 'logWebhookRequests',
-        on: settings.logWebhookRequests,
-        value: true,
-        placeholder: 'id',
-        errors: settings.getErrors('logWebhookRequests'),
-        instructions: ""
-    }) }}
-</div>
+            {{ forms.lightswitchField({
+                label: 'Log Custom Rates?'|t,
+                id: 'logCustomRates',
+                required: false,
+                name: 'logCustomRates',
+                on: settings.logCustomRates,
+                value: true,
+                placeholder: 'id',
+                errors: settings.getErrors('logCustomRates'),
+                instructions: ""
+            }) }}
 
+            {{ forms.lightswitchField({
+                label: 'Log Webhook Requests?'|t,
+                id: 'logWebhookRequests',
+                required: false,
+                name: 'logWebhookRequests',
+                on: settings.logWebhookRequests,
+                value: true,
+                placeholder: 'id',
+                errors: settings.getErrors('logWebhookRequests'),
+                instructions: ""
+            }) }}
+        </div>
 
-<h2>{{ "Shipping"|t }}</h2>
+        <div id="shipping" class="hidden">
+            {{ forms.textField({
+                label: 'Ship From Name'|t,
+                id: 'shipFromName',
+                name: 'shipFrom[name]',
+                value: settings.shipFrom.name ?? '',
+                instructions: ""
+            }) }}
 
-<div class="form-group">
-    <div class="ship-from">
-        {{ forms.textField({
-            label: 'Ship From Name'|t,
-            id: 'shipFromName',
-            name: 'shipFrom[name]',
-            value: settings.shipFrom.name ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Company Name'|t,
+                id: 'shipFromCompanyName',
+                name: 'shipFrom[companyName]',
+                value: settings.shipFrom.companyName ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Company Name'|t,
-            id: 'shipFromCompanyName',
-            name: 'shipFrom[companyName]',
-            value: settings.shipFrom.companyName ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Address 1'|t,
+                id: 'shipFromAddress1',
+                name: 'shipFrom[address1]',
+                value: settings.shipFrom.address1 ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Address 1'|t,
-            id: 'shipFromAddress1',
-            name: 'shipFrom[address1]',
-            value: settings.shipFrom.address1 ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Address 2'|t,
+                id: 'shipFromAddress2',
+                name: 'shipFrom[address2]',
+                value: settings.shipFrom.address2 ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Address 2'|t,
-            id: 'shipFromAddress2',
-            name: 'shipFrom[address2]',
-            value: settings.shipFrom.address2 ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From City'|t,
+                id: 'shipFromCity',
+                name: 'shipFrom[city]',
+                value: settings.shipFrom.city ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From City'|t,
-            id: 'shipFromCity',
-            name: 'shipFrom[city]',
-            value: settings.shipFrom.city ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Province'|t,
+                id: 'shipFromProvince',
+                name: 'shipFrom[province]',
+                value: settings.shipFrom.province ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Province'|t,
-            id: 'shipFromProvince',
-            name: 'shipFrom[province]',
-            value: settings.shipFrom.province ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Postal Code'|t,
+                id: 'shipFromPostalCode',
+                name: 'shipFrom[postalCode]',
+                value: settings.shipFrom.postalCode ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Postal Code'|t,
-            id: 'shipFromPostalCode',
-            name: 'shipFrom[postalCode]',
-            value: settings.shipFrom.postalCode ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Country'|t,
+                id: 'shipFromCountry',
+                name: 'shipFrom[country]',
+                value: settings.shipFrom.country ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Country'|t,
-            id: 'shipFromCountry',
-            name: 'shipFrom[country]',
-            value: settings.shipFrom.country ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Phone'|t,
+                id: 'shipFromPhone',
+                name: 'shipFrom[phone]',
+                value: settings.shipFrom.phone ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Phone'|t,
-            id: 'shipFromPhone',
-            name: 'shipFrom[phone]',
-            value: settings.shipFrom.phone ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.textField({
+                label: 'Ship From Email'|t,
+                id: 'shipFromEmail',
+                name: 'shipFrom[email]',
+                value: settings.shipFrom.email ?? '',
+                instructions: ""
+            }) }}
 
-        {{ forms.textField({
-            label: 'Ship From Email'|t,
-            id: 'shipFromEmail',
-            name: 'shipFrom[email]',
-            value: settings.shipFrom.email ?? '',
-            instructions: ""
-        }) }}
+            {{ forms.editableTableField({
+                label: 'Packaging Types'|t,
+                id: 'packagingTypes',
+                cols: {
+                    0: { heading: 'Name'|t, type: 'singleline' },
+                    1: { heading: 'Length'|t, type: 'number' },
+                    2: { heading: 'Width'|t, type: 'number' },
+                    3: { heading: 'Height'|t, type: 'number' },
+                    4: { heading: 'Weight'|t, type: 'number' },
+                },
+                required: false,
+                name: 'packagingTypes',
+                rows: settings.getPackagingTypesForTable(),
+                errors: settings.getErrors('packagingTypes'),
+                instructions: ""
+            }) }}
+
+            {% if settings.enabledProviders | length %}
+                <h3>
+                    Provider{% if settings.enabledProviders | length > 1 %}s{% endif %} enabled in static config:
+                    {% for provider in settings.enabledProviders %}
+                        {{ provider }}{% if loop.last != true %}, {% endif %}
+                    {% endfor %}
+                </h3>
+            {% endif %}
+
+            {% if settings.providers | length %}
+                <h3>Provider settings from static config:</h3>
+                {% for providerName, settings in settings.providers %}
+                    <label>{{ providerName }}</label>
+                    <ul style="margin-bottom: 1rem;">
+                        {% for key, value in settings %}
+                            <li><code>{{ key }}</code>: <code>{{ value }}</code></li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endif %}
+        </div>
+
     </div>
 
-    {{ forms.editableTableField({
-        label: 'Packaging Types'|t,
-        id: 'packagingTypes',
-        cols: { 
-            0: { heading: 'Name'|t, type: 'singleline' },
-            1: { heading: 'Length'|t, type: 'number' },
-            2: { heading: 'Width'|t, type: 'number' },
-            3: { heading: 'Height'|t, type: 'number' },
-            4: { heading: 'Weight'|t, type: 'number' },
-        },
-        required: false,
-        name: 'packagingTypes',
-        rows: settings.getPackagingTypesForTable(),
-        errors: settings.getErrors('packagingTypes'),
-        instructions: ""
-    }) }}
-
-    {% if settings.enabledProviders | length %}
-    <h3>
-        Provider{% if settings.enabledProviders | length > 1 %}s{% endif %} enabled in static config: 
-        {% for provider in settings.enabledProviders %}
-            {{ provider }}{% if loop.last != true %}, {% endif %}
-        {% endfor %}
-    </h3>
-    {% endif %}
-
-    {% if settings.providers | length %}
-        <h3>Provider settings from static config:</h3>
-        {% for providerName, settings in settings.providers %}
-        <label>{{ providerName }}</label>
-        <ul style="margin-bottom: 1rem;">
-            {% for key, value in settings %}
-                <li><code>{{ key }}</code>: <code>{{ value }}</code></li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
-    {% endif %}
-</div>
-
-<style>
-.form-group {
-    margin-bottom: 4rem;
-}
-</style>
+{% endblock %}

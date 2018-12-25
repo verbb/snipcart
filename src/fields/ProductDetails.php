@@ -26,10 +26,62 @@ class ProductDetails extends \craft\base\Field
     // Public Properties
     // =========================================================================
 
+    /**
+     * @var bool Whether to display "shippable" option for this field instance
+     *           and allow it to be set per entry.
+     */
     public $displayShippableSwitch = false;
+
+    /**
+     * @var bool Whether to display "taxable" option for this field instance
+     *           and allow it to be set per entry.
+     *
+     */
     public $displayTaxableSwitch = false;
-    public $shippableDefault = false;
-    public $taxableDefault = false;
+
+    /**
+     * @var bool Default "shippable" value.
+     */
+    public $defaultShippable = false;
+
+    /**
+     * @var bool Default "taxable" value.
+     */
+    public $defaultTaxable = false;
+
+    /**
+     * @var
+     */
+    public $defaultWeight;
+
+    /**
+     * @var
+     */
+    public $defaultWeightUnit;
+
+    /**
+     * @var
+     */
+    public $defaultLength;
+
+    /**
+     * @var
+     */
+    public $defaultWidth;
+
+    /**
+     * @var
+     */
+    public $defaultHeight;
+
+    /**
+     * @var
+     */
+    public $defaultDimensionsUnit;
+
+    /**
+     * @var string
+     */
     public $skuDefault = '';
 
 
@@ -64,6 +116,10 @@ class ProductDetails extends \craft\base\Field
         return [];
     }
 
+    /**
+     * @param $value
+     * @return int|mixed
+     */
     public function prepCurrencyValue($value)
     {
         // remove all non-numeric characters
@@ -73,10 +129,8 @@ class ProductDetails extends \craft\base\Field
         {
             return 0;
         }
-        else
-        {
-            return Localization::normalizeNumber($data);
-        }
+
+        return Localization::normalizeNumber($data);
     }
 
     // public function formatCurrencyValue($value)
@@ -91,9 +145,17 @@ class ProductDetails extends \craft\base\Field
     {
         if ( ! $value instanceof ProductDetailsData)
         {
-            $valueData = json_decode($value);
-            $valueData->element = $element;
-            return new ProductDetailsData($valueData);
+            if (is_string($value))
+            {
+                $value = json_decode($value);
+            }
+
+            $productDetailsData = new ProductDetailsData($value);
+            $productDetailsData->element = $element;
+            $productDetailsData->field = $this;
+            $productDetailsData->populateDefaults();
+
+            return $productDetailsData;
         }
 
         return $value;
@@ -123,12 +185,24 @@ class ProductDetails extends \craft\base\Field
         );
     }
 
-    public function getSettingsHtml()
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/settings',
             [
                 'field' => $this,
+                'weightUnitOptions' => [
+                    ProductDetailsData::WEIGHT_UNIT_GRAMS,
+                    ProductDetailsData::WEIGHT_UNIT_OUNCES,
+                    ProductDetailsData::WEIGHT_UNIT_POUNDS,
+                ],
+                'dimensionsUnitOptions' => [
+                    ProductDetailsData::DIMENSIONS_UNIT_INCHES,
+                    ProductDetailsData::DIMENSIONS_UNIT_CENTIMETERS,
+                ],
             ]
         );
     }
@@ -143,5 +217,10 @@ class ProductDetails extends \craft\base\Field
     {
         return json_encode($value);
     }
+
+//    public function validate($attributeNames = null, $clearErrors = true)
+//    {
+//        return $this->value->validate();
+//    }
 
 }

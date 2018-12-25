@@ -25,7 +25,9 @@
         </div>
         <div class="inputs">
             <div class="price-wrapper">
-                <div class="currency-symbol">$</div>
+                <div class="currency-symbol">
+                    {{ craft.snipcart.defaultCurrencySymbol }}
+                </div>
                 {{- forms.text({
                     id: 'price',
                     name: name ~ '[price]',

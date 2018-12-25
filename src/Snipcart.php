@@ -25,8 +25,6 @@ use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Fields;
-use craft\fields\Number;
-use craft\fields\PlainText;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\console\Application as ConsoleApplication;
@@ -123,12 +121,17 @@ class Snipcart extends Plugin
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
                 function(RegisterUrlRulesEvent $event) {
                     $rules = [
-                        'snipcart/order/<orderId>' => ['template' => 'snipcart/order'],
-                        'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/index'],
-                        'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/customers'],
-                        'snipcart/customer/<customerId>' => ['template' => 'snipcart/customer'],
-                        'snipcart/discounts' => ['template' => 'snipcart/discounts'],
-                        'snipcart/abandoned' => ['template' => 'snipcart/abandoned'],
+                        'snipcart' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/orders/' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/order/<orderId>' => ['template' => 'snipcart/cp/orders/detail'],
+                        'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/customers/' => ['template' => 'snipcart/cp/customers/index'],
+                        'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/cp/customers/index'],
+                        'snipcart/customer/<customerId>' => ['template' => 'snipcart/cp/customers/detail'],
+                        'snipcart/discounts' => ['template' => 'snipcart/cp/discounts/index'],
+                        'snipcart/discounts/new' => ['template' => 'snipcart/cp/discounts/new'],
+                        'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
+                        'snipcart/subscriptions' => ['template' => 'snipcart/cp/subscriptions/index'],
                     ];
 
                     $event->rules = array_merge($event->rules, $rules);
@@ -160,6 +163,17 @@ class Snipcart extends Plugin
     {
         return new Settings();
     }
+
+    public function getSettingsResponse()
+    {
+        return \Craft::$app->controller->renderTemplate(
+            'snipcart/_settings',
+            [
+                'settings' => $this->getSettings()
+            ]
+        );
+    }
+
 
     /**
      * @inheritdoc

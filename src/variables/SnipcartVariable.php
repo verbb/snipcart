@@ -175,4 +175,12 @@ class SnipcartVariable
         return Snipcart::$plugin->api->isLinked;
     }
 
+    /**
+     * @return bool
+     */
+    public function defaultCurrencySymbol(): string
+    {
+        return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+    }
+
 }

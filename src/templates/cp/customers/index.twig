@@ -1,0 +1,82 @@
+{% extends "snipcart/cp/_layout" %}
+
+{% import "_includes/forms" as forms %}
+
+{# TODO: support customer search #}
+
+{% if pageNumber is not defined %}
+    {% set pageNumber = 1 %}
+{% endif %}
+
+{% if craft.snipcart.searchKeywords %}
+    {% set customers = craft.snipcart.searchCustomers(craft.snipcart.searchKeywords) %}
+{% else %}
+    {% set customers = craft.snipcart.listCustomers(pageNumber) %}
+{% endif %}
+
+{% set selectedTab = "customers" %}
+
+{% block content %}
+
+    <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
+        {{ "There aren't any customers with accounts yet."|t }}
+    </p>
+
+    <div class="callout" style="background: #eee; padding: 10px; margin-bottom: 25px;">
+
+        <form action="" method="post">
+
+            {{ csrfInput() }}
+
+            {{ forms.text({
+                first: true,
+                label: 'Keywords'|t,
+                id: 'searchKeywords',
+                required: true,
+                placeholder: 'customer name',
+                name: 'searchKeywords',
+                value: craft.snipcart.searchKeywords,
+                style: 'width: 200px;'
+            }) }}
+
+            <input type="submit" class="btn submit" name="submit" value="Search">
+
+        </form>
+    </div>
+
+    {% if customers|length %}
+
+        <table id="orders" class="data" style="width: 100%;">
+            <thead>
+                <th scope="col">{{ "Name"|t }}</th>
+                <th scope="col">{{ "Email"|t }}</th>
+                <th scope="col">{{ "Billing Address"|t }}</th>
+                <th scope="col">{{ "Orders"|t }}</th>
+                <th scope="col">{{ "Total Spent"|t }}</th>
+            </thead>
+            <tbody>
+                {% for customer in customers.items %}
+                    <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
+                        <td><a href="{{ url('snipcart/customer/'~customer.id) }}">{{ customer.billingAddressName }}</a></td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.billingAddressAddress1 }}</td>
+                        <td>{{ customer.statistics.ordersCount }}</td>
+                        <td>{{ customer.statistics.ordersAmount | number_format(2) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% set totalPages = (customers.totalItems / customers.limit) | round(0,'ceil') %}
+        {% set maxVisible = 10 %}
+
+        {% include "snipcart/cp/_parts/pagination" with {
+            currentPage: pageNumber,
+            totalPages: totalPages,
+            maxVisible: maxVisible,
+            path: 'snipcart/customers/'
+        } %}
+
+    {% endif %}
+
+{% endblock %}

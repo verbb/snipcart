@@ -1,0 +1,12 @@
+{% extends "_layouts/cp" %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set title = 'New Discount'|t %}
+
+{% block content %}
+    <h1>New Discount</h1>
+{% endblock %}

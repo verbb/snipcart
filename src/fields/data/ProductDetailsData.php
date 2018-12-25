@@ -9,6 +9,8 @@
 namespace workingconcept\snipcart\fields\data;
 
 use Craft;
+use craft\elements\Entry;
+use workingconcept\snipcart\fields\ProductDetails;
 
 class ProductDetailsData extends \craft\base\Model
 {
@@ -82,9 +84,19 @@ class ProductDetailsData extends \craft\base\Model
     public $customOptions = [];
 
     /**
-     * @var 
+     * @var Entry Reference to the related element instance.
      */
     public $element;
+
+    /**
+     * @var ProductDetails Reference to the related field instance.
+     */
+    public $field;
+
+    /**
+     * @var bool
+     */
+    public $isNew = false;
 
 
     // Public Methods
@@ -122,9 +134,29 @@ class ProductDetailsData extends \craft\base\Model
         ];
     }
 
-    public function __toString()
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
+        return json_encode($this);
+    }
 
+    public function populateDefaults()
+    {
+        // check field defaults and set them if element is new (no ID)
+
+        if (empty($this->element->id))
+        {
+            $this->shippable = $this->field->defaultShippable;
+            $this->taxable = $this->field->defaultTaxable;
+            $this->weight = $this->field->defaultWeight;
+            $this->weightUnit = $this->field->defaultWeightUnit;
+            $this->length = $this->field->defaultLength;
+            $this->width = $this->field->defaultWidth;
+            $this->height = $this->field->defaultHeight;
+            $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
+        }
     }
 
     /**
@@ -160,15 +192,15 @@ class ProductDetailsData extends \craft\base\Model
     {
         if ($this->weightUnit === self::WEIGHT_UNIT_GRAMS)
         {
-            return floatval($this->weight);
+            return (float) $this->weight;
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_OUNCES)
         {
-            return floatval($this->weight) * 28.3495;
+            return (float) $this->weight * 28.3495;
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_POUNDS)
         {
-            return floatval($this->weight) * 453.592;
+            return (float) $this->weight * 453.592;
         }
     }
 
@@ -178,7 +210,7 @@ class ProductDetailsData extends \craft\base\Model
      * @param array $params
      * @return string
      */
-    public function getBuyNowButton($params = [])
+    public function getBuyNowButton($params = []): string
     {
         $params = $this->_getBuyButtonParams($params);
 
@@ -189,11 +221,6 @@ class ProductDetailsData extends \craft\base\Model
                 'templateParams' => $params,
             ]
         );
-    }
-
-    public function getAddToCartButton()
-    {
-        // TODO: include quantity
     }
 
 
@@ -241,9 +268,9 @@ class ProductDetailsData extends \craft\base\Model
      * ```
      *
      * @param array $params
-     * @return void
+     * @return array
      */
-    private function _getBuyButtonParams($params = [])
+    private function _getBuyButtonParams($params = []): array
     {
         $defaults = [
             'href'           => '#',
