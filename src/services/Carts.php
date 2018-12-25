@@ -45,6 +45,27 @@ class Carts extends \craft\base\Component
         return $abandonedCartData;
     }
 
+    /**
+     * Get an abandoned cart.
+     * 
+     * @param string $token
+     *
+     * @return \stdClass|array|null
+     * @throws \Exception if our API key is missing.
+     */
+    public function getAbandonedCart($token)
+    {
+        if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
+            'carts/abandoned/%s',
+            $token
+        )))
+        {
+            return new AbandonedCart((array)$abandonedCartData);
+        }
+
+        return null;
+    }
+
     // Private Methods
     // =========================================================================
 

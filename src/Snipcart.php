@@ -132,6 +132,7 @@ class Snipcart extends Plugin
                         'snipcart/discounts' => ['template' => 'snipcart/cp/discounts/index'],
                         'snipcart/discounts/new' => ['template' => 'snipcart/cp/discounts/new'],
                         'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
+                        'snipcart/abandoned/<token>' => ['template' => 'snipcart/cp/abandoned-carts/detail'],
                         'snipcart/subscriptions' => ['template' => 'snipcart/cp/subscriptions/index'],
                     ];
 

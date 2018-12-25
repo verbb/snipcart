@@ -64,6 +64,16 @@ class SnipcartVariable
     }
 
     /**
+     * @param $token
+     * @return AbandonedCart|null
+     * @throws \Exception
+     */
+    public function getAbandonedCart($token)
+    {
+        return Snipcart::$plugin->carts->getAbandonedCart($token);
+    }
+
+    /**
      * @return \stdClass|array
      * @throws \Exception
      */
