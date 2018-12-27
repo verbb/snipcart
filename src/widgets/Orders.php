@@ -53,9 +53,9 @@ class Orders extends Widget
      *
      * @return int
      */
-    public static function maxColspan()
+    public static function maxColspan(): int
     {
-        return 1;
+        return 3;
     }
 
     /**
@@ -78,7 +78,7 @@ class Orders extends Widget
 
     public function getBodyHtml()
     {
-        //Craft::$app->getView()->registerAssetBundle(OrdersWidgetAsset::class);
+        Craft::$app->getView()->registerAssetBundle(OrdersWidgetAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders',

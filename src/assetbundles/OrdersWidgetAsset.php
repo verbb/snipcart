@@ -26,7 +26,9 @@ class OrdersWidgetAsset extends \craft\web\AssetBundle
         $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
 
         $this->depends = [];
-        $this->js = [];
+        $this->js = [
+            'js/orders-widget.js'
+        ];
         $this->css = [];
 
         parent::init();

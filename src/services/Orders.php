@@ -197,28 +197,40 @@ class Orders extends \craft\base\Component
      */
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
-        $orders = $this->listOrders($page, $limit);
+        $orderData   = $this->listOrders($page, $limit);
         $ordersByDay = [];
+        $start       = DateTimeHelper::toDateTime($this->dateRangeStart());
+        $end         = DateTimeHelper::toDateTime($this->dateRangeEnd());
 
-        foreach ($orders as $order)
+        $totalDays = $end->diff($start)->days;
+
+        for ($i=0; $i <= $totalDays; $i++)
         {
-            $orderDate = \DateTime::createFromFormat(
-                'Y-m-d\TH:i:s\Z',
-                $order->creationDate
-            );
-
-            $key = $orderDate->format('Y-m-d');
-
-            if (isset($ordersByDay[$key]))
+            if ($i === 0)
             {
-                ++$ordersByDay[$key];
+                $currentDay = $start;
             }
             else
             {
-                $ordersByDay[$key] = 1;
+                $currentDay = $start->modify('+1 day');
+            }
+
+            $key = $currentDay->format('Y-m-d');
+
+            if (! isset($ordersByDay[$key]))
+            {
+                $ordersByDay[$key] = 0;
+            }
+
+            foreach ($orderData->items as $order)
+            {
+                if ($order->completionDate->format('Y-m-d') == $key)
+                {
+                    ++$ordersByDay[$key];
+                }
             }
         }
-
+        
         return $ordersByDay;
     }
 
