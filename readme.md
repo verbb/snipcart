@@ -55,7 +55,7 @@ The following should appear in a plugin or module's `init()` method. When the Ev
 Event::on(
     Shipments::class,
     Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES,
-    function(WebhookEvent $event) {
+    function(ShippingRateEvent $event) {
         $event->rates = $this->modifyShippingRates(
             $event->rates,
             $event->order,
@@ -85,6 +85,26 @@ Triggered immediately after an order is completed and sent via the `order.comple
 
 Triggered after an order has been completed, and contains references to each relevant Entry and a numeric value that can be used to adjust its quantity.
 
+##### `WebhooksController::EVENT_ON_ORDER_STATUS_CHANGED`
+
+##### `WebhooksController::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED`
+
+##### `WebhooksController::EVENT_ON_ORDER_TRACKING_CHANGED`
+
+##### `WebhooksController::EVENT_ON_SUBSCRIPTION_CREATED`
+
+##### `WebhooksController::EVENT_ON_SUBSCRIPTION_CANCELLED`
+
+##### `WebhooksController::EVENT_ON_SUBSCRIPTION_PAUSED`
+
+##### `WebhooksController::EVENT_ON_SUBSCRIPTION_RESUMED`
+
+##### `WebhooksController::EVENT_ON_SUBSCRIPTION_INVOICE_CREATED`
+
+##### `WebhooksController::EVENT_ON_TAXES_CALCULATE`
+
+##### `WebhooksController::EVENT_ON_CUSTOMER_UPDATE`
+
 
 ---
 
@@ -92,7 +112,7 @@ Triggered after an order has been completed, and contains references to each rel
 
 - [ ] publish setup guide
 - [ ] publish feature overview
-- [ ] provide event hooks for all Snipcart webhook events
+- [x] provide event hooks for all Snipcart webhook events
     - [x] `order.completed`
     - [x] `shippingrates.fetch`
     - [x] `order.status.changed`
