@@ -13,6 +13,12 @@ use Craft;
 use craft\helpers\Localization;
 use craft\helpers\Template as TemplateHelper;
 
+/**
+ * This model is used explicitly for storing Product Details field data and
+ * making some Twig functions available for convenience.
+ *
+ * @package workingconcept\snipcart\models
+ */
 class ProductDetails extends \craft\base\Model
 {
     // Constants
@@ -123,11 +129,21 @@ class ProductDetails extends \craft\base\Model
     // Public Methods
     // =========================================================================
 
+    /**
+     * Get the parent Element that's using the field.
+     *
+     * @return \craft\base\ElementInterface|null
+     */
     public function getElement()
     {
         return Craft::$app->elements->getElementById($this->elementId);
     }
 
+    /**
+     * Get the relevant Field instance.
+     *
+     * @return \craft\base\FieldInterface|null
+     */
     public function getField()
     {
         return Craft::$app->fields->getFieldById($this->fieldId);
@@ -187,10 +203,16 @@ class ProductDetails extends \craft\base\Model
         return $existingRecord === null;
     }
 
+    /**
+     * Gently strip out non-numeric values (commas, currency symbols, etc.)
+     * before attempting to save as a decimal—then continue with the rest of the
+     * validation process.
+     *
+     * @inheritdoc
+     */
     public function beforeValidate(): bool
     {
         $this->price = $this->prepCurrencyValue($this->price);
-
         return parent::beforeValidate();
     }
 
@@ -211,7 +233,9 @@ class ProductDetails extends \craft\base\Model
         return Localization::normalizeNumber($data);
     }
 
-
+    /**
+     * Set defaults according to each configured field instance.
+     */
     public function populateDefaults()
     {
         $this->shippable = $this->field->defaultShippable;
@@ -224,6 +248,11 @@ class ProductDetails extends \craft\base\Model
         $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
     }
 
+    /**
+     * Get weight unit options for menus.
+     *
+     * @return array
+     */
     public static function getWeightUnitOptions(): array
     {
         return [
@@ -233,6 +262,11 @@ class ProductDetails extends \craft\base\Model
         ];
     }
 
+    /**
+     * Get dimension unit options for menus.
+     *
+     * @return array
+     */
     public static function getDimensionsUnitOptions(): array
     {
         return [
@@ -274,7 +308,6 @@ class ProductDetails extends \craft\base\Model
         $instance = $model ?? $this;
         return $instance->shippable;
     }
-
 
     /**
      * Return the current item's weight in grams.
@@ -411,6 +444,13 @@ class ProductDetails extends \craft\base\Model
         return $params;
     }
 
+    /**
+     * @param $template
+     * @param $data
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
     private function _renderFieldTemplate($template, $data): string
     {
         $view         = Craft::$app->getView();
@@ -422,7 +462,7 @@ class ProductDetails extends \craft\base\Model
 
         Craft::$app->getView()->setTemplateMode($templateMode);
 
-        TemplateHelper::raw($html);
+        return TemplateHelper::raw($html);
     }
 
 }
