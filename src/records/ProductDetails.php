@@ -14,6 +14,9 @@ use craft\db\ActiveRecord;
  * Class ProductDetails
  *
  * @package workingconcept\snipcart\records
+ * @property int $siteId
+ * @property int $elementId
+ * @property int $fieldId
  */
 class ProductDetails extends ActiveRecord
 {

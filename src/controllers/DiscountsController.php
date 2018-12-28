@@ -47,7 +47,7 @@ class DiscountsController extends \craft\web\Controller
             }
             else
             {
-                if ($result = Snipcart::$plugin->discounts->createDiscount($discount))
+                if (Snipcart::$plugin->discounts->createDiscount($discount))
                 {
                     Craft::$app->getSession()->setNotice('Discount saved.');
                 }
@@ -77,7 +77,7 @@ class DiscountsController extends \craft\web\Controller
     {
         $this->requirePostRequest();
 
-        $discountId = Craft::$app->getRequest()->post('discountId');
+        $discountId = (string)Craft::$app->getRequest()->post('discountId');
 
         // successful response will be `null`, do don't bother checking
         Snipcart::$plugin->discounts->deleteDiscountById($discountId);
