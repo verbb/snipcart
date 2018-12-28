@@ -13,6 +13,8 @@ use workingconcept\snipcart\models\Customer;
 use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
+use Craft;
+use craft\helpers\Template as TemplateHelper;
 
 class SnipcartVariable
 {
@@ -203,6 +205,38 @@ class SnipcartVariable
     public function defaultCurrencySymbol(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+    }
+
+    /**
+     * Get the main Snipcart JavaScript snippet, optionally including jQuery.
+     *
+     * @param bool $includejQuery
+     * @param string $onload
+     *
+     * @return \Twig_Markup
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
+    public function cartSnippet($includejQuery = true, $onload = '')
+    {
+        $settings = Snipcart::$plugin->getSettings();
+        $view = Craft::$app->getView();
+        $templateMode = $view->getTemplateMode();
+
+        Craft::$app->getView()->setTemplateMode($view::TEMPLATE_MODE_CP);
+
+        $html = Craft::$app->getView()->renderTemplate(
+            'snipcart/front-end/cart-js',
+            [
+                'settings' => $settings,
+                'includejQuery' => $includejQuery,
+                'onload' => $onload
+            ]
+        );
+
+        Craft::$app->getView()->setTemplateMode($templateMode);
+
+        return TemplateHelper::raw($html);
     }
 
 }
