@@ -18,10 +18,6 @@ use craft\base\ElementInterface;
  * ProductDetails
  *
  * @property ProductDetails $value
- *
- * @todo make sure every SKU is unique
- * @todo establish and honor field settings
- * @todo validate field values
  */
 class ProductDetails extends \craft\base\Field
 {
@@ -98,10 +94,6 @@ class ProductDetails extends \craft\base\Field
         return Craft::t('snipcart', 'Snipcart Product Details');
     }
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @return bool
      */
@@ -109,6 +101,10 @@ class ProductDetails extends \craft\base\Field
     {
         return false;
     }
+
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * After saving element, save field to plugin table.
@@ -132,6 +128,8 @@ class ProductDetails extends \craft\base\Field
 
 
     /**
+     * Render the field itself for the control panel.
+     *
      * @inheritdoc
      */
     public function getInputHtml($value, ElementInterface $element = null): string
@@ -155,6 +153,8 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
+     * Render the field's settings as it's being established.
+     *
      * @inheritdoc
      */
     public function getSettingsHtml(): string
@@ -174,6 +174,9 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
+     * Add one custom validation rule that the Element will call. This will make
+     * it possible to validate each of the "sub-fields" we're working with.
+     *
      * @inheritdoc
      */
     public function getElementValidationRules(): array
@@ -185,6 +188,7 @@ class ProductDetails extends \craft\base\Field
 
     /**
      * Validate the ProductDetails model, adding any errors to the Element.
+     *
      * @param ElementInterface $element
      */
     public function validateProductDetails(ElementInterface $element)
@@ -322,6 +326,5 @@ class ProductDetails extends \craft\base\Field
 
         return $record;
     }
-
 
 }
