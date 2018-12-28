@@ -27,6 +27,7 @@ class Discount extends \craft\base\Model
     const TYPE_ALTERNATE_PRICE = 'AlternatePrice';
     const TYPE_ALTERNATE_SHIPPING = 'Shipping';
 
+
     // Properties
     // =========================================================================
 
@@ -122,6 +123,96 @@ class Discount extends \craft\base\Model
      */
     public $numberOfUsagesUncompleted;
 
+    /**
+     * @var bool
+     */
+    public $isForARecoveryCampaign;
+
+    /**
+     * @var bool
+     */
+    public $archived;
+
+    /**
+     * @var
+     */
+    public $combinable;
+
+    /**
+     * @var
+     */
+    public $maxAmountToReach;
+
+    /**
+     * @var
+     */
+    public $appliesOnAllRecurringOrders;
+
+    /**
+     * @var
+     */
+    public $quantityOfAProduct;
+
+    /**
+     * @var
+     */
+    public $quantityOfProductIds;
+
+    /**
+     * @var
+     */
+    public $onlyOnSameProducts;
+
+    /**
+     * @var
+     */
+    public $quantityInterval;
+
+    /**
+     * @var
+     */
+    public $maxQuantityOfAProduct;
+
+    /**
+     * @var
+     */
+    public $numberOfItemsRequired;
+
+    /**
+     * @var
+     */
+    public $numberOfFreeItems;
+
+    /**
+     * @var
+     */
+    public $affectedItems;
+
+    /**
+     * @var
+     */
+    public $dataAttribute;
+
+    /**
+     * @var
+     */
+    public $hasSavedAmount;
+
+    /**
+     * @var
+     */
+    public $products;
+
+    /**
+     * @var
+     */
+    public $creationDate;
+
+    /**
+     * @var
+     */
+    public $modificationDate;
+
 
     // Public Methods
     // =========================================================================
@@ -132,6 +223,46 @@ class Discount extends \craft\base\Model
     public function datetimeAttributes(): array
     {
         return ['expires'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            [['name', 'trigger', 'code', 'itemId', 'type', 'productIds', 'shippingDescription'], 'string'],
+            [['name', 'trigger', 'type'], 'required'],
+            [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'], 'number', 'integerOnly' => true],
+            [['totalToReach', 'amount', 'rate', 'alternatePrice', 'shippingCost'], 'number', 'integerOnly' => false],
+        ];
+    }
+
+    /**
+     * Remove cruft for posting to the REST API. This should be in a scenario
+     * once it's clear how to get them working.
+     * 
+     * @return array
+     */
+    public function getPayloadForPost(): array
+    {
+        $remove = ['id'];
+        $payload = $this->toArray();
+
+        foreach ($remove as $removeKey)
+        {
+            unset($payload[$removeKey]);
+        }
+
+        foreach ($payload as $key => $value)
+        {
+            if ($value === null || $value === '')
+            {
+                unset($payload[$key]);
+            }
+        }
+
+        return $payload;
     }
 
 }

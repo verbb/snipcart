@@ -6,13 +6,14 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\fields\data;
+namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use Craft;
-use craft\elements\Entry;
-use workingconcept\snipcart\fields\ProductDetails;
+use craft\helpers\Localization;
+use craft\helpers\Template as TemplateHelper;
 
-class ProductDetailsData extends \craft\base\Model
+class ProductDetails extends \craft\base\Model
 {
     // Constants
     // =========================================================================
@@ -26,6 +27,31 @@ class ProductDetailsData extends \craft\base\Model
 
     // Public Properties
     // =========================================================================
+
+    /**
+     * @var
+     */
+    public $id;
+
+    /**
+     * @var
+     */
+    public $siteId;
+
+    /**
+     * @var
+     */
+    public $dateCreated;
+
+    /**
+     * @var
+     */
+    public $dateUpdated;
+
+    /**
+     * @var
+     */
+    public $uid;
 
     /**
      * @var string Unique product identifier passed on to Snipcart.
@@ -84,38 +110,42 @@ class ProductDetailsData extends \craft\base\Model
     public $customOptions = [];
 
     /**
-     * @var Entry Reference to the related element instance.
+     * @var
      */
-    public $element;
+    public $elementId;
 
     /**
-     * @var ProductDetails Reference to the related field instance.
+     * @var
      */
-    public $field;
-
-    /**
-     * @var bool
-     */
-    public $isNew = false;
+    public $fieldId;
 
 
     // Public Methods
     // =========================================================================
 
+    public function getElement()
+    {
+        return Craft::$app->elements->getElementById($this->elementId);
+    }
+
+    public function getField()
+    {
+        return Craft::$app->fields->getFieldById($this->fieldId);
+    }
+
     /**
      * @inheritdoc
      */
-    public function getElementValidationRules(): array
+    public function rules(): array
     {
         return [
+            ['sku', 'validateSku'],
             [['sku', 'weightUnit', 'dimensionsUnit'], 'string'],
             [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],
+            [['elementId', 'fieldId'], 'number', 'integerOnly' => true],
             [['shippable'], 'boolean'],
             [['taxable'], 'boolean'],
-            [['sku', 'shippable'], 'required'],
-            [['weight', 'weightUnit'], 'required', 'when' => function($model){
-                return $model->shippable === true;
-            }],
+            [['sku'], 'required'],
             [['weightUnit'], 'in', 'range' => [
                 self::WEIGHT_UNIT_GRAMS,
                 self::WEIGHT_UNIT_OUNCES,
@@ -125,9 +155,12 @@ class ProductDetailsData extends \craft\base\Model
                 self::DIMENSIONS_UNIT_CENTIMETERS,
                 self::DIMENSIONS_UNIT_INCHES
             ]],
+            [['weight', 'weightUnit'], 'required', 'when' => function($model){
+                return $this->isShippable($model);
+            }, 'message' => '{attribute} is required when product is shippable.'],
             [['length', 'width', 'height'], 'required', 'when' => function($model){
                 return $this->hasDimensions($model);
-            }],
+            }, 'message' => '{attribute} required if there are other dimensions.'],
             [['dimensionsUnit'], 'required', 'when' => function($model){
                 return $this->hasAllDimensions($model);
             }],
@@ -135,28 +168,77 @@ class ProductDetailsData extends \craft\base\Model
     }
 
     /**
-     * @return string
+     * Make sure that the given SKU isn't used on any record other than this one.
+     * @param $attribute
+     * @return bool
      */
-    public function __toString(): string
+    public function validateSku($attribute): bool
     {
-        return json_encode($this);
+        $existingRecord = ProductDetailsRecord::find()
+            ->where([$attribute => $this->{$attribute}])
+            ->andWhere(['!=', 'elementId', $this->elementId])
+            ->one();
+
+        if ($existingRecord !== null)
+        {
+            $this->addError($attribute, Craft::t('snipcart', 'SKU must be unique.'));
+        }
+
+        return $existingRecord === null;
     }
+
+    public function beforeValidate(): bool
+    {
+        $this->price = $this->prepCurrencyValue($this->price);
+
+        return parent::beforeValidate();
+    }
+
+    /**
+     * @param $value
+     * @return int|mixed
+     */
+    public function prepCurrencyValue($value)
+    {
+        // remove all non-numeric characters
+        $data = preg_replace('/[^0-9.]/', '', $value);
+
+        if ($data === '')
+        {
+            return null;
+        }
+
+        return Localization::normalizeNumber($data);
+    }
+
 
     public function populateDefaults()
     {
-        // check field defaults and set them if element is new (no ID)
+        $this->shippable = $this->field->defaultShippable;
+        $this->taxable = $this->field->defaultTaxable;
+        $this->weight = $this->field->defaultWeight;
+        $this->weightUnit = $this->field->defaultWeightUnit;
+        $this->length = $this->field->defaultLength;
+        $this->width = $this->field->defaultWidth;
+        $this->height = $this->field->defaultHeight;
+        $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
+    }
 
-        if (empty($this->element->id))
-        {
-            $this->shippable = $this->field->defaultShippable;
-            $this->taxable = $this->field->defaultTaxable;
-            $this->weight = $this->field->defaultWeight;
-            $this->weightUnit = $this->field->defaultWeightUnit;
-            $this->length = $this->field->defaultLength;
-            $this->width = $this->field->defaultWidth;
-            $this->height = $this->field->defaultHeight;
-            $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
-        }
+    public static function getWeightUnitOptions(): array
+    {
+        return [
+            self::WEIGHT_UNIT_GRAMS => 'Grams',
+            self::WEIGHT_UNIT_OUNCES => 'Ounces',
+            self::WEIGHT_UNIT_POUNDS => 'Pounds',
+        ];
+    }
+
+    public static function getDimensionsUnitOptions(): array
+    {
+        return [
+            self::DIMENSIONS_UNIT_CENTIMETERS => 'Centimeters',
+            self::DIMENSIONS_UNIT_INCHES => 'Inches',
+        ];
     }
 
     /**
@@ -182,6 +264,17 @@ class ProductDetailsData extends \craft\base\Model
         $instance = $model ?? $this;
         return ! empty($instance->length) && ! empty($instance->width) && ! empty($instance->height);
     }
+
+    /**
+     * @param null $model
+     * @return bool
+     */
+    public function isShippable($model = null): bool
+    {
+        $instance = $model ?? $this;
+        return $instance->shippable;
+    }
+
 
     /**
      * Return the current item's weight in grams.
@@ -329,7 +422,7 @@ class ProductDetailsData extends \craft\base\Model
 
         Craft::$app->getView()->setTemplateMode($templateMode);
 
-        return $html;
+        TemplateHelper::raw($html);
     }
 
 }

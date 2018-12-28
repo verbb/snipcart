@@ -41,6 +41,52 @@ class Discounts extends \craft\base\Component
         );
     }
 
+    /**
+     * @param Discount $discount
+     * @return mixed $response
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     */
+    public function createDiscount($discount)
+    {
+        $response = Snipcart::$plugin->api->post(
+            'discounts',
+            $discount->getPayloadForPost()
+        );
+
+        return $response;
+    }
+
+    /**
+     * @param string $discountToken
+     * @return Discount|null
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     */
+    public function getDiscount($discountToken)
+    {
+        if ($discountData = Snipcart::$plugin->api->get(sprintf(
+            'discounts/%s',
+            $discountToken
+        )))
+        {
+            return new Discount((array)$discountData);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $discountToken
+     * @return mixed
+     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     */
+    public function deleteDiscountById($discountToken)
+    {
+        return Snipcart::$plugin->api->delete(sprintf(
+            'discounts/%s',
+            $discountToken
+        ));
+    }
+
     // Private Methods
     // =========================================================================
 

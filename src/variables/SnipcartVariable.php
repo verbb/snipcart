@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\variables;
 
 use workingconcept\snipcart\models\Customer;
+use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
 
@@ -52,6 +53,16 @@ class SnipcartVariable
     public function listDiscounts()
     {
         return Snipcart::$plugin->discounts->listDiscounts();
+    }
+
+    /**
+     * @param $discountId
+     * @return Discount|null
+     * @throws \Exception
+     */
+    public function getDiscount($discountId)
+    {
+        return Snipcart::$plugin->discounts->getDiscount($discountId);
     }
 
     /**

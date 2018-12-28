@@ -1,0 +1,28 @@
+{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
+{% extends "_layouts/cp" %}
+
+{% set discount = craft.snipcart.getDiscount(discountId) %}
+
+{% if discount is null %}
+    {% exit 404 %}
+{% endif %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set title = discount.name %}
+
+{% block content %}
+
+    {{ dump(discount) }}
+
+    <form action="" method="post">
+        <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
+        <input type="hidden" name="discountId" value="{{ discount.id }}">
+        {{ csrfInput() }}
+
+        <input type="submit" class="btn" value="{{ "Delete"|t }}">
+    </form>
+{% endblock %}

@@ -11,6 +11,7 @@ namespace workingconcept\snipcart;
 use workingconcept\snipcart\services\Api;
 use workingconcept\snipcart\services\Carts;
 use workingconcept\snipcart\services\Customers;
+use workingconcept\snipcart\services\DigitalGoods;
 use workingconcept\snipcart\services\Discounts;
 use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
@@ -65,7 +66,7 @@ class Snipcart extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.2';
+    public $schemaVersion = '1.0.3';
 
     // Public Methods
     // =========================================================================
@@ -82,6 +83,7 @@ class Snipcart extends Plugin
             'api'           => Api::class,
             'carts'         => Carts::class,
             'customers'     => Customers::class,
+            'digitalGoods'  => DigitalGoods::class,
             'discounts'     => Discounts::class,
             'orders'        => Orders::class,
             'products'      => Products::class,
@@ -130,6 +132,7 @@ class Snipcart extends Plugin
                         'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/cp/customers/index'],
                         'snipcart/customer/<customerId>' => ['template' => 'snipcart/cp/customers/detail'],
                         'snipcart/discounts' => ['template' => 'snipcart/cp/discounts/index'],
+                        'snipcart/discounts/<discountId>' => ['template' => 'snipcart/cp/discounts/detail'],
                         'snipcart/discounts/new' => ['template' => 'snipcart/cp/discounts/new'],
                         'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
                         'snipcart/abandoned/<token>' => ['template' => 'snipcart/cp/abandoned-carts/detail'],
@@ -166,6 +169,9 @@ class Snipcart extends Plugin
         return new Settings();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSettingsResponse()
     {
         Craft::$app->getView()->registerAssetBundle(
@@ -179,7 +185,6 @@ class Snipcart extends Plugin
             ]
         );
     }
-
 
     /**
      * @inheritdoc

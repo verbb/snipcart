@@ -8,16 +8,17 @@
 
 namespace workingconcept\snipcart\fields;
 
-use workingconcept\snipcart\fields\data\ProductDetailsData;
+use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
-use yii\db\Schema;
-use craft\helpers\Localization;
 
 /**
  * ProductDetails
- * 
+ *
+ * @property ProductDetails $value
+ *
  * @todo make sure every SKU is unique
  * @todo establish and honor field settings
  * @todo validate field values
@@ -102,65 +103,33 @@ class ProductDetails extends \craft\base\Field
     // =========================================================================
 
     /**
+     * @return bool
+     */
+    public static function hasContentColumn(): bool
+    {
+        return false;
+    }
+
+    /**
+     * After saving element, save field to plugin table.
+     *
      * @inheritdoc
      */
-    public function getContentColumnType(): string
+    public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        return Schema::TYPE_TEXT;
+        return $this->_saveProductDetails($this, $element, $isNew);
     }
 
     /**
-     * @inheritdoc
-     */
-    public function rules(): array
-    {
-        return [];
-    }
-
-    /**
-     * @param $value
-     * @return int|mixed
-     */
-    public function prepCurrencyValue($value)
-    {
-        // remove all non-numeric characters
-        $data = preg_replace('/[^0-9.]/', '', $value);
-
-        if ($data === '')
-        {
-            return 0;
-        }
-
-        return Localization::normalizeNumber($data);
-    }
-
-    // public function formatCurrencyValue($value)
-    // {
-    //     return number_format(craft()->numberFormatter->formatDecimal($value, false));
-    // }
-
-    /**
+     * Prep value for use as the data leaves the database.
+     *
      * @inheritdoc
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if ( ! $value instanceof ProductDetailsData)
-        {
-            if (is_string($value))
-            {
-                $value = json_decode($value);
-            }
-
-            $productDetailsData = new ProductDetailsData($value);
-            $productDetailsData->element = $element;
-            $productDetailsData->field = $this;
-            $productDetailsData->populateDefaults();
-
-            return $productDetailsData;
-        }
-
-        return $value;
+        return $this->_getProductDetails($this, $element, $value);
     }
+
 
     /**
      * @inheritdoc
@@ -176,17 +145,11 @@ class ProductDetails extends \craft\base\Field
             [
                 'name'     => $this->handle,
                 'field'    => $this,
+                'element'  => $element,
                 'value'    => $value,
                 'settings' => $this->getSettings(),
-                'weightUnitOptions' => [
-                    ProductDetailsData::WEIGHT_UNIT_GRAMS,
-                    ProductDetailsData::WEIGHT_UNIT_OUNCES,
-                    ProductDetailsData::WEIGHT_UNIT_POUNDS,
-                ],
-                'dimensionsUnitOptions' => [
-                    ProductDetailsData::DIMENSIONS_UNIT_INCHES,
-                    ProductDetailsData::DIMENSIONS_UNIT_CENTIMETERS,
-                ],
+                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+                'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
             ]
         );
     }
@@ -204,33 +167,157 @@ class ProductDetails extends \craft\base\Field
             'snipcart/fields/product-details/settings',
             [
                 'field' => $this,
-                'weightUnitOptions' => [
-                    ProductDetailsData::WEIGHT_UNIT_GRAMS,
-                    ProductDetailsData::WEIGHT_UNIT_OUNCES,
-                    ProductDetailsData::WEIGHT_UNIT_POUNDS,
-                ],
-                'dimensionsUnitOptions' => [
-                    ProductDetailsData::DIMENSIONS_UNIT_INCHES,
-                    ProductDetailsData::DIMENSIONS_UNIT_CENTIMETERS,
-                ],
+                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+                'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
             ]
         );
     }
 
     /**
-     * @param mixed                 $value
-     * @param ElementInterface|null $element
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function getElementValidationRules(): array
     {
-        return json_encode($value);
+        return [
+            'validateProductDetails'
+        ];
     }
 
-//    public function validate($attributeNames = null, $clearErrors = true)
-//    {
-//        return $this->value->validate();
-//    }
+    /**
+     * Validate the ProductDetails model, adding any errors to the Element.
+     * @param ElementInterface $element
+     */
+    public function validateProductDetails(ElementInterface $element)
+    {
+        $productDetails = $element->getFieldValue($this->handle);
+        $productDetails->validate();
+
+        $errors = $productDetails->getErrors();
+
+        if (count($errors) > 0)
+        {
+            foreach($errors as $subfield => $errors)
+            {
+                foreach($errors as $message)
+                {
+                    $element->addError($this->handle . '['.$subfield.']', $message);
+                }
+            }
+        }
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * @param $field
+     * @param ElementInterface $element
+     * @param $isNew
+     * @return bool
+     * @throws
+     */
+    private function _saveProductDetails($field, $element, $isNew): bool
+    {
+        $data = $element->getFieldValue($field->handle);
+
+        $record = $this->_getRecord(
+            Craft::$app->sites->getCurrentSite()->id,
+            $element->getId(),
+            $field->id
+        );
+
+        $record->setAttributes([
+            'sku' => $data->sku,
+            'price' => $data->price,
+            'shippable' => $data->shippable,
+            'taxable' => $data->taxable,
+            'weight' => $data->weight,
+            'weightUnit' => $data->weightUnit,
+            'length' => $data->length,
+            'width' => $data->width,
+            'height' => $data->height,
+            'dimensionsUnit' => $data->dimensionsUnit,
+            'customOptions' => $data->customOptions,
+        ], false);
+
+        return $record->save();
+    }
+
+    /**
+     * Get related ProductDetails.
+     *
+     * @param $field
+     * @param ElementInterface|null $element
+     * @param $value
+     * @return ProductDetailsModel|null
+     * @throws
+     */
+    private function _getProductDetails($field, ElementInterface $element = null, $value = null)
+    {
+        if (is_array($value))
+        {
+            $model = new ProductDetailsModel($value);
+
+            $model->fieldId   = $field->id;
+            $model->elementId = $element->getId();
+            $model->siteId    = Craft::$app->sites->getCurrentSite()->id;
+
+            return $model;
+        }
+        elseif (
+            $element !== null &&
+            $record = $this->_getRecord(
+                Craft::$app->sites->getCurrentSite()->id,
+                $element->getId(),
+                $field->id
+            )
+        )
+        {
+            $model = new ProductDetailsModel($record->getAttributes());
+            //$model->setAttributes($value);
+            //Craft::dd($value);
+            return $model;
+        }
+        else
+        {
+            $productDetails = new ProductDetailsModel();
+
+            $productDetails->fieldId   = $field->id;
+            $productDetails->elementId = $element->getId();
+            $productDetails->siteId    = Craft::$app->sites->getCurrentSite()->id;
+
+            $productDetails->populateDefaults();
+
+            return $productDetails;
+        }
+    }
+
+    /**
+     * @param $siteId
+     * @param $elementId
+     * @param $fieldId
+     * @return ProductDetailsRecord
+     */
+    private function _getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
+    {
+        $record = ProductDetailsRecord::findOne([
+            'siteId'    => $siteId,
+            'elementId' => $elementId,
+            'fieldId'   => $fieldId
+        ]);
+
+        if ($record === null)
+        {
+            $record = new ProductDetailsRecord();
+
+            $record->siteId    = $siteId;
+            $record->elementId = $elementId;
+            $record->fieldId   = $fieldId;
+        }
+
+        return $record;
+    }
+
 
 }

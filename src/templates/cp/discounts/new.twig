@@ -6,16 +6,19 @@
     { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
 ] %}
 
+{% set fullPageForm = true %}
+
 {% set title = 'New Discount'|t %}
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\DiscountFieldAsset") %}
 
 {% block actionButton %}
-    <a id="newdiscountsavebtn" class="btn submit icon" href="{{ url('snipcart/discounts/save') }}">
-        {{- 'Create'|t('snipcart') -}}
-    </a>
+    <input type="submit" id="newdiscountsavebtn" class="btn submit icon" href="{{ url('snipcart/discounts/save') }}" value="{{- 'Create'|t('snipcart') -}}">
 {% endblock %}
 
 {% block content %}
+
+    <input type="hidden" name="action" value="snipcart/discounts/create-discount">
+    {{ csrfInput() }}
 
     {{ forms.textField({
         first: true,

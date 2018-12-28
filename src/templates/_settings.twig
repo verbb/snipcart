@@ -11,7 +11,21 @@
 {% set title = "Snipcart Plugin Settings"|t %}
 {% set fullPageForm = true %}
 
-{# TODO: note use of static config here! #}
+{#
+
+TODO: note use of static config here!
+
+{% macro configWarning(setting) -%}
+    {% set setting = '<code>'~setting~'</code>' %}
+    {{ "This is being overridden by the {setting} config setting in your {file} config file."|t('snipcart', {
+        setting: setting,
+        file: 'snipcart.php'
+    })|raw }}
+{%- endmacro %}
+
+{% from _self import configWarning %}
+
+#}
 
 {% set tabs = {
     account:  { label: "Snipcart Account"|t, url: '#account' },

@@ -573,7 +573,7 @@ class Order extends \craft\base\Model
     /**
      * @return array
      */
-    public function getPayloadForPost()
+    public function getPayloadForPost(): array
     {
         $payload = $this->toArray(
             [],

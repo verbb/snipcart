@@ -17,7 +17,6 @@ use workingconcept\snipcart\models\shipstation\Dimensions;
 use workingconcept\snipcart\models\shipstation\Order;
 use workingconcept\snipcart\models\shipstation\Rate;
 use workingconcept\snipcart\models\shipstation\Weight;
-use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\base\ShippingProvider;

@@ -31,7 +31,7 @@
             <tbody>
                 {% for discount in discounts %}
                     <tr data-id="{{ discount.id }}" data-name="{{ discount.id }}">
-                        <td>{{ discount.name }}</td>
+                        <td><a href="{{ url('snipcart/discounts/'~discount.id) }}">{{ discount.name }}</a></td>
                         <td>{{ discount.trigger }}</td>
                         <td>{{ discount.code }}</td>
                         <td>{{ discount.type }}</td>
