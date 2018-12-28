@@ -275,8 +275,12 @@ class ProductDetails extends \craft\base\Field
         )
         {
             $model = new ProductDetailsModel($record->getAttributes());
-            //$model->setAttributes($value);
-            //Craft::dd($value);
+
+            if ($element->getId() === null)
+            {
+                $model->populateDefaults();
+            }
+
             return $model;
         }
         else

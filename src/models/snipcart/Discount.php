@@ -241,7 +241,7 @@ class Discount extends \craft\base\Model
     /**
      * Remove cruft for posting to the REST API. This should be in a scenario
      * once it's clear how to get them working.
-     * 
+     *
      * @return array
      */
     public function getPayloadForPost(): array
