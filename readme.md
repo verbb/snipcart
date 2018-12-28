@@ -95,29 +95,28 @@ Triggered after an order has been completed, and contains references to each rel
 - [ ] provide event hooks for all Snipcart webhook events
     - [x] `order.completed`
     - [x] `shippingrates.fetch`
-    - [ ] `order.status.changed`
-    - [ ] `order.trackingNumber.changed`
-    - [ ] `subscription.created`
-    - [ ] `subscription.cancelled`
-    - [ ] `subscription.paused`
-    - [ ] `subscription.resumed`
-    - [ ] `subscription.invoice.created`
-    - [ ] `taxes.calculate`
-    - [ ] `customauth:customer_updated`
+    - [x] `order.status.changed`
+    - [x] `order.trackingNumber.changed`
+    - [x] `subscription.created`
+    - [x] `subscription.cancelled`
+    - [x] `subscription.paused`
+    - [x] `subscription.resumed`
+    - [x] `subscription.invoice.created`
+    - [x] `taxes.calculate`
+    - [x] `customauth:customer_updated`
 - [ ] add translations
 - [ ] support multiple sites
-- [ ] add currency configuration
-- [ ] browse subscriptions from the control panel
-- [ ] issue refunds from the control panel
+- [x] add currency configuration
+- [x] browse subscriptions from the control panel
+- [x] issue refunds from the control panel
 - [ ] manage discounts from the control panel
 - [ ] sales statistics dashboard widget
-- [ ] Snipcart Product fieldtype (dimensions, weight, and SKU)
+- [x] Snipcart Product fieldtype (dimensions, weight, and SKU)
 - [ ] support inventory management
-- [ ] template variables for quick setup
-    - [ ] Add to Cart button
-    - [ ] Buy Now button
-    - [ ] Snipcart snippet tag
-    - [ ] View Cart button
+- [x] template variables for quick setup
+    - [x] Add to Cart button
+    - [x] Snipcart snippet tag
+    - [x] View Cart button
 - [ ] ShipStation integration
 - [ ] Shippo integration
 

@@ -132,7 +132,7 @@ class Orders extends \craft\base\Component
      *
      * @todo rely on getPaginatedOrders for control panel views and get rid of this method
      */
-    public function listOrders($page = 1, $limit = 25)
+    public function listOrders($page = 1, $limit = 20)
     {
         $response = Snipcart::$plugin->api->get('orders', [
             'offset' => ($page - 1) * $limit,
@@ -443,6 +443,33 @@ class Orders extends \craft\base\Component
         }
 
         return $keywords;
+    }
+
+    /**
+     * @param string $token          The order's unique identifier.
+     * @param float  $amount         The amount of the refund.
+     * @param string $comment        The reason for the refund.
+     * @param bool   $notifyCustomer
+     *
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function refundOrder($token, $amount, $comment = '', $notifyCustomer = false)
+    {
+        $refund = new Refund([
+            'orderToken'     => $token,
+            'amount'         => $amount,
+            'comment'        => $comment,
+            'notifyCustomer' => false,
+        ]);
+
+        $response = Snipcart::$plugin->api->post(
+            sprintf('orders/%s/refunds', $token),
+            $refund->getPayloadForPost()
+        );
+
+        return $response;
+
     }
 
     // Private Methods

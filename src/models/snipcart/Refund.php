@@ -14,17 +14,22 @@ class Refund extends \craft\base\Model
     // =========================================================================
 
     /**
-     * @var string "2223490d-84c1-480c-b713-50cb0b819313"
+     * @var string The refund's unique identifier.
      */
     public $id;
 
     /**
-     * @var float
+     * @var string The order's unique identifier.
+     */
+    public $orderToken;
+
+    /**
+     * @var float The amount of the refund.
      */
     public $amount;
 
     /**
-     * @var string
+     * @var string The reason for the refund.
      */
     public $comment;
 
@@ -33,7 +38,51 @@ class Refund extends \craft\base\Model
      */
     public $refundedByPaymentGateway;
 
+    /**
+     * @var bool
+     */
+    public $notifyCustomer;
+
+    /**
+     * @var
+     */
+    public $creationDate;
+
+    /**
+     * @var
+     */
+    public $modificationDate;
+
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayloadForPost(): array
+    {
+        $payload = $this->toArray();
+
+        unset(
+            $payload['id'],
+            $payload['orderToken'],
+            $payload['refundedByPaymentGateway'],
+            $payload['creationDate'],
+            $payload['modificationDate']
+        );
+
+        $payload['token'] = $this->orderToken;
+
+        return $payload;
+    }
 
 }

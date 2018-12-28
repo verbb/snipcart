@@ -1,4 +1,5 @@
 {% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
 
 {% set centered = true %}
 
@@ -9,7 +10,7 @@
 {% endif %}
 
 {#% set orderNotifications = craft.snipcart.getOrderNotifications(orderId) %#}
-{#% set orderRefunds       = craft.snipcart.getOrderRefunds(orderId) %#}
+{% set orderRefunds = craft.snipcart.getOrderRefunds(orderId) %}
 {% set title = "Order " ~ order.invoiceNumber %}
 
 {% set crumbs = [
@@ -19,7 +20,39 @@
 
 {% block content %}
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
+    {% if orderRefunds %}
+        {% set totalRefunded = 0 %}
+        <div class="refunds">
+            <h2>{{ "Refunds"|t }}</h2>
+
+            <table width="100%">
+                <thead>
+                    <th>{{ "Date"|t }}</th>
+                    <th>{{ "Amount"|t }}</th>
+                    <th>{{ "Comment"|t }}</th>
+                    <th>{{ "Customer Notified"|t }}</th>
+                    <th>{{ "Refunded by Gateway"|t }}</th>
+                </thead>
+                <tbody>
+                {% for refund in orderRefunds %}
+                    <tr>
+                        <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
+                        <td>{{ refund.amount | currency(order.currency|upper) }}</td>
+                        <td>{{ refund.comment }}</td>
+                        <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
+                        <td>{{ refund.refundedByPaymentGateway ? "yes" : "no" }}</td>
+                    </tr>
+                    {% set totalRefunded = totalRefunded + refund.amount %}
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <br>
+        </div>
+    {% endif %}
+
+
+    <table border="0" cellspacing="0" cellpadding="0" width="100%">
     <tr valign="top">
         <td style="vertical-align: top; padding: 0 25px 0 0;">
             <h3>Order from {{ order.creationDate | date('n/j/Y') }}</h3>
@@ -220,10 +253,58 @@
 </div>
 {% endif %#}
 
-{#% if orderRefunds %}
-<div class="refunds">
-    <h2>Refunds</h2>
-</div>
-{% endif %#}
+    {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
+        <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order"|t }}</a>
+    {%- endif %}
+
+
+    <form id="refund-form" action="" method="post" class="hidden">
+        <input type="hidden" name="action" value="snipcart/orders/refund">
+        <input type="hidden" name="orderId" value="{{ order.token }}">
+        {{ csrfInput() }}
+
+        {{ forms.textField({
+            first: true,
+            label: 'Refund Amount'|t,
+            id: 'amount',
+            required: true,
+            name: 'amount',
+            autofocus: true,
+        }) }}
+
+        {{ forms.textField({
+            label: 'Comment'|t,
+            id: 'comment',
+            required: false,
+            name: 'comment',
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: 'Notify Customer'|t,
+            id: 'notifyCustomer',
+            required: false,
+            name: 'notifyCustomer',
+            on: false,
+            value: true,
+        }) }}
+
+        <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
+        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
+    </form>
 
 {% endblock %}
+
+{% js %}
+    (function($) {
+        "use strict";
+        var $form = $("#refund-form");
+        $("#refund-order-btn").click(function(e){
+            $form.removeClass("hidden");
+            var hud = new Garnish.HUD(e.target, $form);
+
+            $form.find('.cancel').click(function(e){
+                hud.hide();
+            });
+        });
+    })(jQuery);
+{% endjs %}
