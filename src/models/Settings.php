@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use workingconcept\snipcart\fields\ProductDetails;
+use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\base\Model;
 use yii\base\InvalidConfigException;
@@ -411,7 +411,7 @@ class Settings extends Model
 
         $supportedMap = [
             'productIdentifier' => [
-                ProductDetails::class,
+                ProductDetailsField::class,
                 PlainText::class,
                 Number::class,
             ],
