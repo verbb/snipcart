@@ -7,6 +7,8 @@
 - Added ability to create a Discount via control panel.
 ### Changed
 - Improved plugin settings control panel layout.
+- Refactored and expanded Events.
+- References to `WebhookEvent` should now be `ShippingRateEvent`.
 
 ## 1.0.0-beta.15 - 2018-12-24
 ### Changed

@@ -8,9 +8,9 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\providers\ShipStation;
 use workingconcept\snipcart\records\ShippingQuoteLog;
@@ -95,7 +95,7 @@ class Shipments extends \craft\base\Component
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES))
         {
-            $event = new WebhookEvent([
+            $event = new ShippingRateEvent([
                 'rates'   => $rates,
                 'order'   => $order,
                 'package' => $package

@@ -8,13 +8,13 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\models\Notification;
 use workingconcept\snipcart\models\Refund;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\events\WebhookEvent;
 use craft\mail\Message;
 use Craft;
 use craft\errors\MissingComponentException;
@@ -36,9 +36,10 @@ class Orders extends \craft\base\Component
     // =========================================================================
 
     /**
-     * @event WebhookEvent Triggered before shipping rates are requested from any third parties.
+     * @event ShippingRateEvent Triggered before shipping rates are requested from any third parties.
      */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
+
 
     // Public Methods
     // =========================================================================
@@ -280,7 +281,7 @@ class Orders extends \craft\base\Component
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES))
         {
-            $event = new WebhookEvent([
+            $event = new ShippingRateEvent([
                 'order'   => $order,
                 'package' => $package
             ]);
