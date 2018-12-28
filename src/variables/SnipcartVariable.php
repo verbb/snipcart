@@ -18,6 +18,8 @@ use craft\helpers\Template as TemplateHelper;
 
 class SnipcartVariable
 {
+    // Public Methods
+    // =========================================================================
 
     /**
      * @param int $pageNumber
@@ -200,11 +202,28 @@ class SnipcartVariable
     }
 
     /**
-     * @return bool
+     * @return string
      */
     public function defaultCurrencySymbol(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+    }
+
+    /**
+     * Get a cart anchor with a count.
+     *
+     * @param string $text
+     *
+     * @return \Twig_Markup
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
+    public function cartLink($text = null): \Twig_Markup
+    {
+        return $this->_renderTemplate(
+            'snipcart/front-end/cart-link',
+            [ 'text' => $text ]
+        );
     }
 
     /**
@@ -217,22 +236,36 @@ class SnipcartVariable
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = '')
+    public function cartSnippet($includejQuery = true, $onload = ''): \Twig_Markup
     {
-        $settings = Snipcart::$plugin->getSettings();
+        return $this->_renderTemplate(
+            'snipcart/front-end/cart-js',
+            [
+                'settings'      => Snipcart::$plugin->getSettings(),
+                'includejQuery' => $includejQuery,
+                'onload'        => $onload
+            ]
+        );
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * @param $template
+     * @param array $data
+     * @return \Twig_Markup
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     */
+    private function _renderTemplate($template, $data = []): \Twig_Markup
+    {
         $view = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
 
         Craft::$app->getView()->setTemplateMode($view::TEMPLATE_MODE_CP);
 
-        $html = Craft::$app->getView()->renderTemplate(
-            'snipcart/front-end/cart-js',
-            [
-                'settings' => $settings,
-                'includejQuery' => $includejQuery,
-                'onload' => $onload
-            ]
-        );
+        $html = Craft::$app->getView()->renderTemplate($template, $data);
 
         Craft::$app->getView()->setTemplateMode($templateMode);
 
