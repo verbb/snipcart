@@ -8,7 +8,6 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use craft\errors\MissingComponentException;
 use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
@@ -74,20 +73,24 @@ class DiscountsController extends \craft\web\Controller
      * @throws \yii\web\BadRequestHttpException
      * @throws \craft\errors\MissingComponentException
      */
-    public function actionDeleteDiscount()
+    public function actionDeleteDiscount(): Response
     {
         $this->requirePostRequest();
 
         $discountId = Craft::$app->getRequest()->post('discountId');
 
-        if ($result = Snipcart::$plugin->discounts->deleteDiscountById($discountId))
-        {
-            Craft::$app->getSession()->setNotice('Discount deleted.');
-        }
-        else
-        {
-            Craft::$app->getSession()->setError('Failed to delete Discount.');
-        }
+        // successful response will be `null`, do don't bother checking
+        Snipcart::$plugin->discounts->deleteDiscountById($discountId);
+
+        Craft::$app->getSession()->setNotice('Discount deleted.');
+
+        /**
+         * Clear cache so we don't return to see our deleted item on the list.
+         * @todo Be more conservative about this, just clearing Snipcart or
+         *       even 'discounts' caches.
+         */
+        $cacheService = Craft::$app->getCache();
+        $cacheService->flush();
 
         return $this->redirect(UrlHelper::cpUrl('snipcart/discounts'));
     }

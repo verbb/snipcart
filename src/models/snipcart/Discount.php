@@ -249,6 +249,12 @@ class Discount extends \craft\base\Model
         $remove = ['id'];
         $payload = $this->toArray();
 
+        // don't send `false` value as expiration (API rejects it)
+        if (isset($payload['expires']) && $payload['expires'] === false)
+        {
+            unset($payload['expires']);
+        }
+
         foreach ($remove as $removeKey)
         {
             unset($payload[$removeKey]);

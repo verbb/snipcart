@@ -125,7 +125,7 @@ class Api extends Component
          * Make sure plugin settings *and* local parameter both allow caching.
          */
         $useCache = $useCache && Snipcart::$plugin->getSettings()->cacheResponses;
-
+        
         if ($useCache && $cachedResponseData = $cacheService->get($cacheKey))
         {
             return $cachedResponseData;
