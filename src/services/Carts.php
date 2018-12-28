@@ -30,7 +30,7 @@ class Carts extends \craft\base\Component
     /**
      * List abandoned carts.
      *
-     * @return \stdClass|array|null
+     * @return AbandonedCart[]
      * @throws \Exception if our API key is missing.
      */
     public function listAbandonedCarts()

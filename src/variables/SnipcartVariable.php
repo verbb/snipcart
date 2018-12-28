@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\variables;
 
+use workingconcept\snipcart\models\AbandonedCart;
 use workingconcept\snipcart\models\Customer;
 use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\models\Order;
