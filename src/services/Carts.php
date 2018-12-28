@@ -50,7 +50,7 @@ class Carts extends \craft\base\Component
      * 
      * @param string $token
      *
-     * @return \stdClass|array|null
+     * @return AbandonedCart|null
      * @throws \Exception if our API key is missing.
      */
     public function getAbandonedCart($token)
