@@ -260,14 +260,17 @@ class SnipcartVariable
      */
     private function _renderTemplate($template, $data = []): \Twig_Markup
     {
-        $view = Craft::$app->getView();
+        $view         = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
 
-        Craft::$app->getView()->setTemplateMode($view::TEMPLATE_MODE_CP);
+        // use CP mode
+        $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
-        $html = Craft::$app->getView()->renderTemplate($template, $data);
+        // render the thing
+        $html = $view->renderTemplate($template, $data);
 
-        Craft::$app->getView()->setTemplateMode($templateMode);
+        // put it back how we found it
+        $view->setTemplateMode($templateMode);
 
         return TemplateHelper::raw($html);
     }
