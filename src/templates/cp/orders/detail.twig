@@ -1,0 +1,310 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set centered = true %}
+
+{% set order = craft.snipcart.getOrder(orderId) %}
+
+{% if order is null %}
+    {% exit 404 %}
+{% endif %}
+
+{#% set orderNotifications = craft.snipcart.getOrderNotifications(orderId) %#}
+{% set orderRefunds = craft.snipcart.getOrderRefunds(orderId) %}
+{% set title = "Order " ~ order.invoiceNumber %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Orders"|t('snipcart'), url: url('snipcart/orders') }
+] %}
+
+{% block content %}
+
+    {% if orderRefunds %}
+        {% set totalRefunded = 0 %}
+        <div class="refunds">
+            <h2>{{ "Refunds"|t }}</h2>
+
+            <table width="100%">
+                <thead>
+                    <th>{{ "Date"|t }}</th>
+                    <th>{{ "Amount"|t }}</th>
+                    <th>{{ "Comment"|t }}</th>
+                    <th>{{ "Customer Notified"|t }}</th>
+                    <th>{{ "Refunded by Gateway"|t }}</th>
+                </thead>
+                <tbody>
+                {% for refund in orderRefunds %}
+                    <tr>
+                        <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
+                        <td>{{ refund.amount | currency(order.currency|upper) }}</td>
+                        <td>{{ refund.comment }}</td>
+                        <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
+                        <td>{{ refund.refundedByPaymentGateway ? "yes" : "no" }}</td>
+                    </tr>
+                    {% set totalRefunded = totalRefunded + refund.amount %}
+                {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <br>
+        </div>
+    {% endif %}
+
+
+    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+    <tr valign="top">
+        <td style="vertical-align: top; padding: 0 25px 0 0;">
+            <h3>Order from {{ order.creationDate | date('n/j/Y') }}</h3>
+
+            <p>
+                Last updated {{ order.modificationDate | date('n/j/Y h:ia') }}<br>
+                Status: <b>{{ order.status }}</b><br>
+                Payment Method: <b>{{ order.cardType }} (<code>{{ order.creditCardLast4Digits }}</code>)</b><br>
+                {{ order.paymentGatewayUsed }} Ref: <code>{{ order.paymentTransactionId }}</code>
+            </p>
+
+
+            {% if order.notes %}
+
+            <h4>Notes</h4>
+
+            {{ order.notes }}
+
+            {% endif %}
+
+            {# <p>Grand Total: {{ order.grandTotal }}</p> #}
+            {# <p>Rebate Amount: {{ order.rebateAmount }}</p> #}
+            {# <p>Items Total: {{ order.itemsTotal }}</p> #}
+            {# <p>Grand Total: {{ order.grandTotal }}</p> #}
+            {# <p>Total Weight: {{ order.totalWeight }}</p> #}
+            {# <p>{{ order.hasPromocode }}</p> #}
+            {# <p>Total Rebates: {{ order.totalRebateRate }}</p> #}
+            {# <p>{{ order.willBePaidLater }}</p> #}
+            {# <p>{{ order.customFieldsJson }}</p> #}
+
+
+        </td>
+        <td style="vertical-align: top; padding: 0 25px 0 0;">
+            <h3>Customer</h3>
+            <p>{{ order.cardHolderName }} (<a href="mailto:{{ order.email }}">{{ order.email }}</a>)</p>
+
+            <h4>Billing{% if order.shippingAddressSameAsBilling %} + Shipping{% endif %} Address</h4>
+
+            <p>
+                {{ order.billingAddressName }}<br>
+                {% if order.billingAddressCompanyName %}{{ order.billingAddressCompanyName }}<br>{% endif %}
+                {{ order.billingAddressAddress1 }}<br>
+                {% if order.billingAddressAddress2 %}{{ order.billingAddressAddress2 }}<br>{% endif %}
+                {{ order.billingAddressCity }}, {{ order.billingAddressProvince }} {{ order.billingAddressPostalCode }}<br>
+            </p>
+
+            <p>{{ order.billingAddressPhone }}</p>
+
+            {% if order.shippingAddressSameAsBilling != true %}
+            
+            <br>
+
+            <h4>Shipping Address</h4>
+
+            <p>
+                {{ order.shippingAddressName }}<br>
+                {% if order.shippingAddressCompanyName %}{{ order.shippingAddressCompanyName }}<br>{% endif %}
+                {{ order.shippingAddressAddress1 }}<br>
+                {% if order.shippingAddressAddress2 %}{{ order.shippingAddressAddress2 }}<br>{% endif %}
+                {{ order.shippingAddressCity }}, {{ order.shippingAddressProvince }} {{ order.shippingAddressPostalCode }}<br>
+            </p>
+
+            <p>{{ order.shippingAddressPhone }}</p>
+
+            {% endif %}
+
+        </td>
+        <td style="vertical-align: top;">
+
+            <h3>Items</h3>
+
+            <table class="data" style="width: 100%;">
+                <thead>
+                    <th>Qty</th>
+                    <th>Name</th>
+                    <th></th>
+                    <th style="text-align: right;">Price</th>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>
+                            {{ item.quantity }}
+                        </td>
+                        <td>
+                            {{ item.name }}
+                        </td>
+                        <td style="font-size: 0.85em; line-height: 1.3em;">
+                            
+                            {% if item.customFields | length %}
+                            {% for custom in item.customFields %}
+                                {{ custom.name }}: <b>{{ custom.value }}</b>{% if loop.last != true %}<br>{% endif %}
+                            {% endfor %}
+                            {% endif %}
+
+                            {# {{ item.initialData }}  #}
+
+                        </td>
+                        <td style="text-align: right;">
+                            {{ item.price | currency(order.currency|upper) }}
+                        </td>
+                        {#
+                        {{ item.uniqueId }}
+                        {{ item.id }}
+                        {{ item.url }}
+                        {{ item.weight }}
+                        {{ item.description }}
+                        {{ item.image }}
+                         {{ item.customFieldsJson }}
+                        {{ item.stackable }}
+                        {{ item.maxQuantity }}
+                        {{ item.totalPrice }}
+                        {{ item.totalWeight }}
+                        #}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+
+            <h3>Cost</h3>
+
+            <table class="data" style="width: 100%;">
+                <tr>
+                    <td>
+                        Subtotal
+                    </td>
+                    <td style="text-align: right;">
+                        {{ order.subtotal | currency(order.currency|upper) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Shipping
+                    </td>
+                    <td style="text-align: right;">
+                        {{ order.shippingFees | currency(order.currency|upper) }} via {{ order.shippingMethod }} ({{ order.totalWeight }} grams)
+                    </td>
+                </tr>
+                {% for tax in order.taxes %}
+                <tr>
+                    <td>
+                        {{ tax.taxName }} ({{ tax.taxRate }})
+                    </td>
+                    <td style="text-align: right;">
+                        {{ tax.amount | currency(order.currency|upper) }}
+                        {# {{ tax.numberForInvoice }} #}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if order.promocodes is defined %}
+                {% for code in order.promocodes %}
+                <tr>
+                    <td colspan="2">
+                        <i>Promo Code <code>{{ code.code }}</code> ({{ code.type }}, {{ code.rate }})</i>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% if order.rebateAmount %}
+                <tr>
+                    <td>
+                        Total Rebates
+                    </td>
+                    <td style="text-align: right;">
+                        {{ order.rebateAmount | currency(order.currency|upper) }}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <b>Grand Total</b>
+                    </td>
+                    <td style="text-align: right;">
+                        <b>{{ order.finalGrandTotal | currency(order.currency|upper) }}</b>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+{#% if orderNotifications %}
+<div class="notifications">
+    <h2>Notifications</h2>
+
+    
+    <div class="items">
+        {% for notification in orderNotifications.items %}
+            <div class="item">
+                {{ notification.type }} ({{ notification.deliveryMethod }}) from {{ notification.creationDate | date() }}:
+                <blockquote>{{ notification.message ?? "" }}</blockquote>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %#}
+
+    {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
+        <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order"|t }}</a>
+    {%- endif %}
+
+
+    <form id="refund-form" action="" method="post" class="hidden">
+        <input type="hidden" name="action" value="snipcart/orders/refund">
+        <input type="hidden" name="orderId" value="{{ order.token }}">
+        {{ csrfInput() }}
+
+        {{ forms.textField({
+            first: true,
+            label: 'Refund Amount'|t,
+            id: 'amount',
+            required: true,
+            name: 'amount',
+            autofocus: true,
+        }) }}
+
+        {{ forms.textField({
+            label: 'Comment'|t,
+            id: 'comment',
+            required: false,
+            name: 'comment',
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: 'Notify Customer'|t,
+            id: 'notifyCustomer',
+            required: false,
+            name: 'notifyCustomer',
+            on: false,
+            value: true,
+        }) }}
+
+        <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
+        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
+    </form>
+
+{% endblock %}
+
+{% js %}
+    (function($) {
+        "use strict";
+        var $form = $("#refund-form");
+        $("#refund-order-btn").click(function(e){
+            $form.removeClass("hidden");
+            var hud = new Garnish.HUD(e.target, $form);
+
+            $form.find('.cancel').click(function(e){
+                hud.hide();
+            });
+        });
+    })(jQuery);
+{% endjs %}

@@ -8,13 +8,13 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\models\Notification;
 use workingconcept\snipcart\models\Refund;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\events\WebhookEvent;
 use craft\mail\Message;
 use Craft;
 use craft\errors\MissingComponentException;
@@ -36,9 +36,10 @@ class Orders extends \craft\base\Component
     // =========================================================================
 
     /**
-     * @event WebhookEvent Triggered before shipping rates are requested from any third parties.
+     * @event ShippingRateEvent Triggered before shipping rates are requested from any third parties.
      */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
+
 
     // Public Methods
     // =========================================================================
@@ -131,7 +132,7 @@ class Orders extends \craft\base\Component
      *
      * @todo rely on getPaginatedOrders for control panel views and get rid of this method
      */
-    public function listOrders($page = 1, $limit = 25)
+    public function listOrders($page = 1, $limit = 20)
     {
         $response = Snipcart::$plugin->api->get('orders', [
             'offset' => ($page - 1) * $limit,
@@ -197,28 +198,40 @@ class Orders extends \craft\base\Component
      */
     public function listOrdersByDay($page = 1, $limit = 25): array
     {
-        $orders = $this->listOrders($page, $limit);
+        $orderData   = $this->listOrders($page, $limit);
         $ordersByDay = [];
+        $start       = DateTimeHelper::toDateTime($this->dateRangeStart());
+        $end         = DateTimeHelper::toDateTime($this->dateRangeEnd());
 
-        foreach ($orders as $order)
+        $totalDays = $end->diff($start)->days;
+
+        for ($i=0; $i <= $totalDays; $i++)
         {
-            $orderDate = \DateTime::createFromFormat(
-                'Y-m-d\TH:i:s\Z',
-                $order->creationDate
-            );
-
-            $key = $orderDate->format('Y-m-d');
-
-            if (isset($ordersByDay[$key]))
+            if ($i === 0)
             {
-                ++$ordersByDay[$key];
+                $currentDay = $start;
             }
             else
             {
-                $ordersByDay[$key] = 1;
+                $currentDay = $start->modify('+1 day');
+            }
+
+            $key = $currentDay->format('Y-m-d');
+
+            if (! isset($ordersByDay[$key]))
+            {
+                $ordersByDay[$key] = 0;
+            }
+
+            foreach ($orderData->items as $order)
+            {
+                if ($order->completionDate->format('Y-m-d') == $key)
+                {
+                    ++$ordersByDay[$key];
+                }
             }
         }
-
+        
         return $ordersByDay;
     }
 
@@ -268,7 +281,7 @@ class Orders extends \craft\base\Component
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES))
         {
-            $event = new WebhookEvent([
+            $event = new ShippingRateEvent([
                 'order'   => $order,
                 'package' => $package
             ]);
@@ -430,6 +443,33 @@ class Orders extends \craft\base\Component
         }
 
         return $keywords;
+    }
+
+    /**
+     * @param string $token          The order's unique identifier.
+     * @param float  $amount         The amount of the refund.
+     * @param string $comment        The reason for the refund.
+     * @param bool   $notifyCustomer
+     *
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function refundOrder($token, $amount, $comment = '', $notifyCustomer = false)
+    {
+        $refund = new Refund([
+            'orderToken'     => $token,
+            'amount'         => $amount,
+            'comment'        => $comment,
+            'notifyCustomer' => false,
+        ]);
+
+        $response = Snipcart::$plugin->api->post(
+            sprintf('orders/%s/refunds', $token),
+            $refund->getPayloadForPost()
+        );
+
+        return $response;
+
     }
 
     // Private Methods

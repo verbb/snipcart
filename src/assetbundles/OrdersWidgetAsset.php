@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\assetbundles\snipcart;
+namespace workingconcept\snipcart\assetbundles;
 
 /**
  * @author    Working Concept
@@ -26,7 +26,9 @@ class OrdersWidgetAsset extends \craft\web\AssetBundle
         $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
 
         $this->depends = [];
-        $this->js = [];
+        $this->js = [
+            'js/orders-widget.js'
+        ];
         $this->css = [];
 
         parent::init();

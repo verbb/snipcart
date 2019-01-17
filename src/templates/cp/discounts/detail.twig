@@ -1,0 +1,211 @@
+{% extends "_layouts/cp" %}
+
+{% set discount = craft.snipcart.getDiscount(discountId) %}
+{# @var discount \workingconcept\snipcart\models\Discount #}
+
+{% if discount is null %}
+    {% exit 404 %}
+{% endif %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set title = discount.name %}
+
+{% block content %}
+
+    {#{ dump(discount) }#}
+
+    <p>
+        <b>{{ "Name"|t }}</b>
+        {{ discount.name }}
+    </p>
+
+    <p>
+        <b>{{ "Expires"|t }}</b>
+        {{ discount.expires | date('m/d/y') }}
+    </p>
+
+    <p>
+        <b>{{ "Max Number of Usages"|t }}</b>
+        {{ discount.maxNumberOfUsages }}
+    </p>
+
+    <p>
+        <b>{{ "Trigger"|t }}</b>
+        {{ discount.trigger }}
+    </p>
+
+    <p>
+        <b>{{ "Code"|t }}</b>
+        {{ discount.code }}
+    </p>
+
+    <p>
+        <b>{{ "Item ID"|t }}</b>
+        {{ discount.itemId }}
+    </p>
+
+    <p>
+        <b>{{ "Total to Reach"|t }}</b>
+        {{ discount.totalToReach }}
+    </p>
+
+    <p>
+        <b>{{ "Type"|t }}</b>
+        {{ discount.type }}
+    </p>
+
+    <p>
+        <b>{{ "Amount"|t }}</b>
+        {{ discount.amount }}
+    </p>
+
+    <p>
+        <b>{{ "Product IDs"|t }}</b>
+        {{ discount.productIds }}
+    </p>
+
+    <p>
+        <b>{{ "Rate"|t }}</b>
+        {{ discount.rate }}
+    </p>
+
+    <p>
+        <b>{{ "Alternate Price"|t }}</b>
+        {{ discount.alternatePrice }}
+    </p>
+
+    <p>
+        <b>{{ "Shipping Description"|t }}</b>
+        {{ discount.shippingDescription }}
+    </p>
+
+    <p>
+        <b>{{ "Shipping Cost"|t }}</b>
+        {{ discount.shippingCost }}
+    </p>
+
+    <p>
+        <b>{{ "Shipping Guaranteed Days to Delivery"|t }}</b>
+        {{ discount.shippingGuaranteedDaysToDelivery }}
+    </p>
+
+    <p>
+        <b>{{ "Number of Usages"|t }}</b>
+        {{ discount.numberOfUsages }}
+    </p>
+
+    <p>
+        <b>{{ "Number of Usages Uncompleted"|t }}</b>
+        {{ discount.numberOfUsagesUncompleted }}
+    </p>
+
+    <p>
+        <b>{{ "Is For a Recovery Campaign"|t }}</b>
+        {{ discount.isForARecoveryCampaign }}
+    </p>
+
+    <p>
+        <b>{{ "Archived"|t }}</b>
+        {{ discount.archived }}
+    </p>
+
+    <p>
+        <b>{{ "Combinable"|t }}</b>
+        {{ discount.combinable }}
+    </p>
+
+    <p>
+        <b>{{ "Max Amount to Reach"|t }}</b>
+        {{ discount.maxAmountToReach }}
+    </p>
+
+    <p>
+        <b>{{ "Applies on All Recurring Orders"|t }}</b>
+        {{ discount.appliesOnAllRecurringOrders }}
+    </p>
+
+    <p>
+        <b>{{ "Quantity of a Product"|t }}</b>
+        {{ discount.quantityOfAProduct }}
+    </p>
+
+    <p>
+        <b>{{ "Quantity of Product IDs"|t }}</b>
+        {{ discount.quantityOfProductIds }}
+    </p>
+
+    <p>
+        <b>{{ "Only on Same Products"|t }}</b>
+        {{ discount.onlyOnSameProducts }}
+    </p>
+
+    <p>
+        <b>{{ "Quantity Interval"|t }}</b>
+        {{ discount.quantityInterval }}
+    </p>
+
+    <p>
+        <b>{{ "Max Quantity of a Product"|t }}</b>
+        {{ discount.maxQuantityOfAProduct }}
+    </p>
+
+    <p>
+        <b>{{ "Number of Items Required"|t }}</b>
+        {{ discount.numberOfItemsRequired }}
+    </p>
+
+    <p>
+        <b>{{ "Number of Free Items"|t }}</b>
+        {{ discount.numberOfFreeItems }}
+    </p>
+
+    <p>
+        <b>{{ "Data Attribute"|t }}</b>
+        {{ discount.dataAttribute }}
+    </p>
+
+    <p>
+        <b>{{ "Has Saved Amount"|t }}</b>
+        {{ discount.hasSavedAmount }}
+    </p>
+
+    <p>
+        <b>{{ "Creation Date"|t }}</b>
+        {{ discount.creationDate | date('m/d/y') }}
+    </p>
+
+    <p>
+        <b>{{ "Modification Date"|t }}</b>
+        {{ discount.modificationDate | date('m/d/y') }}
+    </p>
+
+    <p>
+        <b>{{ "Affected Items"|t }}</b>
+        <ul>
+            {% for item in discount.affectedItems %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+
+    <p>
+        <b>{{ "Products"|t }}</b>
+        <ul>
+            {% for product in discount.products %}
+            <li>{{ product }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+
+    <form action="" method="post">
+        <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
+        <input type="hidden" name="discountId" value="{{ discount.id }}">
+        {{ csrfInput() }}
+
+        <input type="submit" class="btn" value="{{ "Delete"|t }}">
+    </form>
+{% endblock %}

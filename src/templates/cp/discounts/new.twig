@@ -1,0 +1,176 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% set title = 'New Discount'|t %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\DiscountFieldAsset") %}
+
+{% block actionButton %}
+    <input type="submit" id="newdiscountsavebtn" class="btn submit icon" href="{{ url('snipcart/discounts/save') }}" value="{{- 'Create'|t('snipcart') -}}">
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="snipcart/discounts/create-discount">
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        label: 'Name'|t,
+        id: 'name',
+        required: true,
+        name: 'name',
+        value: discount.name ?? '',
+        autofocus: true,
+        errors: discount.getErrors('name') ?? [],
+        instructions: "Add a friendly discount name."
+    }) }}
+
+    {{ forms.dateField({
+        label: 'Expires'|t,
+        id: 'expires',
+        name: 'expires',
+        value: discount.expires ?? '',
+        errors: discount.getErrors('expires') ?? [],
+        instructions: "Specify an expiration date or leave empty and the discount will never expire."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Max Number of Usages'|t,
+        id: 'maxNumberOfUsages',
+        name: 'maxNumberOfUsages',
+        value: discount.maxNumberOfUsages ?? '',
+        size: 13,
+        errors: discount.getErrors('maxNumberOfUsages') ?? [],
+        instructions: "Enter the maximum number of usages, or leave empty and customers will be able to use it indefinitely."
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Trigger'|t,
+        id: 'trigger',
+        required: true,
+        name: 'trigger',
+        options: {
+            'Total': 'Total',
+            'Code': 'Code',
+            'Product': 'Product',
+        },
+        value: discount.defaultTrigger ?? null,
+        errors: discount.getErrors('trigger') ?? [],
+        instructions: "Condition that will trigger the discount."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Code'|t,
+        id: 'code',
+        name: 'code',
+        value: discount.code ?? '',
+        errors: discount.getErrors('code') ?? [],
+        instructions: "The code that will need to be entered by the customer. Required when trigger is `Code`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Item ID'|t,
+        id: 'itemId',
+        name: 'itemId',
+        value: discount.itemId ?? '',
+        errors: discount.getErrors('itemId') ?? [],
+        instructions: "The unique ID of your product defined with `data-item-id`. Required when trigger is `Product`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Total To Reach'|t,
+        id: 'totalToReach',
+        name: 'totalToReach',
+        value: discount.totalToReach ?? '',
+        errors: discount.getErrors('totalToReach') ?? [],
+        instructions: "The minimum order amount. Required when trigger is `Total`."
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Type'|t,
+        id: 'type',
+        required: true,
+        name: 'type',
+        options: {
+            'FixedAmount': 'Fixed Amount',
+            'FixedAmountOnItems': 'Fixed Amount On Items',
+            'Rate': 'Rate',
+            'AlternatePrice': 'Alternate Price',
+            'Shipping': 'Shipping',
+        },
+        value: discount.defaultType ?? null,
+        errors: discount.getErrors('type') ?? [],
+        instructions: "The type of action that the discount will apply."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Amount'|t,
+        id: 'amount',
+        name: 'amount',
+        value: discount.amount ?? '',
+        errors: discount.getErrors('amount') ?? [],
+        instructions: "The amount that will be deducted from order total. Required when type is `FixedAmount`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Product IDs'|t,
+        id: 'productIds',
+        name: 'productIds',
+        value: discount.productIds ?? '',
+        errors: discount.getErrors('productIds') ?? [],
+        instructions: "A comma separated list of unique ID of your products defined with data-item-id. The fixed amount will be deducted from each product that matches. Required when type is `FixedAmountOnItems`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Rate'|t,
+        id: 'rate',
+        name: 'rate',
+        value: discount.rate ?? '',
+        errors: discount.getErrors('rate') ?? [],
+        instructions: "The rate in percentage that will be deducted from order total. Required when type is `Rate`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Alternate Price'|t,
+        id: 'alternatePrice',
+        name: 'alternatePrice',
+        value: discount.alternatePrice ?? '',
+        errors: discount.getErrors('alternatePrice') ?? [],
+        instructions: "The name of the alternate price list to use. Required when type is `AlternatePrice`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Description'|t,
+        id: 'shippingDescription',
+        name: 'shippingDescription',
+        value: discount.shippingDescription ?? '',
+        errors: discount.getErrors('shippingDescription') ?? [],
+        instructions: "The shipping method name that will be displayed to your customers. Required when type is `Shipping`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Cost'|t,
+        id: 'shippingCost',
+        name: 'shippingCost',
+        value: discount.shippingCost ?? '',
+        errors: discount.getErrors('shippingCost') ?? [],
+        instructions: "The shipping amount that will be available to your customers. Required when type is `Shipping`."
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Guaranteed Days to Delivery'|t,
+        id: 'shippingGuaranteedDaysToDelivery',
+        name: 'shippingGuaranteedDaysToDelivery',
+        value: discount.shippingGuaranteedDaysToDelivery ?? '',
+        errors: discount.getErrors('shippingGuaranteedDaysToDelivery') ?? [],
+        instructions: "The number of days it will take for shipping, you can leave it to null."
+    }) }}
+
+{% endblock %}

@@ -26,7 +26,7 @@ class m181205_000036_api_log extends Migration
     {
         if ( ! $this->getDb()->tableExists($this->tableName))
         {
-            $typeValues = array_values(WebhooksController::WEBHOOK_EVENTS);
+            $typeValues = array_keys(WebhooksController::WEBHOOK_EVENT_MAP);
 
             $this->createTable($this->tableName, [
                 'id'          => $this->primaryKey(),
@@ -45,13 +45,6 @@ class m181205_000036_api_log extends Migration
      */
     public function safeDown()
     {
-        echo "m181205_000036_api_log cannot be reverted.\n";
-        
-        if ($this->getDb()->tableExists($this->tableName))
-        {
-            $this->getDb()->deleteTable($this->tableName);
-        }
-        
-        return false;
+        $this->getDb()->dropTableIfExists($this->tableName);
     }
 }

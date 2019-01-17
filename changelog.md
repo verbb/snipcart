@@ -1,5 +1,21 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.16 - 2018-12-27
+### Added
+- Added Product Details field type for quick setup.
+- Added control panel views for Discounts, Abandoned Carts, and Subscriptions.
+- Added ability to create a Discount via control panel.
+### Changed
+- Improved plugin settings control panel layout.
+- Refactored and expanded Events.
+- References to `WebhookEvent` should now be `ShippingRateEvent`.
+
+## 1.0.0-beta.15 - 2018-12-24
+### Changed
+- Fixed incorrect item weights when converting a Snipcart order into a ShipStation order.
+- Refactored ShippingProvider to expose REST API methods.
+- Various code quality improvements.
+
 ## 1.0.0-beta.14 - 2018-12-20
 ### Changed
 - ShipStation's `_getOrderNotes()` and `_getGiftNote()` will no longer return empty values.

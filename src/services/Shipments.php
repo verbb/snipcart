@@ -8,11 +8,12 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\events\WebhookEvent;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\providers\ShipStation;
+use workingconcept\snipcart\records\ShippingQuoteLog;
 use Craft;
 
 /**
@@ -33,14 +34,21 @@ class Shipments extends \craft\base\Component
      */
     const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
+    
     // Private Properties
     // =========================================================================
 
     private $_shipStation;
 
+
     // Public Methods
     // =========================================================================
 
+    /**
+     * Returns an instance of the ShipStation provider.
+     *
+     * @return ShipStation
+     */
     public function getShipStation(): ShipStation
     {
         if ($this->_shipStation === null)
@@ -59,6 +67,16 @@ class Shipments extends \craft\base\Component
      */
     public function collectRatesForOrder(Order $order): array
     {
+        if ($order->hasShippableItems() === false)
+        {
+            Craft::warning(sprintf(
+                'Snipcart order %s did not contain any shippable items.',
+                $order->invoiceNumber ?? $order->token
+            ), 'snipcart');
+
+            return [];
+        }
+
         $rates = [];
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
         
@@ -77,7 +95,7 @@ class Shipments extends \craft\base\Component
 
         if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES))
         {
-            $event = new WebhookEvent([
+            $event = new ShippingRateEvent([
                 'rates'   => $rates,
                 'order'   => $order,
                 'package' => $package
@@ -132,6 +150,20 @@ class Shipments extends \craft\base\Component
         }
 
         return $response;
+    }
+
+    /**
+     * Get the last shipping rate quote that was returned for the given order.
+     *
+     * @param $order
+     * @return array|ShippingQuoteLog|\yii\db\ActiveRecord|null
+     */
+    public function getQuoteLogForOrder($order)
+    {
+        return ShippingQuoteLog::find()
+            ->where(['token' => $order->token])
+            ->orderBy(['dateCreated' => SORT_DESC])
+            ->one();
     }
 
     // Private Methods

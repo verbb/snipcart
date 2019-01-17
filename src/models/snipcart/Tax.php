@@ -8,9 +8,30 @@
 
 namespace workingconcept\snipcart\models;
 
+/**
+ * Class Tax
+ * https://docs.snipcart.com/webhooks/taxes
+ *
+ * @package workingconcept\snipcart\models
+ */
 class Tax extends \craft\base\Model
 {
- // Properties
- // =========================================================================
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var float
+     */
+    public $amount;
+
+    /**
+     * @var string
+     */
+    public $numberForInvoice;
 
 }

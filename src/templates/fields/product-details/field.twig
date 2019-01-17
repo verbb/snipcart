@@ -1,0 +1,191 @@
+{% import "_includes/forms" as forms %}
+
+{% macro errorList(errors) %}
+    {% if errors %}
+        <ul class="errors">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro customTextInput(element, name, fieldName, value, options) %}
+    {% import "_includes/forms" as forms %}
+    {% from _self import errorList %}
+    {% set subfieldName = name ~ '[' ~ fieldName ~ ']' %}
+    {% set errors = element.getErrors(subfieldName) %}
+    {% set fieldClasses = options['classes'] ?? [] %}
+    {% if errors | length %}
+        {% set fieldClasses = fieldClasses | merge(['errors']) %}
+    {% endif %}
+    <div class="input{% if errors | length %} errors{% endif %}">
+        {{- forms.text({
+            id: fieldName,
+            name: subfieldName,
+            class: fieldClasses | join(' '),
+            errors: element.getErrors(subfieldName),
+            value: value[fieldName] ?? '',
+            size: options['size'] ?? null
+        }) -}}
+    </div>
+    {{ errorList(errors) }}
+{% endmacro %}
+
+{% from _self import errorList %}
+{% from _self import customTextInput %}
+
+<div class="snipcart-product-details-outer">
+    <div class="snipcart-product-details-field-group snipcart-product-details-sku-group">
+        <div class="label">
+            <label for="sku" class="required">
+                {{- "SKU"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ customTextInput(element, name, 'sku', value, { classes: ['code'] }) }}
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-price-group">
+        <div class="label">
+            <label for="price" class="required">
+                {{- "Price"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            <div class="price-wrapper">
+                <div class="currency-symbol">
+                    {{ craft.snipcart.defaultCurrencySymbol }}
+                </div>
+                {{- customTextInput(element, name, 'price', value, { size: 8 }) -}}
+            </div>
+        </div>
+    </div>
+        <div class="snipcart-product-details-field-group snipcart-product-details-taxable-group">
+        <div class="label">
+            <label for="taxable">
+                {{- "Taxable"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ forms.lightswitch({
+                id: 'taxable',
+                name: name ~ '[taxable]',
+                on: value.taxable ?? false,
+                value: true,
+            }) }}
+            {{ errorList(element.getErrors(name ~ '[taxable]')) }}
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-shippable-group">
+        <div class="label">
+            <label for="shippable">
+                {{- "Shippable"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ forms.lightswitch({
+                id: 'shippable',
+                name: name ~ '[shippable]',
+                on: value.shippable ?? false,
+                value: true,
+            }) }}
+            {{ errorList(element.getErrors(name ~ '[shippable]')) }}
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-weight-group{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+        <div class="label">
+            <label for="weight">
+                {{- "Weight"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ forms.text({
+                id: 'weight',
+                name: name ~ '[weight]',
+                value: value.weight ?? '',
+                size: 5,
+            }) }}
+
+            <div class="select">
+                {{ forms.select({
+                    id: 'weightUnit',
+                    name: name ~ '[weightUnit]',
+                    options: weightUnitOptions,
+                    value: value.weightUnit ?? '',
+                    errors: field.getErrors('weightUnit'),
+                }) }}
+            </div>
+
+            {{ errorList(element.getErrors(name ~ '[weight]')) }}
+            {{ errorList(element.getErrors(name ~ '[weightUnit]')) }}
+        </div>
+    </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-dimensions-group{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+        <div class="label">
+            <label>
+                {{- "Dimensions"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ forms.text({
+                id: 'length',
+                name: name ~ '[length]',
+                class: 'dimension-input',
+                placeholder: 'L',
+                size: 5,
+                value: value.length ?? '',
+                errors: field.getErrors('length'),
+            }) }} <span class="muted">×</span>
+
+            {{ forms.text({
+                id: 'width',
+                name: name ~ '[width]',
+                class: 'dimension-input',
+                placeholder: 'W',
+                size: 5,
+                value: value.width ?? '',
+                errors: field.getErrors('width'),
+            }) }} <span class="muted">×</span>
+
+            {{ forms.text({
+                id: 'height',
+                name: name ~ '[height]',
+                class: 'dimension-input',
+                placeholder: 'H',
+                size: 5,
+                value: value.height ?? '',
+                errors: field.getErrors('height'),
+            }) }}
+
+            <div class="select">
+                {{ forms.select({
+                    id: 'dimensionsUnit',
+                    name: name ~ '[dimensionsUnit]',
+                    options: dimensionsUnitOptions,
+                    value: value.dimensionsUnit ?? '',
+                    errors: field.getErrors('dimensionsUnit'),
+                }) }}
+            </div>
+
+            {{ errorList(element.getErrors(name ~ '[length]')) }}
+            {{ errorList(element.getErrors(name ~ '[width]')) }}
+            {{ errorList(element.getErrors(name ~ '[height]')) }}
+            {{ errorList(element.getErrors(name ~ '[dimensionsUnit]')) }}
+        </div>
+    </div>
+</div>
+
+{% js %}
+jQuery(function(){
+    $("#fields-shippable").change(function(){
+        if ($(this).hasClass('on')) {
+            $('.snipcart-product-details-weight-group').removeClass('hidden');
+            $('.snipcart-product-details-dimensions-group').removeClass('hidden');
+        } else {
+            $('.snipcart-product-details-weight-group').addClass('hidden');
+            $('.snipcart-product-details-dimensions-group').addClass('hidden');
+        }
+    });
+});
+{% endjs %}

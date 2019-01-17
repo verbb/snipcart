@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\assetbundles\snipcart;
+namespace workingconcept\snipcart\assetbundles;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
@@ -26,7 +26,7 @@ class SnipcartAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@workingconcept/snipcart/assetbundles/snipcart/dist";
+        $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
 
         $this->depends = [];
         $this->js = [];

@@ -46,6 +46,11 @@ class Item extends \craft\base\Model
     public $price;
 
     /**
+     * @var float
+     */
+    public $originalPrice;
+
+    /**
      * @var string
      */
     public $description;
@@ -121,6 +126,11 @@ class Item extends \craft\base\Model
     public $customFields;
 
     /**
+     * @var string|null
+     */
+    public $customFieldsJson;
+
+    /**
      * @var bool
      */
     public $duplicatable;
@@ -178,7 +188,7 @@ class Item extends \craft\base\Model
     /**
      * @var
      */
-    public $metaData;
+    public $metadata;
 
     /**
      * @var PaymentSchedule

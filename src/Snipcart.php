@@ -11,6 +11,7 @@ namespace workingconcept\snipcart;
 use workingconcept\snipcart\services\Api;
 use workingconcept\snipcart\services\Carts;
 use workingconcept\snipcart\services\Customers;
+use workingconcept\snipcart\services\DigitalGoods;
 use workingconcept\snipcart\services\Discounts;
 use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
@@ -19,12 +20,13 @@ use workingconcept\snipcart\services\Subscriptions;
 use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
+use workingconcept\snipcart\fields\ProductDetails;
+use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
-use craft\fields\Number;
-use craft\fields\PlainText;
+use craft\services\Fields;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\console\Application as ConsoleApplication;
@@ -64,7 +66,7 @@ class Snipcart extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.2';
+    public $schemaVersion = '1.0.4';
 
     // Public Methods
     // =========================================================================
@@ -81,6 +83,7 @@ class Snipcart extends Plugin
             'api'           => Api::class,
             'carts'         => Carts::class,
             'customers'     => Customers::class,
+            'digitalGoods'  => DigitalGoods::class,
             'discounts'     => Discounts::class,
             'orders'        => Orders::class,
             'products'      => Products::class,
@@ -105,6 +108,15 @@ class Snipcart extends Plugin
             }
         );
 
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event)
+            {
+                $event->types[] = ProductDetails::class;
+            }
+        );
+
         if (Craft::$app->getRequest()->isCpRequest)
         {
             Event::on(
@@ -112,12 +124,19 @@ class Snipcart extends Plugin
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
                 function(RegisterUrlRulesEvent $event) {
                     $rules = [
-                        'snipcart/order/<orderId>' => ['template' => 'snipcart/order'],
-                        'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/index'],
-                        'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/customers'],
-                        'snipcart/customer/<customerId>' => ['template' => 'snipcart/customer'],
-                        'snipcart/discounts' => ['template' => 'snipcart/discounts'],
-                        'snipcart/abandoned' => ['template' => 'snipcart/abandoned'],
+                        'snipcart' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/orders/' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/order/<orderId>' => ['template' => 'snipcart/cp/orders/detail'],
+                        'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart/customers/' => ['template' => 'snipcart/cp/customers/index'],
+                        'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/cp/customers/index'],
+                        'snipcart/customer/<customerId>' => ['template' => 'snipcart/cp/customers/detail'],
+                        'snipcart/discounts' => ['template' => 'snipcart/cp/discounts/index'],
+                        'snipcart/discounts/new' => ['template' => 'snipcart/cp/discounts/new'],
+                        'snipcart/discounts/<discountId>' => ['template' => 'snipcart/cp/discounts/detail'],
+                        'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
+                        'snipcart/abandoned/<token>' => ['template' => 'snipcart/cp/abandoned-carts/detail'],
+                        'snipcart/subscriptions' => ['template' => 'snipcart/cp/subscriptions/index'],
                     ];
 
                     $event->rules = array_merge($event->rules, $rules);
@@ -153,67 +172,28 @@ class Snipcart extends Plugin
     /**
      * @inheritdoc
      */
+    public function getSettingsResponse()
+    {
+        Craft::$app->getView()->registerAssetBundle(
+            PluginSettingsAsset::class
+        );
+
+        return \Craft::$app->controller->renderTemplate(
+            'snipcart/_settings',
+            [
+                'settings' => $this->getSettings()
+            ]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function settingsHtml(): string
     {
-        $allFields = Craft::$app->fields->getAllFields();
-
-        // TODO: be a bit more civilized about this
-
-        $productIdentifierOptions = [
-            null => 'Select Field...',
-            'id' => 'Element ID',
-        ];
-
-        $supportedProductIdentifierTypes = [
-            PlainText::class,
-            Number::class,
-        ];
-
-        $productInventoryFieldOptions = [
-            null => 'Select Field...',
-        ];
-
-        $orderNoteFieldOptions = [
-            null => 'Select Field...',
-        ];
-
-        $giftNoteFieldOptions = [
-            null => 'Select Field...',
-        ];
-
-        $supportedProductInventoryFieldTypes = [
-            Number::class,
-        ];
-
-        foreach ($allFields as $field)
-        {
-            if (in_array(get_class($field), $supportedProductIdentifierTypes, true))
-            {
-                // disallow multiline text as an option
-                if (isset($field->multiline) && $field->multiline)
-                {
-                    continue;
-                }
-
-                $productIdentifierOptions[$field->handle] = $field->name;
-            }
-
-            if (in_array(get_class($field), $supportedProductInventoryFieldTypes, true))
-            {
-                $productInventoryFieldOptions[$field->handle] = $field->name;
-                $orderNoteFieldOptions[$field->handle] = $field->name;
-                $giftNoteFieldOptions[$field->handle] = $field->name;
-            }
-        }
-
-
         return Craft::$app->view->renderTemplate(
             'snipcart/_settings',
             [
-                'productIdentifierOptions' => $productIdentifierOptions,
-                'productInventoryFieldOptions' => $productInventoryFieldOptions,
-                'orderNoteFieldOptions' => $orderNoteFieldOptions,
-                'giftNoteFieldOptions' => $giftNoteFieldOptions,
                 'settings' => $this->getSettings()
             ]
         );

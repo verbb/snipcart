@@ -8,7 +8,12 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
+use Craft;
 use craft\base\Model;
+use yii\base\InvalidConfigException;
+use craft\fields\PlainText;
+use craft\fields\Number;
 
 /**
  * Settings model
@@ -24,6 +29,10 @@ class Settings extends Model
 
     const PROVIDER_SHIPSTATION = 'shipStation';
     const PROVIDER_SHIPPO = 'shippo';
+
+    const CURRENCY_USD = 'usd';
+    const CURRENCY_CAD = 'cad';
+    const CURRENCY_EUR = 'eur';
 
 
     // Properties
@@ -43,6 +52,11 @@ class Settings extends Model
      * @var array valid email addresses
      */
     public $notificationEmails = [];
+
+    /**
+     * @var array
+     */
+    public $enabledCurrencies = [ self::CURRENCY_USD ];
 
     /**
      * @var string
@@ -133,7 +147,23 @@ class Settings extends Model
     ];
 
 
-    // Methods
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @return array
+     */
+    public static function getCurrencyOptions(): array
+    {
+        return [
+            self::CURRENCY_USD => Craft::t('snipcart', 'U.S. Dollar'),
+            self::CURRENCY_CAD => Craft::t('snipcart','Canadian Dollar'),
+            self::CURRENCY_EUR => Craft::t('snipcart','Euro'),
+        ];
+    }
+
+
+    // Public Methods
     // =========================================================================
 
     /**
@@ -152,10 +182,10 @@ class Settings extends Model
             [['logCustomRates'], 'default', 'value' => false],
             [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
-            [['enabledProviders'], 'in', 'range' => [
-                self::PROVIDER_SHIPSTATION,
-                self::PROVIDER_SHIPPO
-            ]],
+//            [['enabledProviders'], 'in', 'range' => [
+//                self::PROVIDER_SHIPSTATION,
+//                self::PROVIDER_SHIPPO
+//            ]],
 
             // TODO: validate shipFrom
             // TODO: validate packagingTypes
@@ -288,6 +318,143 @@ class Settings extends Model
     public function setShipFrom($address)
     {
         return $this->_shipFrom = new Address($address);
+    }
+
+    /**
+     * Get the default (first listed) currency.
+     *
+     * @return string
+     */
+    public function getDefaultCurrency(): string
+    {
+        return $this->enabledCurrencies[0];
+    }
+
+    /**
+     * Get the symbol for the default currency.
+     *
+     * @return string
+     */
+    public function getDefaultCurrencySymbol(): string
+    {
+        if (
+            $this->getDefaultCurrency() === self::CURRENCY_USD ||
+            $this->getDefaultCurrency() === self::CURRENCY_CAD
+        )
+        {
+            return '$';
+        }
+
+        if ($this->getDefaultCurrency() === self::CURRENCY_EUR)
+        {
+            return '€';
+        }
+
+        return '';
+    }
+
+    /**
+     * Set the array of enabled currencies to the supplied value, since we
+     * don't yet support setting multiple currencies.
+     *
+     * @param $value
+     * @return array
+     */
+    public function setCurrency($value): array
+    {
+        return $this->enabledCurrencies = [ $value ];
+    }
+
+    /**
+     * Return field options that can be used as Snipcart product IDs.
+     * Includes `Element ID` as the first item, since it's a fabulous
+     * unique identifier we already have.
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getProductIdentifierOptions(): array
+    {
+        return $this->_getSupportedFieldTypeOptionsForField(
+            'productIdentifier'
+        );
+    }
+
+    /**
+     * Return numeric field options that can be used for storing a product's
+     * inventory count.
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getProductInventoryFieldOptions(): array
+    {
+        return $this->_getSupportedFieldTypeOptionsForField(
+            'productInventoryField'
+        );
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Return class names of fields that can be used as options for the provided
+     * Settings field.
+     *
+     * @param $fieldName
+     * @return array
+     * @throws InvalidConfigException
+     */
+    private function _getSupportedFieldTypeOptionsForField($fieldName): array
+    {
+        $allFields = Craft::$app->fields->getAllFields();
+
+        $supportedMap = [
+            'productIdentifier' => [
+                ProductDetailsField::class,
+                PlainText::class,
+                Number::class,
+            ],
+            'productInventoryField' => [
+                Number::class,
+            ],
+        ];
+
+        if ( ! array_key_exists($fieldName, $supportedMap))
+        {
+            throw new InvalidConfigException(
+                'Cannot get options for `' . $fieldName .'` field.`'
+            );
+        }
+
+        $availableOptions = [];
+        $supportedFieldClasses = $supportedMap[$fieldName];
+
+        if ($fieldName === 'productIdentifier')
+        {
+            $availableOptions['id'] = 'Element ID';
+        }
+
+        if ($fieldName === 'productInventoryField')
+        {
+            $availableOptions[] = 'Choose …';
+        }
+
+        foreach ($allFields as $field)
+        {
+            if (in_array(get_class($field), $supportedFieldClasses, true))
+            {
+                // disallow multiline text as an option
+                if (isset($field->multiline) && $field->multiline)
+                {
+                    continue;
+                }
+
+                $availableOptions[$field->handle] = $field->name;
+            }
+        }
+
+        return $availableOptions;
     }
 
 }

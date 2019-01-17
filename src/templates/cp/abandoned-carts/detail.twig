@@ -1,0 +1,21 @@
+{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
+{% extends "_layouts/cp" %}
+
+{% set abandonedCart = craft.snipcart.getAbandonedCart(token) %}
+
+{% if abandonedCart is null %}
+    {% exit 404 %}
+{% endif %}
+
+{% set crumbs = [
+    { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
+    { label: "Abandoned Carts"|t('snipcart'), url: url('snipcart/abandoned') }
+] %}
+
+{% set title = abandonedCart.billingAddress.name %}
+
+{% block content %}
+
+{{ dump(abandonedCart) }}
+
+{% endblock %}

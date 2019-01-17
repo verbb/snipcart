@@ -74,7 +74,7 @@ class Order extends \craft\base\Model
     public $modificationDate;
 
     /**
-     * @var \DateTime
+     * @var \DateTime Date the order was completed.
      */
     public $completionDate;
 
@@ -84,7 +84,7 @@ class Order extends \craft\base\Model
     public $status;
 
     /**
-     * @var
+     * @var string
      */
     public $paymentStatus;
 
@@ -199,7 +199,7 @@ class Order extends \craft\base\Model
     public $willBePaidLater;
 
     /**
-     * @var CustomField[]|null
+     * @var \workingconcept\snipcart\models\CustomField[]|null
      */
     public $customFields;
 
@@ -259,22 +259,22 @@ class Order extends \craft\base\Model
     public $recoveredFromCampaignId;
 
     /**
-     * @var
+     * @var string
      */
     public $trackingNumber;
 
     /**
-     * @var
+     * @var string
      */
     public $trackingUrl;
 
     /**
-     * @var
+     * @var string
      */
     public $shippingProvider;
 
     /**
-     * @var
+     * @var string JSON representation of `$customFields`
      */
     public $customFieldsJson;
 
@@ -289,42 +289,42 @@ class Order extends \craft\base\Model
     public $cardType;
 
     /**
-     * @var
+     * @var float
      */
     public $refundsAmount;
 
     /**
-     * @var
+     * @var float
      */
     public $adjustedAmount;
 
     /**
-     * @var
+     * @var int
      */
     public $totalNumberOfItems;
 
     /**
-     * @var
+     * @var float
      */
     public $subtotal;
 
     /**
-     * @var
+     * @var float
      */
     public $baseTotal;
 
     /**
-     * @var
+     * @var float
      */
     public $itemsTotal;
 
     /**
-     * @var
+     * @var float
      */
     public $taxableTotal;
 
     /**
-     * @var
+     * @var float
      */
     public $grandTotal;
 
@@ -374,17 +374,17 @@ class Order extends \craft\base\Model
     public $summary;
 
     /**
-     * @var
+     * @var string
      */
     public $ipAddress;
 
     /**
-     * @var
+     * @var string
      */
     public $userAgent;
 
     /**
-     * @var
+     * @var bool
      */
     public $hasSubscriptions;
 
@@ -418,11 +418,19 @@ class Order extends \craft\base\Model
     }
 
     /**
-     * @param $items
-     * @return mixed
+     * @param mixed[] $items
+     * @return array|null
      */
     public function setItems($items)
     {
+        foreach ($items as &$item)
+        {
+            if (! $item instanceof Item)
+            {
+                $item = new Item($item);
+            }
+        }
+
         return $this->_items = $items;
     }
 
@@ -507,7 +515,7 @@ class Order extends \craft\base\Model
     }
 
     /**
-     * Get the URL for the order in the Snipcart customer dashboard.
+     * Returns the URL for the order in the Snipcart customer dashboard.
      *
      * @return string|null
      */
@@ -519,6 +527,25 @@ class Order extends \craft\base\Model
         }
 
         return 'https://app.snipcart.com/dashboard/orders/' . $this->token;
+    }
+
+    /**
+     * Returns `true` if order items contain at least one OrderItem with
+     * a `shippable` property that's `true.
+     *
+     * @return bool
+     */
+    public function hasShippableItems(): bool
+    {
+        foreach ($this->items as $item)
+        {
+            if ($item->shippable)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -600,7 +627,7 @@ class Order extends \craft\base\Model
     /**
      * @inheritdoc
      */
-    public function extraFields()
+    public function extraFields(): array
     {
         return [
             'billingAddress',

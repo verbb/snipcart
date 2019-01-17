@@ -41,7 +41,7 @@ class Customers extends \craft\base\Component
      *              ->items (Customer[])
      * @throws \Exception if our API key is missing.
      */
-    public function listCustomers($page = 1, $limit = 25)
+    public function listCustomers($page = 1, $limit = 20)
     {
         $customerData = Snipcart::$plugin->api->get('customers', [
             'offset' => ($page - 1) * $limit,

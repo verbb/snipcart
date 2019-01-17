@@ -18,8 +18,10 @@ use yii\base\Exception;
 
 /**
  * Class Api
- *
- * For interaction directly with the Snipcart API and getting back response data.
+ * 
+ * The API service is for interacting with Snipcart's REST API. It provides a
+ * configured Guzzle client, can optionally cache GET requests, and validates
+ * tokens.
  *
  * @package workingconcept\snipcart\services
  * @property bool $isLinked
@@ -66,7 +68,7 @@ class Api extends Component
     }
 
     /**
-     * Get an instance of the Guzzle client.
+     * Returns a configured Guzzle client.
      *
      * @return Client
      * @throws \Exception if our API key is missing.
@@ -123,7 +125,7 @@ class Api extends Component
          * Make sure plugin settings *and* local parameter both allow caching.
          */
         $useCache = $useCache && Snipcart::$plugin->getSettings()->cacheResponses;
-
+        
         if ($useCache && $cachedResponseData = $cacheService->get($cacheKey))
         {
             return $cachedResponseData;
@@ -155,6 +157,34 @@ class Api extends Component
     public function post(string $endpoint = '', array $data = [])
     {
         return $this->_postRequest($endpoint, $data);
+    }
+
+    /**
+     * Perform put request to the Snipcart API.
+     *
+     * @param  string $endpoint    Snipcart API method to receive post
+     * @param  array  $data        array of post values to be formatted and sent
+     *
+     * @return \stdClass|array     Response object or array of objects
+     * @throws \Exception if our API key is missing.
+     */
+    public function put(string $endpoint = '', array $data = [])
+    {
+        return $this->_putRequest($endpoint, $data);
+    }
+
+    /**
+     * Perform delete request to the Snipcart API.
+     *
+     * @param  string $endpoint    Snipcart API method to receive post
+     * @param  array  $data        array of post values to be formatted and sent
+     *
+     * @return \stdClass|array     Response object or array of objects
+     * @throws \Exception if our API key is missing.
+     */
+    public function delete(string $endpoint = '', array $data = [])
+    {
+        return $this->_deleteRequest($endpoint, $data);
     }
 
     /**
@@ -232,6 +262,56 @@ class Api extends Component
     }
 
     /**
+     * Send a put request to the Snipcart API.
+     *
+     * @param string $endpoint
+     * @param array  $data
+     *
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    private function _putRequest(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->put($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->_prepResponseData($response->getBody());
+        }
+        catch (RequestException $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
+     * Send a delete request to the Snipcart API.
+     *
+     * @param string $endpoint
+     * @param array  $data
+     *
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    private function _deleteRequest(string $endpoint, array $data = [])
+    {
+        try
+        {
+            $response = $this->getClient()->delete($endpoint, [
+                \GuzzleHttp\RequestOptions::JSON => $data
+            ]);
+
+            return $this->_prepResponseData($response->getBody());
+        }
+        catch (RequestException $exception)
+        {
+            return $this->_handleRequestException($exception, $endpoint);
+        }
+    }
+
+    /**
      * Take the raw response body and give it back as data that's ready to use.
      *
      * @param $body
@@ -278,7 +358,7 @@ class Api extends Component
                 'Snipcart API responded with %d: %s',
                 $statusCode,
                 $reason
-            ));
+            ), 'snipcart');
         }
         else
         {
@@ -286,7 +366,7 @@ class Api extends Component
             Craft::warning(sprintf(
                 'Snipcart API request to %s failed.',
                 $endpoint
-            ));
+            ), 'snipcart');
         }
 
         return null;

@@ -17,7 +17,6 @@ use workingconcept\snipcart\models\shipstation\Dimensions;
 use workingconcept\snipcart\models\shipstation\Order;
 use workingconcept\snipcart\models\shipstation\Rate;
 use workingconcept\snipcart\models\shipstation\Weight;
-use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\base\ShippingProvider;
@@ -441,34 +440,15 @@ class ShipStation extends ShippingProvider
          * First try and find a matching rate quote, which would have preceded
          * the completed order.
          */
-        $rateQuote = ShippingQuoteLog::find()
-            ->where(['token' => $order->token])
-            ->orderBy(['dateCreated' => SORT_DESC])
-            ->one();
+        $rateQuote = Snipcart::$plugin->shipments->getQuoteLogForOrder($order);
 
         if ( ! empty($rateQuote))
         {
-            // get the rates that were already returned to Snipcart earlier
-            $quoteRecord = json_decode($rateQuote->body);
+            $rate = $this->_getMatchingRateFromLog($rateQuote, $order);
 
-            foreach ($quoteRecord->rates as $quotedRate)
+            if ($rate !== null)
             {
-                /**
-                 * See if the collected shipping fees and service name are
-                 * an exact match.
-                 */
-                $labelAndCostMatch = $quotedRate->description === $order->shippingMethod
-                    && (float)$quotedRate->cost === $order->shippingFees;
-
-                if ($labelAndCostMatch)
-                {
-                    return new Rate([
-                        'serviceName'  => $quotedRate->description,
-                        'serviceCode'  => $quotedRate->code,
-                        'shipmentCost' => $quotedRate->cost,
-                        'otherCost'    => 0,
-                    ]);
-                }
+                return $rate;
             }
         }
 
@@ -476,6 +456,54 @@ class ShipStation extends ShippingProvider
          * If there wasn't a matching option, query the API for rates again
          * and look for the closest match.
          */
+        return $this->_getClosestRateForOrder($order);
+    }
+
+    /**
+     * Check logged rates and return whichever previously-shown rate exactly
+     * matches the rate cost and description for this order.
+     *
+     * @param $rateQuoteLog
+     * @return Rate|null
+     */
+    private function _getMatchingRateFromLog($rateQuoteLog, $order)
+    {
+        // get the rates that were already returned to Snipcart earlier
+        $quoteRecord = json_decode($rateQuoteLog->body);
+
+        foreach ($quoteRecord->rates as $quotedRate)
+        {
+            /**
+             * See if the collected shipping fees and service name are
+             * an exact match.
+             */
+            $labelAndCostMatch = $quotedRate->description === $order->shippingMethod
+                && (float)$quotedRate->cost === $order->shippingFees;
+
+            if ($labelAndCostMatch)
+            {
+                return new Rate([
+                    'serviceName'  => $quotedRate->description,
+                    'serviceCode'  => $quotedRate->code,
+                    'shipmentCost' => $quotedRate->cost,
+                    'otherCost'    => 0,
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Fetch new rates based on this order, and choose either the exact match
+     * or next-closest rate to what was purchased and specified at checkout.
+     *
+     * @param $order
+     * @return Rate|null
+     */
+    private function _getClosestRateForOrder($order)
+    {
+        $closest = null;
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
         $rates   = $this->_getRatesForOrder($order, $package);
 
