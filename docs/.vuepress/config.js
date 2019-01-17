@@ -11,12 +11,12 @@ module.exports = {
         docsBranch: 'master',
         docsDir: 'docs',
         sidebar: [
-            {
-                title: 'Overview',
-                children: [
-                    '/overview/snipcart'
-                ]
-            },
+            // {
+            //     title: 'Overview',
+            //     children: [
+            //         '/overview/snipcart'
+            //     ]
+            // },
             {
                 title: 'Getting Started',
                 children: [
@@ -33,13 +33,13 @@ module.exports = {
                     '/webhooks/events'
                 ]
             },
-            {
-                title: 'Templating',
-                children: [
-                    '/templating/template-tags',
-                    '/templating/fields'
-                ]
-            },
+            // {
+            //     title: 'Templating',
+            //     children: [
+            //         '/templating/template-tags',
+            //         '/templating/fields'
+            //     ]
+            // },
             {
                 title: 'Examples',
                 children: [
