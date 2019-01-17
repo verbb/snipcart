@@ -22,7 +22,7 @@ Add Snipcart's JS snippet, using `cartSnippet(false)` if you've already included
 
 Set up your Craft Elements to store product details, then add _Buy_ buttons to your templates:
 
-```
+```twig
 {# Buy Now #}
 {{ entry.productDetails.getBuyNowButton() | raw }}
 ```
