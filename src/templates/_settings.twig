@@ -18,14 +18,6 @@ TODO: note use of static config here!
 
 #}
 
-{% macro configWarning(setting) -%}
-    {% set setting = '<code>'~setting~'</code>' %}
-    {{ "This is being overridden by the {setting} config setting in your {file} config file."|t('snipcart', {
-        setting: setting,
-        file: 'snipcart.php'
-    })|raw }}
-{%- endmacro %}
-
 {% from _self import configWarning %}
 
 {% set tabs = {
@@ -41,7 +33,16 @@ TODO: note use of static config here!
 {% include "_includes/tabs" with { tabs: tabs } %}
 #}
 
+{% set staticConfig = craft.app.config.getConfigFromFile('snipcart') %}
+
 {% block content %}
+
+    {% if staticConfig is not empty %}
+        <div style="color: #8f98a3; display: block; background: #F2F5F8; padding: 0.75rem 1rem; margin-bottom: 1rem;">
+            {{ '<span class="warn"></span> Config values in `snipcart.php` will override any settings you change here!' | markdown }}
+        </div>
+    {% endif %}
+
     <input type="hidden" name="action" value="plugins/save-plugin-settings">
     <input type="hidden" name="pluginHandle" value="snipcart">
     {{ redirectInput('settings') }}
