@@ -46,6 +46,16 @@
             {{ customTextInput(element, name, 'sku', value, { classes: ['code'] }) }}
         </div>
     </div>
+    <div class="snipcart-product-details-field-group snipcart-product-details-inventory-group{% if settings.displayInventory is not defined or settings.displayInventory != true %} hidden{% endif %}">
+        <div class="label">
+            <label for="inventory" class="required">
+                {{- "Inventory"|t -}}
+            </label>
+        </div>
+        <div class="inputs">
+            {{ customTextInput(element, name, 'inventory', value, { size: 20 }) }}
+        </div>
+    </div>
     <div class="snipcart-product-details-field-group snipcart-product-details-price-group">
         <div class="label">
             <label for="price" class="required">

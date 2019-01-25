@@ -66,7 +66,7 @@ class Snipcart extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.4';
+    public $schemaVersion = '1.0.5';
 
     // Public Methods
     // =========================================================================

@@ -11,9 +11,12 @@
 {% set title = "Snipcart Plugin Settings"|t %}
 {% set fullPageForm = true %}
 
+
 {#
 
 TODO: note use of static config here!
+
+#}
 
 {% macro configWarning(setting) -%}
     {% set setting = '<code>'~setting~'</code>' %}
@@ -25,18 +28,16 @@ TODO: note use of static config here!
 
 {% from _self import configWarning %}
 
-#}
-
 {% set tabs = {
     account:  { label: "Snipcart Account"|t, url: '#account' },
     products: { label: "Products"|t, url: '#products' },
-    webhooks: { label: "Ordering & Webhooks"|t, url: '#webhooks' },
+    orders: { label: "Orders"|t, url: '#orders' },
+    webhooks: { label: "Webhooks"|t, url: '#webhooks' },
     logging:  { label: "Logging & Caching"|t, url: '#logging' },
     shipping: { label: "Shipping"|t, url: '#shipping' },
 } %}
 
 {#
-
 {% include "_includes/tabs" with { tabs: tabs } %}
 #}
 
@@ -87,30 +88,172 @@ TODO: note use of static config here!
         </div>
 
         <div id="products" class="hidden">
-            {{ forms.selectField({
-                label: 'Product Identifier'|t,
-                id: 'productIdentifier',
-                required: true,
-                name: 'productIdentifier',
-                options: settings.getProductIdentifierOptions(),
-                value: settings.productIdentifier,
-                placeholder: 'id',
-                errors: settings.getErrors('productIdentifier'),
-                instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
-            }) }}
+            {#
 
-            {{ forms.selectField({
-                label: 'Product Inventory Field'|t,
-                id: 'productInventoryField',
+            TODO: carefully explain setup options here
+
+            1. get a quick start with the built-in Product Details field
+            2. designate fields to be used for product properties
+            3. set up products however you want and manually create your own handlers
+
+            #}
+            {{ forms.lightswitchField({
+                label: 'Use Custom Product Fields'|t,
+                id: 'useCustomProductFields',
                 required: false,
-                name: 'productInventoryField',
-                options: settings.getProductInventoryFieldOptions(),
-                value: settings.productInventoryField,
-                placeholder: 'productInventory',
-                errors: settings.getErrors('productInventoryField'),
-                instructions: "Specify the field handle used to define product quantities within Entries."
+                name: 'useCustomProductFields',
+                on: settings.useCustomProductFields,
+                value: true,
+                placeholder: 'useCustomProductFields',
+                errors: settings.getErrors('useCustomProductFields'),
+                instructions: "Switch on if you want to designate your own fields for product details."
             }) }}
 
+            <div id="custom-product-fields" class="hidden">
+                {{ forms.selectField({
+                    label: 'Product Identifier/SKU'|t,
+                    id: 'productIdentifier',
+                    required: true,
+                    name: 'productIdentifier',
+                    options: settings.getFieldOptionsForProduct('productIdentifier'),
+                    value: settings.productIdentifier,
+                    placeholder: 'id',
+                    errors: settings.getErrors('productIdentifier'),
+                    instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
+                }) }}
+
+                {{ forms.selectField({
+                    label: 'Price Field'|t,
+                    id: 'productPriceField',
+                    required: true,
+                    name: 'productPriceField',
+                    options: settings.getFieldOptionsForProduct('productPriceField'),
+                    value: settings.productPriceField,
+                    placeholder: 'productPrice',
+                    errors: settings.getErrors('productPriceField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {{ forms.selectField({
+                    label: 'Weight Field'|t,
+                    id: 'productWeightField',
+                    required: false,
+                    name: 'productWeightField',
+                    options: settings.getFieldOptionsForProduct('productWeightField'),
+                    value: settings.productWeightField,
+                    placeholder: 'productWeight',
+                    errors: settings.getErrors('productWeightField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {# TODO: allow explicit selection here #}
+                {{ forms.selectField({
+                    label: 'Weight Unit Field'|t,
+                    id: 'productWeightUnitField',
+                    required: false,
+                    name: 'productWeightUnitField',
+                    options: settings.getFieldOptionsForProduct('productWeightUnitField'),
+                    value: settings.productWeightUnitField,
+                    placeholder: 'productWeightUnit',
+                    errors: settings.getErrors('productWeightUnitField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {{ forms.selectField({
+                    label: 'Length Field'|t,
+                    id: 'productLengthField',
+                    required: false,
+                    name: 'productLengthField',
+                    options: settings.getFieldOptionsForProduct('productLengthField'),
+                    value: settings.productLengthField,
+                    placeholder: 'productLength',
+                    errors: settings.getErrors('productLengthField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {{ forms.selectField({
+                    label: 'Width Field'|t,
+                    id: 'productWidthField',
+                    required: false,
+                    name: 'productWidthField',
+                    options: settings.getFieldOptionsForProduct('productWidthField'),
+                    value: settings.productWidthField,
+                    placeholder: 'productWidth',
+                    errors: settings.getErrors('productWidthField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {{ forms.selectField({
+                    label: 'Height Field'|t,
+                    id: 'productHeightField',
+                    required: false,
+                    name: 'productHeightField',
+                    options: settings.getFieldOptionsForProduct('productHeightField'),
+                    value: settings.productHeightField,
+                    placeholder: 'productHeight',
+                    errors: settings.getErrors('productHeightField'),
+                    instructions: ""
+                }) }}
+
+                {# TODO: require if shippable field selected #}
+                {# TODO: allow explicit selection here #}
+                {{ forms.selectField({
+                    label: 'Dimensions Unit Field'|t,
+                    id: 'productDimensionsUnitField',
+                    required: false,
+                    name: 'productDimensionsUnitField',
+                    options: settings.getFieldOptionsForProduct('productDimensionsUnitField'),
+                    value: settings.productDimensionsUnitField,
+                    placeholder: 'productDimensionsUnit',
+                    errors: settings.getErrors('productDimensionsUnitField'),
+                    instructions: ""
+                }) }}
+
+                {{ forms.selectField({
+                    label: 'Shippable Field'|t,
+                    id: 'productShippableField',
+                    required: false,
+                    name: 'productShippableField',
+                    options: settings.getFieldOptionsForProduct('productShippableField'),
+                    value: settings.productShippableField,
+                    placeholder: 'productShippable',
+                    errors: settings.getErrors('productShippableField'),
+                    instructions: ""
+                }) }}
+
+                {{ forms.selectField({
+                    label: 'Taxable Field'|t,
+                    id: 'productTaxableField',
+                    required: false,
+                    name: 'productTaxableField',
+                    options: settings.getFieldOptionsForProduct('productTaxableField'),
+                    value: settings.productTaxableField,
+                    placeholder: 'productTaxable',
+                    errors: settings.getErrors('productTaxableField'),
+                    instructions: ""
+                }) }}
+
+                {{ forms.selectField({
+                    label: 'Product Inventory Field'|t,
+                    id: 'productInventoryField',
+                    required: false,
+                    name: 'productInventoryField',
+                    options: settings.getFieldOptionsForProduct('productInventoryField'),
+                    value: settings.productInventoryField,
+                    placeholder: 'productInventory',
+                    errors: settings.getErrors('productInventoryField'),
+                    instructions: "Specify a Number field handle that will define product quantities."
+                }) }}
+            </div>
+        </div>
+
+        <div id="orders" class="hidden">
+            {# TODO: disable if there isn't an inventory field #}
             {{ forms.lightswitchField({
                 label: 'Reduce Item Quantities on Order?'|t,
                 id: 'reduceQuantitiesOnOrder',
@@ -363,3 +506,12 @@ TODO: note use of static config here!
     </div>
 
 {% endblock %}
+
+{% js %}
+    (function($) {
+        "use strict";
+        $("#useCustomProductFields").click(function(e){
+            $("#custom-product-fields").toggleClass("hidden");
+        });
+    })(jQuery);
+{% endjs %}

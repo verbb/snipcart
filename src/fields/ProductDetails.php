@@ -38,6 +38,11 @@ class ProductDetails extends \craft\base\Field
     public $displayTaxableSwitch = false;
 
     /**
+     * @var bool Whether to display "inventory" option for this field instance.
+     */
+    public $displayInventory = false;
+
+    /**
      * @var bool Default "shippable" value.
      */
     public $defaultShippable = false;
@@ -232,17 +237,18 @@ class ProductDetails extends \craft\base\Field
         );
 
         $record->setAttributes([
-            'sku' => $data->sku,
-            'price' => $data->price,
-            'shippable' => $data->shippable,
-            'taxable' => $data->taxable,
-            'weight' => $data->weight,
-            'weightUnit' => $data->weightUnit,
-            'length' => $data->length,
-            'width' => $data->width,
-            'height' => $data->height,
+            'sku'            => $data->sku,
+            'price'          => $data->price,
+            'shippable'      => $data->shippable,
+            'taxable'        => $data->taxable,
+            'weight'         => $data->weight,
+            'weightUnit'     => $data->weightUnit,
+            'length'         => $data->length,
+            'width'          => $data->width,
+            'height'         => $data->height,
+            'inventory'      => $data->inventory,
             'dimensionsUnit' => $data->dimensionsUnit,
-            'customOptions' => $data->customOptions,
+            'customOptions'  => $data->customOptions,
         ], false);
 
         return $record->save();

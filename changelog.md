@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.17 - 2019-01-24
+### Added
+- Added inventory to Product Details field type.
+### Changed
+- Improved several control panel views.
+
 ## 1.0.0-beta.16 - 2018-12-27
 ### Added
 - Added Product Details field type for quick setup.
