@@ -1,13 +1,23 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.lightswitchField({
+    label: 'Inventory Enabled?'|t,
+    id: 'displayInventory',
+    required: true,
+    name: 'displayInventory',
+    on: field.displayInventory,
+    value: true,
+    errors: field.getErrors('displayInventory'),
+    instructions: ""
+}) }}
+
+{{ forms.lightswitchField({
     label: 'Shippable Enabled?'|t,
     id: 'defaultShippable',
     required: true,
     name: 'defaultShippable',
     on: field.defaultShippable,
     value: true,
-    placeholder: 'id',
     errors: field.getErrors('defaultShippable'),
     instructions: ""
 }) }}
@@ -19,7 +29,6 @@
     name: 'displayShippableSwitch',
     on: field.displayShippableSwitch,
     value: true,
-    placeholder: 'id',
     errors: field.getErrors('displayShippableSwitch'),
     instructions: ""
 }) }}
@@ -31,7 +40,6 @@
     name: 'defaultTaxable',
     on: field.defaultTaxable,
     value: true,
-    placeholder: 'id',
     errors: field.getErrors('defaultTaxable'),
     instructions: ""
 }) }}
@@ -43,7 +51,6 @@
     name: 'displayTaxableSwitch',
     on: field.displayTaxableSwitch,
     value: true,
-    placeholder: 'id',
     errors: field.getErrors('displayTaxableSwitch'),
     instructions: ""
 }) }}

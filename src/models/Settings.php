@@ -8,6 +8,8 @@
 
 namespace workingconcept\snipcart\models;
 
+use craft\fields\Dropdown;
+use craft\fields\Lightswitch;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\base\Model;
@@ -44,9 +46,19 @@ class Settings extends Model
     public $publicApiKey = '';
 
     /**
+     * @var string Snipcart public API key
+     */
+    public $publicTestApiKey = '';
+
+    /**
      * @var string Snipcart secret API key
      */
     public $secretApiKey = '';
+
+    /**
+     * @var string Snipcart secret API key
+     */
+    public $secretTestApiKey = '';
 
     /**
      * @var array valid email addresses
@@ -67,6 +79,51 @@ class Settings extends Model
      * @var string
      */
     public $productInventoryField;
+
+    /**
+     * @var string
+     */
+    public $productPriceField;
+
+    /**
+     * @var string
+     */
+    public $productWeightField;
+
+    /**
+     * @var string
+     */
+    public $productWeightUnitField;
+
+    /**
+     * @var string
+     */
+    public $productLengthField;
+
+    /**
+     * @var string
+     */
+    public $productWidthField;
+
+    /**
+     * @var string
+     */
+    public $productHeightField;
+
+    /**
+     * @var string
+     */
+    public $productDimensionsUnitField;
+
+    /**
+     * @var string
+     */
+    public $productShippableField;
+
+    /**
+     * @var string
+     */
+    public $productTaxableField;
 
     /**
      * @var string Name of custom field sent to Snipcart for order gift notes.
@@ -92,6 +149,11 @@ class Settings extends Model
      * @var int
      */
     public $cacheDurationLimit = 300; // 5 minutes
+
+    /**
+     * @var bool
+     */
+    public $useCustomProductFields = false;
 
     /**
      * @var bool
@@ -315,7 +377,7 @@ class Settings extends Model
      *
      * @return Address
      */
-    public function setShipFrom($address)
+    public function setShipFrom($address): Address
     {
         return $this->_shipFrom = new Address($address);
     }
@@ -366,31 +428,17 @@ class Settings extends Model
     }
 
     /**
-     * Return field options that can be used as Snipcart product IDs.
-     * Includes `Element ID` as the first item, since it's a fabulous
-     * unique identifier we already have.
+     * Return established Craft field instances that can be used for the provided
+     * Snipcart product field.
      *
-     * @return array
+     * @param $productFieldName
+     * @return array Options for selectField
      * @throws InvalidConfigException
      */
-    public function getProductIdentifierOptions(): array
+    public function getFieldOptionsForProduct($productFieldName): array
     {
         return $this->_getSupportedFieldTypeOptionsForField(
-            'productIdentifier'
-        );
-    }
-
-    /**
-     * Return numeric field options that can be used for storing a product's
-     * inventory count.
-     *
-     * @return array
-     * @throws InvalidConfigException
-     */
-    public function getProductInventoryFieldOptions(): array
-    {
-        return $this->_getSupportedFieldTypeOptionsForField(
-            'productInventoryField'
+            $productFieldName
         );
     }
 
@@ -418,6 +466,35 @@ class Settings extends Model
             'productInventoryField' => [
                 Number::class,
             ],
+            'productPriceField' => [
+                Number::class,
+            ],
+            'productWeightField' => [
+                Number::class,
+            ],
+            'productWeightUnitField' => [
+                Dropdown::class,
+                PlainText::class,
+            ],
+            'productLengthField' => [
+                Number::class,
+            ],
+            'productWidthField' => [
+                Number::class,
+            ],
+            'productHeightField' => [
+                Number::class,
+            ],
+            'productDimensionsUnitField' => [
+                Dropdown::class,
+                PlainText::class,
+            ],
+            'productShippableField' => [
+                Lightswitch::class,
+            ],
+            'productTaxableField' => [
+                Lightswitch::class,
+            ],
         ];
 
         if ( ! array_key_exists($fieldName, $supportedMap))
@@ -434,8 +511,7 @@ class Settings extends Model
         {
             $availableOptions['id'] = 'Element ID';
         }
-
-        if ($fieldName === 'productInventoryField')
+        else
         {
             $availableOptions[] = 'Choose …';
         }

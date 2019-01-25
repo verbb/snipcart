@@ -105,6 +105,11 @@ class ProductDetails extends \craft\base\Model
     public $height;
 
     /**
+     * @var int Number of items in stock or on hand.
+     */
+    public $inventory;
+
+    /**
      * @var string Unit that applies to provided length, width,
      *             and height dimensions.
      */
@@ -158,7 +163,7 @@ class ProductDetails extends \craft\base\Model
             ['sku', 'validateSku'],
             [['sku', 'weightUnit', 'dimensionsUnit'], 'string'],
             [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],
-            [['elementId', 'fieldId'], 'number', 'integerOnly' => true],
+            [['elementId', 'fieldId', 'inventory'], 'number', 'integerOnly' => true],
             [['shippable'], 'boolean'],
             [['taxable'], 'boolean'],
             [['sku'], 'required'],

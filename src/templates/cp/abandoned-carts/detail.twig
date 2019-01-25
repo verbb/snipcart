@@ -1,7 +1,7 @@
-{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
 {% extends "_layouts/cp" %}
 
 {% set abandonedCart = craft.snipcart.getAbandonedCart(token) %}
+{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
 
 {% if abandonedCart is null %}
     {% exit 404 %}
@@ -16,6 +16,13 @@
 
 {% block content %}
 
-{{ dump(abandonedCart) }}
+    {#{ dump(abandonedCart) }#}
+
+    {% for prop, value in abandonedCart %}
+        <p>
+            <b>{{ prop }}</b>
+            {{ dump(value) }}
+        </p>
+    {% endfor %}
 
 {% endblock %}
