@@ -12,7 +12,9 @@ use workingconcept\snipcart\events\CustomerEvent;
 use workingconcept\snipcart\events\OrderStatusEvent;
 use workingconcept\snipcart\events\OrderTrackingEvent;
 use workingconcept\snipcart\events\SubscriptionEvent;
+use workingconcept\snipcart\events\TaxesEvent;
 use workingconcept\snipcart\models\Subscription;
+use workingconcept\snipcart\models\Customer;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\OrderEvent;
 use workingconcept\snipcart\records\WebhookLog;
@@ -492,7 +494,7 @@ class WebhooksController extends Controller
         {
             $this->trigger(
                 self::EVENT_ON_TAXES_CALCULATE,
-                new SubscriptionEvent([
+                new TaxesEvent([
                     'order' => $order,
                     'taxes' => [],
                 ])
