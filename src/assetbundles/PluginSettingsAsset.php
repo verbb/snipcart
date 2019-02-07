@@ -26,16 +26,10 @@ class PluginSettingsAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
-
+        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
         $this->depends = [];
-        $this->js = [
-            'js/clipboard.min.js',
-            'js/snipcart-plugin-settings.js'
-        ];
-        $this->css = [
-            'css/snipcart-plugin-settings.css'
-        ];
+        $this->js = ['js/settings-plugin.js'];
+        $this->css = ['css/settings-plugin.css'];
 
         parent::init();
     }

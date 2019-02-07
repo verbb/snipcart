@@ -1,6 +1,8 @@
 # Adding Snipcart to Your Site
 
-You don't have to use any of the included template tags, but the following are available to make your life easier.
+Snipcart has [an installation guide](https://docs.snipcart.com/getting-started/installation) that shows you how to get started on the front end.
+
+You can use that if you want to add your own markup, or optionally use the following Twig tags for convenience.
 
 ## Snipcart Cart JS
 

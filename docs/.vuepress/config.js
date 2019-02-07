@@ -19,6 +19,7 @@ module.exports = {
             // },
             {
                 title: 'Getting Started',
+                collapsable: false,
                 children: [
                     '/setup/first-steps',
                     '/setup/front-end',
@@ -27,6 +28,7 @@ module.exports = {
             },
             {
                 title: 'Using Webhooks',
+                collapsable: false,
                 children: [
                     '/webhooks/when',
                     '/webhooks/setup',
@@ -42,6 +44,7 @@ module.exports = {
             // },
             {
                 title: 'Examples',
+                collapsable: false,
                 children: [
                     '/examples/config',
                     '/examples/webhooks'
@@ -49,6 +52,7 @@ module.exports = {
             },
             {
                 title: 'Testing',
+                collapsable: false,
                 children: [
                     '/testing/overview',
                     '/testing/webhooks',
@@ -57,6 +61,7 @@ module.exports = {
             },
             {
                 title: 'Troubleshooting',
+                collapsable: false,
                 children: [
                     '/troubleshooting/logging',
                     '/troubleshooting/common-problems',
@@ -65,12 +70,14 @@ module.exports = {
             },
             {
                 title: 'Shipments',
+                collapsable: false,
                 children: [
                     '/shipments/overview'
                 ]
             },
             {
                 title: 'Developer Reference',
+                collapsable: false,
                 children: [
                     '/dev/overview',
                     '/dev/events',

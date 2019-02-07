@@ -4,11 +4,11 @@ This guide assumes you've established a Craft site and you're setting up a new s
 
 ## Create a Snipcart Account
 
-Head over to snipcart.com to [register an account](https://app.snipcart.com/register):
+[Create an account](https://app.snipcart.com/register):
 
 ![Sign up!](../../resources/sign-up.png)
 
-Note your API keys, which you'll find under _Account_ → _API Keys_ on the right side of the admin interface:
+Grab your API keys from _Account_ → _API Keys_ to the right of the admin interface:
 
 ![Public and Private API Keys](../../resources/api-keys.png)
 

@@ -26,7 +26,7 @@ class SnipcartAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
+        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
 
         $this->depends = [];
         $this->js = [];

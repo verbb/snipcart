@@ -12,7 +12,8 @@ install:
   - cd /home/travis/build/craftcms/craft
   - composer config repositories.craft-snipcart path $TRAVIS_BUILD_DIR
   - composer config minimum-stability dev
-  - composer require codeception/codeception workingconcept/craft-snipcart @dev
+  - composer config prefer-stable true
+  - composer require codeception/codeception workingconcept/craft-snipcart:dev-master
   - ./craft install --email=nobody@example.com --username=admin --password=whocares --siteName="Test Site" --siteUrl="http://localhost" --language=en
   - ./craft install/plugin snipcart
   - cp $TRAVIS_BUILD_DIR/codeception.yml ./ && cp -r $TRAVIS_BUILD_DIR/tests/ ./tests

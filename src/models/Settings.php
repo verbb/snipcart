@@ -61,9 +61,31 @@ class Settings extends Model
     public $secretTestApiKey = '';
 
     /**
+     * @var bool
+     */
+    public $sendOrderNotificationEmail = false;
+    
+    /**
      * @var array valid email addresses
      */
     public $notificationEmails = [];
+
+    /**
+     * @var string optional path to a custom template to be used for admin order
+     *             notification emails
+     */
+    public $notificationEmailTemplate = '';
+
+    /**
+     * @var bool
+     */
+    public $sendCustomerOrderNotificationEmail = false;
+
+    /**
+     * @var string optional path to a custom template to be used for customer
+     *             order notification emails
+     */
+    public $customerNotificationEmailTemplate = '';
 
     /**
      * @var array

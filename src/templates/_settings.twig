@@ -11,21 +11,6 @@
 {% set title = "Snipcart Plugin Settings"|t %}
 {% set fullPageForm = true %}
 
-
-{#
-
-TODO: note use of static config here!
-
-#}
-
-{% macro configWarning(setting) -%}
-    {% set setting = '<code>'~setting~'</code>' %}
-    {{ "This is being overridden by the {setting} config setting in your {file} config file."|t('snipcart', {
-        setting: setting,
-        file: 'snipcart.php'
-    })|raw }}
-{%- endmacro %}
-
 {% from _self import configWarning %}
 
 {% set tabs = {
@@ -41,7 +26,16 @@ TODO: note use of static config here!
 {% include "_includes/tabs" with { tabs: tabs } %}
 #}
 
+{% set staticConfig = craft.app.config.getConfigFromFile('snipcart') %}
+
 {% block content %}
+
+    {% if staticConfig is not empty %}
+        <div style="color: #8f98a3; display: block; background: #F2F5F8; padding: 0.75rem 1rem; margin-bottom: 1rem;">
+            {{ '<span class="warn"></span> Config values in `snipcart.php` will override any settings you change here!' | markdown }}
+        </div>
+    {% endif %}
+
     <input type="hidden" name="action" value="plugins/save-plugin-settings">
     <input type="hidden" name="pluginHandle" value="snipcart">
     {{ redirectInput('settings') }}
@@ -119,7 +113,7 @@ TODO: note use of static config here!
                     value: settings.productIdentifier,
                     placeholder: 'id',
                     errors: settings.getErrors('productIdentifier'),
-                    instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for identifying items and optionally reducing quantities."
+                    instructions: "Designate a property that will **uniquely** reference each Snipcart product. Populates `data-item-id`, used for matching order items to Elements."
                 }) }}
 
                 {{ forms.selectField({
@@ -131,7 +125,7 @@ TODO: note use of static config here!
                     value: settings.productPriceField,
                     placeholder: 'productPrice',
                     errors: settings.getErrors('productPriceField'),
-                    instructions: ""
+                    instructions: "Choose a Number field to represent base product price."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -144,7 +138,7 @@ TODO: note use of static config here!
                     value: settings.productWeightField,
                     placeholder: 'productWeight',
                     errors: settings.getErrors('productWeightField'),
-                    instructions: ""
+                    instructions: "Choose a Number field to represent product weight."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -158,7 +152,7 @@ TODO: note use of static config here!
                     value: settings.productWeightUnitField,
                     placeholder: 'productWeightUnit',
                     errors: settings.getErrors('productWeightUnitField'),
-                    instructions: ""
+                    instructions: "Choose a field that ultimately provides values of `grams`, `ounces` or `pounds`."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -171,7 +165,7 @@ TODO: note use of static config here!
                     value: settings.productLengthField,
                     placeholder: 'productLength',
                     errors: settings.getErrors('productLengthField'),
-                    instructions: ""
+                    instructions: "Choose a Number field to represent product length."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -184,7 +178,7 @@ TODO: note use of static config here!
                     value: settings.productWidthField,
                     placeholder: 'productWidth',
                     errors: settings.getErrors('productWidthField'),
-                    instructions: ""
+                    instructions: "Choose a Number field to represent product width."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -197,7 +191,7 @@ TODO: note use of static config here!
                     value: settings.productHeightField,
                     placeholder: 'productHeight',
                     errors: settings.getErrors('productHeightField'),
-                    instructions: ""
+                    instructions: "Choose a Number field to represent product height."
                 }) }}
 
                 {# TODO: require if shippable field selected #}
@@ -211,7 +205,7 @@ TODO: note use of static config here!
                     value: settings.productDimensionsUnitField,
                     placeholder: 'productDimensionsUnit',
                     errors: settings.getErrors('productDimensionsUnitField'),
-                    instructions: ""
+                    instructions: "Choose a field that ultimately provides values of `centimeters` or `inches`."
                 }) }}
 
                 {{ forms.selectField({
@@ -223,7 +217,7 @@ TODO: note use of static config here!
                     value: settings.productShippableField,
                     placeholder: 'productShippable',
                     errors: settings.getErrors('productShippableField'),
-                    instructions: ""
+                    instructions: "Choose a Lightswitch field that determines whether an item should be shippable."
                 }) }}
 
                 {{ forms.selectField({
@@ -235,7 +229,7 @@ TODO: note use of static config here!
                     value: settings.productTaxableField,
                     placeholder: 'productTaxable',
                     errors: settings.getErrors('productTaxableField'),
-                    instructions: ""
+                    instructions: "Choose a Lightswitch field that determines whether an item should be taxed."
                 }) }}
 
                 {{ forms.selectField({
@@ -247,7 +241,7 @@ TODO: note use of static config here!
                     value: settings.productInventoryField,
                     placeholder: 'productInventory',
                     errors: settings.getErrors('productInventoryField'),
-                    instructions: "Specify a Number field handle that will define product quantities."
+                    instructions: "Choose a Number field to define product quantities."
                 }) }}
             </div>
         </div>
@@ -289,17 +283,16 @@ TODO: note use of static config here!
                 errors: settings.getErrors('orderGiftNoteFieldName'),
                 instructions: "If you're supplying Snipcart with a custom field for gift notes at checkout, add the exact name of that field here."
             }) }}
-        </div>
 
-        <div id="webhooks" class="hidden">
-            {{ forms.textField({
-                label: 'Webhook Endpoint'|t,
-                id: 'webhookEndpoint',
-                name: 'webhookEndpoint',
-                class: 'code webhook-endpoint',
-                value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
-                readonly: true,
-                instructions: "Configure Snipcart to use this endpoint if you'd like this site to receive webhook data."
+            {{ forms.lightswitchField({
+                label: 'Send Order Email Notifications to Store Admins?'|t,
+                id: 'sendOrderNotificationEmail',
+                required: false,
+                name: 'sendOrderNotificationEmail',
+                on: settings.sendOrderNotificationEmail,
+                value: true,
+                errors: settings.getErrors('sendOrderNotificationEmail'),
+                instructions: "Switch on if you'd like to send *store admins* custom order email notifications from Craft."
             }) }}
 
             {{ forms.editableTableField({
@@ -312,7 +305,51 @@ TODO: note use of static config here!
                 name: 'notificationEmails',
                 rows: settings.getNotificationEmailsForTable(),
                 errors: settings.getErrors('notificationEmails'),
-                instructions: "Add comma-separated email addresses that should receive email notifications as orders come in through the web hook."
+                instructions: "Add comma-separated email addresses for *store admins* that should receive email notifications as orders are placed."
+            }) }}
+
+            {{ forms.textField({
+                label: 'Order Email Notification Template'|t,
+                id: 'notificationEmailTemplate',
+                name: 'notificationEmailTemplate',
+                class: 'code',
+                value: settings.notificationEmailTemplate,
+                placeholder: '_email/order-notification',
+                instructions: "Specify the path to a custom Twig template to be used for admin order email notifications."
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: 'Send Order Email Notifications to Customers?'|t,
+                id: 'sendCustomerOrderNotificationEmail',
+                required: false,
+                name: 'sendCustomerOrderNotificationEmail',
+                on: settings.sendCustomerOrderNotificationEmail,
+                value: true,
+                errors: settings.getErrors('sendCustomerOrderNotificationEmail'),
+                instructions: "Switch on if you'd like to send customers custom order email notifications from Craft. Be sure to disable Snipcart's so you don't inundate customers with multiple order confirmations!"
+            }) }}
+
+            {{ forms.textField({
+                label: 'Customer Order Email Notification Template'|t,
+                id: 'customerNotificationEmailTemplate',
+                name: 'customerNotificationEmailTemplate',
+                class: 'code',
+                value: settings.customerNotificationEmailTemplate,
+                placeholder: '_email/customer-order-notification',
+                instructions: "Specify the path to a custom Twig template to be used for customer order email notifications."
+            }) }}
+
+        </div>
+
+        <div id="webhooks" class="hidden">
+            {{ forms.textField({
+                label: 'Webhook Endpoint'|t,
+                id: 'webhookEndpoint',
+                name: 'webhookEndpoint',
+                class: 'code webhook-endpoint',
+                value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
+                readonly: true,
+                instructions: "Configure Snipcart to use this endpoint if you'd like this site to receive webhook data."
             }) }}
         </div>
 
@@ -483,13 +520,14 @@ TODO: note use of static config here!
 
             {% if settings.enabledProviders | length %}
                 <h3>
-                    Provider{% if settings.enabledProviders | length > 1 %}s{% endif %} enabled in static config:
+                    Provider{% if settings.enabledProviders | length > 1 %}s{% endif %} enabled:
                     {% for provider in settings.enabledProviders %}
                         {{ provider }}{% if loop.last != true %}, {% endif %}
                     {% endfor %}
                 </h3>
             {% endif %}
 
+            {#
             {% if settings.providers | length %}
                 <h3>Provider settings from static config:</h3>
                 {% for providerName, settings in settings.providers %}
@@ -501,6 +539,7 @@ TODO: note use of static config here!
                     </ul>
                 {% endfor %}
             {% endif %}
+            #}
         </div>
 
     </div>
