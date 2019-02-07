@@ -1,4 +1,4 @@
-# Installation & Setup
+# Install & Configure the Plugin
 
 This guide assumes you've established a Craft site and you're setting up a new store for the first time.
 

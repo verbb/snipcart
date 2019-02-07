@@ -1,4 +1,4 @@
-## Configuring Products
+# Define Product Details
 
 Three choices:
 

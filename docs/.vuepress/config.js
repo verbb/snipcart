@@ -22,8 +22,8 @@ module.exports = {
                 collapsable: false,
                 children: [
                     '/setup/first-steps',
-                    '/setup/front-end',
                     '/setup/products',
+                    '/setup/front-end',
                     '/setup/notifications',
                     '/setup/order-fields',
                 ]

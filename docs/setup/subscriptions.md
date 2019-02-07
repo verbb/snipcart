@@ -1,1 +1,1 @@
-## Configuring Subscriptions
+# Configuring Subscriptions

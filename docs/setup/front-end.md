@@ -1,12 +1,12 @@
-# Adding Snipcart to Your Site
+# Add Snipcart to Your Site
 
-Snipcart has [an installation guide](https://docs.snipcart.com/getting-started/installation) that shows you how to get started on the front end.
+Snipcart's shopping cart is added with a simple JavaScript snippet, and its concept of a product comes from whatever information you build into each "buy" button on your site.
 
-You can use that if you want to add your own markup, or optionally use the following Twig tags for convenience.
+Start with [Snipcart's installation guide](https://docs.snipcart.com/getting-started/installation) if you'd prefer to write your own markup, or use the following Twig tags to have it generated for you.
 
-## Snipcart Cart JS
+## Cart Snippet
 
-Add Snipcart's JS snippet, using `cartSnippet(false)` if you've already included jQuery:
+Add Snipcart's JavaScript snippet, using `cartSnippet(false)` if you've already included jQuery:
 
 ```twig
 {# include Snipcart JS #}
@@ -22,7 +22,7 @@ Add Snipcart's JS snippet, using `cartSnippet(false)` if you've already included
 
 ## Buy Button
 
-Set up your Craft Elements to store product details, then add _Buy_ buttons to your templates:
+If you're using the included _Product Details_ field or you defined custom fields for product information (see [Configuring Products](/setup/products.md)), you can easily add _Buy_ buttons to your templates:
 
 ```twig
 {# Buy Now #}

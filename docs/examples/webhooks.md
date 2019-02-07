@@ -1,6 +1,6 @@
-# Webhooks
+# Recipes
 
-There's a lot you can do with [webhooks](/webhooks/when.md)! Here are some common examples.
+There's a lot you can do by responding to Snipcart's [webhooks](/webhooks/when.md)! Here are some examples.
 
 ## Send a Custom Order Confirmation Email
 
