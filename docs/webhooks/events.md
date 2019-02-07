@@ -1,12 +1,12 @@
 # Webhook Event Examples
 
-Hooking into events is pretty easy if you've...
+You're ready to latch onto Events if you've...
 
 1. configured Snipcart to post to your Craft webhook
 2. determined what you're listening for and what you need to do
 3. established your own plugin or module for project-specific business logic
 
-Let's say, for example, that we'd like to offer custom shipping rates depending on the specifics of an order. We've set up our web hook and a [custom module](/examples/module.md).
+Let's say, for example, that we'd like to offer custom shipping rates depending on the specifics of an order. We've [configured our webhook](/webhooks/setup.md) and a [custom module](/examples/module.md).
 
 ## Listen for Shipping Rate Request
 

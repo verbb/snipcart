@@ -38,7 +38,7 @@ If Commerce Pro is too complex for your project and Commerce Lite is bit too lim
 | Multi-Step Checkout Flow  | ✓                | ×             | ✓            |
 | Sales & Discounts         | ✓                | ×             | ✓            |
 | Digital Products          | ✓                | ×             | ✓            |
-| Live Tax & Shipping Rates | ✓                | ×             | ✓            |
+| Live Tax & Shipping Rates | ✓                | ×             | ×            |
 | ShipStation Integration   | ✓                | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect)     |
 
 *: Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing), and all three options require payment gateway fees.  
@@ -60,7 +60,7 @@ Find and install the [Snipcart plugin](https://plugins.craftcms.com/snipcart) by
 
 ## Documentation
 
-Yes! Full set of documentation and examples here: https://snipcart.docs.workingconcept.com/
+Setup guide, examples, and developer reference: https://snipcart.docs.workingconcept.com/
 
 ## Support
 
