@@ -284,6 +284,17 @@
                 instructions: "If you're supplying Snipcart with a custom field for gift notes at checkout, add the exact name of that field here."
             }) }}
 
+            {{ forms.lightswitchField({
+                label: 'Send Order Email Notifications to Store Admins?'|t,
+                id: 'sendOrderNotificationEmail',
+                required: false,
+                name: 'sendOrderNotificationEmail',
+                on: settings.sendOrderNotificationEmail,
+                value: true,
+                errors: settings.getErrors('sendOrderNotificationEmail'),
+                instructions: "Switch on if you'd like to send *store admins* custom order email notifications from Craft."
+            }) }}
+
             {{ forms.editableTableField({
                 label: 'Notification Emails'|t,
                 id: 'notificationEmails',
@@ -308,7 +319,7 @@
             }) }}
 
             {{ forms.lightswitchField({
-                label: 'Send Customer Order Email Notifications?'|t,
+                label: 'Send Order Email Notifications to Customers?'|t,
                 id: 'sendCustomerOrderNotificationEmail',
                 required: false,
                 name: 'sendCustomerOrderNotificationEmail',

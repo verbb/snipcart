@@ -61,6 +61,11 @@ class Settings extends Model
     public $secretTestApiKey = '';
 
     /**
+     * @var bool
+     */
+    public $sendOrderNotificationEmail = false;
+    
+    /**
      * @var array valid email addresses
      */
     public $notificationEmails = [];
