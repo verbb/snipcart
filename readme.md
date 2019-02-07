@@ -42,8 +42,8 @@ If Commerce Pro is too complex for your project and Commerce Lite is bit too lim
 | ShipStation Integration   | ✓                | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect)     |
 
 *: Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing), and all three options require payment gateway fees.  
-**: Commerce [offers first-party support for 7 payment gateways](https://docs.craftcms.com/commerce/v2/payment-gateways.html), while [Snipcart supports nine](https://snipcart.com/list-ecommerce-payment-gateways). An important difference is that Commerce can support more gateways and functionality with additional plugins, which would make this comparison a nightmare.  
-***: Snipcart offers a highly-customizable cart template that you can customize as much or as little as you'd like.
+**: Commerce [has first-party support for seven payment gateways](https://docs.craftcms.com/commerce/v2/payment-gateways.html) and [Snipcart supports nine](https://snipcart.com/list-ecommerce-payment-gateways). An important difference is that Commerce can support more gateways and functionality via plugins.  
+***: Snipcart offers a highly-customizable cart template that you can customize however much you'd like.
 
 ## Installation
 
