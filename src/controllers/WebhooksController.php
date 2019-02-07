@@ -20,6 +20,7 @@ use workingconcept\snipcart\events\OrderEvent;
 use workingconcept\snipcart\records\WebhookLog;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\services\Orders;
 
 use Craft;
 use craft\web\Controller;
@@ -298,11 +299,21 @@ class WebhooksController extends Controller
             $responseData['shipstation_order_id'] = $providerOrders->orders['shipStation']->orderId ?? '';
         }
 
-        if (isset(Snipcart::$plugin->getSettings()->notificationEmails))
+        if (Snipcart::$plugin->getSettings()->sendOrderNotificationEmail)
         {
             Snipcart::$plugin->orders->sendOrderEmailNotification(
                 $order,
-                [ 'providerOrders' => $providerOrders->orders ?? null ]
+                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                Orders::NOTIFICATION_TYPE_ADMIN
+            );
+        }
+
+        if (Snipcart::$plugin->getSettings()->sendCustomerOrderNotificationEmail)
+        {
+            Snipcart::$plugin->orders->sendOrderEmailNotification(
+                $order,
+                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                Orders::NOTIFICATION_TYPE_CUSTOMER
             );
         }
 
@@ -637,9 +648,10 @@ class WebhooksController extends Controller
         /**
          * Every Snipcart post should clarify whether it's in live or test mode.
          */
-        if (! array_key_exists(
+        if (! in_array(
             $this->_postData->mode,
-            [self::WEBHOOK_MODE_LIVE, self::WEBHOOK_MODE_TEST]
+            [self::WEBHOOK_MODE_LIVE, self::WEBHOOK_MODE_TEST],
+            false
         ))
         {
             return 'Invalid mode.';
