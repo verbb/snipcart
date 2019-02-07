@@ -35,34 +35,34 @@
 {% from _self import errorList %}
 {% from _self import customTextInput %}
 
-<div class="snipcart-product-details-outer">
-    <div class="snipcart-product-details-field-group snipcart-product-details-sku-group">
-        <div class="label">
+<div class="snipcart-product-details">
+    <div id="snipcart-sku-field" class="field-group border-t-0">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="sku" class="required">
                 {{- "SKU"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ customTextInput(element, name, 'sku', value, { classes: ['code'] }) }}
         </div>
     </div>
-    <div class="snipcart-product-details-field-group snipcart-product-details-inventory-group{% if settings.displayInventory is not defined or settings.displayInventory != true %} hidden{% endif %}">
-        <div class="label">
+    <div id="snipcart-inventory-field" class="field-group border-t{% if settings.displayInventory is not defined or settings.displayInventory != true %} hidden{% endif %}">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="inventory" class="required">
                 {{- "Inventory"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ customTextInput(element, name, 'inventory', value, { size: 20 }) }}
         </div>
     </div>
-    <div class="snipcart-product-details-field-group snipcart-product-details-price-group">
-        <div class="label">
+    <div id="snipcart-price-field" class="field-group border-t">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="price" class="required">
                 {{- "Price"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             <div class="price-wrapper">
                 <div class="currency-symbol">
                     {{ craft.snipcart.defaultCurrencySymbol }}
@@ -71,13 +71,13 @@
             </div>
         </div>
     </div>
-        <div class="snipcart-product-details-field-group snipcart-product-details-taxable-group">
-        <div class="label">
+    <div id="snipcart-taxable-field" class="field-group border-t">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="taxable">
                 {{- "Taxable"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ forms.lightswitch({
                 id: 'taxable',
                 name: name ~ '[taxable]',
@@ -87,13 +87,13 @@
             {{ errorList(element.getErrors(name ~ '[taxable]')) }}
         </div>
     </div>
-    <div class="snipcart-product-details-field-group snipcart-product-details-shippable-group">
-        <div class="label">
+    <div id="snipcart-shippable-field" class="field-group border-t">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="shippable">
                 {{- "Shippable"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ forms.lightswitch({
                 id: 'shippable',
                 name: name ~ '[shippable]',
@@ -103,13 +103,13 @@
             {{ errorList(element.getErrors(name ~ '[shippable]')) }}
         </div>
     </div>
-    <div class="snipcart-product-details-field-group snipcart-product-details-weight-group{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
-        <div class="label">
+    <div id="snipcart-weight-field" class="field-group border-t{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label for="weight">
                 {{- "Weight"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ forms.text({
                 id: 'weight',
                 name: name ~ '[weight]',
@@ -131,13 +131,13 @@
             {{ errorList(element.getErrors(name ~ '[weightUnit]')) }}
         </div>
     </div>
-    <div class="snipcart-product-details-field-group snipcart-product-details-dimensions-group{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
-        <div class="label">
+    <div id="snipcart-dimensions-field" class="field-group border-t{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+        <div class="field-label w-2/5 sm:w-1/5">
             <label>
                 {{- "Dimensions"|t -}}
             </label>
         </div>
-        <div class="inputs">
+        <div class="field-input w-3/5 sm:w-4/5">
             {{ forms.text({
                 id: 'length',
                 name: name ~ '[length]',
@@ -168,7 +168,7 @@
                 errors: field.getErrors('height'),
             }) }}
 
-            <div class="select">
+            <div class="select mt-2 sm:mt-0">
                 {{ forms.select({
                     id: 'dimensionsUnit',
                     name: name ~ '[dimensionsUnit]',
@@ -185,17 +185,3 @@
         </div>
     </div>
 </div>
-
-{% js %}
-jQuery(function(){
-    $("#fields-shippable").change(function(){
-        if ($(this).hasClass('on')) {
-            $('.snipcart-product-details-weight-group').removeClass('hidden');
-            $('.snipcart-product-details-dimensions-group').removeClass('hidden');
-        } else {
-            $('.snipcart-product-details-weight-group').addClass('hidden');
-            $('.snipcart-product-details-dimensions-group').addClass('hidden');
-        }
-    });
-});
-{% endjs %}

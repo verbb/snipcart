@@ -1,13 +1,13 @@
-.webhook-container {
-    position: relative;
-}
+@import "_common";
+
+/* purgecss start ignore */
 
 #webhookEndpoint-field .input {
-    position: relative;
+    @apply relative;
 }
 
 .copy-btn {
-    display: inline-block;
+    @apply inline-block pin-t pin-r pin-b;
     background-image: url(data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIHdpZHRoPSIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMS45OTk5OTk3NiAzLjk5OTk5OTY0aC0xLjk5OTk5OTg4djEzLjk5OTk5OTE2YzAgMS4wOTk5OTk5LjkwMDAwMDA1IDEuOTk5OTk5OSAxLjk5OTk5OTg4IDEuOTk5OTk5OWgxMy45OTk5OTkxNHYtMS45OTk5OTk5aC0xMy45OTk5OTkxNHptMTUuOTk5OTk5MDQtMy45OTk5OTk3NmgtMTEuOTk5OTk5MjhjLTEuMDk5OTk5ODMgMC0xLjk5OTk5OTg4LjkwMDAwMDA1LTEuOTk5OTk5ODggMS45OTk5OTk4OHYxMS45OTk5OTkyNGMwIDEuMS45MDAwMDAwNSAxLjk5OTk5OTkgMS45OTk5OTk4OCAxLjk5OTk5OTloMTEuOTk5OTk5MjhjMS4wOTk5OTk5IDAgMS45OTk5OTk5LS44OTk5OTk5IDEuOTk5OTk5OS0xLjk5OTk5OTl2LTExLjk5OTk5OTI0YzAtMS4wOTk5OTk4My0uOS0xLjk5OTk5OTg4LTEuOTk5OTk5OS0xLjk5OTk5OTg4em0tLjk5OTk5OTkgOC45OTk5OTk0NmgtMy45OTk5OTk4djMuOTk5OTk5NzZoLTEuOTk5OTk5OXYtMy45OTk5OTk3NmgtMy45OTk5OTk3NHYtMS45OTk5OTk4OGgzLjk5OTk5OTc0di0zLjk5OTk5OTc2aDEuOTk5OTk5OXYzLjk5OTk5OTc2aDMuOTk5OTk5OHoiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==), linear-gradient(#fff, #fafafa);
     background-repeat: no-repeat, no-repeat;
     background-position: center center, center center;
@@ -16,24 +16,22 @@
     border: 1px solid rgba(0, 0, 20, 0.1);
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    top: 0;
-    right: 0;
-    bottom: 0;
     width: 32px;
     opacity: 0.3;
+
+    &:hover {
+        @apply opacity-100;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
 }
 
-.copy-btn:hover {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+/* purgecss end ignore */
 
 .input-row {
-    display: block;
-    overflow: hidden;
-}
+    @apply block hidden;
 
-.input-row .column {
-    display: inline-block;
-    margin-right: 20px;
+    .column {
+        @apply inline-block;
+        margin-right: 20px;
+    }
 }

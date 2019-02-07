@@ -1,0 +1,42 @@
+@import "_common";
+
+.snipcart-product-details {
+    @apply rounded-sm;
+    background-image: linear-gradient(-180deg, #FEFEFE 0%, #FAFAFA 100%);
+    border: 1px solid #D8DEE2;
+
+    .field-group {
+        @apply flex overflow-hidden relative items-center;
+        padding: 10px;
+        border-color: #E5E5E7;
+        border-style: dotted;
+
+        .muted { color: #8f98a3; }
+
+        .price-wrapper {
+            letter-spacing: 0;
+
+            .input {
+                @apply inline-block relative;
+                left: -4px;
+
+                input {
+                    margin: 0;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+            }
+        }
+
+        .currency-symbol {
+            @apply inline-block rounded-sm text-sm;
+            border: 1px solid #e3e5e8;
+            border-right: 0;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            background: #f4f5f6;
+            padding: 5px 10px;
+            color: #8f98a3;
+        }
+    }
+}

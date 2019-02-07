@@ -1,6 +1,7 @@
-(function($) {
-    "use strict";
+/* global Craft */
+/* global jQuery */
 
+(function($) {
     Craft.postActionRequest('snipcart/charts/get-orders-data', {}, $.proxy(function(response, textStatus) {
         if (textStatus === 'success' && typeof (response.error) === 'undefined') {
             console.log(response);

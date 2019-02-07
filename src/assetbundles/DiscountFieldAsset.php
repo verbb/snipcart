@@ -26,14 +26,9 @@ class DiscountFieldAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@workingconcept/snipcart/assetbundles/dist";
-
+        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
         $this->depends = [];
-
-        $this->js = [
-            'js/discount-settings.js'
-        ];
-
+        $this->js = ['js/settings-discount.js'];
         $this->css = [];
 
         parent::init();

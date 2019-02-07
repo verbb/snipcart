@@ -1,0 +1,50 @@
+{
+  "name": "snipcart-craft-plugin",
+  "version": "1.0.0",
+  "description": "![Snipcart](resources/hero.svg)",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {
+    "clipboard": "^2.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
+    "@babel/preset-env": "^7.3.1",
+    "@fullhuman/postcss-purgecss": "^1.1.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "clean-webpack-plugin": "^1.0.1",
+    "css-loader": "^2.1.0",
+    "cssnano": "^4.1.8",
+    "directory-tree": "^2.2.1",
+    "eslint": "^5.13.0",
+    "eslint-loader": "^2.1.2",
+    "mini-css-extract-plugin": "^0.5.0",
+    "postcss": "^7.0.14",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^4.1.1",
+    "postcss-preset-env": "^6.5.0",
+    "postcss-scss": "^2.0.0",
+    "tailwindcss": "^0.7.4",
+    "webpack": "^4.29.2",
+    "webpack-cli": "^3.2.3"
+  },
+  "scripts": {
+    "build": "webpack -p --display-error-details",
+    "watch": "webpack -d --watch --display-error-details"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mattstein@github.com/workingconcept/snipcart-craft-plugin.git"
+  },
+  "author": "Working Concept",
+  "license": "see license in license.md",
+  "bugs": {
+    "url": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
+  },
+  "homepage": "https://github.com/workingconcept/snipcart-craft-plugin#readme"
+}
