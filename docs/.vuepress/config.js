@@ -11,12 +11,6 @@ module.exports = {
         docsBranch: 'master',
         docsDir: 'docs',
         sidebar: [
-            // {
-            //     title: 'Overview',
-            //     children: [
-            //         '/overview/snipcart'
-            //     ]
-            // },
             {
                 title: 'Getting Started',
                 collapsable: false,
@@ -39,6 +33,7 @@ module.exports = {
             },
             // {
             //     title: 'Templating',
+            //     collapsable: false,
             //     children: [
             //         '/templating/template-tags',
             //         '/templating/fields'
@@ -53,19 +48,11 @@ module.exports = {
                 ]
             },
             {
-                title: 'Testing',
-                collapsable: false,
-                children: [
-                    '/testing/overview',
-                    '/testing/webhooks',
-                    '/testing/going-live'
-                ]
-            },
-            {
                 title: 'Troubleshooting',
                 collapsable: false,
                 children: [
                     '/troubleshooting/logging',
+                    '/troubleshooting/testing-webhooks',
                     '/troubleshooting/common-problems',
                     '/troubleshooting/getting-help'
                 ]
