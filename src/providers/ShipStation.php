@@ -189,7 +189,7 @@ class ShipStation extends ShippingProvider
             Craft::error(sprintf(
                 'Failed to create ShipStation order for %s.',
                 $order->orderNumber
-            ));
+            ), 'snipcart');
 
             return $order;
         }
