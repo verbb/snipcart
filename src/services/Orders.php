@@ -588,6 +588,11 @@ class Orders extends \craft\base\Component
             if ($useCustom)
             {
                 // TODO: make sure template exists
+
+                return [
+                    'path' => $settings->notificationEmailTemplate,
+                    'user' => true
+                ];
             }
 
             return [
@@ -604,6 +609,11 @@ class Orders extends \craft\base\Component
             if ($useCustom)
             {
                 // TODO: make sure template exists
+
+                return [
+                    'path' => $settings->customerNotificationEmailTemplate,
+                    'user' => true
+                ];
             }
 
             return [
