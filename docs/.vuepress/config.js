@@ -24,6 +24,8 @@ module.exports = {
                     '/setup/first-steps',
                     '/setup/front-end',
                     '/setup/products',
+                    '/setup/notifications',
+                    '/setup/order-fields',
                 ]
             },
             {
