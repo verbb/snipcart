@@ -316,19 +316,9 @@ class Orders extends \craft\base\Component
     {
         $errors        = [];
         $emailSettings = Craft::$app->systemSettings->getSettings('email');
+        $view          = Craft::$app->getView();
 
         $templateSettings = $this->_selectNotificationTemplate($type);
-
-        if ($templateSettings === false)
-        {
-            /**
-             * A custom template was specified that doesn't exist!
-             */
-
-            // TODO: warn and bail
-        }
-
-        $view = Craft::$app->getView();
 
         /**
          * Switch template mode only if we need to rely on our own template.
@@ -347,6 +337,20 @@ class Orders extends \craft\base\Component
              * template mode, but we're not worried.
              */
             $view->setTemplateMode($view::TEMPLATE_MODE_CP);
+        }
+
+        if ( ! $view->doesTemplateExist($templateSettings['path']))
+        {
+            /**
+             * A custom template was specified that doesn't exist!
+             */
+
+            Craft::warning(sprintf(
+                'Specified template `%s` does not exist.',
+                $templateSettings['path']
+            ), 'snipcart');
+            
+            return;
         }
 
         $emailVars = array_merge([
@@ -569,60 +573,32 @@ class Orders extends \craft\base\Component
      * and if it's a custom template make sure it exists before relying on it.
      *
      * @param string $type Either `admin` or `customer`.
-     * @return array|bool  Returns an array with a valid `path` string property
+     * @return array       Returns an array with a `path` string property
      *                     and `user` bool which is true if the template exists
      *                     on the front end—false if it's scoped to the plugin.
-     *
-     *                     Returns false if a custom template was specified but
-     *                     doesn't exist.
      */
-    private function _selectNotificationTemplate($type)
+    private function _selectNotificationTemplate($type): array
     {
         $settings = Snipcart::$plugin->getSettings();
 
         if ($type === self::NOTIFICATION_TYPE_ADMIN)
         {
-            // try and use a custom template if a path has been provided
-            $useCustom = ! empty($settings->notificationEmailTemplate);
-
-            if ($useCustom)
-            {
-                // TODO: make sure template exists
-
-                return [
-                    'path' => $settings->notificationEmailTemplate,
-                    'user' => true
-                ];
-            }
-
-            return [
-                'path' => 'snipcart/email/order',
-                'user' => false
-            ];
+            $defaultTemplatePath = 'snipcart/email/order';
+            $customTemplatePath  = $settings->notificationEmailTemplate;
         }
-
-        if ($type === self::NOTIFICATION_TYPE_CUSTOMER)
+        elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER)
         {
-            // try and use a custom template if a path has been provided
-            $useCustom = ! empty($settings->customerNotificationEmailTemplate);
-
-            if ($useCustom)
-            {
-                // TODO: make sure template exists
-
-                return [
-                    'path' => $settings->customerNotificationEmailTemplate,
-                    'user' => true
-                ];
-            }
-
-            return [
-                'path' => 'snipcart/email/customer-order',
-                'user' => false
-            ];
+            $defaultTemplatePath = 'snipcart/email/customer-order';
+            $customTemplatePath  = $settings->notificationEmailTemplate;
         }
 
-        return false;
+        $useCustom = ! empty($customTemplatePath);
+        $templatePath = $useCustom ? $customTemplatePath : $defaultTemplatePath;
+
+        return [
+            'path' => $templatePath,
+            'user' => $useCustom
+        ];
     }
 
 }
