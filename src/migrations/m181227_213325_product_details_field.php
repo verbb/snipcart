@@ -59,26 +59,4 @@ class m181227_213325_product_details_field extends Migration
         return false;
     }
 
-    /**
-     * Creates the indexes.
-     *
-     * @return void
-     */
-    protected function createIndexes()
-    {
-        $this->createIndex(null, $this->tableName, ['elementId']);
-        $this->createIndex(null, $this->tableName, ['fieldId']);
-    }
-
-    /**
-     * Adds the foreign keys.
-     *
-     * @return void
-     */
-    protected function addForeignKeys()
-    {
-        $this->addForeignKey(null, $this->tableName, ['elementId'], '{{%elements}}', ['id'], 'CASCADE');
-        $this->addForeignKey(null, $this->tableName, ['fieldId'],   '{{%fields}}',   ['id'], 'CASCADE');
-    }
-
 }
