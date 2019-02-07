@@ -30,11 +30,11 @@ class OrderTrackingEvent extends Event
     /**
      * @var string
      */
-    public $fromStatus;
+    public $trackingNumber;
 
     /**
      * @var string
      */
-    public $toStatus;
+    public $trackingUrl;
 
 }
