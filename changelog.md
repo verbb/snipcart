@@ -1,9 +1,10 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.17 - 2019-02-06
+## 1.0.0-beta.17 - 2019-02-07
 ### Added
 - Added inventory to the Product Details field type.
 - Added the ability to designate a custom admin order notification email template.
+- Webhook log now stores `mode`.
 ### Changed
 - Improved several control panel views.
 - Optimized control panel assets.

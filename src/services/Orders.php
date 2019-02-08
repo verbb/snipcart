@@ -40,6 +40,16 @@ class Orders extends \craft\base\Component
      */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
 
+    /**
+     * @var string
+     */
+    const NOTIFICATION_TYPE_ADMIN = 'notifyAdmin';
+
+    /**
+     * @var string
+     */
+    const NOTIFICATION_TYPE_CUSTOMER = 'notifyCustomer';
+
 
     // Public Methods
     // =========================================================================
@@ -77,7 +87,7 @@ class Orders extends \craft\base\Component
     public function getOrders($params = []): array
     {
         return ModelHelper::populateArrayWithModels(
-            (array)$this->fetchOrders($params)->items,
+            (array)$this->_fetchOrders($params)->items,
             Order::class
         );
     }
@@ -170,7 +180,7 @@ class Orders extends \craft\base\Component
         $params['offset'] = ($page - 1) * $limit;
         $params['limit']  = $limit;
 
-        $response = $this->fetchOrders($params);
+        $response = $this->_fetchOrders($params);
 
         return (object) [
             'items' => ModelHelper::populateArrayWithModels(
@@ -295,29 +305,53 @@ class Orders extends \craft\base\Component
     /**
      * Have Craft email order notifications.
      *
-     * @param Order $order The relevant Snipcart order.
-     * @param array $extra Additional variables for email template.
+     * @param Order  $order The relevant Snipcart order.
+     * @param array  $extra Additional variables for email template.
+     * @param string $type  Either `admin` or `customer`
      *
      * @return array|bool
      * @throws \Throwable if there's a template mode exception.
      */
-    public function sendOrderEmailNotification($order, $extra = [])
+    public function sendOrderEmailNotification($order, $extra = [], $type = self::NOTIFICATION_TYPE_ADMIN)
     {
         $errors        = [];
         $emailSettings = Craft::$app->systemSettings->getSettings('email');
+        $view          = Craft::$app->getView();
+
+        $templateSettings = $this->_selectNotificationTemplate($type);
 
         /**
-         * Temporarily change the template mode so we can render
-         * the plugin's template.
+         * Switch template mode only if we need to rely on our own template.
          */
-        $view         = Craft::$app->getView();
-        $templateMode = $view->getTemplateMode();
+        if ($templateSettings['user'] === false)
+        {
+            /**
+             * Remember what we started with.
+             */
+            $templateMode = $view->getTemplateMode();
 
-        /**
-         * This could technically throw an exception over an invalid
-         * template mode, but we're not worried.
-         */
-        $view->setTemplateMode($view::TEMPLATE_MODE_CP);
+            /**
+             * Explicitly set to CP mode.
+             *
+             * This could technically throw an exception over an invalid
+             * template mode, but we're not worried.
+             */
+            $view->setTemplateMode($view::TEMPLATE_MODE_CP);
+        }
+
+        if ( ! $view->doesTemplateExist($templateSettings['path']))
+        {
+            /**
+             * A custom template was specified that doesn't exist!
+             */
+
+            Craft::warning(sprintf(
+                'Specified template `%s` does not exist.',
+                $templateSettings['path']
+            ), 'snipcart');
+            
+            return;
+        }
 
         $emailVars = array_merge([
             'order'     => $order,
@@ -326,7 +360,7 @@ class Orders extends \craft\base\Component
 
         // render the message
         $messageHtml = $view->renderPageTemplate(
-            'snipcart/email/order',
+            $templateSettings['path'],
             $emailVars
         );
 
@@ -334,14 +368,30 @@ class Orders extends \craft\base\Component
         $emogrifier = new \Pelago\Emogrifier($messageHtml);
         $mergedHtml = $emogrifier->emogrify();
 
-        foreach (Snipcart::$plugin->getSettings()->notificationEmails as $address)
+        $toEmails = [];
+        $subject = $order->billingAddressName . ' just placed an order';
+
+        if ($type === self::NOTIFICATION_TYPE_ADMIN)
         {
-            $subject = $order->billingAddressName . ' just placed an order';
+            $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
+        }
+        elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER)
+        {
+            $toEmails = [ $order->email ];
+            $subject = sprintf('%s Order #%s',
+                Craft::$app->getSites()->getCurrentSite()->name,
+                $order->invoiceNumber
+            );
+        }
+
+        foreach ($toEmails as $address)
+        {
             $message = new Message();
 
             $message->setFrom([
                 $emailSettings['fromEmail'] => $emailSettings['fromName']
             ]);
+
             $message->setTo($address);
             $message->setSubject($subject);
             $message->setHtmlBody($mergedHtml);
@@ -354,7 +404,10 @@ class Orders extends \craft\base\Component
             }
         }
 
-        $view->setTemplateMode($templateMode);
+        if ($templateSettings['user'] === false)
+        {
+            $view->setTemplateMode($templateMode);
+        }
 
         if (count($errors))
         {
@@ -484,7 +537,7 @@ class Orders extends \craft\base\Component
      * @return \stdClass|array API response object or array of objects.
      * @throws \Exception if our API key is missing.
      */
-    private function fetchOrders($params = [])
+    private function _fetchOrders($params = [])
     {
         $validParams = [
             'offset',
@@ -513,6 +566,40 @@ class Orders extends \craft\base\Component
             $apiParams,
             $cacheSetting
         );
+    }
+
+    /**
+     * Select whatever Twig template should be used for an order notification,
+     * and if it's a custom template make sure it exists before relying on it.
+     *
+     * @param string $type Either `admin` or `customer`.
+     * @return array       Returns an array with a `path` string property
+     *                     and `user` bool which is true if the template exists
+     *                     on the front end—false if it's scoped to the plugin.
+     */
+    private function _selectNotificationTemplate($type): array
+    {
+        $settings = Snipcart::$plugin->getSettings();
+        $defaultTemplatePath = '';
+
+        if ($type === self::NOTIFICATION_TYPE_ADMIN)
+        {
+            $defaultTemplatePath = 'snipcart/email/order';
+            $customTemplatePath  = $settings->notificationEmailTemplate;
+        }
+        elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER)
+        {
+            $defaultTemplatePath = 'snipcart/email/customer-order';
+            $customTemplatePath  = $settings->notificationEmailTemplate;
+        }
+
+        $useCustom = ! empty($customTemplatePath);
+        $templatePath = $useCustom ? $customTemplatePath : $defaultTemplatePath;
+
+        return [
+            'path' => $templatePath,
+            'user' => $useCustom
+        ];
     }
 
 }

@@ -20,6 +20,7 @@ use workingconcept\snipcart\events\OrderEvent;
 use workingconcept\snipcart\records\WebhookLog;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\services\Orders;
 
 use Craft;
 use craft\web\Controller;
@@ -145,7 +146,12 @@ class WebhooksController extends Controller
     /**
      * @var mixed local reference to decoded post data
      */
-    private $postData;
+    private $_postData;
+
+    /**
+     * @var string Set to WEBHOOK_MODE_LIVE or WEBHOOK_MODE_TEST
+     */
+    private $_currentMode;
 
 
     // Public Methods
@@ -180,21 +186,43 @@ class WebhooksController extends Controller
          */
         $this->requirePostRequest();
 
-        $this->postData = json_decode(Craft::$app->getRequest()->getRawBody());
+        $this->_postData = json_decode(Craft::$app->getRequest()->getRawBody());
 
         if ($reason = $this->_hasInvalidRequestData())
         {
             return $this->_badRequestResponse([ 'reason' => $reason ]);
         }
 
+        // store reference to the mode since we know it's set
+        $this->setMode($this->_postData->mode);
+
         if (Snipcart::$plugin->getSettings()->logWebhookRequests)
         {
             $this->_logWebhookTransaction();
         }
 
-        return $this->_handleWebhookData($this->postData->eventName);
+        return $this->_handleWebhookData($this->_postData->eventName);
     }
 
+    /**
+     * Set the mode of the current request, which is either `Live` or `Test`.
+     *
+     * @param string $mode 'Live' or 'Test'
+     * @return mixed
+     */
+    public function setMode($mode)
+    {
+        return $this->_currentMode = $mode;
+    }
+
+    /**
+     * Get the mode of the current request, which is either `Live` or `Test`.
+     * @return string
+     */
+    public function getMode(): string
+    {
+        return $this->_currentMode;
+    }
 
     // Private Methods
     // =========================================================================
@@ -229,7 +257,7 @@ class WebhooksController extends Controller
      */
     private function _handleOrderCompleted(): Response
     {
-        $order = new Order($this->postData->content);
+        $order = new Order($this->_postData->content);
 
         $responseData = [
             'success' => true,
@@ -271,11 +299,21 @@ class WebhooksController extends Controller
             $responseData['shipstation_order_id'] = $providerOrders->orders['shipStation']->orderId ?? '';
         }
 
-        if (isset(Snipcart::$plugin->getSettings()->notificationEmails))
+        if (Snipcart::$plugin->getSettings()->sendOrderNotificationEmail)
         {
             Snipcart::$plugin->orders->sendOrderEmailNotification(
                 $order,
-                [ 'providerOrders' => $providerOrders->orders ?? null ]
+                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                Orders::NOTIFICATION_TYPE_ADMIN
+            );
+        }
+
+        if (Snipcart::$plugin->getSettings()->sendCustomerOrderNotificationEmail)
+        {
+            Snipcart::$plugin->orders->sendOrderEmailNotification(
+                $order,
+                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                Orders::NOTIFICATION_TYPE_CUSTOMER
             );
         }
 
@@ -294,7 +332,7 @@ class WebhooksController extends Controller
      */
     private function _handleShippingRatesFetch(): Response
     {
-        $order    = new Order($this->postData->content);
+        $order    = new Order($this->_postData->content);
         $rates    = Snipcart::$plugin->shipments->collectRatesForOrder($order);
         $response = $this->asJson($rates);
 
@@ -315,9 +353,9 @@ class WebhooksController extends Controller
      */
     private function _handleOrderStatusChange(): Response
     {
-        $fromStatus = $this->postData->from;
-        $toStatus   = $this->postData->to;
-        $order      = new Order($this->postData->content);
+        $fromStatus = $this->_postData->from;
+        $toStatus   = $this->_postData->to;
+        $order      = new Order($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_STATUS_CHANGED))
         {
@@ -339,9 +377,9 @@ class WebhooksController extends Controller
      */
     private function _handleOrderPaymentStatusChange(): Response
     {
-        $fromStatus = $this->postData->from;
-        $toStatus   = $this->postData->to;
-        $order      = new Order($this->postData->content);
+        $fromStatus = $this->_postData->from;
+        $toStatus   = $this->_postData->to;
+        $order      = new Order($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED))
         {
@@ -363,9 +401,9 @@ class WebhooksController extends Controller
      */
     private function _handleOrderTrackingNumberChange(): Response
     {
-        $trackingNumber = $this->postData->trackingNumber;
-        $trackingUrl    = $this->postData->trackingUrl;
-        $order          = new Order($this->postData->content);
+        $trackingNumber = $this->_postData->trackingNumber;
+        $trackingUrl    = $this->_postData->trackingUrl;
+        $order          = new Order($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_TRACKING_CHANGED))
         {
@@ -387,7 +425,7 @@ class WebhooksController extends Controller
      */
     private function _handleSubscriptionCreated(): Response
     {
-        $subscription = new Subscription($this->postData->content);
+        $subscription = new Subscription($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_SUBSCRIPTION_CREATED))
         {
@@ -407,7 +445,7 @@ class WebhooksController extends Controller
      */
     private function _handleSubscriptionCancelled(): Response
     {
-        $subscription = new Subscription($this->postData->content);
+        $subscription = new Subscription($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_SUBSCRIPTION_CANCELLED))
         {
@@ -427,7 +465,7 @@ class WebhooksController extends Controller
      */
     private function _handleSubscriptionPaused(): Response
     {
-        $subscription = new Subscription($this->postData->content);
+        $subscription = new Subscription($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_SUBSCRIPTION_PAUSED))
         {
@@ -447,7 +485,7 @@ class WebhooksController extends Controller
      */
     private function _handleSubscriptionResumed(): Response
     {
-        $subscription = new Subscription($this->postData->content);
+        $subscription = new Subscription($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_SUBSCRIPTION_RESUMED))
         {
@@ -467,7 +505,7 @@ class WebhooksController extends Controller
      */
     private function _handleSubscriptionInvoiceCreated(): Response
     {
-        $subscription = new Subscription($this->postData->content);
+        $subscription = new Subscription($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_SUBSCRIPTION_INVOICE_CREATED))
         {
@@ -487,7 +525,7 @@ class WebhooksController extends Controller
      */
     private function _handleTaxesCalculate(): Response
     {
-        $order = new Order($this->postData->content);
+        $order = new Order($this->_postData->content);
         $taxes = [];
 
         if ($this->hasEventHandlers(self::EVENT_ON_TAXES_CALCULATE))
@@ -513,7 +551,7 @@ class WebhooksController extends Controller
      */
     private function _handleCustomerUpdated(): Response
     {
-        $customer = new Customer($this->postData->content);
+        $customer = new Customer($this->_postData->content);
 
         if ($this->hasEventHandlers(self::EVENT_ON_CUSTOMER_UPDATE))
         {
@@ -568,8 +606,9 @@ class WebhooksController extends Controller
         $webhookLog = new WebhookLog();
 
         $webhookLog->siteId = Craft::$app->sites->currentSite->id;
-        $webhookLog->type   = $this->postData->eventName;
-        $webhookLog->body   = $this->postData;
+        $webhookLog->type   = $this->_postData->eventName;
+        $webhookLog->body   = $this->_postData;
+        $webhookLog->mode   = strtolower($this->getMode());
 
         $webhookLog->save();
     }
@@ -593,7 +632,7 @@ class WebhooksController extends Controller
          * Every Snipcart post should have an eventName, so we've got
          * missing data or a bad format.
          */
-        if ($this->postData === null || !isset($this->postData->eventName))
+        if ($this->_postData === null || !isset($this->_postData->eventName))
         {
             return 'NULL request body or missing eventName.';
         }
@@ -601,16 +640,28 @@ class WebhooksController extends Controller
         /**
          * Every Snipcart post should have a content property.
          */
-        if (!isset($this->postData->content))
+        if (!isset($this->_postData->content))
         {
             return 'Request missing content.';
+        }
+
+        /**
+         * Every Snipcart post should clarify whether it's in live or test mode.
+         */
+        if (! in_array(
+            $this->_postData->mode,
+            [self::WEBHOOK_MODE_LIVE, self::WEBHOOK_MODE_TEST],
+            false
+        ))
+        {
+            return 'Invalid mode.';
         }
 
         /**
          * We've received an invalid `eventName`.
          */
         if (! array_key_exists(
-            $this->postData->eventName,
+            $this->_postData->eventName,
             self::WEBHOOK_EVENT_MAP
         ))
         {

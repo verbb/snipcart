@@ -15,10 +15,13 @@ use craft\db\ActiveRecord;
  *
  * @package workingconcept\snipcart\records
  *
- * @property int $id
- * @property int $siteId
+ * @property int    $id
+ * @property int    $siteId
  * @property string $type
  * @property string $body
+ * @property string $mode An enum that can either be 'live' or 'test'.
+ *                        Note that we store in lowercase, while Snipcart sends
+ *                        `Live` or `Test`.
  */
 class WebhookLog extends ActiveRecord
 {

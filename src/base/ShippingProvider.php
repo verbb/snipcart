@@ -11,17 +11,19 @@ namespace workingconcept\snipcart\base;
 use workingconcept\snipcart\models\Order as SnipcartOrder;
 use workingconcept\snipcart\models\Package;
 use craft\base\Component;
+use workingconcept\snipcart\Snipcart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use craft\base\Model;
 use Craft;
 
 class ShippingProvider extends Component implements ShippingProviderInterface
 {
     /**
-     * @var array Settings specifically for this provider.
-     * @todo consider making these validated models
+     * @var Model|bool|null Settings specifically for this provider.
+     * @see getSettings()
      */
-    protected $providerSettings;
+    private $_settingsModel;
 
     /**
      * @var Client Guzzle client instance.
@@ -43,7 +45,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     /**
      * @inheritdoc
      */
-    public static function getApiBaseUrl(): string
+    public static function apiBaseUrl(): string
     {
         return '';
     }
@@ -51,6 +53,36 @@ class ShippingProvider extends Component implements ShippingProviderInterface
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettings()
+    {
+        if ($this->_settingsModel === null && $this->createSettingsModel())
+        {
+            $this->_settingsModel = $this->createSettingsModel();
+
+            $pluginSettings   = Snipcart::$plugin->getSettings();
+            $providerSettings = $pluginSettings->providers[static::refHandle()] ?? [];
+
+            $this->_settingsModel->setAttributes($providerSettings);
+
+        }
+
+        return $this->_settingsModel;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSettings(array $settings)
+    {
+        if ($this->getSettings())
+        {
+            $this->getSettings()->setAttributes($settings, false);
+        }
+    }
 
     /**
      * @inheritdoc
@@ -242,6 +274,20 @@ class ShippingProvider extends Component implements ShippingProviderInterface
             ), 'snipcart');
         }
 
+        return null;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Creates and returns the model used to store the plugin’s settings.
+     *
+     * @return mixed
+     */
+    protected function createSettingsModel()
+    {
         return null;
     }
 

@@ -29,11 +29,23 @@ interface ShippingProviderInterface extends ComponentInterface
      * Get the base URL for the provider's REST API, used by client.
      * @return string
      */
-    public static function getApiBaseUrl(): string;
+    public static function apiBaseUrl(): string;
 
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Gets the provider settings.
+     * @return \craft\base\Model|null
+     */
+    public function getSettings();
+
+    /**
+     * Sets the provider settings.
+     * @param array $settings The plugin settings that should be set on the settings model
+     */
+    public function setSettings(array $settings);
 
     /**
      * Whether the provider is ready to go.
