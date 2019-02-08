@@ -581,7 +581,7 @@ class Orders extends \craft\base\Component
     {
         $settings = Snipcart::$plugin->getSettings();
         $defaultTemplatePath = '';
-        
+
         if ($type === self::NOTIFICATION_TYPE_ADMIN)
         {
             $defaultTemplatePath = 'snipcart/email/order';

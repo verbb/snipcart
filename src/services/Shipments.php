@@ -53,10 +53,10 @@ class Shipments extends \craft\base\Component
     {
         if ($this->_shipStation === null)
         {
-            return new ShipStation();
+            return $this->_shipStation = new ShipStation();
         }
 
-        return $this->shipStation;
+        return $this->_shipStation;
     }
 
     /**
@@ -79,12 +79,15 @@ class Shipments extends \craft\base\Component
 
         $rates = [];
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
-        
-        $includeShipStationRates = in_array(
+
+        $shipStationEnabled = in_array(
             Settings::PROVIDER_SHIPSTATION,
             Snipcart::$plugin->getSettings()->enabledProviders,
             true
         );
+
+        $shipStationConfigured = $this->getShipStation()->isConfigured();
+        $includeShipStationRates = $shipStationEnabled && $shipStationConfigured;
 
         if (
             $includeShipStationRates &&

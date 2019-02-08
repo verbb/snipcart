@@ -20,6 +20,7 @@ use workingconcept\snipcart\models\shipstation\Weight;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\base\ShippingProvider;
+use workingconcept\snipcart\providers\shipstation\Settings as ShipStationSettings;
 
 /**
  * Class ShipStation
@@ -52,7 +53,7 @@ class ShipStation extends ShippingProvider
     /**
      * @inheritdoc
      */
-    public static function getApiBaseUrl(): string
+    public static function apiBaseUrl(): string
     {
         return 'https://ssapi.shipstation.com/';
     }
@@ -64,11 +65,9 @@ class ShipStation extends ShippingProvider
     /**
      * @inheritdoc
      */
-    public function init()
+    protected function createSettingsModel()
     {
-        parent::init();
-        $pluginSettings = Snipcart::$plugin->getSettings();
-        $this->providerSettings = $pluginSettings->providers[self::refHandle()] ?? null;
+        return new ShipStationSettings();
     }
 
     /**
@@ -76,8 +75,22 @@ class ShipStation extends ShippingProvider
      */
     public function isConfigured(): bool
     {
-        return ! empty($this->providerSettings['apiKey']) &&
-            ! empty($this->providerSettings['apiSecret']);
+        if ($this->getSettings())
+        {
+            if ($this->getSettings()->validate())
+            {
+                return true;
+            }
+
+            Craft::error(sprintf('Invalid %s configuration: %s',
+                    self::refHandle(),
+                    json_encode($this->getSettings()->getErrors())
+                ),
+                'snipcart'
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -91,10 +104,10 @@ class ShipStation extends ShippingProvider
         }
 
         $this->client = new Client([
-            'base_uri' => self::getApiBaseUrl(),
+            'base_uri' => self::apiBaseUrl(),
             'auth' => [
-                $this->providerSettings['apiKey'],
-                $this->providerSettings['apiSecret']
+                $this->getSettings()->apiKey,
+                $this->getSettings()->apiSecret
             ],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
@@ -143,7 +156,7 @@ class ShipStation extends ShippingProvider
         $order->orderStatus   = Order::STATUS_AWAITING_SHIPMENT;
         $order->customerNotes = $this->_getOrderNotes($snipcartOrder->customFields);
         $order->giftMessage   = $this->_getGiftNote($snipcartOrder->customFields);
-        $order->carrierCode   = $this->providerSettings['defaultCarrierCode'];
+        $order->carrierCode   = $this->getSettings()->defaultCarrierCode;
         $order->weight        = $this->_getOrderWeight($snipcartOrder, $package);
 
         // it's a gift order if it has a gift message
@@ -286,16 +299,16 @@ class ShipStation extends ShippingProvider
         $pluginSettings = Snipcart::$plugin->getSettings();
 
         $shipmentInfo = [
-            'carrierCode'    => $this->providerSettings['defaultCarrierCode'],
+            'carrierCode'    => $this->getSettings()->defaultCarrierCode,
             //'serviceCode'  => '',
-            'packageCode'    => $this->providerSettings['defaultPackageCode'],
+            'packageCode'    => $this->getSettings()->defaultPackageCode,
             'fromPostalCode' => $pluginSettings->shipFromAddress['postalCode'],
             'toCity'         => $snipcartOrder->shippingAddress->city,
             'toState'        => $snipcartOrder->shippingAddress->province,
             'toPostalCode'   => $snipcartOrder->shippingAddress->postalCode,
             'toCountry'      => $snipcartOrder->shippingAddress->country,
             'weight'         => $weight->toArray(),
-            'confirmation'   => $this->providerSettings['defaultOrderConfirmation'],
+            'confirmation'   => $this->getSettings()->defaultOrderConfirmation,
             'residential'    => false
         ];
 
