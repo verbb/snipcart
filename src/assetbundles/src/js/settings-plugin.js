@@ -10,5 +10,12 @@ copyButton.setAttribute('data-clipboard-target', '#webhookEndpoint');
 
 inputContainer.appendChild(copyButton);
 
-// TODO: visually confirm copy with user
-new ClipboardJS('.copy-btn');
+const clipboard = new ClipboardJS('.copy-btn');
+
+clipboard.on('success', function(e) {
+    e.trigger.classList.add('success');
+    setTimeout(function(){
+        e.trigger.classList.remove('success');
+    }, 3000);
+    e.clearSelection();
+});
