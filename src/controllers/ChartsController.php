@@ -20,6 +20,15 @@ class ChartsController extends \craft\web\Controller
     {
         $this->requirePostRequest();
 
+        $request = Craft::$app->getRequest();
+        $type    = $request->getRequiredParam('type');
+        $range   = $request->getRequiredParam('range');
+
+        // TODO: account for chart types
+            // itemsSold
+            // totalSales
+            // numberOfOrders
+
         $data = Snipcart::$plugin->orders->listOrdersByDay(1, 500);
 
         $rows = [];
@@ -32,11 +41,11 @@ class ChartsController extends \craft\web\Controller
         $dataTable = [
             'columns' => [
                 [
-                    'type' => 'date',
+                    'type'  => 'date',
                     'label' => 'Day'
                 ],
                 [
-                    'type' => 'number',
+                    'type'  => 'number',
                     'label' => 'Orders'
                 ]
             ],
@@ -44,14 +53,13 @@ class ChartsController extends \craft\web\Controller
         ];
 
         return $this->asJson([
-            'dataTable' => $dataTable,
-            'total' => count($data),
-            'totalHtml' => count($data),
-            'formats' => ChartHelper::formats(),
-            'orientation' => Craft::$app->locale->getOrientation(),
-            'scale' => 'day',
+            'dataTable'        => $dataTable,
+            'total'            => count($data),
+            'totalHtml'        => count($data),
+            'formats'          => ChartHelper::formats(),
+            'orientation'      => Craft::$app->locale->getOrientation(),
+            'scale'            => 'day',
             'localeDefinition' => [],
         ]);
-
     }
 }

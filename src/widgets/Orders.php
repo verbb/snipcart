@@ -19,8 +19,22 @@ use craft\base\Widget;
 class Orders extends Widget
 {
 
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var string Type of order data to be displayed.
+     */
     public $chartType;
-    public $timePeriod;
+
+    /**
+     * @var string Range of time for which data should be summarized.
+     */
+    public $chartRange;
+
+
+    // Static Methods
+    // =========================================================================
 
     /**
      * Disallow multiple widget instances.
@@ -31,6 +45,10 @@ class Orders extends Widget
     {
         return false;
     }
+
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * Returns the translated widget display name.
@@ -71,16 +89,23 @@ class Orders extends Widget
         return Craft::t('snipcart', 'Snipcart Orders');
     }
 
-//    /**
-//     * @inheritdoc
-//     */
-//    public function rules(): array
-//    {
-//        $rules = parent::rules();
-//        $rules[] = [['section'], 'required'];
-//        $rules[] = [['section', 'entryType'], 'integer'];
-//        return $rules;
-//    }
+   /**
+    * @inheritdoc
+    */
+   public function rules(): array
+   {
+       $rules = parent::rules();
+
+       $rules[] = [['chartType', 'chartRange'], 'required'];
+       $rules[] = [['chartType', 'chartRange'], 'string'];
+       $rules[] = [['chartType'], 'default', 'value' => 'itemsSold'];
+       $rules[] = [['chartRange'], 'default', 'value' => 'weekly'];
+
+       $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
+       $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangePeriodOptions())];
+
+       return $rules;
+   }
 
     /**
      * Returns the widget body HTML.
@@ -97,6 +122,7 @@ class Orders extends Widget
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders/orders',
             [
+                'widget' => $this,
                 'settings' => Snipcart::$plugin->getSettings()
             ]
         );
@@ -114,16 +140,26 @@ class Orders extends Widget
         );
     }
 
+    /**
+     * Get a key-value array representing options for the type of data to be charted.
+     *
+     * @return array
+     */
     public function getChartTypeOptions(): array
     {
         return [
-            'itemsSold' => 'Items Sold',
-            'totalSales' => 'Total Sales',
+            'itemsSold'      => 'Items Sold',
+            'totalSales'     => 'Total Sales',
             'numberOfOrders' => 'Number of Orders',
         ];
     }
 
-    public function getChartTimePeriodOptions(): array
+    /**
+     * Get a key-value array representing options for the chart's time range.
+     *
+     * @return array
+     */
+    public function getChartRangeOptions(): array
     {
         return [
             'weekly' => 'Weekly',

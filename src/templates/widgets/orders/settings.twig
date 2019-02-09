@@ -18,13 +18,13 @@
 
     {{ forms.selectField({
         label: 'Time Period'|t,
-        id: 'timePeriod',
+        id: 'chartRange',
         required: true,
-        name: 'timePeriod',
-        options: widget.getChartTimePeriodOptions(),
-        value: widget.timePeriod,
-        errors: widget.getErrors('timePeriod'),
-        instructions: "Choose a range of time for the chart."
+        name: 'chartRange',
+        options: widget.getChartRangeOptions(),
+        value: widget.chartRange,
+        errors: widget.getErrors('chartRange'),
+        instructions: "Choose a range of time to be charted."
     }) }}
 
 </form>
