@@ -25,26 +25,12 @@ class Orders extends Widget
     /**
      * @var string Type of order data to be displayed.
      */
-    public $chartType;
+    public $chartType = 'itemsSold';
 
     /**
      * @var string Range of time for which data should be summarized.
      */
-    public $chartRange;
-
-
-    // Static Methods
-    // =========================================================================
-
-    /**
-     * Disallow multiple widget instances.
-     *
-     * @return bool
-     */
-    protected static function allowMultipleInstances(): bool
-    {
-        return false;
-    }
+    public $chartRange = 'weekly';
 
 
     // Public Methods
@@ -85,8 +71,15 @@ class Orders extends Widget
      *
      * @return string
      */
-    public function getTitle(): string {
-        return Craft::t('snipcart', 'Snipcart Orders');
+    public function getTitle(): string
+    {
+        $rangeName = $this->getChartRangeOptions()[$this->chartRange];
+        $typeName  = $this->getChartTypeOptions()[$this->chartType];
+
+        return Craft::t('snipcart', sprintf('Snipcart %s %s',
+            $rangeName,
+            $typeName
+        ));
     }
 
    /**
@@ -98,11 +91,8 @@ class Orders extends Widget
 
        $rules[] = [['chartType', 'chartRange'], 'required'];
        $rules[] = [['chartType', 'chartRange'], 'string'];
-       $rules[] = [['chartType'], 'default', 'value' => 'itemsSold'];
-       $rules[] = [['chartRange'], 'default', 'value' => 'weekly'];
-
        $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
-       $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangePeriodOptions())];
+       $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
 
        return $rules;
    }
@@ -117,12 +107,17 @@ class Orders extends Widget
      */
     public function getBodyHtml()
     {
-        Craft::$app->getView()->registerAssetBundle(OrdersWidgetAsset::class);
+        $view = Craft::$app->getView();
+
+        $view->registerAssetBundle(OrdersWidgetAsset::class);
+        $view->registerJs(sprintf('new Craft.OrdersWidget(%d);',
+            $this->id
+        ));
 
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders/orders',
             [
-                'widget' => $this,
+                'widget'   => $this,
                 'settings' => Snipcart::$plugin->getSettings()
             ]
         );
@@ -148,9 +143,8 @@ class Orders extends Widget
     public function getChartTypeOptions(): array
     {
         return [
-            'itemsSold'      => 'Items Sold',
-            'totalSales'     => 'Total Sales',
-            'numberOfOrders' => 'Number of Orders',
+            'totalSales'     => 'Sales',
+            'numberOfOrders' => 'Orders',
         ];
     }
 
@@ -162,7 +156,8 @@ class Orders extends Widget
     public function getChartRangeOptions(): array
     {
         return [
-            'weekly' => 'Weekly',
+            'weekly'  => 'Weekly',
+            'monthly' => 'Monthly',
         ];
     }
 

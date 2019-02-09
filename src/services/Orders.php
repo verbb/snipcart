@@ -93,6 +93,54 @@ class Orders extends \craft\base\Component
     }
 
     /**
+     * Get Snipcart orders using multiple requests if there are
+     * pagination limits.
+     *
+     * @param array $params
+     * @return array
+     * @throws
+     */
+    public function getAllOrders($params = []): array
+    {
+        $collection = [];
+        $collected = 0;
+        $offset = 0;
+        $finished = false;
+
+        while ($finished === false)
+        {
+            $params['offset'] = $offset;
+
+            if ($result = $this->_fetchOrders($params))
+            {
+                $currentItems = (array)$result->items;
+                $collected += count($currentItems);
+                $collection[] = $currentItems;
+
+                if ($result->totalItems > $collected)
+                {
+                    $offset++;
+                }
+                else
+                {
+                    $finished = true;
+                }
+            }
+            else
+            {
+                $finished = true;
+            }
+        }
+
+        $items = array_merge(...$collection);
+
+        return ModelHelper::populateArrayWithModels(
+            $items,
+            Order::class
+        );
+    }
+
+    /**
      * Get the notifications Snipcart has sent regarding a specific order.
      *
      * @param string $orderToken Snipcart order ID
@@ -242,6 +290,57 @@ class Orders extends \craft\base\Component
             }
         }
         
+        return $ordersByDay;
+    }
+
+    /**
+     * List Snipcart orders by a range of dates.
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    public function listOrdersInRange($startDate, $endDate): array
+    {
+        return $this->getAllOrders([
+            'from' => $startDate,
+            'to'   => $endDate
+        ]);
+    }
+
+    /**
+     * List Snipcart orders by a range of dates, returning them by day.
+     *
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
+    public function listOrdersInRangeByDay($startDate, $endDate): array
+    {
+        $orders = $this->listOrdersInRange($startDate, $endDate);
+        $ordersByDay = [];
+
+        $totalDays = $endDate->diff($startDate)->days;
+
+        for ($i=0; $i <= $totalDays; $i++)
+        {
+            $currentDay = ($i === 0) ? $startDate : $startDate->modify('+1 day');
+            $key = $currentDay->format('Y-m-d');
+
+            if (! isset($ordersByDay[$key]))
+            {
+                $ordersByDay[$key] = [];
+            }
+
+            foreach ($orders as $order)
+            {
+                if ($order->completionDate->format('Y-m-d') == $key)
+                {
+                    $ordersByDay[$key][] = $order;
+                }
+            }
+        }
+
         return $ordersByDay;
     }
 
@@ -549,9 +648,20 @@ class Orders extends \craft\base\Component
             'placedBy',
         ];
 
-        $apiParams     = [];
-        $hasCacheParam = isset($params['cache']) && is_bool($params['cache']);
-        $cacheSetting  = $hasCacheParam ? $params['cache'] : true;
+        $apiParams      = [];
+        $hasCacheParam  = isset($params['cache']) && is_bool($params['cache']);
+        $cacheSetting   = $hasCacheParam ? $params['cache'] : true;
+        $dateTimeFormat = \DateTimeInterface::ATOM;
+
+        if (isset($params['from']) && $params['from'] instanceof \DateTime)
+        {
+            $params['from'] = $params['from']->format($dateTimeFormat);
+        }
+
+        if (isset($params['to']) && $params['to'] instanceof \DateTime)
+        {
+            $params['to'] = $params['to']->format($dateTimeFormat);
+        }
 
         foreach ($params as $key => $value)
         {

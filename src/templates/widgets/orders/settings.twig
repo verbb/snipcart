@@ -1,10 +1,6 @@
 {% import "_includes/forms" as forms %}
-{% set fieldNamespace = 'fields'~random() %}
-
 
 <form method="post" accept-charset="UTF-8">
-    {{ csrfInput() }}
-
     {{ forms.selectField({
         label: 'Chart Type'|t,
         id: 'chartType',
@@ -26,5 +22,4 @@
         errors: widget.getErrors('chartRange'),
         instructions: "Choose a range of time to be charted."
     }) }}
-
 </form>

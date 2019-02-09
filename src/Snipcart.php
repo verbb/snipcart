@@ -11,6 +11,7 @@ namespace workingconcept\snipcart;
 use workingconcept\snipcart\services\Api;
 use workingconcept\snipcart\services\Carts;
 use workingconcept\snipcart\services\Customers;
+use workingconcept\snipcart\services\Data;
 use workingconcept\snipcart\services\DigitalGoods;
 use workingconcept\snipcart\services\Discounts;
 use workingconcept\snipcart\services\Orders;
@@ -43,6 +44,7 @@ use yii\base\Event;
  * @property  Api           $api
  * @property  Carts         $carts
  * @property  Customers     $customers
+ * @property  Data          $data
  * @property  Discounts     $discounts
  * @property  Orders        $orders
  * @property  Products      $products
@@ -83,6 +85,7 @@ class Snipcart extends Plugin
             'api'           => Api::class,
             'carts'         => Carts::class,
             'customers'     => Customers::class,
+            'data'          => Data::class,
             'digitalGoods'  => DigitalGoods::class,
             'discounts'     => Discounts::class,
             'orders'        => Orders::class,
