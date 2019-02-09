@@ -1,5 +1,3 @@
-@import "_common";
-
 .snipcart-product-details {
     @apply rounded-sm;
     background-image: linear-gradient(-180deg, #FEFEFE 0%, #FAFAFA 100%);

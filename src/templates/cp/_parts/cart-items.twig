@@ -1,0 +1,144 @@
+{# @var order \workingconcept\snipcart\models\Order #}
+
+{% set isAbandonedCart = type is defined and type == 'abandonedCart' %}
+{% set hasSubtotal = not isAbandonedCart %}
+{% set hasShippingMethod = not isAbandonedCart %}
+{% set hasShippingInformation = isAbandonedCart %}
+{% set hasPromoCodes = not isAbandonedCart %}
+{% set hasRebate = not isAbandonedCart %}
+{% set hasFinalGrandTotal = not isAbandonedCart %}
+
+{#
+
+TODO: support plans
+
+#}
+
+<table class="data" style="width: 100%;">
+    <thead>
+        <th>
+            {{- "Qty"|t -}}
+        </th>
+        <th>
+            {{- "Name"|t -}}
+        </th>
+        <th></th>
+        {# alignment has to be set with an inline style property :( #}
+        <th class="text-right" style="text-align: right;">
+            {{- "Price"|t -}}
+        </th>
+    </thead>
+    <tbody>
+        {% for item in order.items %}
+            <tr>
+                <td>
+                    {{- item.quantity -}}
+                </td>
+                <td>
+                    {{- item.name -}}
+                </td>
+                <td class="text-xs leading-tight">
+                    {% if item.customFields | length %}
+                        {% for custom in item.customFields %}
+                            {{ custom.name }}: <b>{{ custom.value }}</b>
+                            {%- if loop.last != true -%}
+                                <br>
+                            {%- endif %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td style="text-align: right;">
+                    {{- item.price | currency(order.currency|upper) -}}
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4" style="border-bottom: 0;"></td>
+        </tr>
+        {% if hasSubtotal %}
+            <tr>
+                <td>
+                    {{- "Subtotal"|t -}}
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    {{ order.subtotal | currency(order.currency|upper) }}
+                </td>
+            </tr>
+        {% endif %}
+        {% if hasShippingMethod %}
+            <tr>
+                <td>
+                    {{- "Shipping"|t -}}
+                </td>
+                <td colspan="2">
+                    <span class="text-xs">{{- order.shippingMethod }} ({{ order.totalWeight }} grams)</span>
+                </td>
+                <td style="text-align: right;">
+                    {{ order.shippingFees | currency(order.currency|upper) -}}
+                </td>
+            </tr>
+        {% endif %}
+        {% if hasShippingInformation and order.shippingInformation.fees is defined %}
+            <tr>
+                <td>
+                    {{- "Shipping"|t -}}
+                </td>
+                <td colspan="2">
+                    <span class="text-xs">{{- order.shippingInformation.method }} ({{ order.totalWeight }} grams)</span>
+                </td>
+                <td style="text-align: right;">
+                    {{ order.shippingInformation.fees | currency(order.currency|upper) -}}
+                </td>
+            </tr>
+        {% endif %}
+        {% for tax in order.taxes %}
+            <tr>
+                <td>
+                    {{- tax.taxName }} ({{ tax.taxRate }})
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    {{ tax.amount | currency(order.currency|upper) }}
+                    {# {{ tax.numberForInvoice }} #}
+                </td>
+            </tr>
+        {% endfor %}
+        {% if hasPromoCodes and order.promocodes is defined %}
+            {% for code in order.promocodes %}
+                <tr>
+                    <td colspan="4" style="text-align: right;">
+                        <i>{{ "Promo Code"|t }} <code>{{ code.code }}</code> ({{ code.type }}, {{ code.rate }})</i>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        {% if hasRebate and order.rebateAmount %}
+            <tr>
+                <td>
+                    {{- "Total Rebates"|t -}}
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    {{ order.rebateAmount | currency(order.currency|upper) }}
+                </td>
+            </tr>
+        {% endif %}
+        {% if hasFinalGrandTotal %}
+            <tr>
+                <td>
+                    <b>{{- "Grand Total"|t -}}</b>
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    <b>{{ order.finalGrandTotal | currency(order.currency|upper) }}</b>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>
+                    <b>{{- "Total"|t -}}</b>
+                </td>
+                <td colspan="3" style="text-align: right;">
+                    <b>{{ order.total | currency(order.currency|upper) }}</b>
+                </td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>

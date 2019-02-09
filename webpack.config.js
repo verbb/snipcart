@@ -1,6 +1,4 @@
 const path    = require('path');
-const devMode = !(process.argv.indexOf('-p') !== -1);
-const webpack = require('webpack');
 const postcssImport = require('postcss-import');
 const postcssPresetEnv = require('postcss-preset-env');
 const postcssNested = require('postcss-nested');
@@ -98,6 +96,7 @@ module.exports = {
         'settings-discount': `${assetbundleSrc}/js/settings-discount.js`,
         'settings-plugin': `${assetbundleSrc}/js/settings-plugin.js`,
         'widget-orders': `${assetbundleSrc}/js/widget-orders.js`,
+        'snipcart': `${assetbundleSrc}/js/general.js`,
     },
     module: {
         rules: [CSSLoader, JSLoader, ESLintLoader]

@@ -41,7 +41,6 @@
     {{ redirectInput('settings') }}
 
     <div class="form-wrap">
-
         <div id="account" class="">
             {{ forms.textField({
                 first: true,
@@ -81,7 +80,7 @@
                 instructions: "Specify your store's currency."
             }) }}
         </div>
-
+    
         <div id="products" class="hidden">
             {#
 
@@ -403,146 +402,260 @@
 
         <div id="shipping" class="hidden">
 
-            <h2>{{ "Ship From"|t }}</h2>
-
-            {{ forms.textField({
-                label: 'Name'|t,
-                id: 'shipFromName',
-                name: 'shipFrom[name]',
-                value: settings.shipFrom.name ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Company Name'|t,
-                id: 'shipFromCompanyName',
-                name: 'shipFrom[companyName]',
-                value: settings.shipFrom.companyName ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Address'|t,
-                id: 'shipFromAddress1',
-                name: 'shipFrom[address1]',
-                placeholder: 'Address Line 1'|t,
-                value: settings.shipFrom.address1 ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                id: 'shipFromAddress2',
-                name: 'shipFrom[address2]',
-                placeholder: 'Address Line 2'|t,
-                value: settings.shipFrom.address2 ?? '',
-                instructions: ""
-            }) }}
-
-            <div class="input-row">
-                <div class="column city">
-                    {{ forms.textField({
-                        id: 'shipFromCity',
-                        name: 'shipFrom[city]',
-                        size: 30,
-                        placeholder: 'City',
-                        value: settings.shipFrom.city ?? '',
-                        instructions: ""
-                    }) }}
-                </div>
-                <div class="column province">
-                    {{ forms.textField({
-                        id: 'shipFromProvince',
-                        name: 'shipFrom[province]',
-                        placeholder: 'Province'|t,
-                        size: 8,
-                        maxlength: 2,
-                        value: settings.shipFrom.province ?? '',
-                        instructions: ""
-                    }) }}
-                </div>
-                <div class="column postal-code">
-                    {{ forms.textField({
-                        id: 'shipFromPostalCode',
-                        name: 'shipFrom[postalCode]',
-                        placeholder: 'Postal Code'|t,
-                        value: settings.shipFrom.postalCode ?? '',
-                        instructions: ""
-                    }) }}
-                </div>
-                <div class="column country">
-                    {{ forms.textField({
-                        id: 'shipFromCountry',
-                        name: 'shipFrom[country]',
-                        placeholder: 'Country'|t,
-                        size: 8,
-                        maxlength: 2,
-                        value: settings.shipFrom.country ?? '',
-                        instructions: ""
-                    }) }}
-                </div>
-            </div>
-
-            {{ forms.textField({
-                label: 'Phone'|t,
-                id: 'shipFromPhone',
-                name: 'shipFrom[phone]',
-                value: settings.shipFrom.phone ?? '',
-                instructions: ""
-            }) }}
-
-            {{ forms.textField({
-                label: 'Email'|t,
-                id: 'shipFromEmail',
-                name: 'shipFrom[email]',
-                value: settings.shipFrom.email ?? '',
-                instructions: ""
-            }) }}
-
-            <h2>{{ "Packaging Types"|t }}</h2>
-
-            {{ forms.editableTableField({
-                label: 'Packaging Types'|t,
-                id: 'packagingTypes',
-                cols: {
-                    0: { heading: 'Name'|t, type: 'singleline' },
-                    1: { heading: 'Length'|t, type: 'number' },
-                    2: { heading: 'Width'|t, type: 'number' },
-                    3: { heading: 'Height'|t, type: 'number' },
-                    4: { heading: 'Weight'|t, type: 'number' },
-                },
-                required: false,
-                name: 'packagingTypes',
-                rows: settings.getPackagingTypesForTable(),
-                errors: settings.getErrors('packagingTypes'),
-                instructions: ""
-            }) }}
-
             <h2>{{ "Providers"|t }}</h2>
 
-            {% if settings.enabledProviders | length %}
-                <h3>
-                    Provider{% if settings.enabledProviders | length > 1 %}s{% endif %} enabled:
-                    {% for provider in settings.enabledProviders %}
-                        {{ provider }}{% if loop.last != true %}, {% endif %}
-                    {% endfor %}
-                </h3>
-            {% endif %}
+            <div id="shipping-provider-fields" class="matrix matrix-field">
+                {% if settings.providers | length %}
+                    <div class="blocks">
+                        {% for providerName, providerSettings in settings.providers %}
+                            {% if providerName == 'shipStation' %}
+                                {% set logoUrl = craft.app.assetManager.getPublishedUrl(
+                                    '@workingconcept/snipcart/assetbundles/dist/img/shipstation.svg',
+                                    true
+                                ) %}
+                                <a class="btn">+ {{ "ShipStation"|t }}</a>
+                                <div class="snipcart-provider shipStation matrixblock">
+                                    <img 
+                                        src="{{ logoUrl }}" 
+                                        class="mt-6"
+                                        alt="ShipStation logo" 
+                                        width="130"
+                                        title="ShipStation"
+                                    >
 
-            {#
-            {% if settings.providers | length %}
-                <h3>Provider settings from static config:</h3>
-                {% for providerName, settings in settings.providers %}
-                    <label>{{ providerName }}</label>
-                    <ul style="margin-bottom: 1rem;">
-                        {% for key, value in settings %}
-                            <li><code>{{ key }}</code>: <code>{{ value }}</code></li>
+                                    {{ forms.textField({
+                                        label: 'API Key'|t,
+                                        id: 'apiKey',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][apiKey]',
+                                        value: providerSettings.apiKey,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('apiKey'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'API Secret'|t,
+                                        id: 'apiSecret',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][apiSecret]',
+                                        value: providerSettings.apiSecret,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('apiSecret'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'Default Carrier Code'|t,
+                                        id: 'defaultCarrierCode',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][defaultCarrierCode]',
+                                        value: providerSettings.defaultCarrierCode,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('defaultCarrierCode'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'Default Package Code'|t,
+                                        id: 'defaultPackageCode',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][defaultPackageCode]',
+                                        value: providerSettings.defaultPackageCode,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('defaultPackageCode'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'Default Country'|t,
+                                        id: 'defaultCountry',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][defaultCountry]',
+                                        value: providerSettings.defaultCountry,
+                                        size: 3,
+                                        limit: 2,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('defaultCountry'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'Default Order Confirmation'|t,
+                                        id: 'defaultOrderConfirmation',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][defaultOrderConfirmation]',
+                                        value: providerSettings.defaultOrderConfirmation,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('defaultOrderConfirmation'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.textField({
+                                        label: 'Default Warehouse ID'|t,
+                                        id: 'defaultWarehouseId',
+                                        class: 'code',
+                                        required: true,
+                                        name: 'providers[shipStation][defaultWarehouseId]',
+                                        value: providerSettings.defaultWarehouseId,
+                                        autocomplete: false,
+                                        errors: settings.getErrors('defaultWarehouseId'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.lightswitchField({
+                                        label: 'Enable Shipping Rates?'|t,
+                                        id: 'enableShippingRates',
+                                        required: false,
+                                        name: 'providers[shipStation][enableShippingRates]',
+                                        on: providerSettings.enableShippingRates,
+                                        value: true,
+                                        errors: settings.getErrors('enableShippingRates'),
+                                        instructions: ""
+                                    }) }}
+
+                                    {{ forms.lightswitchField({
+                                        label: 'Send Completed Orders?'|t,
+                                        id: 'sendCompletedOrders',
+                                        required: false,
+                                        name: 'providers[shipStation][sendCompletedOrders]',
+                                        on: providerSettings.sendCompletedOrders,
+                                        value: true,
+                                        errors: settings.getErrors('sendCompletedOrders'),
+                                        instructions: ""
+                                    }) }}
+                                </div>
+                            {% endif %}
                         {% endfor %}
-                    </ul>
-                {% endfor %}
-            {% endif %}
-            #}
-        </div>
+                    </div>
+                {% endif %}
+            </div>
 
+            {# TODO: only show if providers are set #}
+            <div id="ship-from-fields" class="mt-12">
+                <h2>{{ "Ship From"|t }}</h2>
+
+                {{ forms.textField({
+                    label: 'Name'|t,
+                    id: 'shipFromName',
+                    name: 'shipFrom[name]',
+                    value: settings.shipFrom.name ?? '',
+                    instructions: ""
+                }) }}
+
+                {{ forms.textField({
+                    label: 'Company Name'|t,
+                    id: 'shipFromCompanyName',
+                    name: 'shipFrom[companyName]',
+                    value: settings.shipFrom.companyName ?? '',
+                    instructions: ""
+                }) }}
+
+                {{ forms.textField({
+                    label: 'Address'|t,
+                    id: 'shipFromAddress1',
+                    name: 'shipFrom[address1]',
+                    placeholder: 'Address Line 1'|t,
+                    value: settings.shipFrom.address1 ?? '',
+                    instructions: ""
+                }) }}
+
+                {{ forms.textField({
+                    id: 'shipFromAddress2',
+                    name: 'shipFrom[address2]',
+                    placeholder: 'Address Line 2'|t,
+                    value: settings.shipFrom.address2 ?? '',
+                    instructions: ""
+                }) }}
+
+                <div class="input-row">
+                    <div class="column city">
+                        {{ forms.textField({
+                            id: 'shipFromCity',
+                            name: 'shipFrom[city]',
+                            size: 30,
+                            placeholder: 'City',
+                            value: settings.shipFrom.city ?? '',
+                            instructions: ""
+                        }) }}
+                    </div>
+                    <div class="column province">
+                        {{ forms.textField({
+                            id: 'shipFromProvince',
+                            name: 'shipFrom[province]',
+                            placeholder: 'Province'|t,
+                            size: 8,
+                            maxlength: 2,
+                            value: settings.shipFrom.province ?? '',
+                            instructions: ""
+                        }) }}
+                    </div>
+                    <div class="column postal-code">
+                        {{ forms.textField({
+                            id: 'shipFromPostalCode',
+                            name: 'shipFrom[postalCode]',
+                            placeholder: 'Postal Code'|t,
+                            value: settings.shipFrom.postalCode ?? '',
+                            instructions: ""
+                        }) }}
+                    </div>
+                    <div class="column country">
+                        {{ forms.textField({
+                            id: 'shipFromCountry',
+                            name: 'shipFrom[country]',
+                            placeholder: 'Country'|t,
+                            size: 8,
+                            maxlength: 2,
+                            value: settings.shipFrom.country ?? '',
+                            instructions: ""
+                        }) }}
+                    </div>
+                </div>
+
+                {{ forms.textField({
+                    label: 'Phone'|t,
+                    id: 'shipFromPhone',
+                    name: 'shipFrom[phone]',
+                    value: settings.shipFrom.phone ?? '',
+                    instructions: ""
+                }) }}
+
+                {{ forms.textField({
+                    label: 'Email'|t,
+                    id: 'shipFromEmail',
+                    name: 'shipFrom[email]',
+                    value: settings.shipFrom.email ?? '',
+                    instructions: ""
+                }) }}
+            </div>
+
+            <div id="packaging-types-field" class="mt-12">
+                <h2>{{ "Packaging"|t }}</h2>
+
+                {{ forms.editableTableField({
+                    label: 'Packaging Types'|t,
+                    id: 'packagingTypes',
+                    cols: {
+                        0: { heading: 'Name'|t, type: 'singleline' },
+                        1: { heading: 'Length'|t, type: 'number' },
+                        2: { heading: 'Width'|t, type: 'number' },
+                        3: { heading: 'Height'|t, type: 'number' },
+                        4: { heading: 'Weight'|t, type: 'number' },
+                    },
+                    required: false,
+                    name: 'packagingTypes',
+                    rows: settings.getPackagingTypesForTable(),
+                    errors: settings.getErrors('packagingTypes'),
+                    instructions: ""
+                }) }}
+            </div>
+        </div>
     </div>
 
 {% endblock %}

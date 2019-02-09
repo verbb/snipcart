@@ -1,7 +1,9 @@
+{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
 {% extends "_layouts/cp" %}
 
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
 {% set abandonedCart = craft.snipcart.getAbandonedCart(token) %}
-{# @var abandonedCart \workingconcept\snipcart\models\AbandonedCart #}
 
 {% if abandonedCart is null %}
     {% exit 404 %}
@@ -14,15 +16,61 @@
 
 {% set title = abandonedCart.billingAddress.name %}
 
+{#
+
+TODO:
+
+- support recoveryCampaignStatus
+- support guest?
+
+#}
+
 {% block content %}
+    <div class="block mb-8 clearfix">
+        <div class="w-1/2 float-left">
 
-    {#{ dump(abandonedCart) }#}
+            <p class="text-xl font-thin">
+                {{- abandonedCart.modificationDate | date('F j, Y') -}}{# <small class="ml-2 text-muted text-xs">{{ abandonedCart.status }}</small>#}
+            </p>
 
-    {% for prop, value in abandonedCart %}
+            {% include "snipcart/cp/_parts/customer-summary" with { 
+                order: abandonedCart,
+            } %}
+
+            {% include "snipcart/cp/_parts/order-addresses" with { 
+                order: abandonedCart,
+                shippingSameAsBilling: abandonedCart.shipToBillingAddress
+            } %}
+
+            <a 
+                class="btn mt-4" 
+                href="https://app.snipcart.com/dashboard/abandoned/{{ abandonedCart.token }}" 
+                target="_blank"
+            >
+                {{- "View in Snipcart Control Panel"|t -}}
+            </a>
+        </div>
+        <div class="w-1/2 float-left">
+            <h3>{{ "Items"|t }}</h3>
+
+            {% include "snipcart/cp/_parts/cart-items" with { 
+                order: abandonedCart,
+                type: 'abandonedCart'
+            } %}
+        </div>
+    </div>
+    <div class="block">
+        <hr>
+        {% include "snipcart/cp/_parts/technical-details" with { 
+            order: abandonedCart,
+        } %}
+    </div>
+
+    {# {% for prop, value in abandonedCart %}
         <p>
             <b>{{ prop }}</b>
             {{ dump(value) }}
         </p>
-    {% endfor %}
+    {% endfor %} #}
 
 {% endblock %}

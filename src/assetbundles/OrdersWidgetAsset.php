@@ -8,6 +8,9 @@
 
 namespace workingconcept\snipcart\assetbundles;
 
+use yii\web\JqueryAsset;
+use craft\web\assets\cp\CpAsset;
+
 /**
  * @author    Working Concept
  * @package   Snipcart
@@ -24,8 +27,7 @@ class OrdersWidgetAsset extends \craft\web\AssetBundle
     public function init()
     {
         $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
-
-        $this->depends = [];
+        $this->depends = [SnipcartAsset::class, CpAsset::class];
         $this->js = ['js/widget-orders.js'];
         $this->css = [];
 

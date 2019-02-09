@@ -1,0 +1,40 @@
+{% set firstHeading = shippingSameAsBilling ? 'Billing + Shipping Address' : 'Billing Address' %}
+{% set secondHeading = shippingSameAsBilling ? false : 'Shipping Address' %}
+
+<h3>{{ firstHeading|t }}</h3>
+
+<p> 
+    {{- order.billingAddress.name }}<br>
+    {% if order.billingAddress.companyName is defined and order.billingAddress.companyName is not empty %}
+        {{ order.billingAddress.companyName }}<br>
+    {% endif %}
+    {{ order.billingAddress.address1 }}<br>
+    {% if order.billingAddress.address2 %}
+        {{ order.billingAddress.address2 }}<br>
+    {% endif %}
+    {{ order.billingAddress.city }}, {{ order.billingAddress.province }} {{ order.billingAddress.postalCode }}
+</p>
+
+<p>{{ order.billingAddress.phone }}</p>
+
+{% if not shippingSameAsBilling %}
+
+    <br>
+
+    <h3>{{ secondHeading|t }}</h3>
+
+    <p>
+        {{ order.shippingAddress.name }}<br>
+        {% if order.shippingAddress.companyName is defined and order.shippingAddress.companyName is not empty %}
+            {{ order.shippingAddress.companyName }}<br>
+        {% endif %}
+        {{ order.shippingAddress.address1 }}<br>
+        {% if order.shippingAddress.address2 %}
+            {{ order.shippingAddress.address2 }}<br>
+        {% endif %}
+        {{ order.shippingAddress.city }}, {{ order.shippingAddress.province }} {{ order.shippingAddress.postalCode }}
+    </p>
+
+    <p>{{ order.shippingAddressPhone }}</p>
+
+{% endif %}

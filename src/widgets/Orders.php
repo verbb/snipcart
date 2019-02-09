@@ -18,6 +18,10 @@ use craft\base\Widget;
  */
 class Orders extends Widget
 {
+
+    public $chartType;
+    public $timePeriod;
+
     /**
      * Disallow multiple widget instances.
      *
@@ -43,9 +47,9 @@ class Orders extends Widget
      *
      * @return string
      */
-    public static function iconPath()
+    public static function iconPath(): string
     {
-        //return Craft::getAlias("@workingconcept/snipcart/assetbundles/dist/img/orders-icon.svg");
+        return Craft::getAlias('@workingconcept/snipcart/assetbundles/dist/img/orders-icon.svg');
     }
 
     /**
@@ -67,6 +71,17 @@ class Orders extends Widget
         return Craft::t('snipcart', 'Snipcart Orders');
     }
 
+//    /**
+//     * @inheritdoc
+//     */
+//    public function rules(): array
+//    {
+//        $rules = parent::rules();
+//        $rules[] = [['section'], 'required'];
+//        $rules[] = [['section', 'entryType'], 'integer'];
+//        return $rules;
+//    }
+
     /**
      * Returns the widget body HTML.
      *
@@ -75,16 +90,44 @@ class Orders extends Widget
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-
     public function getBodyHtml()
     {
         Craft::$app->getView()->registerAssetBundle(OrdersWidgetAsset::class);
 
         return Craft::$app->getView()->renderTemplate(
-            'snipcart/widgets/orders',
+            'snipcart/widgets/orders/orders',
             [
                 'settings' => Snipcart::$plugin->getSettings()
             ]
         );
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate('snipcart/widgets/orders/settings',
+            [
+                'widget' => $this
+            ]
+        );
+    }
+
+    public function getChartTypeOptions(): array
+    {
+        return [
+            'itemsSold' => 'Items Sold',
+            'totalSales' => 'Total Sales',
+            'numberOfOrders' => 'Number of Orders',
+        ];
+    }
+
+    public function getChartTimePeriodOptions(): array
+    {
+        return [
+            'weekly' => 'Weekly',
+        ];
+    }
+
 }

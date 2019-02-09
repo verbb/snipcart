@@ -1,0 +1,30 @@
+{% import "_includes/forms" as forms %}
+{% set fieldNamespace = 'fields'~random() %}
+
+
+<form method="post" accept-charset="UTF-8">
+    {{ csrfInput() }}
+
+    {{ forms.selectField({
+        label: 'Chart Type'|t,
+        id: 'chartType',
+        required: true,
+        name: 'chartType',
+        options: widget.getChartTypeOptions(),
+        value: widget.chartType,
+        errors: widget.getErrors('chartType'),
+        instructions: "Choose the type of chart you'd like to display."
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Time Period'|t,
+        id: 'timePeriod',
+        required: true,
+        name: 'timePeriod',
+        options: widget.getChartTimePeriodOptions(),
+        value: widget.timePeriod,
+        errors: widget.getErrors('timePeriod'),
+        instructions: "Choose a range of time for the chart."
+    }) }}
+
+</form>

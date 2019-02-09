@@ -1,24 +1,24 @@
 /* global Craft */
-/* global jQuery */
 
-(function($) {
-    Craft.postActionRequest('snipcart/charts/get-orders-data', {}, $.proxy(function(response, textStatus) {
-        if (textStatus === 'success' && typeof (response.error) === 'undefined') {
-            console.log(response);
+const chartContainer = document.getElementById('snipcart-orders-chart');
 
-            var chart = new Craft.charts.Area($('#snipcart-orders-chart'));
+Craft.postActionRequest('snipcart/charts/get-orders-data', {}, $.proxy(function(response, textStatus) {
+    if (textStatus === 'success' && typeof (response.error) === 'undefined') {
+        console.log(response);
 
-            var chartDataTable = new Craft.charts.DataTable(response.dataTable);
+        //var chart = new Craft.charts.Area($('#snipcart-orders-chart'));
+        var chart = new Craft.charts.Area(chartContainer);
 
-            var chartSettings = {
-                orientation: response.orientation,
-                dataScale: response.scale,
-                formats: response.formats
-            };
+        var chartDataTable = new Craft.charts.DataTable(response.dataTable);
 
-            chart.draw(chartDataTable, chartSettings);
+        var chartSettings = {
+            orientation: response.orientation,
+            dataScale: response.scale,
+            formats: response.formats
+        };
 
-            window.dashboard.grid.on('refreshCols', $.proxy(this, 'handleGridRefresh'));
-        }
-    }));
-})(jQuery);
+        chart.draw(chartDataTable, chartSettings);
+
+        window.dashboard.grid.on('refreshCols', $.proxy(this, 'handleGridRefresh'));
+    }
+}));
