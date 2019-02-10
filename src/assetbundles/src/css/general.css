@@ -4,9 +4,8 @@
 
 .text-muted { color: #b9bfc6; }
 
-.discount-columns {
+.detail-columns {
     .column-wrapper {
         @apply flex;
     }
 }
-

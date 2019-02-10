@@ -621,7 +621,6 @@ class Orders extends \craft\base\Component
         );
 
         return $response;
-
     }
 
     // Private Methods

@@ -120,4 +120,34 @@ class Subscription extends \craft\base\Model
      * @var
      */
     public $recurringShipping;
+
+    /**
+     * @var
+     */
+    public $shippingCharged;
+
+    /**
+     * @var
+     */
+    public $nextBillingDate;
+
+    /**
+     * @var
+     */
+    public $upcomingPayments;
+
+    /**
+     * @var
+     */
+    public $invoiceNumber;
+
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate', 'cancelledOn', 'nextBillingDate', 'firstInvoiceReceivedOn'];
+    }
+
 }

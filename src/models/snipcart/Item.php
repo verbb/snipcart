@@ -36,6 +36,11 @@ class Item extends \craft\base\Model
     public $id;
 
     /**
+     * @var
+     */
+    public $subscriptionId;
+
+    /**
      * @var string
      */
     public $name;
@@ -164,6 +169,12 @@ class Item extends \craft\base\Model
      * @var string
      */
     public $addedOn;
+
+
+    /**
+     * @var string
+     */
+    public $startsOn;
 
     /**
      * @var \DateTime

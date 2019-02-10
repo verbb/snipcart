@@ -45,6 +45,68 @@ class Subscriptions extends \craft\base\Component
         return $subscriptionData;
     }
 
+    /**
+     * Get a Snipcart subscription.
+     *
+     * @param string $subscriptionId Snipcart order GUID
+     * @return Subscription|null
+     * @throws \Exception if our API key is missing.
+     */
+    public function getSubscription($subscriptionId)
+    {
+        if ($subscriptionData = Snipcart::$plugin->api->get(sprintf(
+            'subscriptions/%s',
+            $subscriptionId
+        )))
+        {
+            return new Subscription((array)$subscriptionData);
+        }
+
+        return null;
+    }
+
+    /**
+     * Cancel a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function cancel($subscriptionId)
+    {
+        return Snipcart::$plugin->api->delete(
+            sprintf('subscriptions/%s', $subscriptionId)
+        );
+    }
+
+    /**
+     * Pause a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function pause($subscriptionId)
+    {
+        return Snipcart::$plugin->api->post(
+            sprintf('subscriptions/%s/pause', $subscriptionId)
+        );
+    }
+
+    /**
+     * Resume a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function resume($subscriptionId)
+    {
+        return Snipcart::$plugin->api->post(
+            sprintf('subscriptions/%s/resume', $subscriptionId)
+        );
+    }
+
     // Private Methods
     // =========================================================================
 

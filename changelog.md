@@ -5,9 +5,11 @@
 - Added inventory to the Product Details field type.
 - Added the ability to designate a custom admin order notification email template.
 - Webhook log now stores `mode`.
+- Added support for displaying Subscriptions and cancelling them from the control panel.
 ### Changed
 - Improved several control panel views.
 - Optimized control panel assets.
+- Vastly improved speed and flexibility of Dashboard widget.
 
 ## 1.0.0-beta.16 - 2018-12-27
 ### Added

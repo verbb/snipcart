@@ -18,14 +18,13 @@
 
 {% block content %}
 
-    {#{ dump(discount) }#}
     {% if discount.expires < now %}
         <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
             {{ "This discount expired"|t }} {{ discount.expires | date('F j, Y') }}.
         </div>
     {% endif %}
 
-    <div class="discount-columns block px-3 mb-8">
+    <div class="detail-columns block px-3 mb-8">
         <div class="column-wrapper -mx-6">
             <div class="w-1/2 mx-3">
                 <div class="inner">

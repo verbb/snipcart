@@ -140,6 +140,7 @@ class Snipcart extends Plugin
                         'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
                         'snipcart/abandoned/<token>' => ['template' => 'snipcart/cp/abandoned-carts/detail'],
                         'snipcart/subscriptions' => ['template' => 'snipcart/cp/subscriptions/index'],
+                        'snipcart/subscriptions/<subscriptionId>' => ['template' => 'snipcart/cp/subscriptions/detail'],
                     ];
 
                     $event->rules = array_merge($event->rules, $rules);

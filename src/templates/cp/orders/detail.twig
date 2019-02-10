@@ -134,7 +134,6 @@
         <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order"|t }}</a>
     {%- endif %}
 
-
     <form id="refund-form" action="" method="post" class="hidden">
         <input type="hidden" name="action" value="snipcart/orders/refund">
         <input type="hidden" name="orderId" value="{{ order.token }}">
@@ -166,7 +165,7 @@
         }) }}
 
         <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
-        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
+        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund ..."|t }}">
     </form>
 
 {% endblock %}

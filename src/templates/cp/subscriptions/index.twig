@@ -1,3 +1,4 @@
+{# @var subscription \workingconcept\snipcart\models\Subscription #}
 {% extends "snipcart/cp/_layout" %}
 
 {% set title         = "Snipcart Subscriptions"|t %}
@@ -11,32 +12,30 @@
     </p>
 
     {% if subscriptions.items |length %}
-
         <table id="carts" class="data" style="width: 100%;">
             <thead>
-                <th scope="col">{{ "Email"|t }}</th>
+                <th scope="col">{{ "Subscriber"|t }}</th>
                 <th scope="col">{{ "Name"|t }}</th>
                 <th scope="col">{{ "Amount"|t }}</th>
                 <th scope="col">{{ "Quantity"|t }}</th>
-                <th scope="col">{{ "Gateway ID"|t }}</th>
                 <th scope="col">{{ "Status"|t }}</th>
                 <th scope="col">{{ "Recurring Shipping"|t }}</th>
             </thead>
             <tbody>
                 {% for subscription in subscriptions.items %}
                     <tr data-id="{{ subscription.id }}" data-name="{{ subscription.user.email }}">
-                        <td>{{ subscription.user.email }}</td>
+                        <td>
+                            <a href="{{ url('snipcart/subscriptions/'~subscription.id) }}">{{ subscription.user.billingAddressName }}</a>
+                        </td>
                         <td>{{ subscription.name }}</td>
-                        <td>{{ subscription.amount }}</td>
+                        <td>{{ subscription.amount | currency }}</td>
                         <td>{{ subscription.quantity }}</td>
-                        <td>{{ subscription.gatewayId }}</td>
                         <td>{{ subscription.status }}</td>
-                        <td>{{ subscription.recurringShipping }}</td>
+                        <td>{{ subscription.recurringShipping ? "yes"|t : "no"|t }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-
     {% endif %}
 
 {% endblock %}

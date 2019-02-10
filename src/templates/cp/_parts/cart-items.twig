@@ -71,7 +71,10 @@ TODO: support plans
                     {{- "Shipping"|t -}}
                 </td>
                 <td colspan="2">
-                    <span class="text-xs">{{- order.shippingMethod }} ({{ order.totalWeight }} grams)</span>
+                    <span class="text-xs">
+                        {{- order.shippingMethod }}
+                        {%- if order.totalWeight %} ({{ order.totalWeight }} grams){% endif -%}
+                    </span>
                 </td>
                 <td style="text-align: right;">
                     {{ order.shippingFees | currency(order.currency|upper) -}}
@@ -84,7 +87,10 @@ TODO: support plans
                     {{- "Shipping"|t -}}
                 </td>
                 <td colspan="2">
-                    <span class="text-xs">{{- order.shippingInformation.method }} ({{ order.totalWeight }} grams)</span>
+                    <span class="text-xs">
+                        {{- order.shippingInformation.method }}
+                        {%- if order.totalWeight %} ({{ order.totalWeight }} grams){% endif -%}
+                    </span>
                 </td>
                 <td style="text-align: right;">
                     {{ order.shippingInformation.fees | currency(order.currency|upper) -}}
@@ -93,10 +99,10 @@ TODO: support plans
         {% endif %}
         {% for tax in order.taxes %}
             <tr>
-                <td>
+                <td colspan="3">
                     {{- tax.taxName }} ({{ tax.taxRate }})
                 </td>
-                <td colspan="3" style="text-align: right;">
+                <td colspan="1" style="text-align: right;">
                     {{ tax.amount | currency(order.currency|upper) }}
                     {# {{ tax.numberForInvoice }} #}
                 </td>

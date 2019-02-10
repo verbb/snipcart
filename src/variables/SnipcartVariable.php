@@ -12,6 +12,7 @@ use workingconcept\snipcart\models\AbandonedCart;
 use workingconcept\snipcart\models\Customer;
 use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\Subscription;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -96,6 +97,16 @@ class SnipcartVariable
     public function listSubscriptions()
     {
         return Snipcart::$plugin->subscriptions->listSubscriptions();
+    }
+
+    /**
+     * @param $subscriptionId
+     * @return Subscription|null
+     * @throws \Exception
+     */
+    public function getSubscription($subscriptionId)
+    {
+        return Snipcart::$plugin->subscriptions->getSubscription($subscriptionId);
     }
 
     /**
