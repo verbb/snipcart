@@ -1,5 +1,6 @@
 {% extends "snipcart/cp/_layout" %}
 
+{% set title       = "Snipcart Abandoned Carts"|t %}
 {% set carts       = craft.snipcart.listAbandonedCarts() %}
 {% set selectedTab = "abandoned" %}
 
