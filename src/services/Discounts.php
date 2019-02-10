@@ -87,6 +87,7 @@ class Discounts extends \craft\base\Component
         ));
     }
 
+
     // Private Methods
     // =========================================================================
 

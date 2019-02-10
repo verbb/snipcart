@@ -302,4 +302,9 @@ class AbandonedCart extends \craft\base\Model
         return ['modificationDate', 'completionDate'];
     }
 
+    public function getSnipcartUrl(): string
+    {
+        return 'https://app.snipcart.com/dashboard/abandoned/' . $this->token;
+    }
+
 }

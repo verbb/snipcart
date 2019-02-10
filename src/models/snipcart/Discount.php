@@ -28,7 +28,7 @@ class Discount extends \craft\base\Model
     const TYPE_ALTERNATE_SHIPPING = 'Shipping';
 
 
-    // Properties
+    // Public Properties
     // =========================================================================
 
     /**
@@ -214,6 +214,42 @@ class Discount extends \craft\base\Model
     public $modificationDate;
 
 
+    // Private Properties
+    // =========================================================================
+
+    private $_triggerOptionFieldMap = [
+        self::TRIGGER_CODE => [
+            'code'
+        ],
+        self::TRIGGER_TOTAL => [
+            'totalToReach'
+        ],
+        self::TRIGGER_PRODUCT => [
+            'itemId'
+        ],
+    ];
+
+    private $_typeOptionFieldMap = [
+        self::TYPE_FIXED_AMOUNT => [
+            'amount'
+        ],
+        self::TYPE_FIXED_AMOUNT_ON_ITEMS => [
+            'productIds'
+        ],
+        self::TYPE_RATE => [
+            'rate'
+        ],
+        self::TYPE_ALTERNATE_PRICE => [
+            'alternatePrice'
+        ],
+        self::TYPE_ALTERNATE_SHIPPING => [
+            'shippingDescription',
+            'shippingCost',
+            'shippingGuaranteedDaysToDelivery',
+        ],
+    ];
+
+
     // Public Methods
     // =========================================================================
 
@@ -269,6 +305,26 @@ class Discount extends \craft\base\Model
         }
 
         return $payload;
+    }
+
+    /**
+     * Get a list of field options relevant to the selected trigger.
+     *
+     * @return array
+     */
+    public function getTriggerOptionFields(): array
+    {
+        return $this->_triggerOptionFieldMap[$this->trigger];
+    }
+
+    /**
+     * Get a list of discount field options relevant to the selected type.
+     *
+     * @return array
+     */
+    public function getTypeOptionFields(): array
+    {
+        return $this->_typeOptionFieldMap[$this->type];
     }
 
 }

@@ -5,6 +5,8 @@ const postcssNested = require('postcss-nested');
 const tailwind = require('tailwindcss');
 const purgeCss = require('@fullhuman/postcss-purgecss');
 const cssnano = require('cssnano');
+const devMode = !(process.argv.indexOf('-p') !== -1);
+const webpack = require('webpack');
 
 const miniCssExtractPlugin = require('mini-css-extract-plugin');
 const cleanWebpackPlugin = require("clean-webpack-plugin");
@@ -104,19 +106,23 @@ module.exports = {
     plugins: [
         new miniCssExtractPlugin({
             publicPath: path.resolve(__dirname, assetbundleDist),
-            filename: "css/[name].css",
+            filename: `css/[name].css`,
         }),
         new cleanWebpackPlugin(
             [`${assetbundleDist}/js`, `${assetbundleDist}/css`],
             {
-                root: path.resolve(__dirname, "./"),
+                root: path.resolve(__dirname, `./`),
                 verbose: false,
                 dry: false
             }
         )
     ],
+    watchOptions: {
+        poll: true,
+        ignored: `/node_modules/`
+    },
     output: {
         path: path.resolve(__dirname, assetbundleDist),
-        filename: "js/[name].js"
+        filename: `js/[name].js`
     },
 };

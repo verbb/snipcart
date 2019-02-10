@@ -2,6 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-.text-muted {
-    color: #b9bfc6;
+.text-muted { color: #b9bfc6; }
+
+.discount-columns {
+    .column-wrapper {
+        @apply flex;
+    }
 }
+

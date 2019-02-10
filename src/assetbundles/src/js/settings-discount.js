@@ -1,3 +1,5 @@
+// TODO: use Vue
+
 var triggerInput = document.getElementById('trigger');
 var codeField = document.getElementById('code-field');
 var itemIdField = document.getElementById('itemId-field');
