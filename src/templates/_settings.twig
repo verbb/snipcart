@@ -414,9 +414,9 @@
                                     '@workingconcept/snipcart/assetbundles/dist/img/shipstation.svg',
                                     true
                                 ) %}
-                                <a class="btn{% if isEnabled %} hidden{% endif %}">+ {{ "ShipStation"|t }}</a>
-                                <div class="snipcart-provider shipStation matrixblock relative{% if not isEnabled %} hidden{% endif %}">
-                                    <a class="delete icon" title="Delete Provider" style="position: absolute; top: 1rem; right: 1.25rem;"></a>
+                                <a id="shipstation-add-btn" class="btn{% if isEnabled %} hidden{% endif %}">+ {{ "ShipStation"|t }}</a>
+                                <div id="shipstation-provider-settings" class="snipcart-provider shipStation matrixblock relative{% if not isEnabled %} hidden{% endif %}">
+                                    <a id="shipstation-settings-delete" class="delete icon" title="Delete Provider" style="position: absolute; top: 1rem; right: 1.25rem;"></a>
                                     <img 
                                         src="{{ logoUrl }}" 
                                         class="mt-6"
