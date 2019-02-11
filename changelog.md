@@ -6,6 +6,7 @@
 - Added the ability to designate a custom admin order notification email template.
 - Webhook log now stores `mode`.
 - Added support for displaying Subscriptions and cancelling them from the control panel.
+- Added Overview tab for control panel section.
 ### Changed
 - Improved several control panel views.
 - Optimized control panel assets.
