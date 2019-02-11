@@ -42,13 +42,10 @@ TODO:
                 shippingSameAsBilling: abandonedCart.shipToBillingAddress
             } %}
 
-            <a 
-                class="btn mt-4" 
-                href="{{ abandonedCart.snipcartUrl }}" 
-                target="_blank"
-            >
-                {{- "View in Snipcart Control Panel"|t -}}
+            <a href="{{ abandonedCart.dashboardUrl() }}" class="btn mt-4" target="_blank">
+                {{- "View in Snipcart Dashboard"|t -}}
             </a>
+
         </div>
         <div class="w-1/2 float-left">
             <h3>{{ "Items"|t }}</h3>

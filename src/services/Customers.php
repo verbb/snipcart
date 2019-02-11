@@ -109,16 +109,29 @@ class Customers extends \craft\base\Component
      */
     public function getCustomerOrders($customerId): array
     {
-        return ModelHelper::populateArrayWithModels(
+        $orders = ModelHelper::populateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'customers/%s/orders',
                 $customerId
-            )),
+            ), ['orderBy' => 'creationDate']),
             Order::class
         );
+
+        usort($orders, [$this, 'sortOrdersByDateDescending']);
+
+        return $orders;
     }
 
     // Private Methods
     // =========================================================================
 
+    private function sortOrdersByDateAscending($a, $b): bool
+    {
+        return $a->creationDate->getTimestamp() > $b->creationDate->getTimestamp();
+    }
+
+    private function sortOrdersByDateDescending($a, $b): bool
+    {
+        return $a->creationDate->getTimestamp() < $b->creationDate->getTimestamp();
+    }
 }

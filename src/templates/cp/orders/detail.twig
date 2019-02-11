@@ -12,6 +12,14 @@
     {% exit 404 %}
 {% endif %}
 
+{#
+
+TODO:
+- include custom fields
+- display notifications (fetch with ajax)
+
+#}
+
 {#% set orderNotifications = craft.snipcart.getOrderNotifications(orderId) %#}
 {% set orderRefunds = craft.snipcart.getOrderRefunds(orderId) %}
 {% set title = "Order " ~ order.invoiceNumber %}
@@ -54,65 +62,53 @@
         </div>
     {% endif %}
 
-    <table border="0" cellspacing="0" cellpadding="0" width="100%">
-        <tr valign="top">
-            <td style="vertical-align: top; padding: 0 25px 0 0;">
-                <h3>Order from {{ order.creationDate | date('n/j/Y') }}</h3>
+    <div class="detail-columns block px-3 mb-8">
+        <div class="flex-wrapper -mx-6">
+            <div class="w-1/2 mx-3">
+                <div class="inner">
+                    <div class="flex-wrapper -mx-3">
+                        <div class="w-1/2 mx-3">
+                            <h2>{{ "Created"|t }} {{ order.creationDate | date('F j, Y') }}</h2>
+                            <p>
+                                {{ "Updated"|t }} {{ order.modificationDate | date('n/j/Y g:ia') }}<br>
+                                {{ "Status"|t }}: <b>{{ order.status }}</b><br>
+                                {{ "Payment Method"|t }}: <b>{{ order.cardType }} (<code>{{ order.creditCardLast4Digits }}</code>)</b><br>
+                                {{ order.paymentGatewayUsed }}: <code>{{ order.paymentTransactionId }}</code>
+                            </p>
 
-                <p>
-                    Last updated {{ order.modificationDate | date('n/j/Y h:ia') }}<br>
-                    Status: <b>{{ order.status }}</b><br>
-                    Payment Method: <b>{{ order.cardType }} (<code>{{ order.creditCardLast4Digits }}</code>)</b><br>
-                    {{ order.paymentGatewayUsed }} Ref: <code>{{ order.paymentTransactionId }}</code>
-                </p>
+                            {% if order.notes %}
+                                <h3>{{ "Notes"|t }}</h3>
+                                {{ order.notes }}
+                            {% endif %}
 
+                        </div>
+                        <div class="w-1/2 mx-3">
+                            <h2>{{ "Customer"|t }}</h2>
 
-                {% if order.notes %}
+                            {% include "snipcart/cp/_parts/customer-summary" with {
+                                order: order,
+                            } %}
 
-                <h3>Notes</h3>
+                            {% include "snipcart/cp/_parts/order-addresses" with {
+                                order: order,
+                                shippingSameAsBilling: order.shippingAddressSameAsBilling
+                            } %}
 
-                {{ order.notes }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-1/2 mx-3">
+                <div class="inner">
+                    <h2>{{ "Items"|t }}</h2>
 
-                {% endif %}
-
-                {# <p>Grand Total: {{ order.grandTotal }}</p> #}
-                {# <p>Rebate Amount: {{ order.rebateAmount }}</p> #}
-                {# <p>Items Total: {{ order.itemsTotal }}</p> #}
-                {# <p>Grand Total: {{ order.grandTotal }}</p> #}
-                {# <p>Total Weight: {{ order.totalWeight }}</p> #}
-                {# <p>{{ order.hasPromocode }}</p> #}
-                {# <p>Total Rebates: {{ order.totalRebateRate }}</p> #}
-                {# <p>{{ order.willBePaidLater }}</p> #}
-                {# <p>{{ order.customFieldsJson }}</p> #}
-
-
-            </td>
-            <td style="vertical-align: top; padding: 0 25px 0 0;">
-
-                <h3>{{ "Customer"|t }}</h3>
-
-                {% include "snipcart/cp/_parts/customer-summary" with { 
-                    order: order,
-                } %}
-
-                {% include "snipcart/cp/_parts/order-addresses" with { 
-                    order: order,
-                    shippingSameAsBilling: order.shippingAddressSameAsBilling
-                } %}
-            </td>
-            <td style="vertical-align: top;">
-
-                <h3>{{ "Items"|t }}</h3>
-
-                {% include "snipcart/cp/_parts/cart-items" with { 
-                    order: order
-                } %}
-
-                <br>
-
-            </td>
-        </tr>
-    </table>
+                    {% include "snipcart/cp/_parts/cart-items" with {
+                        order: order
+                    } %}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {#% if orderNotifications %}
 <div class="notifications">
@@ -131,8 +127,12 @@
 {% endif %#}
 
     {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
-        <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order"|t }}</a>
+        <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order …"|t }}</a>
     {%- endif %}
+
+    <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
+        {{- "View in Snipcart Dashboard"|t -}}
+    </a>
 
     <form id="refund-form" action="" method="post" class="hidden">
         <input type="hidden" name="action" value="snipcart/orders/refund">
@@ -165,7 +165,7 @@
         }) }}
 
         <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
-        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund ..."|t }}">
+        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
     </form>
 
 {% endblock %}

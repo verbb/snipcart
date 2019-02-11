@@ -327,4 +327,9 @@ class Discount extends \craft\base\Model
         return $this->_typeOptionFieldMap[$this->type];
     }
 
+    public function getDashboardUrl(): string
+    {
+        return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;
+    }
+
 }

@@ -1,5 +1,7 @@
 {% extends "snipcart/cp/_layout" %}
 
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
 {% set title = "Snipcart Customers"|t %}
 
 {% import "_includes/forms" as forms %}
@@ -24,10 +26,8 @@
         {{ "There aren't any customers with accounts yet."|t }}
     </p>
 
-    <div class="callout" style="background: #eee; padding: 10px; margin-bottom: 25px;">
-
+    <div class="callout mb-6 p-2" style="background: #eee;">
         <form action="" method="post">
-
             {{ csrfInput() }}
 
             {{ forms.text({
@@ -42,7 +42,6 @@
             }) }}
 
             <input type="submit" class="btn submit" name="submit" value="Search">
-
         </form>
     </div>
 

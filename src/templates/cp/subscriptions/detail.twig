@@ -102,7 +102,6 @@ TODO:
                             {% endif %}
                         </tbody>
                     </table>
-
                 </div>
             </div>
             <div class="w-1/2 mx-3">
@@ -173,6 +172,10 @@ TODO:
             </div>
         </div>
     </div>
+
+    <a href="{{ subscription.dashboardUrl() }}" class="btn mt-8" target="_blank">
+        {{- "View in Snipcart Dashboard"|t -}}
+    </a>
 
     {% if not isCancelled %}
         <form action="" method="post">

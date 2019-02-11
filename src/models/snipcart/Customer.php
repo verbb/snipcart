@@ -190,6 +190,21 @@ class Customer extends \craft\base\Model
     // =========================================================================
 
     /**
+     * Returns the URL for the customer in the Snipcart customer dashboard.
+     *
+     * @return string|null
+     */
+    public function getDashboardUrl()
+    {
+        if (! isset($this->id))
+        {
+            return null;
+        }
+
+        return 'https://app.snipcart.com/dashboard/customers/' . $this->id;
+    }
+
+    /**
      * @inheritdoc
      */
     public function datetimeAttributes(): array
