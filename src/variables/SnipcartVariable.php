@@ -24,12 +24,13 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
+     * @param int $limit
      * @return \stdClass|array
      * @throws \Exception
      */
-    public function listOrders($pageNumber = 1)
+    public function listOrders($pageNumber = 1, $limit = 20)
     {
-        return Snipcart::$plugin->orders->listOrders($pageNumber);
+        return Snipcart::$plugin->orders->listOrders($pageNumber, $limit);
     }
 
     /**
@@ -44,12 +45,26 @@ class SnipcartVariable
 
     /**
      * @param int $pageNumber
+     * @param int $limit
      * @return \stdClass|array|null
      * @throws \Exception
      */
-    public function listCustomers($pageNumber = 1)
+    public function listCustomers($pageNumber = 1, $limit = 20)
     {
-        return Snipcart::$plugin->customers->listCustomers($pageNumber);
+        return Snipcart::$plugin->customers->listCustomers($pageNumber, $limit);
+    }
+
+    /**
+     * @param int $pageNumber
+     * @param int $limit
+     * @return \stdClass|array|null
+     * @throws \Exception
+     */
+    public function listTopCustomers($pageNumber = 1, $limit = 20)
+    {
+        return Snipcart::$plugin->customers->listCustomers($pageNumber, $limit, [
+            'orderBy' => 'ordersValue'
+        ]);
     }
 
     /**
@@ -157,6 +172,17 @@ class SnipcartVariable
     public function getCustomerOrders($customerId)
     {
         return Snipcart::$plugin->customers->getCustomerOrders($customerId);
+    }
+
+    /**
+     * @param \DateTime $from
+     * @param \DateTime $to
+     * @return \stdClass|array
+     * @throws \Exception
+     */
+    public function getPerformanceStats($from, $to)
+    {
+        return Snipcart::$plugin->data->getPerformance($from, $to);
     }
 
     /**

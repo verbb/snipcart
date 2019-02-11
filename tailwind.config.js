@@ -60,10 +60,11 @@ let colors = {
     'purple': '#9B59B6',
     'blue': '#0D99F2',
     'turquoise': '#2CE0BD',
+    'slate': '#576575',
     'light': '#CCD1D6',
+    'light-grey': '#f1f5f8',
     'grey': '#98A3AE',
     'black': '#32475E',
-
 }
 
 module.exports = {

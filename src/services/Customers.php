@@ -33,6 +33,7 @@ class Customers extends \craft\base\Component
      *
      * @param integer $page  page of results
      * @param integer $limit number of results per page
+     * @param integer $params
      *
      * @return \stdClass|array|null
      *              ->totalItems (int)
@@ -41,12 +42,12 @@ class Customers extends \craft\base\Component
      *              ->items (Customer[])
      * @throws \Exception if our API key is missing.
      */
-    public function listCustomers($page = 1, $limit = 20)
+    public function listCustomers($page = 1, $limit = 20, $params = [])
     {
-        $customerData = Snipcart::$plugin->api->get('customers', [
-            'offset' => ($page - 1) * $limit,
-            'limit'  => $limit
-        ]);
+        $params['offset'] = ($page - 1) * $limit;
+        $params['limit']  = $limit;
+
+        $customerData = Snipcart::$plugin->api->get('customers', $params);
 
         $customerData->items = ModelHelper::populateArrayWithModels(
             (array)$customerData->items,

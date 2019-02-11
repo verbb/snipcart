@@ -127,7 +127,7 @@ class Snipcart extends Plugin
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
                 function(RegisterUrlRulesEvent $event) {
                     $rules = [
-                        'snipcart' => ['template' => 'snipcart/cp/orders/index'],
+                        'snipcart' => ['template' => 'snipcart/cp/index'],
                         'snipcart/orders/' => ['template' => 'snipcart/cp/orders/index'],
                         'snipcart/order/<orderId>' => ['template' => 'snipcart/cp/orders/detail'],
                         'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/cp/orders/index'],

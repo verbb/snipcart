@@ -1,6 +1,8 @@
 {% extends "snipcart/cp/_layout" %}
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
 {% set title = "Snipcart Orders"|t %}
 
 {% if pageNumber is not defined %}
@@ -22,12 +24,7 @@
     </p>
 
     {% if orders|length %}
-        {#
-        <div class="row">
-            <div id="area" class="chart-container" style="height: 300px;"></div>
-        </div>
-        #}
-        <div class="callout" style="background: #eee; padding: 10px; margin-bottom: 25px;">
+        <div class="callout mb-6 p-2" style="background: #eee;">
 
             <form action="" method="post">
 
@@ -62,7 +59,7 @@
             </form>
         </div>
 
-        <table id="orders" class="data" style="width: 100%;">
+        <table id="orders" class="data w-full">
             <thead>
                 <th scope="col">{{ "Invoice"|t }}</th>
                 <th scope="col">{{ "Placed"|t }}</th>
@@ -107,42 +104,3 @@
     {% endif %}
 
 {% endblock %}
-
-{#
-{% js %}
-
-    var $chart = $('#area');
-
-    this.chart = new Craft.charts.Area(this.$chart);
-
-    var chartDataTable = new Craft.charts.DataTable({
-        columns: [
-            { label: "Date", type: 'date' },
-            { label: "Orders", type: 'number' },
-        ],
-        rows: [
-            {% for day, count in craft.snipcart.listOrdersByDay() %}
-            ['{{ day }}', {{ count }}],
-            {% endfor %}
-        ]
-    });
-
-    var chartSettings = {
-        formats: {
-            shortDateFormats: {
-                day:"%-m\/%-d",
-                month:"%-m\/%y",
-                year:"%y"
-            },
-            decimalFormat:",.3f",
-            percentFormat:",.2%",
-            currencyFormat:"$,.2f"
-        },
-        orientation:"ltr",
-        scale:"day"
-    };
-
-    this.chart.draw(chartDataTable, chartSettings);
-
-{% endjs %}
-#}

@@ -144,7 +144,7 @@ class Data extends \craft\base\Component
      * @param $date
      * @return string
      */
-    private function _prepDate($date)
+    private function _prepDate($date): string
     {
         if ($date instanceof \DateTime)
         {
