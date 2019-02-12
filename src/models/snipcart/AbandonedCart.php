@@ -290,6 +290,11 @@ class AbandonedCart extends \craft\base\Model
      */
     public $userId;
 
+    /**
+     * @var
+     */
+    public $user;
+
 
     // Public Methods
     // =========================================================================

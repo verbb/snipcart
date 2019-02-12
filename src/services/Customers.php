@@ -33,7 +33,7 @@ class Customers extends \craft\base\Component
      *
      * @param integer $page  page of results
      * @param integer $limit number of results per page
-     * @param integer $params
+     * @param array   $params
      *
      * @return \stdClass|array|null
      *              ->totalItems (int)
@@ -48,28 +48,6 @@ class Customers extends \craft\base\Component
         $params['limit']  = $limit;
 
         $customerData = Snipcart::$plugin->api->get('customers', $params);
-
-        $customerData->items = ModelHelper::populateArrayWithModels(
-            (array)$customerData->items,
-            Customer::class
-        );
-
-        return $customerData;
-    }
-
-    /**
-     * Search Snipcart customers
-     *
-     * @param integer $keywords  search term
-     *
-     * @return \stdClass|array|null
-     * @throws \Exception if our API key is missing.
-     */
-    public function searchCustomers($keywords)
-    {
-        $customerData = Snipcart::$plugin->api->get('customers', [
-            'name' => $keywords
-        ]);
 
         $customerData->items = ModelHelper::populateArrayWithModels(
             (array)$customerData->items,

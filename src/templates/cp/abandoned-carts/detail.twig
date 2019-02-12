@@ -3,12 +3,6 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
-{% set abandonedCart = craft.snipcart.getAbandonedCart(token) %}
-
-{% if abandonedCart is null %}
-    {% exit 404 %}
-{% endif %}
-
 {% set crumbs = [
     { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
     { label: "Abandoned Carts"|t('snipcart'), url: url('snipcart/abandoned') }

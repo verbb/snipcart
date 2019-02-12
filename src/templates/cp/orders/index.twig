@@ -1,20 +1,10 @@
+{# @var order \workingconcept\snipcart\models\Order #}
 {% extends "snipcart/cp/_layout" %}
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set title = "Snipcart Orders"|t %}
-
-{% if pageNumber is not defined %}
-    {% set pageNumber = 1 %}
-{% endif %}
-
-{% set orders = craft.snipcart.listOrders(pageNumber) %}
-
-{% if orders.totalItems <= orders.limit and pageNumber > 1 %}
-    {% redirect url('snipcart') %}
-{% endif %}
-
 {% set selectedTab = "orders" %}
 
 {% block content %}
@@ -25,12 +15,7 @@
 
     {% if orders|length %}
         <div class="callout mb-6 p-2" style="background: #eee;">
-
             <form action="" method="post">
-
-                {% set startDate = now | date_modify("-1 month")%}
-                {% set endDate = now %}
-
                 {{ csrfInput() }}
 
                 {{ forms.date({
@@ -39,8 +24,8 @@
                     id: 'startDate',
                     required: true,
                     name: 'startDate',
-                    defaultDate: craft.snipcart.startDate,
-                    value: craft.snipcart.startDate
+                    defaultDate: startDate,
+                    value: startDate
                 }) }}
 
                 <em>to</em>
@@ -50,12 +35,11 @@
                     id: 'endDate',
                     required: true,
                     name: 'endDate',
-                    defaultDate: craft.snipcart.endDate,
-                    value: craft.snipcart.endDate
+                    defaultDate: endDate,
+                    value: endDate
                 }) }}
 
                 <input type="submit" class="btn submit" name="submit" value="Update">
-
             </form>
         </div>
 
@@ -69,8 +53,7 @@
                 <th scope="col">{{ "Status"|t }}</th>
             </thead>
             <tbody>
-
-                {% for order in orders.items %}
+                {% for order in orders %}
                     <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
                         <td><a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a></td>
                         <td>{{ order.creationDate | date('n/j/Y') }}</td>
@@ -87,17 +70,12 @@
                         </td>
                     </tr>
                 {% endfor %}
-
             </tbody>
         </table>
-
-        {% set totalPages = (orders.totalItems / orders.limit) | round(0,'ceil') %}
-        {% set maxVisible = 10 %}
 
         {% include "snipcart/cp/_parts/pagination" with {
             currentPage: pageNumber,
             totalPages: totalPages,
-            maxVisible: maxVisible,
             path: 'snipcart/orders/'
         } %}
 

@@ -30,19 +30,35 @@ class Subscriptions extends \craft\base\Component
     /**
      * List subscriptions.
      *
-     * @return \stdClass|array|null
+     * @return \stdClass
+     *              ->items (Subscription[])
+     *              ->totalItems (int)
+     *              ->offset (int)
+     *              ->limit (int)
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function listSubscriptions()
+    public function listSubscriptions($page = 1, $limit = 20, $params = []): \stdClass
     {
-        $subscriptionData = Snipcart::$plugin->api->get('subscriptions');
+        /**
+         * define offset and limit since that's pretty much all we're doing here
+         */
+        $params['offset'] = ($page - 1) * $limit;
+        $params['limit']  = $limit;
 
-        $subscriptionData->items = ModelHelper::populateArrayWithModels(
-            (array)$subscriptionData->items,
-            Subscription::class
+        $response = Snipcart::$plugin->api->get(
+            'subscriptions',
+            $params
         );
 
-        return $subscriptionData;
+        return (object) [
+            'items' => ModelHelper::populateArrayWithModels(
+                $response->items,
+                Subscription::class
+            ),
+            'totalItems' => $response->totalItems,
+            'offset'     => $response->offset,
+            'limit'      => $limit
+        ];
     }
 
     /**

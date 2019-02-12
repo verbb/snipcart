@@ -125,25 +125,9 @@ class Snipcart extends Plugin
             Event::on(
                 UrlManager::class,
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
-                function(RegisterUrlRulesEvent $event) {
-                    $rules = [
-                        'snipcart' => ['template' => 'snipcart/cp/index'],
-                        'snipcart/orders/' => ['template' => 'snipcart/cp/orders/index'],
-                        'snipcart/order/<orderId>' => ['template' => 'snipcart/cp/orders/detail'],
-                        'snipcart/orders/<pageNumber>' => ['template' => 'snipcart/cp/orders/index'],
-                        'snipcart/customers/' => ['template' => 'snipcart/cp/customers/index'],
-                        'snipcart/customers/<pageNumber>' => ['template' => 'snipcart/cp/customers/index'],
-                        'snipcart/customer/<customerId>' => ['template' => 'snipcart/cp/customers/detail'],
-                        'snipcart/discounts' => ['template' => 'snipcart/cp/discounts/index'],
-                        'snipcart/discounts/new' => ['template' => 'snipcart/cp/discounts/new'],
-                        'snipcart/discounts/<discountId>' => ['template' => 'snipcart/cp/discounts/detail'],
-                        'snipcart/abandoned' => ['template' => 'snipcart/cp/abandoned-carts/index'],
-                        'snipcart/abandoned/<token>' => ['template' => 'snipcart/cp/abandoned-carts/detail'],
-                        'snipcart/subscriptions' => ['template' => 'snipcart/cp/subscriptions/index'],
-                        'snipcart/subscriptions/<subscriptionId>' => ['template' => 'snipcart/cp/subscriptions/detail'],
-                    ];
-
-                    $event->rules = array_merge($event->rules, $rules);
+                function(RegisterUrlRulesEvent $event)
+                {
+                    $event->rules = array_merge($event->rules, $this->_cpRoutes());
                 }
             );
         }
@@ -201,6 +185,24 @@ class Snipcart extends Plugin
                 'settings' => $this->getSettings()
             ]
         );
+    }
+
+    private function _cpRoutes(): array
+    {
+        return [
+            'snipcart' => 'snipcart/overview/index',
+            'snipcart/orders' => 'snipcart/orders/index',
+            'snipcart/order/<orderId>' => 'snipcart/orders/order-detail',
+            'snipcart/customers' => 'snipcart/customers/index',
+            'snipcart/customer/<customerId>' => 'snipcart/customers/customer-detail',
+            'snipcart/discounts' => 'snipcart/discounts/index',
+            'snipcart/discounts/new' => 'snipcart/discounts/new',
+            'snipcart/discount/<discountId>' => 'snipcart/discounts/discount-detail',
+            'snipcart/abandoned' => 'snipcart/carts/index',
+            'snipcart/abandoned/<cartId>' => 'snipcart/carts/detail',
+            'snipcart/subscriptions' => 'snipcart/subscriptions/index',
+            'snipcart/subscription/<subscriptionId>' => 'snipcart/subscriptions/detail',
+        ];
     }
 
 }

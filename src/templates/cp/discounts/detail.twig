@@ -3,12 +3,6 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
-{% set discount = craft.snipcart.getDiscount(discountId) %}
-
-{% if discount is null %}
-    {% exit 404 %}
-{% endif %}
-
 {% set crumbs = [
     { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
     { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }

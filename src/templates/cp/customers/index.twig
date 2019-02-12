@@ -1,24 +1,13 @@
+{# @var customer \workingconcept\snipcart\models\Customer #}
 {% extends "snipcart/cp/_layout" %}
+{% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set title = "Snipcart Customers"|t %}
-
-{% import "_includes/forms" as forms %}
-
-{# TODO: support customer search #}
-
-{% if pageNumber is not defined %}
-    {% set pageNumber = 1 %}
-{% endif %}
-
-{% if craft.snipcart.searchKeywords %}
-    {% set customers = craft.snipcart.searchCustomers(craft.snipcart.searchKeywords) %}
-{% else %}
-    {% set customers = craft.snipcart.listCustomers(pageNumber) %}
-{% endif %}
-
 {% set selectedTab = "customers" %}
+
+
 
 {% block content %}
 
@@ -37,11 +26,19 @@
                 required: true,
                 placeholder: 'customer name',
                 name: 'searchKeywords',
-                value: craft.snipcart.searchKeywords,
+                value: keywords,
                 style: 'width: 200px;'
             }) }}
 
-            <input type="submit" class="btn submit" name="submit" value="Search">
+            <input type="submit" class="btn submit" name="submit" value="{{ 'Search'|t }}">
+            {% if keywords %}
+                <input type="submit"
+                    class="btn"
+                    name="submit"
+                    onclick="document.getElementById('searchKeywords').value = '';"
+                    value="{{ 'Clear'|t }}"
+                >
+            {% endif %}
         </form>
     </div>
 
@@ -56,7 +53,7 @@
                 <th scope="col">{{ "Total Spent"|t }}</th>
             </thead>
             <tbody>
-                {% for customer in customers.items %}
+                {% for customer in customers %}
                     <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
                         <td><a href="{{ url('snipcart/customer/'~customer.id) }}">{{ customer.billingAddressName }}</a></td>
                         <td>{{ customer.email }}</td>
@@ -68,13 +65,9 @@
             </tbody>
         </table>
 
-        {% set totalPages = (customers.totalItems / customers.limit) | round(0,'ceil') %}
-        {% set maxVisible = 10 %}
-
         {% include "snipcart/cp/_parts/pagination" with {
             currentPage: pageNumber,
             totalPages: totalPages,
-            maxVisible: maxVisible,
             path: 'snipcart/customers/'
         } %}
 

@@ -5,13 +5,6 @@
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set centered = true %}
-
-{% set subscription = craft.snipcart.getSubscription(subscriptionId) %}
-
-{% if subscription is null %}
-    {% exit 404 %}
-{% endif %}
-
 {% set title = "Subscription for " ~ subscription.user.billingAddress.fullName %}
 
 {% set crumbs = [

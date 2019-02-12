@@ -3,13 +3,7 @@
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set title = "Snipcart"|t %}
-
 {% set selectedTab = "overview" %}
-{% set startDate = now | date_modify("-1 month") %}
-{% set endDate = now %}
-{% set stats = craft.snipcart.getPerformanceStats(startDate, endDate) %}
-{% set orders = craft.snipcart.listOrders(1, 10) %}
-{% set customers = craft.snipcart.listTopCustomers(1, 10) %}
 
 {% block content %}
 

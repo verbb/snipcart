@@ -1,18 +1,19 @@
 {# @var subscription \workingconcept\snipcart\models\Subscription #}
 {% extends "snipcart/cp/_layout" %}
 
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
 {% set title         = "Snipcart Subscriptions"|t %}
-{% set subscriptions = craft.snipcart.listSubscriptions() %}
 {% set selectedTab   = "subscriptions" %}
 
 {% block content %}
 
-    <p id="noredirects"{% if subscriptions.items | length %} class="hidden"{% endif %}>
+    <p id="noredirects"{% if subscriptions | length %} class="hidden"{% endif %}>
         {{ "There aren't any subscriptions yet." | t }}
     </p>
 
-    {% if subscriptions.items |length %}
-        <table id="carts" class="data" style="width: 100%;">
+    {% if subscriptions |length %}
+        <table id="carts" class="data w-full">
             <thead>
                 <th scope="col">{{ "Subscriber"|t }}</th>
                 <th scope="col">{{ "Name"|t }}</th>
@@ -22,10 +23,10 @@
                 <th scope="col">{{ "Recurring Shipping"|t }}</th>
             </thead>
             <tbody>
-                {% for subscription in subscriptions.items %}
+                {% for subscription in subscriptions %}
                     <tr data-id="{{ subscription.id }}" data-name="{{ subscription.user.email }}">
                         <td>
-                            <a href="{{ url('snipcart/subscriptions/'~subscription.id) }}">{{ subscription.user.billingAddressName }}</a>
+                            <a href="{{ url('snipcart/subscription/'~subscription.id) }}">{{ subscription.user.billingAddressName }}</a>
                         </td>
                         <td>{{ subscription.name }}</td>
                         <td>{{ subscription.amount | currency }}</td>
@@ -36,6 +37,13 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% include "snipcart/cp/_parts/pagination" with {
+            currentPage: pageNumber,
+            totalPages: totalPages,
+            path: 'snipcart/orders/'
+        } %}
+
     {% endif %}
 
 {% endblock %}

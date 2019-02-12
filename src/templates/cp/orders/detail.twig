@@ -6,12 +6,6 @@
 
 {% set centered = true %}
 
-{% set order = craft.snipcart.getOrder(orderId) %}
-
-{% if order is null %}
-    {% exit 404 %}
-{% endif %}
-
 {#
 
 TODO:
@@ -20,8 +14,6 @@ TODO:
 
 #}
 
-{#% set orderNotifications = craft.snipcart.getOrderNotifications(orderId) %#}
-{% set orderRefunds = craft.snipcart.getOrderRefunds(orderId) %}
 {% set title = "Order " ~ order.invoiceNumber %}
 
 {% set crumbs = [
