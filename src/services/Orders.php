@@ -435,7 +435,7 @@ class Orders extends \craft\base\Component
         $apiParams      = [];
         $hasCacheParam  = isset($params['cache']) && is_bool($params['cache']);
         $cacheSetting   = $hasCacheParam ? $params['cache'] : true;
-        $dateTimeFormat = \DateTimeInterface::ATOM;
+        $dateTimeFormat = 'Y-m-d\TH:i:sP';
 
         if (isset($params['from']) && $params['from'] instanceof \DateTime)
         {
