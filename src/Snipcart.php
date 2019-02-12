@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart;
 
+use workingconcept\snipcart\providers\ShipStation;
 use workingconcept\snipcart\services\Api;
 use workingconcept\snipcart\services\Carts;
 use workingconcept\snipcart\services\Customers;
@@ -23,6 +24,7 @@ use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
+use workingconcept\snipcart\events\RegisterShippingProvidersEvent;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -61,6 +63,14 @@ class Snipcart extends Plugin
      */
     public static $plugin;
 
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event ShippingProviderEvent
+     */
+    const EVENT_REGISTER_SHIPPING_PROVIDERS = 'registerShippingProviders';
+
 
     // Public Properties
     // =========================================================================
@@ -69,6 +79,7 @@ class Snipcart extends Plugin
      * @var string
      */
     public $schemaVersion = '1.0.6';
+
 
     // Public Methods
     // =========================================================================
@@ -97,7 +108,8 @@ class Snipcart extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function(Event $event) {
+            function(Event $event)
+            {
                 $variable = $event->sender;
                 $variable->set('snipcart', SnipcartVariable::class);
             }
@@ -106,7 +118,8 @@ class Snipcart extends Plugin
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function (RegisterComponentTypesEvent $event)
+            {
                 $event->types[] = OrdersWidget::class;
             }
         );
@@ -137,6 +150,9 @@ class Snipcart extends Plugin
             $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
         }
 
+        $this->_registerShippingProviders();
+
+        /*
         $fileTarget = new \craft\log\FileTarget([
             'logFile' => Craft::getAlias('@storage/logs/snipcart.log'),
             'categories' => ['snipcart']
@@ -144,6 +160,7 @@ class Snipcart extends Plugin
 
         // include the new target file target to the dispatcher
         Craft::getLogger()->dispatcher->targets[] = $fileTarget;
+        */
     }
 
     // Protected Methods
@@ -187,6 +204,13 @@ class Snipcart extends Plugin
         );
     }
 
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Define control panel routes.
+     * @return array
+     */
     private function _cpRoutes(): array
     {
         return [
@@ -203,6 +227,36 @@ class Snipcart extends Plugin
             'snipcart/subscriptions' => 'snipcart/subscriptions/index',
             'snipcart/subscription/<subscriptionId>' => 'snipcart/subscriptions/detail',
         ];
+    }
+
+    /**
+     * Instantiate Shipping providers and make each available in an indexed array.
+     */
+    private function _registerShippingProviders()
+    {
+        $shippingProviders = [
+            ShipStation::class
+        ];
+
+        if ($this->hasEventHandlers(self::EVENT_REGISTER_SHIPPING_PROVIDERS))
+        {
+            $event = new RegisterShippingProvidersEvent([
+                'shippingProviders' => $shippingProviders,
+            ]);
+
+            $this->trigger(self::EVENT_REGISTER_SHIPPING_PROVIDERS, $event);
+
+            $shippingProviders = $event->shippingProviders;
+        }
+
+        $pluginSettings = $this->getSettings();
+
+        foreach ($shippingProviders as $shippingProviderClass)
+        {
+            $instance = new $shippingProviderClass();
+
+            $pluginSettings->providers[$instance->refHandle()] = $instance;
+        }
     }
 
 }
