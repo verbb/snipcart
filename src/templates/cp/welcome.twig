@@ -1,0 +1,11 @@
+{% extends "_layouts/cp" %}
+
+{% set centered = true %}
+{% set title = "Snipcart"|t %}
+
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
+{% block content %}
+    <p>Nothing to see here yet. Be sure to configure the <a href="{{ cpUrl('settings/plugins/snipcart') }}">plugin settings</a>.</p>
+    <a class="btn" href="{{ cpUrl('settings/plugins/snipcart') }}">Configure Snipcart</a>
+{% endblock %}

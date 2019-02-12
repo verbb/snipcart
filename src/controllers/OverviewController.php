@@ -10,7 +10,6 @@ namespace workingconcept\snipcart\controllers;
 
 use workingconcept\snipcart\Snipcart;
 use DateTime;
-use Craft;
 
 class OverviewController extends \craft\web\Controller
 {
@@ -21,6 +20,11 @@ class OverviewController extends \craft\web\Controller
      */
     public function actionIndex(): \yii\web\Response
     {
+        if ( ! Snipcart::$plugin->getSettings()->isConfigured())
+        {
+            return $this->renderTemplate('snipcart/cp/welcome');
+        }
+
         $startDate = (new DateTime())->modify('-1 month');
         $endDate   = new DateTime();
         $stats     = Snipcart::$plugin->data->getPerformance($startDate, $endDate);

@@ -1,3 +1,5 @@
+{# @var settings \workingconcept\snipcart\models\Settings #}
+
 {% requireAdmin %}
 
 {% set crumbs = [
@@ -39,7 +41,7 @@
     <input type="hidden" name="action" value="plugins/save-plugin-settings">
     <input type="hidden" name="pluginHandle" value="snipcart">
     {{ redirectInput('settings') }}
-
+    
     <div class="form-wrap">
         <div id="account" class="">
             {{ forms.textField({
@@ -70,13 +72,13 @@
 
             {{ forms.selectField({
                 label: 'Currency'|t,
-                id: 'currency',
+                id: 'defaultCurrency',
                 required: true,
-                name: 'currency',
+                name: 'defaultCurrency',
                 options: settings.getCurrencyOptions,
                 value: settings.defaultCurrency ?? null,
                 placeholder: 'id',
-                errors: settings.getErrors('productIdentifier'),
+                errors: settings.getErrors('defaultCurrency'),
                 instructions: "Specify your store's currency."
             }) }}
         </div>
@@ -407,9 +409,10 @@
             <div id="shipping-provider-fields" class="matrix matrix-field">
                 {% if settings.providers | length %}
                     <div class="blocks">
-                        {% for providerName, providerSettings in settings.providers %}
+                        {% for providerName, provider in settings.providers %}
                             {% if providerName == 'shipStation' %}
                                 {% set isEnabled = providerName in settings.enabledProviders %}
+                                {% set providerSettings = provider.getSettings() %}
                                 {% set logoUrl = craft.app.assetManager.getPublishedUrl(
                                     '@workingconcept/snipcart/assetbundles/dist/img/shipstation.svg',
                                     true
