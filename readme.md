@@ -56,17 +56,15 @@ composer require workingconcept/craft-snipcart
 
 **From the plugin store:**
 
-Find and install the [Snipcart plugin](https://plugins.craftcms.com/snipcart) by Working Concept.
+Find and install the [Snipcart plugin](https://plugins.craftcms.com/snipcart).
 
 ## Documentation
 
-Yes! Full set of documentation and examples here: https://snipcart.docs.workingconcept.com/
+Setup guide, documentation and developer reference: https://snipcart.docs.workingconcept.com/
 
 ## Support
 
-Please submit [an issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [a pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls) if anything needs attention. We'll do our best to respond promptly. 
-
-You can also look for @matt in the Craft CMS Slack group and @mattrambles on Twitter.
+This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com), [file a GitHub issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [submit a pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls) and you'll receive a response within 24 hours—probably sooner. 
 
 ---
 
