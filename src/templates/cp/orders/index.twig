@@ -55,7 +55,7 @@
             <tbody>
                 {% for order in orders %}
                     <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
-                        <td><a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a></td>
+                        <td><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
                         <td>{{ order.creationDate | date('n/j/Y') }}</td>
                         <td>{{ order.billingAddress.name }}</td>
                         <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>

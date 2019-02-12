@@ -18,6 +18,7 @@ use craft\helpers\Template as TemplateHelper;
  * making some Twig functions available for convenience.
  *
  * @package workingconcept\snipcart\models
+ * @todo disable validation and populate data from custom fields if that Setting is enabled
  */
 class ProductDetails extends \craft\base\Model
 {
@@ -243,13 +244,13 @@ class ProductDetails extends \craft\base\Model
      */
     public function populateDefaults()
     {
-        $this->shippable = $this->field->defaultShippable;
-        $this->taxable = $this->field->defaultTaxable;
-        $this->weight = $this->field->defaultWeight;
-        $this->weightUnit = $this->field->defaultWeightUnit;
-        $this->length = $this->field->defaultLength;
-        $this->width = $this->field->defaultWidth;
-        $this->height = $this->field->defaultHeight;
+        $this->shippable      = $this->field->defaultShippable;
+        $this->taxable        = $this->field->defaultTaxable;
+        $this->weight         = $this->field->defaultWeight;
+        $this->weightUnit     = $this->field->defaultWeightUnit;
+        $this->length         = $this->field->defaultLength;
+        $this->width          = $this->field->defaultWidth;
+        $this->height         = $this->field->defaultHeight;
         $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
     }
 
@@ -340,6 +341,7 @@ class ProductDetails extends \craft\base\Model
      *
      * @param array $params
      * @return string
+     * @throws
      */
     public function getBuyNowButton($params = []): string
     {

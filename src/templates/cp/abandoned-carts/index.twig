@@ -25,7 +25,7 @@
             <tbody>
                 {% for cart in carts %}
                     <tr data-id="{{ cart.token }}" data-name="{{ cart.email }}">
-                        <td><a href="{{ url('snipcart/abandoned/'~cart.token) }}">{{ cart.billingAddress.name }}</a></td>
+                        <td><a href="{{ cart.cpUrl }}">{{ cart.billingAddress.name }}</a></td>
                         <td>{{ cart.email }}</td>
                         <td>{{ cart.status }}</td>
                         <td>{{ cart.modificationDate | date() }}</td>

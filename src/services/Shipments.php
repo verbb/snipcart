@@ -86,8 +86,11 @@ class Shipments extends \craft\base\Component
             true
         );
 
-        $shipStationConfigured = $this->getShipStation()->isConfigured();
-        $includeShipStationRates = $shipStationEnabled && $shipStationConfigured;
+        $shipStationConfigured   = $this->getShipStation()->isConfigured();
+        $useShipStationRates     = $this->getShipStation()->getSettings()->enableShippingRates;
+        $includeShipStationRates = $shipStationEnabled &&
+            $shipStationConfigured &&
+            $useShipStationRates;
 
         if (
             $includeShipStationRates &&

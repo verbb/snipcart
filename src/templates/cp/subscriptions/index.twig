@@ -26,7 +26,7 @@
                 {% for subscription in subscriptions %}
                     <tr data-id="{{ subscription.id }}" data-name="{{ subscription.user.email }}">
                         <td>
-                            <a href="{{ url('snipcart/subscription/'~subscription.id) }}">{{ subscription.user.billingAddressName }}</a>
+                            <a href="{{ subscription.cpUrl }}">{{ subscription.user.billingAddressName }}</a>
                         </td>
                         <td>{{ subscription.name }}</td>
                         <td>{{ subscription.amount | currency }}</td>

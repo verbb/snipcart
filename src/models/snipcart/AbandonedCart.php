@@ -307,6 +307,15 @@ class AbandonedCart extends \craft\base\Model
         return ['modificationDate', 'completionDate'];
     }
 
+    /**
+     * Returns the Craft control panel URL for the detail page.
+     * @return string
+     */
+    public function getCpUrl(): string
+    {
+        return \craft\helpers\UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
+    }
+
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/abandoned/' . $this->token;

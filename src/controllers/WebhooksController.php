@@ -165,7 +165,7 @@ class WebhooksController extends Controller
         parent::init();
 
         /**
-         * Return all output as JSON.
+         * Return all controller output as JSON.
          */
         \Yii::$app->response->format = Response::FORMAT_JSON;
     }
@@ -181,9 +181,7 @@ class WebhooksController extends Controller
      */
     public function actionHandle(): Response
     {
-        /**
-         * Only take post requests.
-         */
+        // only take post requests
         $this->requirePostRequest();
 
         $this->_postData = json_decode(Craft::$app->getRequest()->getRawBody());

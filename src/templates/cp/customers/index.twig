@@ -7,8 +7,6 @@
 {% set title = "Snipcart Customers"|t %}
 {% set selectedTab = "customers" %}
 
-
-
 {% block content %}
 
     <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
@@ -55,7 +53,7 @@
             <tbody>
                 {% for customer in customers %}
                     <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
-                        <td><a href="{{ url('snipcart/customer/'~customer.id) }}">{{ customer.billingAddressName }}</a></td>
+                        <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
                         <td>{{ customer.email }}</td>
                         <td>{{ customer.billingAddressAddress1 }}</td>
                         <td>{{ customer.statistics.ordersCount }}</td>

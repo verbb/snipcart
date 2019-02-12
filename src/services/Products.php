@@ -85,6 +85,8 @@ class Products extends \craft\base\Component
      */
     public function reduceProductInventory($entry, $quantity)
     {
+        // TODO: go ahead and decrement quantity if that setting is enabled
+
         if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE))
         {
             $event = new InventoryEvent([

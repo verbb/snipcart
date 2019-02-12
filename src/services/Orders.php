@@ -81,7 +81,6 @@ class Orders extends \craft\base\Component
      * @return Order[]
      * @throws \Exception if our API key is missing.
      *
-     * @todo support higher limit with multiple API calls
      * @todo support params similar to Craft Elements
      */
     public function getOrders($params = []): array

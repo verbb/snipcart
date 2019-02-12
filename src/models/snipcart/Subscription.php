@@ -153,6 +153,11 @@ class Subscription extends \craft\base\Model
         return ['creationDate', 'modificationDate', 'cancelledOn', 'nextBillingDate', 'firstInvoiceReceivedOn'];
     }
 
+    public function getCpUrl(): string
+    {
+        return \craft\helpers\UrlHelper::cpUrl('snipcart/subscription/' . $this->id);
+    }
+
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/subscriptions/' . $this->id;

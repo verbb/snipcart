@@ -327,6 +327,15 @@ class Discount extends \craft\base\Model
         return $this->_typeOptionFieldMap[$this->type];
     }
 
+    /**
+     * Returns the Craft control panel URL for the detail page.
+     * @return string
+     */
+    public function getCpUrl(): string
+    {
+        return \craft\helpers\UrlHelper::cpUrl('snipcart/discount/' . $this->id);
+    }
+
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;
