@@ -13,6 +13,7 @@ use craft\fields\Lightswitch;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\base\Model;
+use workingconcept\snipcart\providers\ShipStation;
 use yii\base\InvalidConfigException;
 use craft\fields\PlainText;
 use craft\fields\Number;
@@ -28,9 +29,6 @@ class Settings extends Model
 {
     // Constants
     // =========================================================================
-
-    const PROVIDER_SHIPSTATION = 'shipStation';
-    const PROVIDER_SHIPPO = 'shippo';
 
     const CURRENCY_USD = 'usd';
     const CURRENCY_CAD = 'cad';
@@ -190,7 +188,7 @@ class Settings extends Model
     /**
      * @var Address
      */
-    private $_shipFrom;
+    private $_shipFrom = null;
 
     /**
      * @var array
@@ -213,22 +211,9 @@ class Settings extends Model
     public $enabledProviders = [];
 
     /**
-     * @var array
+     * @var array Key-value array of refHandle => instance of each registered provider.
      */
-    public $providers = [
-        'shipStation' => [
-            'apiKey' => '',
-            'apiSecret' => '',
-            'defaultCarrierCode' => '', // can be empty
-            'defaultPackageCode' => '', // can be empty
-            'defaultCountry' => 'US', // must be set
-            'defaultWarehouseId' => 0, // must be set
-            'defaultOrderConfirmation' => 'delivery', // must be set
-        ],
-        'shippo' => [
-            'apiToken' => '',
-        ],
-    ];
+    public $providers = [];
 
 
     // Static Methods
@@ -250,6 +235,12 @@ class Settings extends Model
     // Public Methods
     // =========================================================================
 
+    public function isConfigured(): bool
+    {
+        return ! empty($this->publicApiKey) &&
+            ! empty($this->secretApiKey);
+    }
+
     /**
      * @inheritdoc
      */
@@ -266,10 +257,6 @@ class Settings extends Model
             [['logCustomRates'], 'default', 'value' => false],
             [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
-//            [['enabledProviders'], 'in', 'range' => [
-//                self::PROVIDER_SHIPSTATION,
-//                self::PROVIDER_SHIPPO
-//            ]],
 
             // TODO: validate shipFrom
             // TODO: validate packagingTypes
@@ -381,9 +368,9 @@ class Settings extends Model
     }
 
     /**
-     * @return Address
+     * @return Address|null
      */
-    public function getShipFrom(): Address
+    public function getShipFrom()
     {
         // use the customPackaging field that would've come from a static config
         if ( ! empty($this->shipFromAddress))
@@ -463,6 +450,7 @@ class Settings extends Model
             $productFieldName
         );
     }
+
 
     // Private Methods
     // =========================================================================
