@@ -11,6 +11,10 @@
 - Improved several control panel views.
 - Optimized control panel assets.
 - Vastly improved speed and flexibility of Dashboard widget.
+- Refactored control panel views.
+### Removed
+- Deleted many SnipcartVariable methods after refactor.
+- Cleaned up Orders interface, removing several methods.
 
 ## 1.0.0-beta.16 - 2018-12-27
 ### Added
