@@ -53,7 +53,7 @@ class Shipments extends \craft\base\Component
     {
         if ($this->_shipStation === null)
         {
-            return $this->_shipStation = new ShipStation();
+            return $this->_shipStation = Snipcart::$plugin->getSettings()->providers['shipStation'];
         }
 
         return $this->_shipStation;
@@ -80,17 +80,8 @@ class Shipments extends \craft\base\Component
         $rates = [];
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
 
-        $shipStationEnabled = in_array(
-            Settings::PROVIDER_SHIPSTATION,
-            Snipcart::$plugin->getSettings()->enabledProviders,
-            true
-        );
-
-        $shipStationConfigured   = $this->getShipStation()->isConfigured();
-        $useShipStationRates     = $this->getShipStation()->getSettings()->enableShippingRates;
-        $includeShipStationRates = $shipStationEnabled &&
-            $shipStationConfigured &&
-            $useShipStationRates;
+        $includeShipStationRates = $this->getShipStation()->isConfigured() &&
+            $this->getShipStation()->getSettings()->enableShippingRates;
 
         if (
             $includeShipStationRates &&
@@ -137,11 +128,8 @@ class Shipments extends \craft\base\Component
         ];
 
         // is ShipStation an enabled provider?
-        $sendToShipStation = in_array(
-            Settings::PROVIDER_SHIPSTATION,
-            Snipcart::$plugin->getSettings()->enabledProviders,
-            false
-        );
+        $sendToShipStation = $this->getShipStation()->isConfigured() &&
+            $this->getShipStation()->getSettings()->sendCompletedOrders;
 
         // send order to ShipStation if we need to
         if ($sendToShipStation)

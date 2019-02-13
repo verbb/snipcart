@@ -43,10 +43,14 @@
 /* purgecss end ignore */
 
 .input-row {
-    @apply block hidden;
+    @apply block;
 
     .column {
         @apply inline-block;
         margin-right: 20px;
     }
+}
+
+#ship-from-fields .field {
+    margin: 12px 0;
 }

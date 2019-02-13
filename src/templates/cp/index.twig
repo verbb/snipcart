@@ -1,3 +1,5 @@
+{# @var order \workingconcept\snipcart\models\Order #}
+{# @var customer \workingconcept\snipcart\models\Customer #}
 {% extends "snipcart/cp/_layout" %}
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
@@ -75,7 +77,7 @@
                         <tbody>
                             {% for order in orders.items %}
                                 <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
-                                    <td class="whitespace-no-wrap"><a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a></td>
+                                    <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
                                     <td>{{ order.creationDate | date('n/j') }}</td>
                                     <td>{{ order.billingAddress.name }}</td>
                                     <td>{{ order.finalGrandTotal | currency(order.currency|upper) }}</td>
@@ -100,7 +102,7 @@
                         <tbody>
                         {% for customer in customers.items %}
                             <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
-                                <td><a href="{{ url('snipcart/customer/'~customer.id) }}">{{ customer.billingAddressName }}</a></td>
+                                <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
                                 <td>{{ customer.statistics.ordersCount }}</td>
                                 <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }}</td>
                             </tr>

@@ -8,11 +8,7 @@
 
 namespace workingconcept\snipcart\variables;
 
-use workingconcept\snipcart\models\AbandonedCart;
-use workingconcept\snipcart\models\Customer;
-use workingconcept\snipcart\models\Discount;
-use workingconcept\snipcart\models\Order;
-use workingconcept\snipcart\models\Subscription;
+use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -47,6 +43,29 @@ class SnipcartVariable
     }
 
     /**
+     * Returns product info for the provided Element regardless of what the
+     * field handle might be.
+     *
+     * @param \craft\base\Element $element
+     * @return ProductDetails|null
+     */
+    public function getProductInfo($element)
+    {
+        $fieldLayout = $element->getFieldLayout();
+        $fields = $fieldLayout->getFields();
+
+        foreach ($fields as $field)
+        {
+            if ($field instanceof ProductDetails)
+            {
+                return $element->{$field->handle};
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get a cart anchor with a count.
      *
      * @param string $text
@@ -66,20 +85,22 @@ class SnipcartVariable
     /**
      * Get the main Snipcart JavaScript snippet, optionally including jQuery.
      *
-     * @param bool $includejQuery
+     * @param bool   $includejQuery
      * @param string $onload
+     * @param bool   $includeStyles
      *
      * @return \Twig_Markup
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = ''): \Twig_Markup
+    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = false): \Twig_Markup
     {
         return $this->_renderTemplate(
             'snipcart/front-end/cart-js',
             [
                 'settings'      => Snipcart::$plugin->getSettings(),
                 'includejQuery' => $includejQuery,
+                'includeStyles' => $includeStyles,
                 'onload'        => $onload
             ]
         );

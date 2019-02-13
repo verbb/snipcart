@@ -1,5 +1,6 @@
+{% set classes = templateParams.classes ?? [] %}
 <a href="{{ templateParams.href }}"
-    class="{{ templateParams.class }}"
+    class="snipcart-add-item{% if classes | length %} {{ classes | join(' ') }}{% endif %}"
     {% if templateParams.target %}target="{{ templateParams.target }}"{% endif %}
     {% if templateParams.title %}title="{{ templateParams.title|t }}"{% endif %}
     {% if templateParams.rel %}rel="{{ templateParams.rel }}"{% endif %}
