@@ -644,6 +644,14 @@ class WebhooksController extends Controller
         }
 
         /**
+         * Every Snipcart post should either be in live or test mode.
+         */
+        if (!isset($this->_postData->mode))
+        {
+            return 'Request missing mode.';
+        }
+
+        /**
          * Every Snipcart post should clarify whether it's in live or test mode.
          */
         if (! in_array(
