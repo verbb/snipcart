@@ -21,6 +21,7 @@ The Snipcart plugin brings tight Snipcart integration to Craft CMS for easier se
 - Control panel section for sales stats and browsing orders, customers, subscriptions, and abandoned carts without leaving Craft CMS.
 - Create discounts and issue refunds from the Craft CMS control panel.
 - Live shipping rates and tax calculation at checkout with Snipcart's various shipping and tax providers.
+- Included ShipStation integration for fetching shipping rates and forwarding completed Snipcart orders for processing.
 
 If Commerce Pro is too complex for your project and Commerce Lite is bit too limiting, Snipcart will be a great fit.
 
@@ -37,7 +38,7 @@ If Commerce Pro is too complex for your project and Commerce Lite is bit too lim
 | Sales & Discounts         | ✓                | ×             | ✓            |
 | Digital Products          | ✓                | ×             | ✓            |
 | Live Tax & Shipping Rates | ✓                | ×             | ✓            |
-| ShipStation Integration   | ✓                | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect)     |
+| [ShipStation](https://www.shipstation.com/) Integration   | ✓                | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect)     |
 
 *: Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing), and all three options require payment gateway fees.  
 **: Commerce [has first-party support for seven payment gateways](https://docs.craftcms.com/commerce/v2/payment-gateways.html) and [Snipcart supports nine](https://snipcart.com/list-ecommerce-payment-gateways). **But** Commerce supports more gateways via plugins.  
