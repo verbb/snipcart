@@ -53,7 +53,7 @@ module.exports = {
                 children: [
                     '/troubleshooting/logging',
                     '/troubleshooting/testing-webhooks',
-                    '/troubleshooting/common-problems',
+                    //'/troubleshooting/common-problems',
                     '/troubleshooting/getting-help'
                 ]
             },
@@ -62,6 +62,14 @@ module.exports = {
                 collapsable: false,
                 children: [
                     '/shipments/overview'
+                ]
+            },
+            {
+                title: 'Template Reference',
+                collapsable: false,
+                children: [
+                    '/templating/template-tags',
+                    '/templating/fields',
                 ]
             },
             {

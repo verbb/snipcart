@@ -18,17 +18,18 @@ return [
     // Snipcart secret API key
     'secretApiKey' => '',
 
-    // add the keys of *configured* options from the `providers` section
-    'enabledProviders' => [],
+    // send order notifications to designated store admins
+    'sendOrderNotificationEmail' => false,
 
     // optional email addresses for admins who want order notifications from Craft
     'notificationEmails' => [],
 
-    // handle for a custom Craft field that's used as a Snipcart product ID
-    'productIdentifier' => '',
+    // optional path to a custom template to be used for admin order notification emails
+    'notificationEmailTemplate' => ''
 
-    // handle of a custom Craft entry Integer field that defines product quantity
-    'productInventoryField' => '',
+    'sendCustomerOrderNotificationEmail' => false,
+
+    'customerNotificationEmailTemplate' => '',
 
     // `true` if you'd like to decrement product quantities when orders are processed
     'reduceQuantitiesOnOrder' => false,
@@ -43,7 +44,7 @@ return [
     'cacheResponses' => true,
 
     // Snipcart API response cache duration
-    'cacheDuration' => 300, // 5 minutes
+    'cacheDurationLimit' => 300, // 5 minutes
 
     // whether or not to log responses to `shippingrates.fetch` webhook events for troubleshooting
     'logCustomRates' => true,
@@ -51,16 +52,18 @@ return [
     // whether or not to log all valid incoming webhook posts from Snipcart
     'logWebhookRequests' => false,
 
-    // define any package types you normally use, where weight is for a box/envelope and packing materials
-    // only applies to custom rules when shipping providers are enabled
-    'customPackaging' => [
-        'name' => [
-            'length' => 0,
-            'width' => 0,
-            'height' => 0,
-            'weight' => 100, // grams
-        ]
+    'providerSettings' => [
+        'shipStation' => [
+            'apiKey' => '',
+            'apiSecret' => '',
+            'defaultCarrierCode' => '', // can be empty
+            'defaultPackageCode' => '', // can be empty
+            'defaultCountry' => 'US', // must be set
+            'defaultWarehouseId' => 0, // must be set
+            'defaultOrderConfirmation' => 'delivery', // must be set
+        ],
     ],
+
     // address to be used for rate quotes and orders with shipping providers (when enabled)
     'shipFromAddress' => [
         'name' => '',
@@ -73,20 +76,5 @@ return [
         'phone' => '',
         'email' => '',
     ],
-    // configure providers
-    'providers' => [
-        'shipStation' => [
-            'apiKey' => '',
-            'apiSecret' => '',
-            'defaultCarrierCode' => '', // can be empty
-            'defaultPackageCode' => '', // can be empty
-            'defaultCountry' => 'US', // must be set
-            'defaultWarehouseId' => 0, // must be set
-            'defaultOrderConfirmation' => 'delivery', // must be set
-        ],
-        'shippo' => [
-            'apiToken' => '',
-        ],
-    ]
 ];
 ```

@@ -14,6 +14,10 @@ Currently lists abandoned carts to be displayed in the control panel.
 
 Lists and searches customer data.
 
+## Data
+
+Returns store statistics.
+
 ## DigitalGoods
 
 Doesn't do anything just yet. :/
@@ -28,7 +32,7 @@ Largest service, interacts with Order data.
 
 ## Products
 
-Gets local Products related to Snipcart orders.
+Gets local Products information related to Snipcart Orders.
 
 ## Shipments
 

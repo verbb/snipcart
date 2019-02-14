@@ -1,7 +1,11 @@
 # Define Product Details
 
-Three choices:
+The easiest way to turn Entries into Products is to add the included _Product Details_ field to whatever field layout you'd like. This comes with a few benefits:
 
-1. Use the included Product Details field.
-2. Use whatever fields you want and tell the Snipcart plugin which ones describe product details.
-3. Do your own thing! Bring your own templates and respond to whatever [Events](/dev/events.md) you need.
+- A reasonably compact field type for storing typical product information: SKU, price, inventory, taxable and shippable status, weight and dimensions.
+- The ability to switch on a plugin setting to automatically decrease product inventory as orders come in.
+- A convenient and flexible way of outputting _Buy Now_ buttons, which contain the critical details that define products for Snipcart.
+
+But you don't have to use this field type at all.
+
+You can write your own markup and use whatever [Events](/dev/events.md) you'd like to control exactly how your site interacts with Snipcart.

@@ -22,52 +22,13 @@ Add Snipcart's JavaScript snippet, using `cartSnippet(false)` if you've already 
 
 ## Buy Button
 
-If you're using the included _Product Details_ field or you defined custom fields for product information (see [Configuring Products](/setup/products.md)), you can easily add _Buy_ buttons to your templates:
+Buy / Add to Cart buttons use data attributes to define Snipcart products. The included _Product Details_ field type provides a highly configurable way of establishing these buttons.
+
+The simplest version looks like this, and you'd add it to product detail pages or wherever you'd like to let a visitor add a product to the cart:
 
 ```twig
 {# Buy Now #}
 {{ entry.productDetails.getBuyNowButton() | raw }}
 ```
 
-## Buy Button + Simple Options
-
-Optionally supply custom options that don't affect pricing.
-
-```twig
-{# Buy Now button with custom options #}
-{{ entry.productDetails.getBuyNowButton({
-   'customOptions': [
-       {
-           'name': 'Color',
-           'required': true,
-           'options': [ 'blue', 'green', 'red', 'pink' ]
-       }
-   ]
-}) | raw }}
-```
-
-## Buy Button + Price-Variant Options
-
-Custom options that each add different amounts to the base product price.
-
-```twig
-{{ entry.productDetails.getBuyNowButton({
-   'customOptions': [
-       {
-           'name': 'Color',
-           'required': true,
-           'options': [ 
-                 {
-                     'name': 'bronzed',
-                     'price': 5
-                 },
-                 {
-                     'name': 'diamond-studded'
-                     'price': 500
-                 }
-            ]
-       }
-   ]
-}) | raw }}
-
-```
+More on customizing these buttons [here](/templating/fields.md).

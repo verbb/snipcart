@@ -33,3 +33,14 @@ Or install from the command line:
 ## Configure the Plugin
 
 Visit the plugin's Settings page and provide at least your public+secret API keys. If you're just getting started, you'll probably want to configure your products, orders, and webhooks.
+
+### Account
+
+### Orders
+
+### Webhooks
+
+### Logging
+
+### Shipping
+

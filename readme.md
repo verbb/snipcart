@@ -16,13 +16,15 @@
 
 The Snipcart plugin brings tighter Snipcart integration to Craft CMS for easier setup and greater flexibility with minimal custom development.
 
-- Use an optional Field Type and handy Twig tags to make store setup a breeze.
+- An optional Field Type and Twig tags make store setup fast.
 - Browse Snipcart orders, customers, and subscriptions from the Craft CMS control panel.
 - Create discounts and issue refunds from the Craft CMS control panel.
-- View sales statistics from the Craft CMS dashboard.
+- View sales statistics from control panel section and configurable dashboard widgets.
 - Set up webhooks to have full control over order emails, shipping rates, inventory, and just about anything you can think up.
+- Detailed modeled Snipcart and ShipStation models make custom development faster more convenient if you've not worked with Snipcart before.
 - Get live shipping rates at checkout with Snipcart's FedEx, USPS, UPS, Purolator, Canada Post and Australia Post integrations.
 - Calculate exact taxes at checkout with Snipcart's TaxCloud and TaxJar integrations.
+- Integrate directly with ShipStation to get live shipping rates and pass on completed orders for shipping.
 
 If Commerce Pro is too complex for your project and Commerce Lite is bit too limiting, Snipcart will be a great fit.
 

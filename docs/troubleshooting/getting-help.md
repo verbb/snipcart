@@ -1,3 +1,7 @@
 # Getting Help
 
-[github.com/workingconcept/snipcart-craft-plugin/issues](https://github.com/workingconcept/snipcart-craft-plugin/issues)
+- Email [support@workingconcept.com](mailto:support@workingconcept.com).
+- Post to the [Craft CMS Stack Exchange site](https://craftcms.stackexchange.com/) with a `plugin-snipcart` tag.
+- File a [GitHub Issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls).
+- Submit a support request [at workingconcept.com](https://workingconcept.com/plugins/snipcart/support).
+- Find [@mattrambles on Twitter](https://twitter.com/mattrambles) or @mattts (Matt Stein) [on Discord](https://craftcms.com/blog/discord).
