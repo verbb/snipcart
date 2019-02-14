@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\helpers\Localization;
 use craft\helpers\Template as TemplateHelper;
@@ -147,13 +148,10 @@ class ProductDetails extends \craft\base\Model
     /**
      * Get the relevant Field instance.
      *
-     * @return \craft\base\FieldInterface|\workingconcept\snipcart\fields\ProductDetails|null
+     * @return \craft\base\FieldInterface|ProductDetailsField|null
      */
     public function getField()
     {
-        /**
-         * Should only be a \workingconcept\snipcart\fields\ProductDetails
-         */
         return Craft::$app->fields->getFieldById($this->fieldId);
     }
 
@@ -246,7 +244,10 @@ class ProductDetails extends \craft\base\Model
      */
     public function populateDefaults()
     {
-        if ($field = $this->getField())
+        $field = $this->getField();
+        $isProductDetails = $field instanceof ProductDetailsField;
+
+        if ($field && $isProductDetails)
         {
             $this->shippable      = $field->defaultShippable;
             $this->taxable        = $field->defaultTaxable;
