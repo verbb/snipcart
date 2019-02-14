@@ -269,13 +269,18 @@ class ProductDetails extends \craft\base\Field
         {
             $model = new ProductDetailsModel($value);
 
-            $model->fieldId   = $field->id;
-            $model->elementId = $element->getId();
-            $model->siteId    = Craft::$app->sites->getCurrentSite()->id;
+            $model->fieldId = $field->id;
+            $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
+
+            if ($element !== null)
+            {
+                $model->elementId = $element->getId();
+            }
 
             return $model;
         }
-        elseif (
+
+        if (
             $element !== null &&
             $record = $this->_getRecord(
                 Craft::$app->sites->getCurrentSite()->id,
@@ -293,18 +298,16 @@ class ProductDetails extends \craft\base\Field
 
             return $model;
         }
-        else
-        {
-            $productDetails = new ProductDetailsModel();
 
-            $productDetails->fieldId   = $field->id;
-            $productDetails->elementId = $element->getId();
-            $productDetails->siteId    = Craft::$app->sites->getCurrentSite()->id;
+        $productDetails = new ProductDetailsModel();
 
-            $productDetails->populateDefaults();
+        $productDetails->fieldId   = $field->id;
+        $productDetails->elementId = $element->getId();
+        $productDetails->siteId    = Craft::$app->sites->getCurrentSite()->id;
 
-            return $productDetails;
-        }
+        $productDetails->populateDefaults();
+
+        return $productDetails;
     }
 
     /**
