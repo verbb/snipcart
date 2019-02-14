@@ -527,14 +527,12 @@ class WebhooksController extends Controller
 
         if ($this->hasEventHandlers(self::EVENT_ON_TAXES_CALCULATE))
         {
-            $this->trigger(
-                self::EVENT_ON_TAXES_CALCULATE,
-                new TaxesEvent([
-                    'order' => $order,
-                    'taxes' => [],
-                ])
-            );
+            $event = new TaxesEvent([
+                'order' => $order,
+                'taxes' => [],
+            ]);
 
+            $this->trigger(self::EVENT_ON_TAXES_CALCULATE, $event);
             $taxes = array_merge($taxes, $event->taxes);
         }
 
