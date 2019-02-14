@@ -264,7 +264,7 @@
                                         title="ShipStation"
                                     >
 
-                                    {{ forms.textField({
+                                    {{ forms.autosuggestField({
                                         label: 'API Key'|t,
                                         id: 'apiKey',
                                         class: 'code',
@@ -273,10 +273,11 @@
                                         value: providerSettings.apiKey,
                                         autocomplete: false,
                                         errors: settings.getErrors('apiKey'),
-                                        instructions: "_Account_ → _API Settings_ → _API Keys_"
+                                        instructions: "_Account_ → _API Settings_ → _API Keys_",
+                                        suggestions: craft.cp.getEnvSuggestions(),
                                     }) }}
 
-                                    {{ forms.textField({
+                                    {{ forms.autosuggestField({
                                         label: 'API Secret'|t,
                                         id: 'apiSecret',
                                         class: 'code',
@@ -285,9 +286,10 @@
                                         value: providerSettings.apiSecret,
                                         autocomplete: false,
                                         errors: settings.getErrors('apiSecret'),
-                                        instructions: "_Account_ → _API Settings_ → _API Keys_"
+                                        instructions: "_Account_ → _API Settings_ → _API Keys_",
+                                        suggestions: craft.cp.getEnvSuggestions(),
                                     }) }}
-
+                                    
                                     {{ forms.textField({
                                         label: 'Default Carrier Code'|t,
                                         id: 'defaultCarrierCode',
