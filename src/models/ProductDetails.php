@@ -18,7 +18,6 @@ use craft\helpers\Template as TemplateHelper;
  * making some Twig functions available for convenience.
  *
  * @package workingconcept\snipcart\models
- * @todo disable validation and populate data from custom fields if that Setting is enabled
  */
 class ProductDetails extends \craft\base\Model
 {
@@ -279,6 +278,18 @@ class ProductDetails extends \craft\base\Model
             self::DIMENSIONS_UNIT_CENTIMETERS => 'Centimeters',
             self::DIMENSIONS_UNIT_INCHES => 'Inches',
         ];
+    }
+
+    public function getDimensionInCentimeters($dimension): float
+    {
+        if ($this->dimensionsUnit === self::DIMENSIONS_UNIT_INCHES)
+        {
+            // convert to in
+            return (float) $this->{$dimension} * 2.54;
+        }
+
+        // return cm
+        return (float) $this->{$dimension};
     }
 
     /**
