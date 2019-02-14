@@ -49,7 +49,7 @@ class Orders extends Widget
     /**
      * Returns the widget's icon path.
      *
-     * @return string|bool
+     * @return string|null|boolean
      */
     public static function iconPath()
     {
