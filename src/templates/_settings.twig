@@ -273,7 +273,7 @@
                                         value: providerSettings.apiKey,
                                         autocomplete: false,
                                         errors: settings.getErrors('apiKey'),
-                                        instructions: ""
+                                        instructions: "_Account_ → _API Settings_ → _API Keys_"
                                     }) }}
 
                                     {{ forms.textField({
@@ -285,7 +285,7 @@
                                         value: providerSettings.apiSecret,
                                         autocomplete: false,
                                         errors: settings.getErrors('apiSecret'),
-                                        instructions: ""
+                                        instructions: "_Account_ → _API Settings_ → _API Keys_"
                                     }) }}
 
                                     {{ forms.textField({
@@ -326,16 +326,21 @@
                                         instructions: ""
                                     }) }}
 
-                                    {{ forms.textField({
+                                    {{ forms.selectField({
                                         label: 'Default Order Confirmation'|t,
                                         id: 'defaultOrderConfirmation',
-                                        class: 'code',
                                         required: true,
                                         name: 'settings[providerSettings][shipStation][defaultOrderConfirmation]',
                                         value: providerSettings.defaultOrderConfirmation,
-                                        autocomplete: false,
+                                        options: {
+                                            'none': 'None',
+                                            'delivery': 'Delivery',
+                                            'signature': 'Signature',
+                                            'adult_signature': 'Adult Signature',
+                                            'direct_signature': 'Direct Signature',
+                                        },
                                         errors: settings.getErrors('defaultOrderConfirmation'),
-                                        instructions: ""
+                                        instructions: "Type of delivery confirmation to be used once the shipment is created."
                                     }) }}
 
                                     {{ forms.textField({
@@ -358,7 +363,7 @@
                                         on: providerSettings.enableShippingRates,
                                         value: true,
                                         errors: settings.getErrors('enableShippingRates'),
-                                        instructions: ""
+                                        instructions: "Fetch custom shipping rates from the ShipStation API?"
                                     }) }}
 
                                     {{ forms.lightswitchField({
@@ -369,7 +374,7 @@
                                         on: providerSettings.sendCompletedOrders,
                                         value: true,
                                         errors: settings.getErrors('sendCompletedOrders'),
-                                        instructions: ""
+                                        instructions: "Send completed Snipcart orders to ShipStation?"
                                     }) }}
                                 </div>
                             {% endif %}
@@ -380,11 +385,12 @@
 
             <div id="ship-from-fields" class="mt-12{% if not hasConfiguredProviders %} hidden{% endif %}">
                 <h2>{{ "Ship From"|t }}</h2>
-
+                
                 {{ forms.textField({
                     label: 'Name'|t,
                     id: 'shipFromName',
                     name: 'settings[shipFromAddress][name]',
+                    required: true,
                     value: settings.shipFrom.name ?? '',
                     instructions: ""
                 }) }}
@@ -401,6 +407,7 @@
                     label: 'Address'|t,
                     id: 'shipFromAddress1',
                     name: 'settings[shipFromAddress][address1]',
+                    required: true,
                     placeholder: 'Address Line 1'|t,
                     value: settings.shipFrom.address1 ?? '',
                     instructions: ""
@@ -419,6 +426,7 @@
                         {{ forms.textField({
                             id: 'shipFromCity',
                             name: 'settings[shipFromAddress][city]',
+                            required: true,
                             size: 30,
                             placeholder: 'City',
                             value: settings.shipFrom.city ?? '',
@@ -429,6 +437,7 @@
                         {{ forms.textField({
                             id: 'shipFromProvince',
                             name: 'settings[shipFromAddress][province]',
+                            required: true,
                             placeholder: 'Province'|t,
                             size: 8,
                             maxlength: 2,
@@ -440,6 +449,7 @@
                         {{ forms.textField({
                             id: 'shipFromPostalCode',
                             name: 'settings[shipFromAddress][postalCode]',
+                            required: true,
                             placeholder: 'Postal Code'|t,
                             value: settings.shipFrom.postalCode ?? '',
                             instructions: ""
@@ -449,6 +459,7 @@
                         {{ forms.textField({
                             id: 'shipFromCountry',
                             name: 'settings[shipFromAddress][country]',
+                            required: true,
                             placeholder: 'Country'|t,
                             size: 8,
                             maxlength: 2,
@@ -462,6 +473,7 @@
                     label: 'Phone'|t,
                     id: 'shipFromPhone',
                     name: 'settings[shipFromAddress][phone]',
+                    required: true,
                     value: settings.shipFrom.phone ?? '',
                     instructions: ""
                 }) }}
@@ -470,6 +482,7 @@
                     label: 'Email'|t,
                     id: 'shipFromEmail',
                     name: 'settings[shipFromAddress][email]',
+                    required: true,
                     value: settings.shipFrom.email ?? '',
                     instructions: ""
                 }) }}
