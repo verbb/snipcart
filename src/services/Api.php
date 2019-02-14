@@ -88,7 +88,7 @@ class Api extends Component
         return $this->client = new Client([
             'base_uri' => self::$apiBaseUrl,
             'auth' => [
-                Snipcart::$plugin->getSettings()->secretApiKey,
+                Craft::parseEnv(Snipcart::$plugin->getSettings()->secretApiKey),
                 'password'
             ],
             'headers' => [

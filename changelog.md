@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.17 - 2019-02-13
+## 1.0.0-beta.17 - 2019-02-14
 ### Added
 - Added inventory to the Product Details field type.
 - Added the ability to designate a custom admin order notification email template.
@@ -9,6 +9,7 @@
 - Added Overview tab for control panel section.
 - Added Event hook for registering shipping providers.
 - Some settings now offer env and template suggestions.
+- Added environment variable support for Snipcart + ShipStation API keys.
 ### Changed
 - Flattened migrations into single Install.
 - Improved several control panel views.

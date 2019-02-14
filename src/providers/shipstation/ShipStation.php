@@ -106,8 +106,8 @@ class ShipStation extends ShippingProvider
         $this->client = new Client([
             'base_uri' => self::apiBaseUrl(),
             'auth' => [
-                $this->getSettings()->apiKey,
-                $this->getSettings()->apiSecret
+                Craft::parseEnv($this->getSettings()->apiKey),
+                Craft::parseEnv($this->getSettings()->apiSecret)
             ],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
