@@ -8,7 +8,7 @@ module.exports = {
     theme: 'craftdocs',
     themeConfig: {
         repo: 'workingconcept/snipcart-craft-plugin',
-        docsBranch: 'master',
+        docsBranch: 'docs',
         docsDir: 'docs',
         sidebar: [
             {
@@ -17,7 +17,7 @@ module.exports = {
                 children: [
                     '/setup/first-steps',
                     '/setup/products',
-                    '/setup/front-end',
+                    '/setup/frontend',
                     '/setup/notifications',
                     '/setup/order-fields',
                 ]
@@ -131,7 +131,7 @@ module.exports = {
             */
         ],
         nav: [
-            { text: 'Working Concept', link: 'https://workingconcept.com/' }
+            { text: 'Working Concept', link: 'https://workingconcept.com/plugins/snipcart' }
         ]
     }
 }

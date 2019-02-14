@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: How to integrate Snipcart with your Craft CMS frontend.
+---
+
 # Add Snipcart to Your Site
 
 Snipcart's shopping cart is added with a simple JavaScript snippet, and its concept of a product comes from whatever information you build into each "buy" button on your site.

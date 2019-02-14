@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Defining Snipcart products in Craft CMS.
+---
+
 # Define Product Details
 
 The easiest way to turn Entries into Products is to add the included _Product Details_ field to whatever field layout you'd like. This comes with a few benefits:

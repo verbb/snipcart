@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Testing webhooks with the Snipcart Craft CMS plugin.
+---
+
 # Testing Webhooks
 
 - Use a client like [Insomnia](https://insomnia.rest/) to feed sample order JSON to your site's local webhook endpoint.

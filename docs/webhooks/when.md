@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: When to use Snipcart webhooks with your Craft CMS site.
+---
+
 # When to Use Webhooks
 
 Snipcart [offers a variety of webhooks](https://docs.snipcart.com/webhooks/introduction) that can send information to your Craft site immediately after different things happen. The Snipcart plugin provides native Craft Events for these so that you can write your own code to respond to things like shipping rate requests at checkout, completed orders, updates to customer information, and so on.

@@ -5,9 +5,6 @@ export default ({
     siteData // site metadata
 }) => {
     if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
-        const FATHOM_ID = 'YTULG';
-        const FATHOM_URL = '//fathom.wrkcpt.co/tracker.js';
-
         (function(f, a, t, h, o, m){
             a[h]=a[h]||function(){
                 (a[h].q=a[h].q||[]).push(arguments)
@@ -19,7 +16,7 @@ export default ({
             m.parentNode.insertBefore(o,m)
         })(document, window, '//fathom.wrkcpt.co/tracker.js', 'fathom')
 
-        fathom('set', 'siteId', FATHOM_ID)
+        fathom('set', 'siteId', 'YTULG')
 
         router.afterEach(function(to) {
             fathom('set', 'trackerUrl', to.fullPath)

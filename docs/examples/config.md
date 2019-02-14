@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Snipcart plugin static config example.
+---
+
 # Static Config
 
 This is a complete static config file, which you can edit as needed and place in `config/snipcart.php`.

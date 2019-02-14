@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Reference of Snipcart plugin's Craft Events.
+---
+
 # Events
 
 Once you've configured Snipcart to post to your webhook URL, each of the following will be triggered by the relevant customer action.

@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Getting started with Snipcart and Craft CMS.
+---
+
 # Install & Configure the Plugin
 
 This guide assumes you've established a Craft site and you're setting up a new store for the first time.

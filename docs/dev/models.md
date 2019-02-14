@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Reference of Snipcart plugin's Craft Models.
+---
+
 # Models
 
 ## Snipcart

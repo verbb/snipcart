@@ -1,4 +1,10 @@
-# Template Tags
+---
+meta:
+  - name: description
+    content: Snipcart plugin template tag reference.
+---
+
+ Template Tags
 
 ## Cart Snippet
 

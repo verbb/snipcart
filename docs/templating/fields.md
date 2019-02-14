@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: How to add Snipcart product purchase buttons to your Craft CMS frontend.
+---
+
 # Product Details
 
 _Add to Cart_ buttons are critical to Snipcart because they define products behind the scenes. If you've used the _Product Details_ field, there's a `getBuyNowButton()` method that will surely save you some time. By default it will...

@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Snipcart plugin developer overview.
+---
+
 # Overview
 
 If you're comfortable working with PHP, there's a lot more you can do with this plugin. It utilizes a complete set of Craft-friendly data models, exposes just about all functionality in its services, and should make interacting with Snipcart a breeze.

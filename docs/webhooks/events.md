@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Webhook examples using the Snipcart Craft CMS plugin.
+---
+
 # Webhook Event Examples
 
 You're ready to latch onto Events if you've...

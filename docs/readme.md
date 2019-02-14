@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Plugin setup guide, examples, and reference.
+---
+
 # Snipcart Plugin for Craft CMS
 
 ![](../resources/hero.svg)

@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: How to customize and send Snipcart order email notifications from Craft CMS.
+---
+
 # Custom Email Notifications
 
 The Snipcart plugin can be configured to send two types of email notifications out of the box: order confirmations for store admins, and order confirmations for customers.

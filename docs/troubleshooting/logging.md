@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Logging options for the Snipcart Craft CMS plugin.
+---
+
 # Logging
 
 The Snipcart plugin logs warnings and errors like Craft and other plugins. It also includes options for logging incoming webhook requests and outgoing custom rate responses for troubleshooting.

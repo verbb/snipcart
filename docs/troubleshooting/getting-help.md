@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: How to get help with the Snipcart plugin for Craft CMS.
+---
+
 # Getting Help
 
 - Email [support@workingconcept.com](mailto:support@workingconcept.com).

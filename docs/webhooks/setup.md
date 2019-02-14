@@ -1,3 +1,9 @@
+---
+meta:
+  - name: description
+    content: Linking Snipcart and Craft CMS with webhooks.
+---
+
 # Linking Snipcart and Craft
 
 Get your webhook endpoint from the _Webhooks_ tab in the plugin settings:
