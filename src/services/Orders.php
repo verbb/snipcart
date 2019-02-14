@@ -277,7 +277,7 @@ class Orders extends \craft\base\Component
     public function sendOrderEmailNotification($order, $extra = [], $type = self::NOTIFICATION_TYPE_ADMIN)
     {
         $errors        = [];
-        $emailSettings = Craft::$app->systemSettings->getSettings('email');
+        $emailSettings = Craft::$app->getProjectConfig()->get('email');
         $view          = Craft::$app->getView();
 
         $templateSettings = $this->_selectNotificationTemplate($type);
