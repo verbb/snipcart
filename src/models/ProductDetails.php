@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\helpers\MeasurementHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
@@ -291,11 +292,10 @@ class ProductDetails extends \craft\base\Model
     {
         if ($this->dimensionsUnit === self::DIMENSIONS_UNIT_INCHES)
         {
-            // convert to in
-            return (float) $this->{$dimension} * 2.54;
+            return MeasurementHelper::inchesToCentimeters((float) $this->{$dimension});
         }
 
-        // return cm
+        // Already centimeters, safe to return.
         return (float) $this->{$dimension};
     }
 
@@ -329,8 +329,7 @@ class ProductDetails extends \craft\base\Model
      */
     public function isShippable($model = null): bool
     {
-        $instance = $model ?? $this;
-        return $instance->shippable;
+        return ($model ?? $this)->shippable;
     }
 
     /**
@@ -342,15 +341,16 @@ class ProductDetails extends \craft\base\Model
     {
         if ($this->weightUnit === self::WEIGHT_UNIT_GRAMS)
         {
+            // Already in grams, safe to return.
             return (float) $this->weight;
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_OUNCES)
         {
-            return (float) $this->weight * 28.3495;
+            return MeasurementHelper::ouncesToGrams((float) $this->weight);
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_POUNDS)
         {
-            return (float) $this->weight * 453.592;
+            return MeasurementHelper::poundsToGrams((float) $this->weight);
         }
     }
 

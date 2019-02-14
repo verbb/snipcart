@@ -318,9 +318,9 @@ class ProductDetails extends \craft\base\Field
      * @param $siteId
      * @param $elementId
      * @param $fieldId
-     * @return ProductDetailsRecord
+     * @return \craft\db\ActiveRecord
      */
-    private function _getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
+    private function _getRecord($siteId, $elementId, $fieldId): \craft\db\ActiveRecord
     {
         $record = ProductDetailsRecord::findOne([
             'siteId'    => $siteId,
