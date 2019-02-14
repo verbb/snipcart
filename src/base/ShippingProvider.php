@@ -61,13 +61,15 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     {
         if ($this->_settingsModel === null && $this->createSettingsModel())
         {
+            /**
+             * Initialize settings model.
+             */
             $this->_settingsModel = $this->createSettingsModel();
 
             $pluginSettings   = Snipcart::$plugin->getSettings();
             $providerSettings = $pluginSettings->providerSettings[static::refHandle()] ?? [];
 
             $this->_settingsModel->setAttributes($providerSettings);
-
         }
 
         return $this->_settingsModel;

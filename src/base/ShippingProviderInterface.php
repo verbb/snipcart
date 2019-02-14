@@ -36,14 +36,14 @@ interface ShippingProviderInterface extends ComponentInterface
     // =========================================================================
 
     /**
-     * Gets the provider settings.
-     * @return \craft\base\Model|null
+     * Gets the provider settings model, null if it's not ready, false if there isn't one.
+     * @return \craft\base\Model|false|null
      */
     public function getSettings();
 
     /**
      * Sets the provider settings.
-     * @param array $settings The plugin settings that should be set on the settings model
+     * @param array $settings Stored plugin settings that should populate the settings model
      */
     public function setSettings(array $settings);
 
