@@ -9,7 +9,7 @@
 - Added Overview tab for control panel section.
 - Added Event hook for registering shipping providers.
 - Some settings now offer env and template suggestions.
-- Added environment variable support for _Public API Key_ and _Secret API Key_ settings.
+- Added environment variable support for Snipcart + ShipStation API keys.
 ### Changed
 - Flattened migrations into single Install.
 - Improved several control panel views.
