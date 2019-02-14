@@ -37,9 +37,7 @@ class Orders extends Widget
     // =========================================================================
 
     /**
-     * Returns the translated widget display name.
-     *
-     * @return string
+     * @inheritdoc
      */
     public static function displayName(): string
     {
@@ -47,9 +45,7 @@ class Orders extends Widget
     }
 
     /**
-     * Returns the widget's icon path.
-     *
-     * @return string|null|boolean
+     * @inheritdoc
      */
     public static function iconPath()
     {
@@ -57,9 +53,7 @@ class Orders extends Widget
     }
 
     /**
-     * Sets the maximum column span to 1.
-     *
-     * @return int
+     * @inheritdoc
      */
     public static function maxColspan(): int
     {
@@ -67,9 +61,7 @@ class Orders extends Widget
     }
 
     /**
-     * Returns the translated widget title.
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getTitle(): string
     {
