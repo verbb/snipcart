@@ -1,7 +1,9 @@
+{# @var discount \workingconcept\snipcart\models\Discount #}
 {% extends "snipcart/cp/_layout" %}
 
-{% set title       = "Snipcart Customers"|t %}
-{% set discounts   = craft.snipcart.listDiscounts() %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
+{% set title       = "Snipcart Discounts"|t %}
 {% set selectedTab = "discounts" %}
 
 {% block actionButton %}
@@ -17,7 +19,6 @@
     </p>
 
     {% if discounts|length %}
-
         <table id="discounts" class="data" style="width: 100%;">
             <thead>
                 <th scope="col">{{ "Name"|t }}</th>
@@ -31,7 +32,7 @@
             <tbody>
                 {% for discount in discounts %}
                     <tr data-id="{{ discount.id }}" data-name="{{ discount.id }}">
-                        <td><a href="{{ url('snipcart/discounts/'~discount.id) }}">{{ discount.name }}</a></td>
+                        <td><a href="{{ discount.cpUrl }}">{{ discount.name }}</a></td>
                         <td>{{ discount.trigger }}</td>
                         <td>{{ discount.code }}</td>
                         <td>{{ discount.type }}</td>
@@ -42,18 +43,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
-        {#
-            {{ discount.totalToReach }}
-            {{ discount.alternatePrice }}
-            {{ discount.alternatePrice }}
-            {{ discount.expires }}
-            {{ discount.numberOfUsagesUncompleted }}
-            {{ discount.shippingDescription }}
-            {{ discount.shippingCost }}
-            {{ discount.shippingGuaranteedDaysToDelivery }}
-        #}
-
     {% endif %}
 
 {% endblock %}

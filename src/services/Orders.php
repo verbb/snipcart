@@ -81,13 +81,60 @@ class Orders extends \craft\base\Component
      * @return Order[]
      * @throws \Exception if our API key is missing.
      *
-     * @todo support higher limit with multiple API calls
      * @todo support params similar to Craft Elements
      */
     public function getOrders($params = []): array
     {
         return ModelHelper::populateArrayWithModels(
             (array)$this->_fetchOrders($params)->items,
+            Order::class
+        );
+    }
+
+    /**
+     * Get Snipcart orders using multiple requests if there are
+     * pagination limits.
+     *
+     * @param array $params
+     * @return array
+     * @throws
+     */
+    public function getAllOrders($params = []): array
+    {
+        $collection = [];
+        $collected = 0;
+        $offset = 0;
+        $finished = false;
+
+        while ($finished === false)
+        {
+            $params['offset'] = $offset;
+
+            if ($result = $this->_fetchOrders($params))
+            {
+                $currentItems = (array)$result->items;
+                $collected += count($currentItems);
+                $collection[] = $currentItems;
+
+                if ($result->totalItems > $collected)
+                {
+                    $offset++;
+                }
+                else
+                {
+                    $finished = true;
+                }
+            }
+            else
+            {
+                $finished = true;
+            }
+        }
+
+        $items = array_merge(...$collection);
+
+        return ModelHelper::populateArrayWithModels(
+            $items,
             Order::class
         );
     }
@@ -129,37 +176,6 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * List Snipcart orders by a range of dates supplied in $_POST or $_SESSION
-     * (defaults to 30 days).
-     *
-     * @param integer $page  page of results
-     * @param integer $limit number of results per page
-     *
-     * @return \stdClass|array|null
-     * @throws MissingComponentException if there's trouble getting a session
-     *                                   further down.
-     * @throws \Exception if our API key is missing.
-     *
-     * @todo rely on getPaginatedOrders for control panel views and get rid of this method
-     */
-    public function listOrders($page = 1, $limit = 20)
-    {
-        $response = Snipcart::$plugin->api->get('orders', [
-            'offset' => ($page - 1) * $limit,
-            'limit'  => $limit,
-            'from'   => date('c', $this->dateRangeStart()),
-            'to'     => date('c', $this->dateRangeEnd())
-        ]);
-
-        $response->items = ModelHelper::populateArrayWithModels(
-            $response->items,
-            Order::class
-        );
-
-        return $response;
-    }
-
-    /**
      * Get Snipcart orders with pagination info.
      *
      * @param int   $page
@@ -170,9 +186,10 @@ class Orders extends \craft\base\Component
      *              ->items (Order[])
      *              ->totalItems (int)
      *              ->offset (int)
+     *              ->limit (int)
      * @throws \Exception if our API key is missing.
      */
-    public function getPaginatedOrders($page = 1, $limit = 25, $params = []): \stdClass
+    public function listOrders($page = 1, $limit = 25, $params = []): \stdClass
     {
         /**
          * define offset and limit since that's pretty much all we're doing here
@@ -189,60 +206,8 @@ class Orders extends \craft\base\Component
             ),
             'totalItems' => $response->totalItems,
             'offset' => $response->offset,
+            'limit' => $limit
         ];
-    }
-
-    /**
-     * List Snipcart orders by a range of dates supplied in $_POST
-     * (defaults to 30 days).
-     *
-     * @param integer $page  page of results
-     * @param integer $limit number of results per page
-     *
-     * @return array
-     * @throws MissingComponentException if there's trouble getting a session
-     *                                   further down.
-     * @throws \Exception if our API key is missing.
-     *
-     * @todo move reliance on $_POST/$_SESSION to controller
-     */
-    public function listOrdersByDay($page = 1, $limit = 25): array
-    {
-        $orderData   = $this->listOrders($page, $limit);
-        $ordersByDay = [];
-        $start       = DateTimeHelper::toDateTime($this->dateRangeStart());
-        $end         = DateTimeHelper::toDateTime($this->dateRangeEnd());
-
-        $totalDays = $end->diff($start)->days;
-
-        for ($i=0; $i <= $totalDays; $i++)
-        {
-            if ($i === 0)
-            {
-                $currentDay = $start;
-            }
-            else
-            {
-                $currentDay = $start->modify('+1 day');
-            }
-
-            $key = $currentDay->format('Y-m-d');
-
-            if (! isset($ordersByDay[$key]))
-            {
-                $ordersByDay[$key] = 0;
-            }
-
-            foreach ($orderData->items as $order)
-            {
-                if ($order->completionDate->format('Y-m-d') == $key)
-                {
-                    ++$ordersByDay[$key];
-                }
-            }
-        }
-        
-        return $ordersByDay;
     }
 
     /**
@@ -256,10 +221,7 @@ class Orders extends \craft\base\Component
      */
     public function updateElementsFromOrder(Order $order)
     {
-        if (
-            Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder &&
-            Snipcart::$plugin->getSettings()->productInventoryField
-        )
+        if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder)
         {
             foreach ($order->items as $item)
             {
@@ -418,87 +380,6 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Get the beginning of the chosen date range.
-     *
-     * @return false|int|mixed
-     * @throws MissingComponentException
-     * @todo move this to helper or controller
-     */
-    public function dateRangeStart()
-    {
-        $param   = Craft::$app->request->getParam('startDate', false);
-        $default = strtotime('-1 month');
-        $session = Craft::$app->getSession();
-
-        if ($param)
-        {
-            $startDate = DateTimeHelper::toDateTime($param)->getTimestamp();
-        }
-        else
-        {
-            $startDate = $session->get('snipcartStartDate') ?? $default;
-        }
-
-        if ($session)
-        {
-            $session->set('snipcartStartDate', $startDate);
-        }
-
-        return $startDate;
-    }
-
-    /**
-     * Get the end of the chosen date range.
-     *
-     * @return int|mixed
-     * @throws MissingComponentException
-     * @todo move this to helper or controller
-     */
-    public function dateRangeEnd()
-    {
-        $param    = Craft::$app->request->getParam('endDate', false);
-        $default  = time();
-        $session  = Craft::$app->getSession();
-
-        if ($param)
-        {
-            $endDate = DateTimeHelper::toDateTime($param)->getTimestamp();
-        }
-        else
-        {
-            $endDate = $session->get('snipcartEndDate') ?? $default;
-        }
-
-        if ($session)
-        {
-            $session->set('snipcartEndDate', $endDate);
-        }
-
-        return $endDate;
-    }
-
-    /**
-     * Return search keywords, checking params and then session vars.
-     *
-     * @return mixed|string
-     * @throws \craft\errors\MissingComponentException
-     */
-    public function searchKeywords()
-    {
-        $param   = Craft::$app->getRequest()->getParam('searchKeywords', false);
-        $session = Craft::$app->getSession();
-
-        $keywords = $param ?? $session->get('snipcartSearchKeywords') ?? '';
-
-        if ($session)
-        {
-            $session->set('snipcartSearchKeywords', $keywords);
-        }
-
-        return $keywords;
-    }
-
-    /**
      * @param string $token          The order's unique identifier.
      * @param float  $amount         The amount of the refund.
      * @param string $comment        The reason for the refund.
@@ -522,7 +403,6 @@ class Orders extends \craft\base\Component
         );
 
         return $response;
-
     }
 
     // Private Methods
@@ -549,9 +429,20 @@ class Orders extends \craft\base\Component
             'placedBy',
         ];
 
-        $apiParams     = [];
-        $hasCacheParam = isset($params['cache']) && is_bool($params['cache']);
-        $cacheSetting  = $hasCacheParam ? $params['cache'] : true;
+        $apiParams      = [];
+        $hasCacheParam  = isset($params['cache']) && is_bool($params['cache']);
+        $cacheSetting   = $hasCacheParam ? $params['cache'] : true;
+        $dateTimeFormat = 'Y-m-d\TH:i:sP';
+
+        if (isset($params['from']) && $params['from'] instanceof \DateTime)
+        {
+            $params['from'] = $params['from']->format($dateTimeFormat);
+        }
+
+        if (isset($params['to']) && $params['to'] instanceof \DateTime)
+        {
+            $params['to'] = $params['to']->format($dateTimeFormat);
+        }
 
         foreach ($params as $key => $value)
         {
@@ -581,6 +472,7 @@ class Orders extends \craft\base\Component
     {
         $settings = Snipcart::$plugin->getSettings();
         $defaultTemplatePath = '';
+        $customTemplatePath = '';
 
         if ($type === self::NOTIFICATION_TYPE_ADMIN)
         {

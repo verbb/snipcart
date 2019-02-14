@@ -1,11 +1,7 @@
+{# @var discount \workingconcept\snipcart\models\Discount #}
 {% extends "_layouts/cp" %}
 
-{% set discount = craft.snipcart.getDiscount(discountId) %}
-{# @var discount \workingconcept\snipcart\models\Discount #}
-
-{% if discount is null %}
-    {% exit 404 %}
-{% endif %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set crumbs = [
     { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
@@ -16,190 +12,221 @@
 
 {% block content %}
 
-    {#{ dump(discount) }#}
+    {% if discount.expires < now %}
+        <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
+            {{ "This discount expired"|t }} {{ discount.expires | date('F j, Y') }}.
+        </div>
+    {% endif %}
 
-    <p>
-        <b>{{ "Name"|t }}</b>
-        {{ discount.name }}
-    </p>
+    <div class="detail-columns block px-3 mb-8">
+        <div class="flex-wrapper -mx-6">
+            <div class="w-1/2 mx-3">
+                <div class="inner">
 
-    <p>
-        <b>{{ "Expires"|t }}</b>
-        {{ discount.expires | date('m/d/y') }}
-    </p>
+                    <h2>{{ "Details"|t }}</h2>
 
-    <p>
-        <b>{{ "Max Number of Usages"|t }}</b>
-        {{ discount.maxNumberOfUsages }}
-    </p>
+                    <p class="text-muted">
+                        {{ "Created"|t }} {{ discount.creationDate | date('F j, Y') }}
+                        {%- if discount.expires %}, {{ "expires"|t }} {{ discount.expires | date('F j, Y') }}{% endif %}
+                    </p>
 
-    <p>
-        <b>{{ "Trigger"|t }}</b>
-        {{ discount.trigger }}
-    </p>
+                    <table class="data fullwidth fixed-layout">
+                        <tbody>
+                            <tr>
+                                <th class="light">{{ "Type"|t }}</th>
+                                <td>{{ discount.type }}</td>
+                            </tr>
+                            {% if 'amount' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Amount"|t }}</th>
+                                    <td>{{ discount.amount }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'productIds' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Product IDs"|t }}</th>
+                                    <td>{{ discount.productIds }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'rate' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Rate"|t }}</th>
+                                    <td>{{ discount.rate }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'alternatePrice' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Alternate Price"|t }}</th>
+                                    <td>{{ discount.alternatePrice }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'shippingDescription' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Shipping Description"|t }}</th>
+                                    <td>{{ discount.shippingDescription }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'shippingCost' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Shipping Cost"|t }}</th>
+                                    <td>{{ discount.shippingCost }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'shippingGuaranteedDaysToDelivery' in discount.typeOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Shipping Guaranteed Days to Delivery"|t }}</th>
+                                    <td>{{ discount.shippingGuaranteedDaysToDelivery }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th class="light">{{ "Trigger"|t }}</th>
+                                <td>{{ discount.trigger }}</td>
+                            </tr>
+                            {% if 'code' in discount.triggerOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Code"|t }}</th>
+                                    <td>{{ discount.code }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'totalToReach' in discount.triggerOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Total to Reach"|t }}</th>
+                                    <td>{{ discount.totalToReach }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if 'itemId' in discount.triggerOptionFields() %}
+                                <tr>
+                                    <th class="light">{{ "Item ID"|t }}</th>
+                                    <td>{{ discount.itemId }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <th class="light">{{ "Combinable"|t }}</th>
+                                <td>{{ discount.combinable ? "yes"|t : "no"|t }}</td>
+                            </tr>
+                            <tr>
+                                <th class="light">{{ "Applies on All Recurring Orders"|t }}</th>
+                                <td>{{ discount.appliesOnAllRecurringOrders ? "yes"|t : "no"|t }}</td>
+                            </tr>
+                            <tr>
+                                <th class="light">{{ "Only on Same Products"|t }}</th>
+                                <td>{{ discount.onlyOnSameProducts ? "yes"|t : "no"|t }}</td>
+                            </tr>
+                            {% if discount.maxAmountToReach %}
+                                <tr>
+                                    <th class="light">{{ "Max Amount to Reach"|t }}</th>
+                                    <td>{{ discount.maxAmountToReach }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.quantityOfAProduct %}
+                                <tr>
+                                    <th class="light">{{ "Quantity of a Product"|t }}</th>
+                                    <td>{{ discount.quantityOfAProduct }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.maxQuantityOfAProduct %}
+                                <tr>
+                                    <th class="light">{{ "Max Quantity of a Product"|t }}</th>
+                                    <td>{{ discount.maxQuantityOfAProduct }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.quantityOfProductIds %}
+                                <tr>
+                                    <th class="light">{{ "Quantity of Product IDs"|t }}</th>
+                                    <td>{{ discount.quantityOfProductIds }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.numberOfItemsRequired %}
+                                <tr>
+                                    <th class="light">{{ "Number of Items Required"|t }}</th>
+                                    <td>{{ discount.numberOfItemsRequired }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.numberOfFreeItems %}
+                                <tr>
+                                    <th class="light">{{ "Number of Free Items"|t }}</th>
+                                    <td>{{ discount.numberOfFreeItems }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.hasSavedAmount %}
+                                <tr>
+                                    <th class="light">{{ "Has Saved Amount"|t }}</th>
+                                    <td>{{ discount.hasSavedAmount ? "yes"|t : "no"|t }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.quantityInterval %}
+                                <tr>
+                                    <th class="light">{{ "Quantity Interval"|t }}</th>
+                                    <td>{{ discount.quantityInterval }}</td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.affectedItems | length %}
+                                <tr>
+                                    <th class="light">{{ "Affected Items"|t }}</th>
+                                    <td>
+                                        <ul>
+                                            {% for item in discount.affectedItems %}
+                                                <li>{{ item }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if discount.products | length %}
+                                <tr>
+                                    <th class="light">{{ "Affected Items"|t }}</th>
+                                    <td>
+                                        <ul>
+                                            {% for product in discount.products %}
+                                                <li>{{ product }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="w-1/2 mx-3">
+                <div class="inner">
+                    <h2>{{ "Usage"|t }}</h2>
 
-    <p>
-        <b>{{ "Code"|t }}</b>
-        {{ discount.code }}
-    </p>
+                    <div class="block border h-2 border-solid border-grey rounded-full w-full relative overflow-hidden mt-5" style="margin-bottom: 1.15rem;">
+                        <div class="bg-grey h-full absolute" style="width: {{ (discount.numberOfUsages / discount.maxNumberOfUsages) * 100 }}%;"></div>
+                    </div>
 
-    <p>
-        <b>{{ "Item ID"|t }}</b>
-        {{ discount.itemId }}
-    </p>
+                    <table class="data fullwidth fixed-layout">
+                        <tbody>
+                        <tr>
+                            <th class="light">{{ "Number of Usages / Max"|t }}</th>
+                            <td>{{ discount.numberOfUsages }} / {{ discount.maxNumberOfUsages }}</td>
+                        </tr>
+                        <tr>
+                            <th class="light">{{ "Number of Usages Uncompleted"|t }}</th>
+                            <td>{{ discount.numberOfUsagesUncompleted }}</td>
+                        </tr>
+                        <tr>
+                            <th class="light">{{ "Is For a Recovery Campaign"|t }}</th>
+                            <td>{{ discount.isForARecoveryCampaign ? "yes"|t : "no"|t }}</td>
+                        </tr>
+                        <tr>
+                            <th class="light">{{ "Archived"|t }}</th>
+                            <td>{{ discount.archived ? "yes"|t : "no"|t }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <p>
-        <b>{{ "Total to Reach"|t }}</b>
-        {{ discount.totalToReach }}
-    </p>
-
-    <p>
-        <b>{{ "Type"|t }}</b>
-        {{ discount.type }}
-    </p>
-
-    <p>
-        <b>{{ "Amount"|t }}</b>
-        {{ discount.amount }}
-    </p>
-
-    <p>
-        <b>{{ "Product IDs"|t }}</b>
-        {{ discount.productIds }}
-    </p>
-
-    <p>
-        <b>{{ "Rate"|t }}</b>
-        {{ discount.rate }}
-    </p>
-
-    <p>
-        <b>{{ "Alternate Price"|t }}</b>
-        {{ discount.alternatePrice }}
-    </p>
-
-    <p>
-        <b>{{ "Shipping Description"|t }}</b>
-        {{ discount.shippingDescription }}
-    </p>
-
-    <p>
-        <b>{{ "Shipping Cost"|t }}</b>
-        {{ discount.shippingCost }}
-    </p>
-
-    <p>
-        <b>{{ "Shipping Guaranteed Days to Delivery"|t }}</b>
-        {{ discount.shippingGuaranteedDaysToDelivery }}
-    </p>
-
-    <p>
-        <b>{{ "Number of Usages"|t }}</b>
-        {{ discount.numberOfUsages }}
-    </p>
-
-    <p>
-        <b>{{ "Number of Usages Uncompleted"|t }}</b>
-        {{ discount.numberOfUsagesUncompleted }}
-    </p>
-
-    <p>
-        <b>{{ "Is For a Recovery Campaign"|t }}</b>
-        {{ discount.isForARecoveryCampaign }}
-    </p>
-
-    <p>
-        <b>{{ "Archived"|t }}</b>
-        {{ discount.archived }}
-    </p>
-
-    <p>
-        <b>{{ "Combinable"|t }}</b>
-        {{ discount.combinable }}
-    </p>
-
-    <p>
-        <b>{{ "Max Amount to Reach"|t }}</b>
-        {{ discount.maxAmountToReach }}
-    </p>
-
-    <p>
-        <b>{{ "Applies on All Recurring Orders"|t }}</b>
-        {{ discount.appliesOnAllRecurringOrders }}
-    </p>
-
-    <p>
-        <b>{{ "Quantity of a Product"|t }}</b>
-        {{ discount.quantityOfAProduct }}
-    </p>
-
-    <p>
-        <b>{{ "Quantity of Product IDs"|t }}</b>
-        {{ discount.quantityOfProductIds }}
-    </p>
-
-    <p>
-        <b>{{ "Only on Same Products"|t }}</b>
-        {{ discount.onlyOnSameProducts }}
-    </p>
-
-    <p>
-        <b>{{ "Quantity Interval"|t }}</b>
-        {{ discount.quantityInterval }}
-    </p>
-
-    <p>
-        <b>{{ "Max Quantity of a Product"|t }}</b>
-        {{ discount.maxQuantityOfAProduct }}
-    </p>
-
-    <p>
-        <b>{{ "Number of Items Required"|t }}</b>
-        {{ discount.numberOfItemsRequired }}
-    </p>
-
-    <p>
-        <b>{{ "Number of Free Items"|t }}</b>
-        {{ discount.numberOfFreeItems }}
-    </p>
-
+    {#
     <p>
         <b>{{ "Data Attribute"|t }}</b>
         {{ discount.dataAttribute }}
     </p>
-
-    <p>
-        <b>{{ "Has Saved Amount"|t }}</b>
-        {{ discount.hasSavedAmount }}
-    </p>
-
-    <p>
-        <b>{{ "Creation Date"|t }}</b>
-        {{ discount.creationDate | date('m/d/y') }}
-    </p>
-
-    <p>
-        <b>{{ "Modification Date"|t }}</b>
-        {{ discount.modificationDate | date('m/d/y') }}
-    </p>
-
-    <p>
-        <b>{{ "Affected Items"|t }}</b>
-        <ul>
-            {% for item in discount.affectedItems %}
-            <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </p>
-
-    <p>
-        <b>{{ "Products"|t }}</b>
-        <ul>
-            {% for product in discount.products %}
-            <li>{{ product }}</li>
-            {% endfor %}
-        </ul>
-    </p>
+    #}
 
     <form action="" method="post">
         <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
@@ -208,4 +235,9 @@
 
         <input type="submit" class="btn" value="{{ "Delete"|t }}">
     </form>
+
+    <a href="{{ discount.dashboardUrl() }}" class="btn mt-8" target="_blank">
+        {{- "View in Snipcart Dashboard"|t -}}
+    </a>
+
 {% endblock %}

@@ -167,11 +167,11 @@ class OrderItem extends \craft\base\Model
     /**
      * Sets the item’s options.
      *
-     * @param ItemOption[] $options The item’s options.
+     * @param ItemOption[]|null $options The item’s options.
      */
-    public function setOptions(array $options)
+    public function setOptions($options)
     {
-        $this->_options = $options;
+        $this->_options = $options ?? [];
     }
 
     /**

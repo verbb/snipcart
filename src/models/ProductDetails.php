@@ -243,13 +243,13 @@ class ProductDetails extends \craft\base\Model
      */
     public function populateDefaults()
     {
-        $this->shippable = $this->field->defaultShippable;
-        $this->taxable = $this->field->defaultTaxable;
-        $this->weight = $this->field->defaultWeight;
-        $this->weightUnit = $this->field->defaultWeightUnit;
-        $this->length = $this->field->defaultLength;
-        $this->width = $this->field->defaultWidth;
-        $this->height = $this->field->defaultHeight;
+        $this->shippable      = $this->field->defaultShippable;
+        $this->taxable        = $this->field->defaultTaxable;
+        $this->weight         = $this->field->defaultWeight;
+        $this->weightUnit     = $this->field->defaultWeightUnit;
+        $this->length         = $this->field->defaultLength;
+        $this->width          = $this->field->defaultWidth;
+        $this->height         = $this->field->defaultHeight;
         $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
     }
 
@@ -278,6 +278,18 @@ class ProductDetails extends \craft\base\Model
             self::DIMENSIONS_UNIT_CENTIMETERS => 'Centimeters',
             self::DIMENSIONS_UNIT_INCHES => 'Inches',
         ];
+    }
+
+    public function getDimensionInCentimeters($dimension): float
+    {
+        if ($this->dimensionsUnit === self::DIMENSIONS_UNIT_INCHES)
+        {
+            // convert to in
+            return (float) $this->{$dimension} * 2.54;
+        }
+
+        // return cm
+        return (float) $this->{$dimension};
     }
 
     /**
@@ -340,6 +352,7 @@ class ProductDetails extends \craft\base\Model
      *
      * @param array $params
      * @return string
+     * @throws
      */
     public function getBuyNowButton($params = []): string
     {

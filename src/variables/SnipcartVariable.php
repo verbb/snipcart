@@ -8,10 +8,8 @@
 
 namespace workingconcept\snipcart\variables;
 
-use workingconcept\snipcart\models\AbandonedCart;
-use workingconcept\snipcart\models\Customer;
-use workingconcept\snipcart\models\Discount;
-use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\fields\ProductDetails;
+use workingconcept\snipcart\helpers\FieldHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -22,175 +20,11 @@ class SnipcartVariable
     // =========================================================================
 
     /**
-     * @param int $pageNumber
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function listOrders($pageNumber = 1)
-    {
-        return Snipcart::$plugin->orders->listOrders($pageNumber);
-    }
-
-    /**
-     * @param int $pageNumber
-     * @return array
-     * @throws \Exception
-     */
-    public function listOrdersByDay($pageNumber = 1): array
-    {
-        return Snipcart::$plugin->orders->listOrdersByDay($pageNumber);
-    }
-
-    /**
-     * @param int $pageNumber
-     * @return \stdClass|array|null
-     * @throws \Exception
-     */
-    public function listCustomers($pageNumber = 1)
-    {
-        return Snipcart::$plugin->customers->listCustomers($pageNumber);
-    }
-
-    /**
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function listDiscounts()
-    {
-        return Snipcart::$plugin->discounts->listDiscounts();
-    }
-
-    /**
-     * @param $discountId
-     * @return Discount|null
-     * @throws \Exception
-     */
-    public function getDiscount($discountId)
-    {
-        return Snipcart::$plugin->discounts->getDiscount($discountId);
-    }
-
-    /**
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function listAbandonedCarts()
-    {
-        return Snipcart::$plugin->carts->listAbandonedCarts();
-    }
-
-    /**
-     * @param $token
-     * @return AbandonedCart|null
-     * @throws \Exception
-     */
-    public function getAbandonedCart($token)
-    {
-        return Snipcart::$plugin->carts->getAbandonedCart($token);
-    }
-
-    /**
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function listSubscriptions()
-    {
-        return Snipcart::$plugin->subscriptions->listSubscriptions();
-    }
-
-    /**
-     * @param $orderId
-     * @return Order|null
-     * @throws \Exception
-     */
-    public function getOrder($orderId)
-    {
-        return Snipcart::$plugin->orders->getOrder($orderId);
-    }
-
-    /**
-     * @param $orderId
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function getOrderNotifications($orderId)
-    {
-        return Snipcart::$plugin->orders->getOrderNotifications($orderId);
-    }
-
-    /**
-     * @param $orderId
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function getOrderRefunds($orderId)
-    {
-        return Snipcart::$plugin->orders->getOrderRefunds($orderId);
-    }
-
-    /**
-     * @param $customerId
-     * @return Customer|null
-     * @throws \Exception
-     */
-    public function getCustomer($customerId)
-    {
-        return Snipcart::$plugin->customers->getCustomer($customerId);
-    }
-
-    /**
-     * @param $customerId
-     * @return \stdClass|array
-     * @throws \Exception
-     */
-    public function getCustomerOrders($customerId)
-    {
-        return Snipcart::$plugin->customers->getCustomerOrders($customerId);
-    }
-
-    /**
      * @return string
      */
     public function publicApiKey(): string
     {
         return Snipcart::$plugin->getSettings()->publicApiKey;
-    }
-
-    /**
-     * @return bool|\DateTime
-     * @throws
-     */
-    public function startDate()
-    {
-        return \DateTime::createFromFormat('U', Snipcart::$plugin->orders->dateRangeStart());
-    }
-
-    /**
-     * @return bool|\DateTime
-     * @throws
-     */
-    public function endDate()
-    {
-        return \DateTime::createFromFormat('U', Snipcart::$plugin->orders->dateRangeEnd());
-    }
-
-    /**
-     * @return mixed|string
-     * @throws
-     */
-    public function searchKeywords()
-    {
-        return Snipcart::$plugin->orders->searchKeywords();
-    }
-
-    /**
-     * @param $keywords
-     * @return \stdClass|array|null
-     * @throws \Exception
-     */
-    public function searchCustomers($keywords)
-    {
-        return Snipcart::$plugin->customers->searchCustomers($keywords);
     }
 
     /**
@@ -207,6 +41,18 @@ class SnipcartVariable
     public function defaultCurrencySymbol(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+    }
+
+    /**
+     * Returns product info for the provided Element regardless of what the
+     * field handle might be.
+     *
+     * @param \craft\base\Element $element
+     * @return ProductDetails|null
+     */
+    public function getProductInfo($element)
+    {
+        return FieldHelper::getProductInfo($element);
     }
 
     /**
@@ -229,20 +75,22 @@ class SnipcartVariable
     /**
      * Get the main Snipcart JavaScript snippet, optionally including jQuery.
      *
-     * @param bool $includejQuery
+     * @param bool   $includejQuery
      * @param string $onload
+     * @param bool   $includeStyles
      *
      * @return \Twig_Markup
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = ''): \Twig_Markup
+    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = false): \Twig_Markup
     {
         return $this->_renderTemplate(
             'snipcart/front-end/cart-js',
             [
                 'settings'      => Snipcart::$plugin->getSettings(),
                 'includejQuery' => $includejQuery,
+                'includeStyles' => $includeStyles,
                 'onload'        => $onload
             ]
         );

@@ -1,75 +1,39 @@
+{% set nearbyLimit = 4 %}
+{% set ellipsisElement = '<span class="sep-dots">...</span>' %}
+
+{% macro pagingLink(pageNumber, label, path) -%}
+    {%- set pagingTrigger = 'p' -%}
+    <a class="btn" href="{{ url(path ~ pagingTrigger ~ pageNumber) }}">
+        {{- label -}}
+    </a>
+{%- endmacro %}
+
+{% import _self as util %}
+
 {% if totalPages > 1 %}
-{% set maxVisible = 9 %}
-{% set nearbyLimit = 2 %}
-
-<div class="pagination">
-	{% if currentPage > 1 %}
-		<a class="btn" href="{{ url(path ~ (currentPage - 1)) }}">
-			{{ "Previous" | t }}
-		</a>
-	{% endif %}
-
-	{% for i in range(1, maxVisible) %}
-		{% if ( i < currentPage - nearbyLimit ) %}
-			<a class="btn" href="{{ url(path ~ i) }}">
-				{{ i }}
-			</a>
-		{% endif %}
-	{% endfor %}
-
-	{% if maxVisible + 1 < currentPage - nearbyLimit %}
-		<span class="sep-dots">...</span>
-	{% endif %}
-
-	{% for i in range(currentPage - nearbyLimit, currentPage - 1) %}
-		{% if ( i > 0 ) %}
-			<a class="btn" href="{{ url(path ~ i) }}">
-				{{ i }}
-			</a>
-		{% endif %}
-	{% endfor %}
-
-	<a class="btn active" href="{{ url(path ~ currentPage) }}">
-		{{ currentPage }}
-	</a>
-
-	{% if currentPage < totalPages %}
-		{% for i in range(currentPage + 1, totalPages) %}
-			{% if ( loop.index <= nearbyLimit and i <= totalPages ) %}
-				<a class="btn" href="{{ url(path ~ i) }}">
-					{{ i }}
-				</a>
-			{% endif %}
-		{% endfor %}
-
-		{% if (totalPages - maxVisible) > (currentPage + nearbyLimit ) %}
-			<span class="sep-dots">...</span>
-		{% endif %}
-
-		{% for i in range(totalPages - maxVisible + 1, totalPages) %}
-			{% if ( i > currentPage + nearbyLimit ) %}
-				<a class="btn" href="{{ url(path ~ i) }}">
-					{{ i }}
-				</a>
-			{% endif %}
-		{% endfor %}
-	{% endif %}
-
-	{% if currentPage < totalPages %}
-		<a class="btn" href="{{ url(path ~ (currentPage + 1)) }}">
-			{{ "Next" | t }}
-		</a>
-	{% endif %}
-</div>
+    <div class="pagination mt-8">
+        {% if currentPage != 1 %}
+            {{ util.pagingLink(1, 'First'|t, path) }}
+        {% endif %}
+        {% for i in 1..totalPages %}
+            {% if 0 == (currentPage - nearbyLimit) - loop.index %} {# dot before #}
+                {{ ellipsisElement | raw }}
+            {% elseif 0 == (currentPage + nearbyLimit) - loop.index %} {# dot after #}
+                {{ ellipsisElement | raw }}
+            {% elseif 0 < (currentPage - nearbyLimit) - loop.index %} {# hide all before #}
+            {% elseif 0 > (currentPage + nearbyLimit) - loop.index %} {# hide all after #}
+            {% else %}
+                {% if currentPage == loop.index  %}
+                    <a class="btn active">
+                        {{- currentPage -}}
+                    </a>
+                {% else %}
+                    {{ util.pagingLink(i, i, path) }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {% if currentPage != totalPages %}
+            {{ util.pagingLink(totalPages, 'Last'|t, path) }}
+        {% endif %}
+    </div>
 {% endif %}
-
-<style>
-	.pagination {
-		margin-top: 25px;
-	}
-
-	.sep-dots {
-		height: 32px;
-		padding: 6px 12px;
-	}
-</style>

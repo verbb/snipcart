@@ -33,6 +33,7 @@ class Customers extends \craft\base\Component
      *
      * @param integer $page  page of results
      * @param integer $limit number of results per page
+     * @param array   $params
      *
      * @return \stdClass|array|null
      *              ->totalItems (int)
@@ -41,34 +42,12 @@ class Customers extends \craft\base\Component
      *              ->items (Customer[])
      * @throws \Exception if our API key is missing.
      */
-    public function listCustomers($page = 1, $limit = 20)
+    public function listCustomers($page = 1, $limit = 20, $params = [])
     {
-        $customerData = Snipcart::$plugin->api->get('customers', [
-            'offset' => ($page - 1) * $limit,
-            'limit'  => $limit
-        ]);
+        $params['offset'] = ($page - 1) * $limit;
+        $params['limit']  = $limit;
 
-        $customerData->items = ModelHelper::populateArrayWithModels(
-            (array)$customerData->items,
-            Customer::class
-        );
-
-        return $customerData;
-    }
-
-    /**
-     * Search Snipcart customers
-     *
-     * @param integer $keywords  search term
-     *
-     * @return \stdClass|array|null
-     * @throws \Exception if our API key is missing.
-     */
-    public function searchCustomers($keywords)
-    {
-        $customerData = Snipcart::$plugin->api->get('customers', [
-            'name' => $keywords
-        ]);
+        $customerData = Snipcart::$plugin->api->get('customers', $params);
 
         $customerData->items = ModelHelper::populateArrayWithModels(
             (array)$customerData->items,
@@ -108,16 +87,29 @@ class Customers extends \craft\base\Component
      */
     public function getCustomerOrders($customerId): array
     {
-        return ModelHelper::populateArrayWithModels(
+        $orders = ModelHelper::populateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'customers/%s/orders',
                 $customerId
-            )),
+            ), ['orderBy' => 'creationDate']),
             Order::class
         );
+
+        usort($orders, [$this, 'sortOrdersByDateDescending']);
+
+        return $orders;
     }
 
     // Private Methods
     // =========================================================================
 
+    private function sortOrdersByDateAscending($a, $b): bool
+    {
+        return $a->creationDate->getTimestamp() > $b->creationDate->getTimestamp();
+    }
+
+    private function sortOrdersByDateDescending($a, $b): bool
+    {
+        return $a->creationDate->getTimestamp() < $b->creationDate->getTimestamp();
+    }
 }

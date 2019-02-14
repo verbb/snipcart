@@ -1,17 +1,20 @@
+{# @var cart \workingconcept\snipcart\models\AbandonedCart #}
 {% extends "snipcart/cp/_layout" %}
 
-{% set carts       = craft.snipcart.listAbandonedCarts() %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+
+{% set title       = "Snipcart Abandoned Carts"|t %}
 {% set selectedTab = "abandoned" %}
 
 {% block content %}
 
-    <p id="noredirects"{% if carts.items | length %} class="hidden"{% endif %}>
+    <p id="noredirects"{% if carts | length %} class="hidden"{% endif %}>
         {{ "There aren't any abandoned carts yet."|t }}
     </p>
 
-    {% if carts.items | length %}
+    {% if carts | length %}
 
-        <table id="carts" class="data" style="width: 100%;">
+        <table id="carts" class="data w-full">
             <thead>
                 <th scope="col">{{ "Name"|t }}</th>
                 <th scope="col">{{ "Email"|t }}</th>
@@ -20,17 +23,23 @@
                 <th scope="col">{{ "Total"|t }}</th>
             </thead>
             <tbody>
-                {% for cart in carts.items %}
+                {% for cart in carts %}
                     <tr data-id="{{ cart.token }}" data-name="{{ cart.email }}">
-                        <td><a href="{{ url('snipcart/abandoned/'~cart.token) }}">{{ cart.billingAddress.name }}</a></td>
+                        <td><a href="{{ cart.cpUrl }}">{{ cart.billingAddress.name }}</a></td>
                         <td>{{ cart.email }}</td>
                         <td>{{ cart.status }}</td>
                         <td>{{ cart.modificationDate | date() }}</td>
-                        <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ cart.total }}</td>
+                        <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ cart.total | number_format(2) }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        {% include "snipcart/cp/_parts/pagination" with {
+            currentPage: pageNumber,
+            totalPages: totalPages,
+            path: 'snipcart/carts/'
+        } %}
 
     {% endif %}
 

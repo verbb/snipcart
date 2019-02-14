@@ -515,6 +515,15 @@ class Order extends \craft\base\Model
     }
 
     /**
+     * Returns the Craft control panel URL for the detail page.
+     * @return string
+     */
+    public function getCpUrl(): string
+    {
+        return \craft\helpers\UrlHelper::cpUrl('snipcart/order/' . $this->token);
+    }
+
+    /**
      * Returns the URL for the order in the Snipcart customer dashboard.
      *
      * @return string|null

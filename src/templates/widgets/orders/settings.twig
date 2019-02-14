@@ -1,0 +1,25 @@
+{% import "_includes/forms" as forms %}
+
+<form method="post" accept-charset="UTF-8">
+    {{ forms.selectField({
+        label: 'Chart Type'|t,
+        id: 'chartType',
+        required: true,
+        name: 'chartType',
+        options: widget.getChartTypeOptions(),
+        value: widget.chartType,
+        errors: widget.getErrors('chartType'),
+        instructions: "Choose the type of chart you'd like to display."
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Time Period'|t,
+        id: 'chartRange',
+        required: true,
+        name: 'chartRange',
+        options: widget.getChartRangeOptions(),
+        value: widget.chartRange,
+        errors: widget.getErrors('chartRange'),
+        instructions: "Choose a range of time to be charted."
+    }) }}
+</form>

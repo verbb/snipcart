@@ -30,19 +30,97 @@ class Subscriptions extends \craft\base\Component
     /**
      * List subscriptions.
      *
-     * @return \stdClass|array|null
+     * @return \stdClass
+     *              ->items (Subscription[])
+     *              ->totalItems (int)
+     *              ->offset (int)
+     *              ->limit (int)
      * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
      */
-    public function listSubscriptions()
+    public function listSubscriptions($page = 1, $limit = 20, $params = []): \stdClass
     {
-        $subscriptionData = Snipcart::$plugin->api->get('subscriptions');
+        /**
+         * define offset and limit since that's pretty much all we're doing here
+         */
+        $params['offset'] = ($page - 1) * $limit;
+        $params['limit']  = $limit;
 
-        $subscriptionData->items = ModelHelper::populateArrayWithModels(
-            (array)$subscriptionData->items,
-            Subscription::class
+        $response = Snipcart::$plugin->api->get(
+            'subscriptions',
+            $params
         );
 
-        return $subscriptionData;
+        return (object) [
+            'items' => ModelHelper::populateArrayWithModels(
+                $response->items,
+                Subscription::class
+            ),
+            'totalItems' => $response->totalItems,
+            'offset'     => $response->offset,
+            'limit'      => $limit
+        ];
+    }
+
+    /**
+     * Get a Snipcart subscription.
+     *
+     * @param string $subscriptionId Snipcart order GUID
+     * @return Subscription|null
+     * @throws \Exception if our API key is missing.
+     */
+    public function getSubscription($subscriptionId)
+    {
+        if ($subscriptionData = Snipcart::$plugin->api->get(sprintf(
+            'subscriptions/%s',
+            $subscriptionId
+        )))
+        {
+            return new Subscription((array)$subscriptionData);
+        }
+
+        return null;
+    }
+
+    /**
+     * Cancel a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function cancel($subscriptionId)
+    {
+        return Snipcart::$plugin->api->delete(
+            sprintf('subscriptions/%s', $subscriptionId)
+        );
+    }
+
+    /**
+     * Pause a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function pause($subscriptionId)
+    {
+        return Snipcart::$plugin->api->post(
+            sprintf('subscriptions/%s/pause', $subscriptionId)
+        );
+    }
+
+    /**
+     * Resume a subscription.
+     *
+     * @param $subscriptionId
+     * @return mixed
+     * @throws \Exception if our API key is missing.
+     */
+    public function resume($subscriptionId)
+    {
+        return Snipcart::$plugin->api->post(
+            sprintf('subscriptions/%s/resume', $subscriptionId)
+        );
     }
 
     // Private Methods

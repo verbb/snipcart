@@ -30,19 +30,39 @@ class Carts extends \craft\base\Component
     /**
      * List abandoned carts.
      *
-     * @return \stdClass|AbandonedCart[]
+     * Note that there's a bug with Snipcart's REST API, and totalItems
+     * currently gives back a number equal to the limit even when there are
+     * more records.
+     *
+     * @return \stdClass
+     *              ->items (AbandonedCart[])
+     *              ->totalItems (int)
+     *              ->offset (int)
+     *              ->limit (int)
      * @throws \Exception if our API key is missing.
      */
-    public function listAbandonedCarts()
+    public function listAbandonedCarts($page = 1, $limit = 20, $params = []): \stdClass
     {
-        $abandonedCartData = Snipcart::$plugin->api->get('carts/abandoned');
+        /**
+         * define offset and limit since that's pretty much all we're doing here
+         */
+        $params['offset'] = ($page - 1) * $limit;
+        $params['limit']  = $limit;
 
-        $abandonedCartData->items = ModelHelper::populateArrayWithModels(
-            (array)$abandonedCartData->items,
-            AbandonedCart::class
+        $response = Snipcart::$plugin->api->get(
+            'carts/abandoned',
+            $params
         );
 
-        return $abandonedCartData;
+        return (object) [
+            'items' => ModelHelper::populateArrayWithModels(
+                $response->items,
+                AbandonedCart::class
+            ),
+            'totalItems' => $response->totalItems,
+            'offset'     => $response->offset,
+            'limit'      => $limit
+        ];
     }
 
     /**

@@ -27,7 +27,7 @@ class ProductDetailsFieldAsset extends AssetBundle
     public function init()
     {
         $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
-        $this->depends = [];
+        $this->depends = [SnipcartAsset::class];
         $this->js = ['js/field-product-details.js'];
         $this->css = ['css/field-product-details.css'];
 

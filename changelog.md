@@ -1,13 +1,25 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.17 - 2019-02-07
+## 1.0.0-beta.17 - 2019-02-13
 ### Added
 - Added inventory to the Product Details field type.
 - Added the ability to designate a custom admin order notification email template.
 - Webhook log now stores `mode`.
+- Added support for displaying Subscriptions and cancelling them from the control panel.
+- Added Overview tab for control panel section.
+- Added Event hook for registering shipping providers.
+- Some settings now offer env and template suggestions.
 ### Changed
+- Flattened migrations into single Install.
 - Improved several control panel views.
 - Optimized control panel assets.
+- Vastly improved speed and flexibility of Dashboard widget.
+- Refactored control panel views.
+### Removed
+- Deleted many SnipcartVariable methods after refactor.
+- Cleaned up Orders interface, removing several methods.
+- Removed ability to define custom product fields.
+- Removed unused Packaging Types.
 
 ## 1.0.0-beta.16 - 2018-12-27
 ### Added

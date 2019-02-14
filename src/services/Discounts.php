@@ -35,8 +35,10 @@ class Discounts extends \craft\base\Component
      */
     public function listDiscounts(): array
     {
+        $response = Snipcart::$plugin->api->get('discounts');
+
         return ModelHelper::populateArrayWithModels(
-            (array)Snipcart::$plugin->api->get('discounts'),
+            (array)$response,
             Discount::class
         );
     }
@@ -86,6 +88,7 @@ class Discounts extends \craft\base\Component
             $discountToken
         ));
     }
+
 
     // Private Methods
     // =========================================================================

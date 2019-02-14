@@ -12,16 +12,59 @@ use workingconcept\snipcart\models\Discount;
 use workingconcept\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
 use Craft;
-use yii\web\Response;
 
 class DiscountsController extends \craft\web\Controller
 {
     /**
+     * Display discounts, which don't seem to be paginated.
+     * @return \yii\web\Response
+     * @throws
+     */
+    public function actionIndex(): \yii\web\Response
+    {
+        $page = Craft::$app->getRequest()->getPageNum();
+        $discounts = Snipcart::$plugin->discounts->listDiscounts();
+
+        return $this->renderTemplate('snipcart/cp/discounts/index',
+            [
+                'discounts'  => $discounts
+            ]
+        );
+    }
+
+    /**
+     * Display discount detail.
+     * @param string $discountId
+     * @return \yii\web\Response
+     * @throws
+     */
+    public function actionDiscountDetail(string $discountId): \yii\web\Response
+    {
+        $discount = Snipcart::$plugin->discounts->getDiscount($discountId);
+
+        return $this->renderTemplate('snipcart/cp/discounts/detail',
+            [
+                'discount' => $discount,
+            ]
+        );
+    }
+
+    /**
+     * Display new discount form.
+     * @return \yii\web\Response
+     */
+    public function actionNew(): \yii\web\Response
+    {
+        return $this->renderTemplate('snipcart/cp/discounts/new');
+    }
+
+    /**
+     * Save a new discount with the Snipcart API.
      * @return \yii\web\Response
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionCreateDiscount(): Response
+    public function actionSave(): \yii\web\Response
     {
         $this->requirePostRequest();
 
@@ -73,7 +116,7 @@ class DiscountsController extends \craft\web\Controller
      * @throws \yii\web\BadRequestHttpException
      * @throws \craft\errors\MissingComponentException
      */
-    public function actionDeleteDiscount(): Response
+    public function actionDeleteDiscount(): \yii\web\Response
     {
         $this->requirePostRequest();
 

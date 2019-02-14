@@ -1,90 +1,85 @@
+{# @var customer \workingconcept\snipcart\models\Customer #}
 {% extends "_layouts/cp" %}
 
-{% set customer = craft.snipcart.getCustomer(customerId) %}
-
-{% if customer is null %}
-    {% exit 404 %}
-{% endif %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set crumbs = [
     { label: "Snipcart"|t('snipcart'), url: url('snipcart') },
     { label: "Customers"|t('snipcart'), url: url('snipcart/customers') }
 ] %}
 
-{% set orders = craft.snipcart.getCustomerOrders(customerId) %}
 {% set title = customer.billingAddress.name %}
 
 {% block content %}
 
-    <input type="hidden" name="customer_id" value="{{ customer.id }}">
+    <div class="detail-columns block px-3 mb-8">
+        <div class="flex-wrapper -mx-6">
+            <div class="w-1/2 mx-3">
+                <div class="inner">
+                    <h2>{{ "Billing"|t }}</h2>
 
-    <table cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr valign="top">
-            <td style="vertical-align: top;">
+                    <p><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></p>
 
-                <h3>{{ "Billing"|t }}</h3>
+                    <p>
+                        {% if customer.billingAddressName %}{{ customer.billingAddressName }}<br>{% endif %}
+                        {% if customer.billingAddressCompanyName %}{{ customer.billingAddressCompanyName }}<br>{% endif %}
+                        {{ customer.billingAddressAddress1 }}<br>
+                        {% if customer.billingAddressAddress2 %}{{ customer.billingAddressAddress2 }}<br>{% endif %}
+                        {{ customer.billingAddressCity }}, {{ customer.billingAddressProvince }} {{ customer.billingAddressPostalCode }}<br>
+                        {% if customer.billingAddressPhone %}{{ customer.billingAddressPhone }}{% endif %}
+                    </p>
 
-                <p><a href="mailto:{{ customer.email }}">{{ customer.email }}</a></p>
+                    <h2>{{ "Shipping"|t }}{% if customer.shippingAddressSameAsBilling %} {{ "(same as billing)"|t }}{% endif %}</h2>
 
-                <p>
-                    {% if customer.billingAddressName %}{{ customer.billingAddressName }}<br>{% endif %}
-                    {% if customer.billingAddressCompanyName %}{{ customer.billingAddressCompanyName }}<br>{% endif %}
-                    {{ customer.billingAddressAddress1 }}<br>
-                    {% if customer.billingAddressAddress2 %}{{ customer.billingAddressAddress2 }}<br>{% endif %}
-                    {{ customer.billingAddressCity }}, {{ customer.billingAddressProvince }} {{ customer.billingAddressPostalCode }}<br>
-                    {% if customer.billingAddressPhone %}{{ customer.billingAddressPhone }}{% endif %}
-                </p>
+                    <p>
+                        {% if customer.shippingAddressName %}{{ customer.shippingAddressName }}<br>{% endif %}
+                        {% if customer.shippingAddressCompanyName %}{{ customer.shippingAddressCompanyName }}<br>{% endif %}
+                        {{ customer.shippingAddressAddress1 }}<br>
+                        {% if customer.shippingAddressAddress2 %}{{ customer.shippingAddressAddress2 }}<br>{% endif %}
+                        {{ customer.shippingAddressCity }}, {{ customer.shippingAddressProvince }} {{ customer.shippingAddressPostalCode }}<br>
+                        {{ customer.shippingAddressPhone }}
+                    </p>
 
-            </td>
-            <td style="vertical-align: top;">
+                    <a href="{{ customer.dashboardUrl() }}" class="btn mt-8" target="_blank">
+                        {{- "View in Snipcart Dashboard"|t -}}
+                    </a>
+                </div>
+            </div>
+            <div class="w-1/2 mx-3">
+                <div class="inner">
+                    <h2>{{ "Orders"|t }}</h2>
 
-                <h3>{{ "Shipping"|t }}{% if customer.shippingAddressSameAsBilling %} {{ "(same as billing)"|t }}{% endif %}</h3>
+                    <p>
+                        {{- customer.statistics.ordersCount }} order
+                        {%- if customer.statistics.ordersCount != 1 %}s{% endif %},
+                        {{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }} {{ "spent"|t }}
+                    </p>
 
-                <p>
-                    {% if customer.shippingAddressName %}{{ customer.shippingAddressName }}<br>{% endif %}
-                    {% if customer.shippingAddressCompanyName %}{{ customer.shippingAddressCompanyName }}<br>{% endif %}
-                    {{ customer.shippingAddressAddress1 }}<br>
-                    {% if customer.shippingAddressAddress2 %}{{ customer.shippingAddressAddress2 }}<br>{% endif %}
-                    {{ customer.shippingAddressCity }}, {{ customer.shippingAddressProvince }} {{ customer.shippingAddressPostalCode }}<br>
-                    {{ customer.shippingAddressPhone }}
-                </p>
-
-            </td>
-            <td style="vertical-align: top;">
-
-                <h3>{{ "Orders"|t }}</h3>
-
-                <p>
-                    {{- customer.statistics.ordersCount }} order
-                    {%- if customer.statistics.ordersCount != 1 %}s{% endif %}, 
-                    {{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }} spent
-                </p>
-
-                <table class="data" style="width: 100%">
-                    <thead>
-                        <th>{{ "Invoice"|t }}</th>
-                        <th>{{ "Date"|t }}</th>
-                        <th>{{ "Amount"|t }}</th>
-                    </thead>
-                    <tbody>
+                    <table class="data" style="width: 100%">
+                        <thead>
+                            <th>{{ "Invoice"|t }}</th>
+                            <th>{{ "Date"|t }}</th>
+                            <th>{{ "Amount"|t }}</th>
+                        </thead>
+                        <tbody>
                         {% for order in orders %}
-                        <tr>
-                            <td>
-                                <a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a>
-                            </td>
-                            <td>
-                                {{ order.creationDate | date('n/j/Y') }}
-                            </td>
-                            <td>
-                                {{ order.finalGrandTotal | currency(order.currency|upper) }}
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a>
+                                </td>
+                                <td>
+                                    {{ order.creationDate | date('n/j/Y') }}
+                                </td>
+                                <td>
+                                    {{ order.finalGrandTotal | currency(order.currency|upper) }}
+                                </td>
+                            </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-
-            </td>
-        </tr>
-    </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

@@ -13,6 +13,7 @@ use craft\fields\Lightswitch;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\base\Model;
+use workingconcept\snipcart\providers\ShipStation;
 use yii\base\InvalidConfigException;
 use craft\fields\PlainText;
 use craft\fields\Number;
@@ -28,9 +29,6 @@ class Settings extends Model
 {
     // Constants
     // =========================================================================
-
-    const PROVIDER_SHIPSTATION = 'shipStation';
-    const PROVIDER_SHIPPO = 'shippo';
 
     const CURRENCY_USD = 'usd';
     const CURRENCY_CAD = 'cad';
@@ -93,61 +91,6 @@ class Settings extends Model
     public $enabledCurrencies = [ self::CURRENCY_USD ];
 
     /**
-     * @var string
-     */
-    public $productIdentifier;
-
-    /**
-     * @var string
-     */
-    public $productInventoryField;
-
-    /**
-     * @var string
-     */
-    public $productPriceField;
-
-    /**
-     * @var string
-     */
-    public $productWeightField;
-
-    /**
-     * @var string
-     */
-    public $productWeightUnitField;
-
-    /**
-     * @var string
-     */
-    public $productLengthField;
-
-    /**
-     * @var string
-     */
-    public $productWidthField;
-
-    /**
-     * @var string
-     */
-    public $productHeightField;
-
-    /**
-     * @var string
-     */
-    public $productDimensionsUnitField;
-
-    /**
-     * @var string
-     */
-    public $productShippableField;
-
-    /**
-     * @var string
-     */
-    public $productTaxableField;
-
-    /**
      * @var string Name of custom field sent to Snipcart for order gift notes.
      */
     public $orderGiftNoteFieldName;
@@ -175,11 +118,6 @@ class Settings extends Model
     /**
      * @var bool
      */
-    public $useCustomProductFields = false;
-
-    /**
-     * @var bool
-     */
     public $logCustomRates = false;
 
     /**
@@ -193,42 +131,19 @@ class Settings extends Model
     private $_shipFrom;
 
     /**
-     * @var array
+     * @var array Used for storage of $_shipFrom
      */
     public $shipFromAddress = [];
 
     /**
-     * @var Package[]
+     * @var array Key-value array of refHandle => instance of each registered provider.
      */
-    private $_packagingTypes = [];
+    public $providers = [];
 
     /**
-     * @var array
+     * @var array Indexed array used for storing provider settings.
      */
-    public $customPackaging = [];
-
-    /**
-     * @var array
-     */
-    public $enabledProviders = [];
-
-    /**
-     * @var array
-     */
-    public $providers = [
-        'shipStation' => [
-            'apiKey' => '',
-            'apiSecret' => '',
-            'defaultCarrierCode' => '', // can be empty
-            'defaultPackageCode' => '', // can be empty
-            'defaultCountry' => 'US', // must be set
-            'defaultWarehouseId' => 0, // must be set
-            'defaultOrderConfirmation' => 'delivery', // must be set
-        ],
-        'shippo' => [
-            'apiToken' => '',
-        ],
-    ];
+    public $providerSettings = [];
 
 
     // Static Methods
@@ -250,14 +165,22 @@ class Settings extends Model
     // Public Methods
     // =========================================================================
 
+    public function isConfigured(): bool
+    {
+        return ! empty($this->publicApiKey) &&
+            ! empty($this->secretApiKey);
+    }
+
     /**
      * @inheritdoc
      */
     public function rules(): array
     {
+        // TODO: validate shipFrom
+
         return [
-            [['publicApiKey', 'secretApiKey', 'productIdentifier', 'productInventoryField', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
-            [['publicApiKey', 'secretApiKey', 'productIdentifier'], 'required'],
+            [['publicApiKey', 'secretApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
+            [['publicApiKey', 'secretApiKey'], 'required'],
             [['reduceQuantitiesOnOrder', 'cacheResponses', 'logCustomRates', 'logWebhookRequests'], 'boolean'],
             [['cacheDurationLimit'], 'number', 'integerOnly' => true],
             [['cacheDurationLimit'], 'default', 'value' => 300],
@@ -266,13 +189,6 @@ class Settings extends Model
             [['logCustomRates'], 'default', 'value' => false],
             [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
-//            [['enabledProviders'], 'in', 'range' => [
-//                self::PROVIDER_SHIPSTATION,
-//                self::PROVIDER_SHIPPO
-//            ]],
-
-            // TODO: validate shipFrom
-            // TODO: validate packagingTypes
         ];
     }
 
@@ -311,6 +227,11 @@ class Settings extends Model
     {
         $rows = [];
 
+        if (empty($this->notificationEmails))
+        {
+            return $rows;
+        }
+
         foreach ($this->notificationEmails as $email)
         {
             $rows[] = [
@@ -322,70 +243,10 @@ class Settings extends Model
     }
 
     /**
-     * Get custom packaging type definitions.
-     *
-     * @return Package[]
+     * @return Address|null
      */
-    public function getPackagingTypes(): array
+    public function getShipFrom()
     {
-        // use the customPackaging field that would've come from a static config
-        if ( ! empty($this->customPackaging))
-        {
-            $this->setPackagingTypes($this->customPackaging);
-        }
-        
-        return $this->_packagingTypes;
-    }
-
-    /**
-     * @param $packagingTypes
-     *
-     * @return Package[]
-     */
-    public function setPackagingTypes($packagingTypes): array
-    {
-        foreach ($packagingTypes as $name => $values)
-        {
-            if ( ! is_a($values, Package::class))
-            {
-                $values['name'] = $name;
-            
-                $this->_packagingTypes[$name] = new Package($values);
-            }
-        }
-
-        return $this->_packagingTypes;
-    }
-
-    /**
-     * Convert custom packaging types into a multi-dimensional array for the control panel's settings UI.
-     *
-     * @return array
-     */
-    public function getPackagingTypesForTable(): array
-    {
-        $rows = [];
-
-        foreach ($this->packagingTypes as $name => $values)
-        {
-            $rows[] = [
-                0 => $name,
-                1 => $values->length,
-                2 => $values->width,
-                3 => $values->height,
-                4 => $values->weight,
-            ];
-        }
-
-        return $rows;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getShipFrom(): Address
-    {
-        // use the customPackaging field that would've come from a static config
         if ( ! empty($this->shipFromAddress))
         {
             $this->setShipFrom($this->shipFromAddress);
@@ -449,110 +310,8 @@ class Settings extends Model
         return $this->enabledCurrencies = [ $value ];
     }
 
-    /**
-     * Return established Craft field instances that can be used for the provided
-     * Snipcart product field.
-     *
-     * @param $productFieldName
-     * @return array Options for selectField
-     * @throws InvalidConfigException
-     */
-    public function getFieldOptionsForProduct($productFieldName): array
-    {
-        return $this->_getSupportedFieldTypeOptionsForField(
-            $productFieldName
-        );
-    }
 
     // Private Methods
     // =========================================================================
-
-    /**
-     * Return class names of fields that can be used as options for the provided
-     * Settings field.
-     *
-     * @param $fieldName
-     * @return array
-     * @throws InvalidConfigException
-     */
-    private function _getSupportedFieldTypeOptionsForField($fieldName): array
-    {
-        $allFields = Craft::$app->fields->getAllFields();
-
-        $supportedMap = [
-            'productIdentifier' => [
-                ProductDetailsField::class,
-                PlainText::class,
-                Number::class,
-            ],
-            'productInventoryField' => [
-                Number::class,
-            ],
-            'productPriceField' => [
-                Number::class,
-            ],
-            'productWeightField' => [
-                Number::class,
-            ],
-            'productWeightUnitField' => [
-                Dropdown::class,
-                PlainText::class,
-            ],
-            'productLengthField' => [
-                Number::class,
-            ],
-            'productWidthField' => [
-                Number::class,
-            ],
-            'productHeightField' => [
-                Number::class,
-            ],
-            'productDimensionsUnitField' => [
-                Dropdown::class,
-                PlainText::class,
-            ],
-            'productShippableField' => [
-                Lightswitch::class,
-            ],
-            'productTaxableField' => [
-                Lightswitch::class,
-            ],
-        ];
-
-        if ( ! array_key_exists($fieldName, $supportedMap))
-        {
-            throw new InvalidConfigException(
-                'Cannot get options for `' . $fieldName .'` field.`'
-            );
-        }
-
-        $availableOptions = [];
-        $supportedFieldClasses = $supportedMap[$fieldName];
-
-        if ($fieldName === 'productIdentifier')
-        {
-            $availableOptions['id'] = 'Element ID';
-        }
-        else
-        {
-            $availableOptions[] = 'Choose …';
-        }
-
-        foreach ($allFields as $field)
-        {
-            if (in_array(get_class($field), $supportedFieldClasses, true))
-            {
-                // disallow multiline text as an option
-                if (isset($field->multiline) && $field->multiline)
-                {
-                    continue;
-                }
-
-                $availableOptions[$field->handle] = $field->name;
-            }
-        }
-
-        return $availableOptions;
-    }
 
 }

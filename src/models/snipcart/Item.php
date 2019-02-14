@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use workingconcept\snipcart\Snipcart;
+use workingconcept\snipcart\records\ProductDetails;
 use craft\elements\Entry;
 
 class Item extends \craft\base\Model
@@ -21,7 +21,7 @@ class Item extends \craft\base\Model
     // =========================================================================
 
     /**
-     * @var string
+     * @var string Snipcart's own unique ID for the item.
      */
     public $uniqueId;
 
@@ -31,9 +31,14 @@ class Item extends \craft\base\Model
     public $token;
 
     /**
-     * @var
+     * @var string The product ID originally sent with the buy button.
      */
     public $id;
+
+    /**
+     * @var
+     */
+    public $subscriptionId;
 
     /**
      * @var string
@@ -165,6 +170,12 @@ class Item extends \craft\base\Model
      */
     public $addedOn;
 
+
+    /**
+     * @var string
+     */
+    public $startsOn;
+
     /**
      * @var \DateTime
      */
@@ -214,29 +225,12 @@ class Item extends \craft\base\Model
      */
     public function getRelatedElement()
     {
-        $productIdentifier = Snipcart::$plugin->getSettings()->productIdentifier;
-
-        if ($productIdentifier === 'id')
+        if ($record = ProductDetails::findOne([ 'sku' => $this->id ]))
         {
-            $element = Entry::find()
-                ->id($this->id)
-                ->one();
-        }
-        else
-        {
-            $element = Entry::find()
-                ->where($productIdentifier, $this->id)
-                ->one();
-        }
-
-        if ( ! empty($element))
-        {
-            if (is_array($element))
+            if ($element = Entry::findOne([ 'id' => $record->elementId ]))
             {
-                return $element[0];
+                return $element;
             }
-
-            return $element;
         }
 
         return null;

@@ -1,0 +1,15 @@
+/* @import 'tailwindcss/preflight'; */
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.text-muted { color: #b9bfc6; }
+
+/* because .flex clashes with Craft's own styles */
+.flex-wrapper {
+    @apply flex;
+}
+
+.sep-dots {
+    height: 32px;
+    padding: 6px 12px;
+}

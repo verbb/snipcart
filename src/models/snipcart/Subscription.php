@@ -120,4 +120,48 @@ class Subscription extends \craft\base\Model
      * @var
      */
     public $recurringShipping;
+
+    /**
+     * @var
+     */
+    public $shippingCharged;
+
+    /**
+     * @var
+     */
+    public $nextBillingDate;
+
+    /**
+     * @var
+     */
+    public $upcomingPayments;
+
+    /**
+     * @var
+     */
+    public $invoiceNumber;
+
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function datetimeAttributes(): array
+    {
+        return ['creationDate', 'modificationDate', 'cancelledOn', 'nextBillingDate', 'firstInvoiceReceivedOn'];
+    }
+
+    public function getCpUrl(): string
+    {
+        return \craft\helpers\UrlHelper::cpUrl('snipcart/subscription/' . $this->id);
+    }
+
+    public function getDashboardUrl(): string
+    {
+        return 'https://app.snipcart.com/dashboard/subscriptions/' . $this->id;
+    }
+
+
 }
