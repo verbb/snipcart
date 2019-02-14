@@ -301,9 +301,13 @@ class ProductDetails extends \craft\base\Field
 
         $productDetails = new ProductDetailsModel();
 
-        $productDetails->fieldId   = $field->id;
-        $productDetails->elementId = $element->getId();
-        $productDetails->siteId    = Craft::$app->sites->getCurrentSite()->id;
+        $productDetails->fieldId = $field->id;
+        $productDetails->siteId  = Craft::$app->sites->getCurrentSite()->id;
+
+        if ($element !== null)
+        {
+            $productDetails->elementId = $element->getId();
+        }
 
         $productDetails->populateDefaults();
 

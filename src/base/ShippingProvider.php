@@ -286,7 +286,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     /**
      * Creates and returns the model used to store the plugin’s settings.
      *
-     * @return mixed
+     * @return Model|bool|null
      */
     protected function createSettingsModel()
     {

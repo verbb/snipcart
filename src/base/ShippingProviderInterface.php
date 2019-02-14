@@ -37,7 +37,7 @@ interface ShippingProviderInterface extends ComponentInterface
 
     /**
      * Gets the provider settings model, null if it's not ready, false if there isn't one.
-     * @return \craft\base\Model|false|null
+     * @return \craft\base\Model|bool|null
      */
     public function getSettings();
 
