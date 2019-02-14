@@ -49,9 +49,9 @@ class Orders extends Widget
     /**
      * Returns the widget's icon path.
      *
-     * @return string
+     * @return string|bool
      */
-    public static function iconPath(): string
+    public static function iconPath()
     {
         return Craft::getAlias('@workingconcept/snipcart/assetbundles/dist/img/orders-icon.svg');
     }

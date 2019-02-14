@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
-use workingconcept\snipcart\records\ProductDetails;
+use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use craft\elements\Entry;
 
 class Item extends \craft\base\Model
@@ -225,7 +225,7 @@ class Item extends \craft\base\Model
      */
     public function getRelatedElement()
     {
-        if ($record = ProductDetails::findOne([ 'sku' => $this->id ]))
+        if ($record = ProductDetailsRecord::findOne([ 'sku' => $this->id ]))
         {
             if ($element = Entry::findOne([ 'id' => $record->elementId ]))
             {

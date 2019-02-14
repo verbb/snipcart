@@ -147,10 +147,13 @@ class ProductDetails extends \craft\base\Model
     /**
      * Get the relevant Field instance.
      *
-     * @return \craft\base\FieldInterface|null
+     * @return \craft\base\FieldInterface|\workingconcept\snipcart\fields\ProductDetails|null
      */
     public function getField()
     {
+        /**
+         * Should only be a \workingconcept\snipcart\fields\ProductDetails
+         */
         return Craft::$app->fields->getFieldById($this->fieldId);
     }
 
@@ -243,14 +246,17 @@ class ProductDetails extends \craft\base\Model
      */
     public function populateDefaults()
     {
-        $this->shippable      = $this->field->defaultShippable;
-        $this->taxable        = $this->field->defaultTaxable;
-        $this->weight         = $this->field->defaultWeight;
-        $this->weightUnit     = $this->field->defaultWeightUnit;
-        $this->length         = $this->field->defaultLength;
-        $this->width          = $this->field->defaultWidth;
-        $this->height         = $this->field->defaultHeight;
-        $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
+        if ($field = $this->getField())
+        {
+            $this->shippable      = $field->defaultShippable;
+            $this->taxable        = $field->defaultTaxable;
+            $this->weight         = $field->defaultWeight;
+            $this->weightUnit     = $field->defaultWeightUnit;
+            $this->length         = $field->defaultLength;
+            $this->width          = $field->defaultWidth;
+            $this->height         = $field->defaultHeight;
+            $this->dimensionsUnit = $field->defaultDimensionsUnit;
+        }
     }
 
     /**
