@@ -5,22 +5,15 @@ export default ({
     siteData // site metadata
 }) => {
     if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
-        (function(f, a, t, h, o, m){
-            a[h]=a[h]||function(){
-                (a[h].q=a[h].q||[]).push(arguments)
-            }
-            o=f.createElement('script'), m=f.getElementsByTagName('script')[0]
-            o.async=1
-            o.src=t
-            o.id='fathom-script'
-            m.parentNode.insertBefore(o,m)
-        })(document, window, '//fathom.wrkcpt.co/tracker.js', 'fathom')
 
-        fathom('set', 'siteId', 'YTULG')
+        // Fathom snippet already injected by Netflify; just register pageViews
+        
+        if (typeof fathom !== 'undefined') {
+            router.afterEach(function(to) {
+                fathom('set', 'trackerUrl', to.fullPath)
+                fathom('trackPageview')
+            });
+        }
 
-        router.afterEach(function(to) {
-            fathom('set', 'trackerUrl', to.fullPath)
-            fathom('trackPageview')
-        })
     }
 }
