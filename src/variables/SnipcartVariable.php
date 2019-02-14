@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\variables;
 
 use workingconcept\snipcart\fields\ProductDetails;
+use workingconcept\snipcart\helpers\FieldHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -51,18 +52,7 @@ class SnipcartVariable
      */
     public function getProductInfo($element)
     {
-        $fieldLayout = $element->getFieldLayout();
-        $fields = $fieldLayout->getFields();
-
-        foreach ($fields as $field)
-        {
-            if ($field instanceof ProductDetails)
-            {
-                return $element->{$field->handle};
-            }
-        }
-
-        return null;
+        return FieldHelper::getProductInfo($element);
     }
 
     /**

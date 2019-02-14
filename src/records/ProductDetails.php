@@ -14,9 +14,26 @@ use craft\db\ActiveRecord;
  * Class ProductDetails
  *
  * @package workingconcept\snipcart\records
- * @property int $siteId
- * @property int $elementId
- * @property int $fieldId
+ *
+ * @property int       $id
+ * @property int       $elementId
+ * @property int       $fieldId
+ * @property int       $siteId
+ * @property string    $sku
+ * @property float     $price
+ * @property bool      $shippable
+ * @property bool      $taxable
+ * @property float     $weight
+ * @property string    $weightUnit
+ * @property float     $length
+ * @property float     $width
+ * @property float     $height
+ * @property string    $dimensionsUnit
+ * @property int       $inventory
+ * @property string    $customOptions
+ * @property \DateTime $dateCreated
+ * @property \DateTime $dateUpdated
+ * @property string    $uid
  */
 class ProductDetails extends ActiveRecord
 {

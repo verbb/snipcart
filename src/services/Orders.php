@@ -221,10 +221,7 @@ class Orders extends \craft\base\Component
      */
     public function updateElementsFromOrder(Order $order)
     {
-        if (
-            Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder &&
-            Snipcart::$plugin->getSettings()->productInventoryField
-        )
+        if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder)
         {
             foreach ($order->items as $item)
             {
