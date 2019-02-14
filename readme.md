@@ -25,24 +25,24 @@ The Snipcart plugin brings tight Snipcart integration to Craft CMS for easier se
 
 If Commerce Pro is too complex for your project and Commerce Lite is bit too limiting, Snipcart will be a great fit.
 
-|                           | Snipcart Plugin  | Commerce Lite | Commerce Pro |
-| ------------------------- | ---------------- | ------------- | ------------ |
-| Price                     | $179*            | $199          | $999         |
-| Products                  | ✓                | ✓             | ✓            |
-| Subscriptions             | ✓                | ✓             | ✓            |
-| Custom Payment Gateways   | ✓**              | ✓             | ✓            |
-| Custom Checkout Process   | ✓***             | ✓             | ✓            |
-| Taxes & Shipping          | ✓                | ×             | ✓            |
-| Shopping Cart             | ✓                | ×             | ✓            |
-| Multi-Step Checkout Flow  | ✓                | ×             | ✓            |
-| Sales & Discounts         | ✓                | ×             | ✓            |
-| Digital Products          | ✓                | ×             | ✓            |
-| Live Tax & Shipping Rates | ✓                | ×             | ✓            |
-| [ShipStation](https://www.shipstation.com/) Integration   | ✓                | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect)     |
+|                                                         | Snipcart Plugin | Commerce Lite | Commerce Pro                                                |
+| ------------------------------------------------------- | --------------- | ------------- | ----------------------------------------------------------- |
+| Price                                                   | \$179\*         | \$199         | \$999                                                       |
+| Products                                                | ✓               | ✓             | ✓                                                           |
+| Subscriptions                                           | ✓               | ✓             | ✓                                                           |
+| Custom Payment Gateways                                 | ✓\*\*           | ✓             | ✓                                                           |
+| Custom Checkout Process                                 | ✓\*\*\*         | ✓             | ✓                                                           |
+| Taxes & Shipping                                        | ✓               | ×             | ✓                                                           |
+| Shopping Cart                                           | ✓               | ×             | ✓                                                           |
+| Multi-Step Checkout Flow                                | ✓               | ×             | ✓                                                           |
+| Sales & Discounts                                       | ✓               | ×             | ✓                                                           |
+| Digital Products                                        | ✓               | ×             | ✓                                                           |
+| Live Tax & Shipping Rates                               | ✓               | ×             | ×                                                           |
+| [ShipStation](https://www.shipstation.com/) Integration | ✓               | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect) |
 
-*: Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing), and all three options require payment gateway fees.  
-**: Commerce [has first-party support for seven payment gateways](https://docs.craftcms.com/commerce/v2/payment-gateways.html) and [Snipcart supports nine](https://snipcart.com/list-ecommerce-payment-gateways). **But** Commerce supports more gateways via plugins.  
-***: Snipcart offers a highly-customizable cart template that you can customize however much you'd like.
+<small>\*</small> Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing).  
+<small>\*\*</small> [Snipcart supports more gateways](https://snipcart.com/list-ecommerce-payment-gateways) [than Commerce](https://docs.craftcms.com/commerce/v2/payment-gateways.html), but Commerce plugins can add more.  
+<small>\*\*\*</small> Snipcart offers a customizable cart template you can tailor however you'd like.
 
 ## Installation
 
