@@ -45,7 +45,7 @@ Add the cart system to your frontend, a cart link with an item count, and [simpl
 
 ```
 
-### Browse store details from control panel.
+### Browse store details from the control panel.
 
 Control panel section with sales stats, orders, customers, discounts, abandoned carts, and subscriptions.
 
