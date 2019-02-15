@@ -15,6 +15,8 @@ It will also simplify the process of adding custom variations (color, size, etc.
 
 ## Buy Button
 
+Simplest form.
+
 ```twig
 {# Buy Now #}
 {{ entry.productDetails.getBuyNowButton() | raw }}
@@ -68,9 +70,13 @@ Custom options that each add different amounts to the base product price.
 
 ## Additional Options
 
--   `classes`: array of class names to be added to the anchor element
--   `text`: inner HTML / label
--   `additionalProps`: key/value array of anchor attributes, useful for supplying additional [product definition](https://docs.snipcart.com/configuration/product-definition) details
--   `target`
--   `title`
--   `rel`
+Because you'll want to customize that button, and why shouldn't you?
+
+| Property          | Requires             | Description                                                                                                                                                     |
+| ----------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `classes`         | array `[]`           | Array of class names to be added to the anchor element.                                                                                                         |
+| `text`            | string `''`          | Inner text, which defaults to `Buy Now`.                                                                                                                        |
+| `target`          | string `''`          | Anchor [target](https://www.w3schools.com/TAGs/att_a_target.asp).                                                                                               |
+| `title`           | string `''`          | Anchor [title](https://www.w3schools.com/tags/att_title.asp).                                                                                                   |
+| `rel`             | string `''`          | Anchor [relationship](https://www.w3schools.com/TAGs/att_a_rel.asp).                                                                                            |
+| `additionalProps` | key/value array `''` | Attribute+value pairs for the anchor. Useful for supplying additional [product definition](https://docs.snipcart.com/configuration/product-definition) details. |
