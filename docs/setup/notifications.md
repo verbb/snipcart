@@ -1,7 +1,7 @@
 ---
 meta:
-  - name: description
-    content: How to customize and send Snipcart order email notifications from Craft CMS.
+    - name: description
+      content: How to customize and send Snipcart order email notifications from Craft CMS.
 ---
 
 # Custom Email Notifications
@@ -12,5 +12,9 @@ Both are disabled by default, and each comes with a preconfigured Twig template 
 
 If you'd like to create your own templates, check out each of the included ones for reference:
 
-- [Store Admin Notification](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/templates/email/order.twig)
-- [Customer Notification](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/templates/email/customer-order.twig)
+-   [Store Admin Notification](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/templates/email/order.twig)
+-   [Customer Notification](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/templates/email/customer-order.twig)
+
+::: tip
+The Snipcart plugin uses [`pelago/emogrifier`](https://packagist.org/packages/pelago/emogrifier) to inline HTML email styles and improve compatibility across email clients. No need to inline styles directly within your template!
+:::

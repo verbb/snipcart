@@ -1,22 +1,26 @@
 ---
 meta:
-  - name: description
-    content: Plugin setup guide, examples, and reference.
+    - name: description
+      content: Plugin setup guide, examples, and reference.
 ---
 
 # Snipcart Plugin for Craft CMS
 
 ![](../resources/hero.svg)
 
-One of the best things about [Snipcart](https://snipcart.com/) is how quickly it can be used to turn *any* site into a working store. **You don't even need this plugin to integrate with Snipcart,** it'll just help you get started faster and integrate more deeply later on.
+One of the best things about [Snipcart](https://snipcart.com/) is how quickly it can be used to turn _any_ site into a working store. The Snipcart plugin will help you get your store running even faster with Craft CMS and integrate more deeply, even if you've never used Snipcart.
 
 [[toc]]
 
 ## Features
 
-#### Quick store setup with convenient template tags and an optional Product Details field.
+### Super fast store setup.
+
+Use the included _Product Details_ field type and automatically handle things like unit conversion and quantity adjustment.
 
 ![Product Details Field](../resources/field-type.png)
+
+Add the cart system to your frontend, a cart link with an item count, and [simple or complex _Buy Now_ buttons](/templating/fields.md) with included Twig tags.
 
 ```twig
 {# include Snipcart JS #}
@@ -32,28 +36,38 @@ One of the best things about [Snipcart](https://snipcart.com/) is how quickly it
 {{ entry.productDetails.getBuyNowButton({
    'customOptions': [
        {
-           'name': 'Color',
-           'required': true,
-           'options': [ 'blue', 'green', 'red', 'pink' ]
+           name: 'Color',
+           required: true,
+           options: [ 'Blue', 'Green', 'Red' ]
        }
    ]
 }) | raw }}
 
 ```
 
-#### Browse Snipcart orders, customers, and subscriptions from the Craft control panel.
+### Browse store details from control panel.
 
-![Orders](../resources/orders.png)
+Control panel section with sales stats, orders, customers, discounts, abandoned carts, and subscriptions.
 
-#### View up-to-date sales statistics from the Craft dashboard.
+![Orders](../resources/overview.png)
 
-![Product Details Field](../resources/orders-widget.png)
+Customizable Dashboard widget.
 
-#### Issue refunds and set up discounts from the Craft control panel.
+![Dashboard Widget](../resources/widget.png)
+
+### Create discounts and refund orders from the control panel.
 
 ![Refund Order](../resources/refund.png)
 
-#### Easily write your own code to respond to [more than ten different events](/dev/events.md). Manage your own shipping rates, inventory, and email notifications.
+### Email custom order notifications.
+
+Use included store [admin and customer order notifications](/setup/notifications.md), optionally using your own Twig templates. You can also [hook into events](/dev/events.md) to send notifications (email, Slack, etc.) for whatever you want!
+
+![Admin Order Email](../resources/order-email.png)
+
+### Add custom functionality with powerful webhooks.
+
+Integrate your own store logic with [more than ten different events](/dev/events.md). Manage shipping rates, inventory, and email notifications, and more.
 
 ```php
 Event::on(
@@ -69,6 +83,25 @@ Event::on(
 );
 ```
 
-#### Get nice-looking admin order emails.
+## Commerce Comparison
 
-![Admin Order Email](../resources/order-email.png)
+The Snipcart plugin is great for stores that don't require the full complexity of Commerce, but would be too limited by Commerce Lite.
+
+|                                                         | Snipcart Plugin | Commerce Lite | Commerce Pro                                                |
+| ------------------------------------------------------- | --------------- | ------------- | ----------------------------------------------------------- |
+| Price                                                   | \$179\*         | \$199         | \$999                                                       |
+| Products                                                | ✓               | ✓             | ✓                                                           |
+| Subscriptions                                           | ✓               | ✓             | ✓                                                           |
+| Custom Payment Gateways                                 | ✓\*\*           | ✓             | ✓                                                           |
+| Custom Checkout Process                                 | ✓\*\*\*         | ✓             | ✓                                                           |
+| Taxes & Shipping                                        | ✓               | ×             | ✓                                                           |
+| Shopping Cart                                           | ✓               | ×             | ✓                                                           |
+| Multi-Step Checkout Flow                                | ✓               | ×             | ✓                                                           |
+| Sales & Discounts                                       | ✓               | ×             | ✓                                                           |
+| Digital Products                                        | ✓               | ×             | ✓                                                           |
+| Live Tax & Shipping Rates                               | ✓               | ×             | ×                                                           |
+| [ShipStation](https://www.shipstation.com/) Integration | ✓               | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect) |
+
+<small>\*</small> Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing).  
+<small>\*\*</small> [Snipcart supports more gateways](https://snipcart.com/list-ecommerce-payment-gateways) [than Commerce](https://docs.craftcms.com/commerce/v2/payment-gateways.html), but Commerce plugins can add more.  
+<small>\*\*\*</small> Snipcart offers a customizable cart template you can tailor however you'd like.
