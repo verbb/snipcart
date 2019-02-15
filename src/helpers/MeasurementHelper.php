@@ -30,4 +30,13 @@ class MeasurementHelper
     {
         return $ounces * 28.3495;
     }
+
+    /**
+     * @param float $inches
+     * @return float
+     */
+    public static function inchesToCentimeters(float $inches): float
+    {
+        return $inches * 2.54;
+    }
 }

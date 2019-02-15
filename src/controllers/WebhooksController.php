@@ -136,7 +136,7 @@ class WebhooksController extends Controller
      * @inheritdoc
      * @var bool allow all endpoints in this controller to be used publicly
      */
-    protected $allowAnonymous  = true;
+    protected $allowAnonymous = true;
 
     /**
      * @var bool
@@ -176,7 +176,6 @@ class WebhooksController extends Controller
      * @throws BadRequestHttpException if method isn't post or if something's
      *                                 wrong with the post itself.
      * @throws Exception if the mapped handler method doesn't exist.
-     * @todo appropriately handle $postData->mode (test vs. live)
      * @todo appropriately handle weird/old timestamps in $postData->createdOn
      */
     public function actionHandle(): Response
@@ -528,14 +527,12 @@ class WebhooksController extends Controller
 
         if ($this->hasEventHandlers(self::EVENT_ON_TAXES_CALCULATE))
         {
-            $this->trigger(
-                self::EVENT_ON_TAXES_CALCULATE,
-                new TaxesEvent([
-                    'order' => $order,
-                    'taxes' => [],
-                ])
-            );
+            $event = new TaxesEvent([
+                'order' => $order,
+                'taxes' => [],
+            ]);
 
+            $this->trigger(self::EVENT_ON_TAXES_CALCULATE, $event);
             $taxes = array_merge($taxes, $event->taxes);
         }
 

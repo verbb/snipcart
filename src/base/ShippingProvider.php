@@ -61,13 +61,15 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     {
         if ($this->_settingsModel === null && $this->createSettingsModel())
         {
+            /**
+             * Initialize settings model.
+             */
             $this->_settingsModel = $this->createSettingsModel();
 
             $pluginSettings   = Snipcart::$plugin->getSettings();
             $providerSettings = $pluginSettings->providerSettings[static::refHandle()] ?? [];
 
             $this->_settingsModel->setAttributes($providerSettings);
-
         }
 
         return $this->_settingsModel;
@@ -284,7 +286,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     /**
      * Creates and returns the model used to store the plugin’s settings.
      *
-     * @return mixed
+     * @return Model|bool|null
      */
     protected function createSettingsModel()
     {

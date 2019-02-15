@@ -8,7 +8,9 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\helpers\MeasurementHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\helpers\Localization;
 use craft\helpers\Template as TemplateHelper;
@@ -147,7 +149,7 @@ class ProductDetails extends \craft\base\Model
     /**
      * Get the relevant Field instance.
      *
-     * @return \craft\base\FieldInterface|null
+     * @return \craft\base\FieldInterface|ProductDetailsField|null
      */
     public function getField()
     {
@@ -243,14 +245,20 @@ class ProductDetails extends \craft\base\Model
      */
     public function populateDefaults()
     {
-        $this->shippable      = $this->field->defaultShippable;
-        $this->taxable        = $this->field->defaultTaxable;
-        $this->weight         = $this->field->defaultWeight;
-        $this->weightUnit     = $this->field->defaultWeightUnit;
-        $this->length         = $this->field->defaultLength;
-        $this->width          = $this->field->defaultWidth;
-        $this->height         = $this->field->defaultHeight;
-        $this->dimensionsUnit = $this->field->defaultDimensionsUnit;
+        $field = $this->getField();
+        $isProductDetails = $field instanceof ProductDetailsField;
+
+        if ($field && $isProductDetails)
+        {
+            $this->shippable      = $field->defaultShippable;
+            $this->taxable        = $field->defaultTaxable;
+            $this->weight         = $field->defaultWeight;
+            $this->weightUnit     = $field->defaultWeightUnit;
+            $this->length         = $field->defaultLength;
+            $this->width          = $field->defaultWidth;
+            $this->height         = $field->defaultHeight;
+            $this->dimensionsUnit = $field->defaultDimensionsUnit;
+        }
     }
 
     /**
@@ -284,11 +292,10 @@ class ProductDetails extends \craft\base\Model
     {
         if ($this->dimensionsUnit === self::DIMENSIONS_UNIT_INCHES)
         {
-            // convert to in
-            return (float) $this->{$dimension} * 2.54;
+            return MeasurementHelper::inchesToCentimeters((float) $this->{$dimension});
         }
 
-        // return cm
+        // Already centimeters, safe to return.
         return (float) $this->{$dimension};
     }
 
@@ -322,8 +329,7 @@ class ProductDetails extends \craft\base\Model
      */
     public function isShippable($model = null): bool
     {
-        $instance = $model ?? $this;
-        return $instance->shippable;
+        return ($model ?? $this)->shippable;
     }
 
     /**
@@ -335,15 +341,16 @@ class ProductDetails extends \craft\base\Model
     {
         if ($this->weightUnit === self::WEIGHT_UNIT_GRAMS)
         {
+            // Already in grams, safe to return.
             return (float) $this->weight;
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_OUNCES)
         {
-            return (float) $this->weight * 28.3495;
+            return MeasurementHelper::ouncesToGrams((float) $this->weight);
         }
         else if ($this->weightUnit === self::WEIGHT_UNIT_POUNDS)
         {
-            return (float) $this->weight * 453.592;
+            return MeasurementHelper::poundsToGrams((float) $this->weight);
         }
     }
 

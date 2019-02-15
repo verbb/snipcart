@@ -24,14 +24,17 @@ class FieldHelper
      */
     public static function getProductInfo($element)
     {
-        $fieldLayout = $element->getFieldLayout();
-        $fields = $fieldLayout->getFields();
-
-        foreach ($fields as $field)
+        if ($fieldLayout = $element->getFieldLayout())
         {
-            if ($field instanceof ProductDetails)
+            if ($fields = $fieldLayout->getFields())
             {
-                return $element->{$field->handle};
+                foreach ($fields as $field)
+                {
+                    if ($field instanceof ProductDetails)
+                    {
+                        return $element->{$field->handle};
+                    }
+                }
             }
         }
 
@@ -43,18 +46,20 @@ class FieldHelper
      * if it exists.
      *
      * @param \craft\base\Element $element
-     * @return ProductDetails|null
+     * @return string|null
      */
     public static function getProductInfoFieldHandle($element)
     {
-        $fieldLayout = $element->getFieldLayout();
-        $fields = $fieldLayout->getFields();
-
-        foreach ($fields as $field)
+        if ($fieldLayout = $element->getFieldLayout())
         {
-            if ($field instanceof ProductDetails)
+            $fields = $fieldLayout->getFields();
+
+            foreach ($fields as $field)
             {
-                return $field->handle;
+                if ($field instanceof ProductDetails)
+                {
+                    return $field->handle;
+                }
             }
         }
 
