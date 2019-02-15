@@ -60,7 +60,7 @@ return [
     // whether or not to log all valid incoming webhook posts from Snipcart
     'logWebhookRequests' => false,
 
-
+    // settings for shipping providers (aka ShipStation)
     'providerSettings' => [
         'shipStation' => [
             'apiKey' => '',
