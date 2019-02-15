@@ -1,7 +1,7 @@
 ---
 meta:
-  - name: description
-    content: Getting started with Snipcart and Craft CMS.
+    - name: description
+      content: Getting started with Snipcart and Craft CMS.
 ---
 
 # Install & Configure the Plugin
@@ -40,13 +40,30 @@ Or install from the command line:
 
 Visit the plugin's Settings page and provide at least your public+secret API keys. If you're just getting started, you'll probably want to configure your products, orders, and webhooks.
 
-### Account
+### Snipcart Account
+
+At minimum, you'll need to add the _Snipcart Public API Key_ and _Snipcart Secret API Key_.
+
+:::tip
+These fields support environment variables so you can keep your secrets secret!
+:::
 
 ### Orders
 
+Everything in this section is quiet and off by default, but you can turn on any features you'd like to use.
+
 ### Webhooks
+
+Nothing to set here, but you'll want to grab this URL to [link Snipcart and Craft with webhooks](/webhooks/setup.md)!
 
 ### Logging
 
+Caching is enabled and somewhat conservative to balance timeliness and speed, but here you can adjust that and optionally turn on webhook logging that could help with troubleshooting.
+
 ### Shipping
 
+If you've set up a ShipStation account and want the Snipcart plugin to get live rates or forward orders, this is where you'll need to add your credentials.
+
+:::tip
+The _API Key_ and _API Secret_ fields support environment variables as well.
+:::

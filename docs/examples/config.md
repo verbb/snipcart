@@ -1,7 +1,7 @@
 ---
 meta:
-  - name: description
-    content: Snipcart plugin static config example.
+    - name: description
+      content: Snipcart plugin static config example.
 ---
 
 # Static Config
@@ -33,8 +33,10 @@ return [
     // optional path to a custom template to be used for admin order notification emails
     'notificationEmailTemplate' => ''
 
+    // `true` if you'd like Craft to send completed order notifications to customers
     'sendCustomerOrderNotificationEmail' => false,
 
+    // optional custom template path for customer order notification emails
     'customerNotificationEmailTemplate' => '',
 
     // `true` if you'd like to decrement product quantities when orders are processed
@@ -58,6 +60,7 @@ return [
     // whether or not to log all valid incoming webhook posts from Snipcart
     'logWebhookRequests' => false,
 
+
     'providerSettings' => [
         'shipStation' => [
             'apiKey' => '',
@@ -67,6 +70,8 @@ return [
             'defaultCountry' => 'US', // must be set
             'defaultWarehouseId' => 0, // must be set
             'defaultOrderConfirmation' => 'delivery', // must be set
+            'enableShippingRates' => false,
+            'sendCompletedOrders' => false,
         ],
     ],
 
