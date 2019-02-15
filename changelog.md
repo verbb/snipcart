@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.17 - 2019-02-15
+### Added
+- Added new Order and Item attributes.
+
 ## 1.0.0-beta.17 - 2019-02-14
 ### Added
 - Added inventory to the Product Details field type.

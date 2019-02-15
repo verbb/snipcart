@@ -388,6 +388,16 @@ class Order extends \craft\base\Model
      */
     public $hasSubscriptions;
 
+    /**
+     * @var
+     */
+    public $compatibilitySwitches;
+
+    /**
+     * @var
+     */
+    public $totalPriceWithoutDiscountsAndTaxes;
+
 
     // Public Methods
     // =========================================================================
