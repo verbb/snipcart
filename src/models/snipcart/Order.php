@@ -10,6 +10,9 @@ namespace workingconcept\snipcart\models;
 
 use workingconcept\snipcart\behaviors\BillingAddressBehavior;
 use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
+use workingconcept\snipcart\helpers\ModelHelper;
+use yii\base\Model;
+
 
 /**
  * Snipcart Order model
@@ -45,7 +48,7 @@ use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
  * @property string $shippingAddressPhone
  * @property string $dashboardUrl
  */
-class Order extends \craft\base\Model
+class Order extends Model
 {
     const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
     const PAYMENT_STATUS_PAID = 'Paid';
@@ -437,7 +440,7 @@ class Order extends \craft\base\Model
         {
             if (! $item instanceof Item)
             {
-                $item = new Item($item);
+                $item = new Item((array) $item);
             }
         }
 
@@ -504,7 +507,12 @@ class Order extends \craft\base\Model
     {
         if ( ! $address instanceof Address)
         {
-            $address = new Address($address);
+            $addrData = ModelHelper::stripUnknownProperties(
+                $address,
+                Address::class
+            );
+
+            $address = new Address($addrData);
         }
 
         return $this->_billingAddress = $address;
@@ -518,7 +526,12 @@ class Order extends \craft\base\Model
     {
         if ( ! $address instanceof Address)
         {
-            $address = new Address($address);
+            $addrData = ModelHelper::stripUnknownProperties(
+                $address,
+                Address::class
+            );
+
+            $address = new Address($addrData);
         }
 
         return $this->_shippingAddress = $address;
