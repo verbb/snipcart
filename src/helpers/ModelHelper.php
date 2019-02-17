@@ -70,11 +70,14 @@ class ModelHelper
             }
         }
 
-        \Craft::warning(sprintf(
-            'Removed unknown %s attributes: %s',
-            $modelClass,
-            implode(', ', $removed)
-        ));
+        if (count($removed) > 0)
+        {
+            \Craft::warning(sprintf(
+                'Removed unknown %s attributes: %s',
+                $modelClass,
+                implode(', ', $removed)
+            ), 'snipcart');
+        }
 
         return $data;
     }
