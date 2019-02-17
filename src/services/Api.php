@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Component;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use yii\caching\TagDependency;
 use yii\base\Exception;
 
 /**
@@ -30,6 +31,12 @@ class Api extends Component
 {
     // Constants
     // =========================================================================
+
+    /**
+     * @var string The tag we'll attach to our caches here so they can be
+     *             neatly invalidated with a reference to it.
+     */
+    const CACHE_TAG = 'snipcart-api-cache';
 
     /**
      * @var string Characters to prepend to any cache keys that are used.
@@ -138,7 +145,8 @@ class Api extends Component
             $cacheService->set(
                 $cacheKey,
                 $responseData,
-                Snipcart::$plugin->getSettings()->cacheDurationLimit
+                Snipcart::$plugin->getSettings()->cacheDurationLimit,
+                new TagDependency([ 'tags' => [ self::CACHE_TAG ] ])
             );
         }
 
@@ -211,6 +219,15 @@ class Api extends Component
         return isset($response->token) && $response->token === $token;
     }
 
+    public static function invalidateCache()
+    {
+        TagDependency::invalidate(
+            Craft::$app->getCache(),
+            self::CACHE_TAG
+        );
+
+        Craft::info('API caches cleared.', 'snipcart');
+    }
 
     // Private Methods
     // =========================================================================
@@ -371,4 +388,5 @@ class Api extends Component
 
         return null;
     }
+
 }
