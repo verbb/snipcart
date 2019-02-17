@@ -296,7 +296,7 @@ class AbandonedCart extends \craft\base\Model
     public $user;
 
     /**
-     * @var 
+     * @var
      */
     public $compatibilitySwitches;
 

@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.20 - 2019-02-17
+### Added
+- Added support for AbandonedCart::compatibilitySwitches.
+
 ## 1.0.0-beta.19 - 2019-02-16
 ### Added
 - Added Fields service.
