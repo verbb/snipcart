@@ -75,19 +75,13 @@ class ShipStation extends ShippingProvider
      */
     public function isConfigured(): bool
     {
-        if ($this->getSettings())
+        if ($settings = $this->getSettings())
         {
-            if ($this->getSettings()->validate())
-            {
-                return true;
-            }
-
-            Craft::error(sprintf('Invalid %s configuration: %s',
-                    self::refHandle(),
-                    json_encode($this->getSettings()->getErrors())
-                ),
-                'snipcart'
-            );
+            return ! empty($settings->apiKey) &&
+                ! empty($settings->apiSecret) &&
+                ! empty($settings->defaultCountry) &&
+                ! empty($settings->defaultOrderConfirmation) &&
+                ! empty($settings->defaultWarehouseId);
         }
 
         return false;

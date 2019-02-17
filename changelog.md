@@ -1,5 +1,15 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.19 - 2019-02-16
+### Added
+- Added Fields service.
+### Fixed
+- Improved webhook resilience in some cases when incoming payloads contain unexpected attributes.
+
+## 1.0.0-beta.18 - 2019-02-15
+### Added
+- Added new Order and Item attributes.
+
 ## 1.0.0-beta.17 - 2019-02-14
 ### Added
 - Added inventory to the Product Details field type.

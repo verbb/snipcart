@@ -238,6 +238,15 @@
             <h2>{{ "Providers"|t }}</h2>
 
             {% set hasConfiguredProviders = false %}
+            {% set hasProviderErrors = false %}
+
+            {% if settings.getErrors('providerSettings') %}
+                <ul class="errors mb-4">
+                    {% for field, message in settings.getErrors('providerSettings') %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             <div id="shipping-provider-fields" class="matrix matrix-field">
                 {% if settings.providers | length %}
@@ -245,18 +254,27 @@
                         {% for providerName, provider in settings.providers %}
                             {% if providerName == 'shipStation' %}
                                 {% set providerSettings = provider.getSettings() %}
+                                {% set hasErrors = providerSettings.getErrors() | length %}
                                 {% set isConfigured = provider.isConfigured %}
+                                {% set displayPanel = isConfigured or (not isConfigured and hasErrors) %}
+
                                 {% if isConfigured %}
                                     {% set hasConfiguredProviders = true %}
                                 {% endif %}
+
+                                {% if hasErrors %}
+                                    {% set hasProviderErrors = true %}
+                                {% endif %}
+
                                 {% set logoUrl = craft.app.assetManager.getPublishedUrl(
                                     '@workingconcept/snipcart/assetbundles/dist/img/shipstation.svg',
                                     true
                                 ) %}
-                                <a id="shipstation-add-btn" class="btn{% if isConfigured %} hidden{% endif %}">+ {{ "ShipStation"|t }}</a>
-                                <div id="shipstation-provider-settings" class="snipcart-provider shipStation matrixblock relative{% if not isConfigured %} hidden{% endif %}">
+                                <a id="shipstation-add-btn" class="btn{% if displayPanel %} hidden{% endif %}">+ {{ "ShipStation"|t }}</a>
+                                <div id="shipstation-provider-settings" class="snipcart-provider shipStation matrixblock relative{% if not displayPanel %} hidden{% endif %}">
                                     <a id="shipstation-settings-delete" class="delete icon" title="Delete Provider" style="position: absolute; top: 1rem; right: 1.25rem;"></a>
-                                    <img 
+                                    <input id="shipstation-panel-enabled" type="hidden" name="providers[shipStation][enabled]" value="{{ displayPanel ? "1" : "0" }}">
+                                    <img
                                         src="{{ logoUrl }}" 
                                         class="mt-6"
                                         alt="ShipStation logo" 
@@ -272,7 +290,7 @@
                                         name: 'settings[providerSettings][shipStation][apiKey]',
                                         value: providerSettings.apiKey,
                                         autocomplete: false,
-                                        errors: settings.getErrors('apiKey'),
+                                        errors: providerSettings.getErrors('apiKey'),
                                         instructions: "_Account_ → _API Settings_ → _API Keys_",
                                         suggestions: craft.cp.getEnvSuggestions(),
                                     }) }}
@@ -285,7 +303,7 @@
                                         name: 'settings[providerSettings][shipStation][apiSecret]',
                                         value: providerSettings.apiSecret,
                                         autocomplete: false,
-                                        errors: settings.getErrors('apiSecret'),
+                                        errors: providerSettings.getErrors('apiSecret'),
                                         instructions: "_Account_ → _API Settings_ → _API Keys_",
                                         suggestions: craft.cp.getEnvSuggestions(),
                                     }) }}
@@ -294,11 +312,11 @@
                                         label: 'Default Carrier Code'|t,
                                         id: 'defaultCarrierCode',
                                         class: 'code',
-                                        required: true,
+                                        required: false,
                                         name: 'settings[providerSettings][shipStation][defaultCarrierCode]',
                                         value: providerSettings.defaultCarrierCode,
                                         autocomplete: false,
-                                        errors: settings.getErrors('defaultCarrierCode'),
+                                        errors: providerSettings.getErrors('defaultCarrierCode'),
                                         instructions: ""
                                     }) }}
 
@@ -310,7 +328,7 @@
                                         name: 'settings[providerSettings][shipStation][defaultPackageCode]',
                                         value: providerSettings.defaultPackageCode,
                                         autocomplete: false,
-                                        errors: settings.getErrors('defaultPackageCode'),
+                                        errors: providerSettings.getErrors('defaultPackageCode'),
                                         instructions: ""
                                     }) }}
 
@@ -324,7 +342,7 @@
                                         size: 3,
                                         limit: 2,
                                         autocomplete: false,
-                                        errors: settings.getErrors('defaultCountry'),
+                                        errors: providerSettings.getErrors('defaultCountry'),
                                         instructions: ""
                                     }) }}
 
@@ -341,7 +359,7 @@
                                             'adult_signature': 'Adult Signature',
                                             'direct_signature': 'Direct Signature',
                                         },
-                                        errors: settings.getErrors('defaultOrderConfirmation'),
+                                        errors: providerSettings.getErrors('defaultOrderConfirmation'),
                                         instructions: "Type of delivery confirmation to be used once the shipment is created."
                                     }) }}
 
@@ -353,7 +371,7 @@
                                         name: 'settings[providerSettings][shipStation][defaultWarehouseId]',
                                         value: providerSettings.defaultWarehouseId,
                                         autocomplete: false,
-                                        errors: settings.getErrors('defaultWarehouseId'),
+                                        errors: providerSettings.getErrors('defaultWarehouseId'),
                                         instructions: ""
                                     }) }}
 
@@ -364,7 +382,7 @@
                                         name: 'settings[providerSettings][shipStation][enableShippingRates]',
                                         on: providerSettings.enableShippingRates,
                                         value: true,
-                                        errors: settings.getErrors('enableShippingRates'),
+                                        errors: providerSettings.getErrors('enableShippingRates'),
                                         instructions: "Fetch custom shipping rates from the ShipStation API?"
                                     }) }}
 
@@ -375,7 +393,7 @@
                                         name: 'settings[providerSettings][shipStation][sendCompletedOrders]',
                                         on: providerSettings.sendCompletedOrders,
                                         value: true,
-                                        errors: settings.getErrors('sendCompletedOrders'),
+                                        errors: providerSettings.getErrors('sendCompletedOrders'),
                                         instructions: "Send completed Snipcart orders to ShipStation?"
                                     }) }}
                                 </div>
@@ -385,15 +403,28 @@
                 {% endif %}
             </div>
 
-            <div id="ship-from-fields" class="mt-12{% if not hasConfiguredProviders %} hidden{% endif %}">
+            {% set hasShipFromErrors = (settings.getErrors('shipFrom') | length > 0) or hasProviderErrors %}
+
+            <div id="ship-from-fields" class="mt-12{% if not hasConfiguredProviders and not hasShipFromErrors %} hidden{% endif %}">
                 <h2>{{ "Ship From"|t }}</h2>
+
+                {% if settings.getErrors('shipFrom') %}
+                    <ul class="errors mb-4">
+                        {% for field, message in settings.getErrors('shipFrom') %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% set shipFrom = settings.shipFrom %}
 
                 {{ forms.textField({
                     label: 'Name'|t,
                     id: 'shipFromName',
                     name: 'settings[shipFromAddress][name]',
                     required: true,
-                    value: settings.shipFrom.name ?? '',
+                    value: shipFrom.name ?? '',
+                    errors: shipFrom.getErrors('name'),
                     instructions: ""
                 }) }}
 
@@ -401,7 +432,8 @@
                     label: 'Company Name'|t,
                     id: 'shipFromCompanyName',
                     name: 'settings[shipFromAddress][companyName]',
-                    value: settings.shipFrom.companyName ?? '',
+                    value: shipFrom.companyName ?? '',
+                    errors: shipFrom.getErrors('companyName'),
                     instructions: ""
                 }) }}
 
@@ -411,7 +443,8 @@
                     name: 'settings[shipFromAddress][address1]',
                     required: true,
                     placeholder: 'Address Line 1'|t,
-                    value: settings.shipFrom.address1 ?? '',
+                    value: shipFrom.address1 ?? '',
+                    errors: shipFrom.getErrors('address1'),
                     instructions: ""
                 }) }}
 
@@ -419,7 +452,8 @@
                     id: 'shipFromAddress2',
                     name: 'settings[shipFromAddress][address2]',
                     placeholder: 'Address Line 2'|t,
-                    value: settings.shipFrom.address2 ?? '',
+                    value: shipFrom.address2 ?? '',
+                    errors: shipFrom.getErrors('address2'),
                     instructions: ""
                 }) }}
 
@@ -431,7 +465,8 @@
                             required: true,
                             size: 30,
                             placeholder: 'City',
-                            value: settings.shipFrom.city ?? '',
+                            value: shipFrom.city ?? '',
+                            errors: shipFrom.getErrors('city'),
                             instructions: ""
                         }) }}
                     </div>
@@ -443,7 +478,8 @@
                             placeholder: 'Province'|t,
                             size: 8,
                             maxlength: 2,
-                            value: settings.shipFrom.province ?? '',
+                            value: shipFrom.province ?? '',
+                            errors: shipFrom.getErrors('province'),
                             instructions: ""
                         }) }}
                     </div>
@@ -453,7 +489,8 @@
                             name: 'settings[shipFromAddress][postalCode]',
                             required: true,
                             placeholder: 'Postal Code'|t,
-                            value: settings.shipFrom.postalCode ?? '',
+                            value: shipFrom.postalCode ?? '',
+                            errors: shipFrom.getErrors('postalCode'),
                             instructions: ""
                         }) }}
                     </div>
@@ -465,7 +502,8 @@
                             placeholder: 'Country'|t,
                             size: 8,
                             maxlength: 2,
-                            value: settings.shipFrom.country ?? '',
+                            value: shipFrom.country ?? '',
+                            errors: shipFrom.getErrors('country'),
                             instructions: ""
                         }) }}
                     </div>
@@ -476,7 +514,8 @@
                     id: 'shipFromPhone',
                     name: 'settings[shipFromAddress][phone]',
                     required: true,
-                    value: settings.shipFrom.phone ?? '',
+                    value: shipFrom.phone ?? '',
+                    errors: shipFrom.getErrors('phone'),
                     instructions: ""
                 }) }}
 
@@ -485,7 +524,8 @@
                     id: 'shipFromEmail',
                     name: 'settings[shipFromAddress][email]',
                     required: true,
-                    value: settings.shipFrom.email ?? '',
+                    value: shipFrom.email ?? '',
+                    errors: shipFrom.getErrors('email'),
                     instructions: ""
                 }) }}
             </div>

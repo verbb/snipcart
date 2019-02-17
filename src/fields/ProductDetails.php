@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\fields;
 
-use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
@@ -112,29 +112,33 @@ class ProductDetails extends \craft\base\Field
     // =========================================================================
 
     /**
-     * After saving element, save field to plugin table.
+     * After the Element is saved, save the Product Details to their table.
      *
      * @inheritdoc
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        return $this->_saveProductDetails($this, $element, $isNew);
+        return Snipcart::$plugin->fields->saveProductDetailsField(
+            $this, 
+            $element
+        );
     }
 
     /**
-     * Prep value for use as the data leaves the database.
+     * Pull details out of the database for use like any other field.
      *
      * @inheritdoc
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        return $this->_getProductDetails($this, $element, $value);
+        return Snipcart::$plugin->fields->getProductDetailsField(
+            $this, 
+            $element,
+            $value
+        );
     }
 
-
     /**
-     * Render the field itself for the control panel.
-     *
      * @inheritdoc
      */
     public function getInputHtml($value, ElementInterface $element = null): string
@@ -158,8 +162,6 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
-     * Render the field's settings as it's being established.
-     *
      * @inheritdoc
      */
     public function getSettingsHtml(): string
@@ -213,131 +215,6 @@ class ProductDetails extends \craft\base\Field
                 }
             }
         }
-    }
-
-
-    // Private Methods
-    // =========================================================================
-
-    /**
-     * @param $field
-     * @param ElementInterface $element
-     * @param $isNew
-     * @return bool
-     * @throws
-     */
-    private function _saveProductDetails($field, $element, $isNew): bool
-    {
-        $data = $element->getFieldValue($field->handle);
-
-        $record = $this->_getRecord(
-            Craft::$app->sites->getCurrentSite()->id,
-            $element->getId(),
-            $field->id
-        );
-
-        $record->setAttributes([
-            'sku'            => $data->sku,
-            'price'          => $data->price,
-            'shippable'      => $data->shippable,
-            'taxable'        => $data->taxable,
-            'weight'         => $data->weight,
-            'weightUnit'     => $data->weightUnit,
-            'length'         => $data->length,
-            'width'          => $data->width,
-            'height'         => $data->height,
-            'inventory'      => $data->inventory,
-            'dimensionsUnit' => $data->dimensionsUnit,
-            'customOptions'  => $data->customOptions,
-        ], false);
-
-        return $record->save();
-    }
-
-    /**
-     * Get related ProductDetails.
-     *
-     * @param $field
-     * @param ElementInterface|null $element
-     * @param $value
-     * @return ProductDetailsModel|null
-     * @throws
-     */
-    private function _getProductDetails($field, ElementInterface $element = null, $value = null)
-    {
-        if (is_array($value))
-        {
-            $model = new ProductDetailsModel($value);
-
-            $model->fieldId = $field->id;
-            $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
-
-            if ($element !== null)
-            {
-                $model->elementId = $element->getId();
-            }
-
-            return $model;
-        }
-
-        if (
-            $element !== null &&
-            $record = $this->_getRecord(
-                Craft::$app->sites->getCurrentSite()->id,
-                $element->getId(),
-                $field->id
-            )
-        )
-        {
-            $model = new ProductDetailsModel($record->getAttributes());
-
-            if ($element->getId() === null)
-            {
-                $model->populateDefaults();
-            }
-
-            return $model;
-        }
-
-        $productDetails = new ProductDetailsModel();
-
-        $productDetails->fieldId = $field->id;
-        $productDetails->siteId  = Craft::$app->sites->getCurrentSite()->id;
-
-        if ($element !== null)
-        {
-            $productDetails->elementId = $element->getId();
-        }
-
-        $productDetails->populateDefaults();
-
-        return $productDetails;
-    }
-
-    /**
-     * @param $siteId
-     * @param $elementId
-     * @param $fieldId
-     * @return \craft\db\ActiveRecord
-     */
-    private function _getRecord($siteId, $elementId, $fieldId): \craft\db\ActiveRecord
-    {
-        $record = ProductDetailsRecord::findOne([
-            'siteId'    => $siteId,
-            'elementId' => $elementId,
-            'fieldId'   => $fieldId
-        ]);
-
-        if ($record === null)
-        {
-            $record = new ProductDetailsRecord();
-
-            $record->siteId    = $siteId;
-            $record->elementId = $elementId;
-            $record->fieldId   = $fieldId;
-        }
-
-        return $record;
     }
 
 }

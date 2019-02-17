@@ -8,22 +8,14 @@
 
 namespace workingconcept\snipcart\models;
 
-use craft\fields\Dropdown;
-use craft\fields\Lightswitch;
-use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\base\Model;
-use workingconcept\snipcart\providers\ShipStation;
-use yii\base\InvalidConfigException;
-use craft\fields\PlainText;
-use craft\fields\Number;
 
 /**
  * Settings model
  *
  * @package workingconcept\snipcart\models
  * @property Address $shipFrom
- * @property Package[] $packagingTypes
  */
 class Settings extends Model
 {
@@ -176,8 +168,6 @@ class Settings extends Model
      */
     public function rules(): array
     {
-        // TODO: validate shipFrom
-
         return [
             [['publicApiKey', 'secretApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
             [['publicApiKey', 'secretApiKey'], 'required'],
@@ -192,29 +182,81 @@ class Settings extends Model
         ];
     }
 
-    public function beforeValidate(): bool
+    public function validate($attributeNames = null, $clearErrors = true): bool
     {
-        /**
-         * If the `notificationEmails` value came from a table in the settings UI,
-         * convert it to a clean, one-dimensional array of email addresses.
-         */
-        if (
-            is_array($this->notificationEmails) && 
-            count($this->notificationEmails) &&
-            is_array($this->notificationEmails[0])
-        )
-        {
-            $arrayFromTableData = [];
+        $validates = parent::validate($attributeNames, $clearErrors);
 
-            foreach ($this->notificationEmails as $row)
+        if ($this->_hasEnabledProviders())
+        {
+            if ( ! $this->validateProviderSettings())
             {
-                $arrayFromTableData[] = trim($row[0]);
+                $validates = false;
             }
 
-            $this->notificationEmails = $arrayFromTableData;
+            if ( ! $this->validateShipFrom())
+            {
+                $validates = false;
+            }
+        }
+
+        return $validates;
+    }
+
+    private function _hasEnabledProviders(): bool
+    {
+        $request = Craft::$app->getRequest();
+
+        if ($providers = $request->getBodyParam('providers'))
+        {
+            foreach ($providers as $handle => $settings)
+            {
+                if ($settings['enabled'])
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function validateShipFrom(): bool
+    {
+        if ($this->_hasEnabledProviders() && ! $this->getShipFrom()->validate())
+        {
+            $this->addError('shipFrom', 'Please enter required Ship From details.');
+            return false;
         }
 
         return true;
+    }
+
+    public function validateProviderSettings(): bool
+    {
+        $request = Craft::$app->getRequest();
+
+        if ($this->_hasEnabledProviders())
+        {
+            foreach ($this->providers as $provider)
+            {
+                if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled'])
+                {
+                    if (! $provider->getSettings()->validate())
+                    {
+                        $this->addError('providerSettings', 'Provider settings are missing.');
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function beforeValidate(): bool
+    {
+        $this->_getNotificationEmailsFromTable();
+        return parent::beforeValidate();
     }
 
     /**
@@ -313,5 +355,28 @@ class Settings extends Model
 
     // Private Methods
     // =========================================================================
+
+    private function _getNotificationEmailsFromTable()
+    {
+        /**
+         * If the `notificationEmails` value came from a table in the settings UI,
+         * convert it to a clean, one-dimensional array of email addresses.
+         */
+        if (
+            is_array($this->notificationEmails) &&
+            count($this->notificationEmails) &&
+            is_array($this->notificationEmails[0])
+        )
+        {
+            $arrayFromTableData = [];
+
+            foreach ($this->notificationEmails as $row)
+            {
+                $arrayFromTableData[] = trim($row[0]);
+            }
+
+            $this->notificationEmails = $arrayFromTableData;
+        }
+    }
 
 }

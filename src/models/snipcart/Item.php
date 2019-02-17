@@ -206,6 +206,21 @@ class Item extends \craft\base\Model
      */
     public $paymentSchedule;
 
+    /**
+     * @var
+     */
+    public $hasTaxesIncluded;
+    
+    /**
+     * @var
+     */
+    public $totalPriceWithoutDiscountsAndTaxesLegacy;
+
+    /**
+     * @var
+     */
+    public $totalPriceWithoutDiscountsAndTaxes;
+
 
     // Public Methods
     // =========================================================================

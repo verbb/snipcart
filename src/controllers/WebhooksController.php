@@ -21,6 +21,7 @@ use workingconcept\snipcart\records\WebhookLog;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\services\Orders;
+use workingconcept\snipcart\helpers\ModelHelper;
 
 use Craft;
 use craft\web\Controller;
@@ -254,7 +255,12 @@ class WebhooksController extends Controller
      */
     private function _handleOrderCompleted(): Response
     {
-        $order = new Order($this->_postData->content);
+        $payload = ModelHelper::stripUnknownProperties(
+            $this->_postData->content,
+            Order::class
+        );
+
+        $order = new Order($payload);
 
         $responseData = [
             'success' => true,

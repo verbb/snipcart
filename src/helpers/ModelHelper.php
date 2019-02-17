@@ -30,4 +30,52 @@ class ModelHelper
 
         return $array;
     }
+
+    /**
+     * Strip root-level properties from an object if they aren't attributes on
+     * the designated model.
+     *
+     * @param object $data       Object with data, like a webhook payload.
+     * @param string $modelClass Base class to be populated, which can't receive any
+     *                           unknown attributes.
+     * @return object
+     * @throws
+     */
+    public static function stripUnknownProperties($data, $modelClass)
+    {
+        // instantiate the model so we can poke at it
+        $model = new $modelClass;
+
+        // get normal model attributes
+        $fields = array_keys($model->fields());
+
+        // sometimes models specify dynamic getters and setters that should be treated as normal attributes
+        $extraFields = $model->extraFields();
+
+        // combine into one pile of attributes
+        $modelAttributes = array_merge($fields, $extraFields);
+
+        // keep a reference of removed properties
+        $removed = [];
+
+        foreach ($data as $key => $value)
+        {
+            if (is_string($key))
+            {
+                if ( ! in_array($key, $modelAttributes, false))
+                {
+                    $removed[] = $key;
+                    unset($data->{$key});
+                }
+            }
+        }
+
+        \Craft::warning(sprintf(
+            'Removed unknown %s attributes: %s',
+            $modelClass,
+            implode(', ', $removed)
+        ));
+
+        return $data;
+    }
 }

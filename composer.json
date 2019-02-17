@@ -2,7 +2,7 @@
     "name": "workingconcept/craft-snipcart",
     "description": "Do more with Snipcart directly from Craft CMS.",
     "type": "craft-plugin",
-    "version": "1.0.0-beta.17",
+    "version": "1.0.0-beta.18",
     "keywords": [
         "craft",
         "cms",
