@@ -32,6 +32,10 @@ Doesn't do anything just yet. :/
 
 Lists, modifies, and creates store discounts.
 
+## Fields
+
+Gets and saves Product Details field data. (Used by included Field Type.)
+
 ## Orders
 
 Largest service, interacts with Order data.

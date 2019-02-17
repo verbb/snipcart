@@ -44,7 +44,7 @@ module.exports = {
                 collapsable: false,
                 children: [
                     '/examples/config',
-                    '/examples/webhooks'
+                    '/examples/recipes'
                 ]
             },
             {
