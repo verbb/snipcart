@@ -149,7 +149,7 @@ class Snipcart extends Plugin
                         [
                             'key'    => Api::CACHE_TAG,
                             'action' => Api::invalidateCache(),
-                            'label'  => Craft::t('snipcart', 'Snipcart API Cache'),
+                            'label'  => Craft::t('snipcart', 'Snipcart API cache'),
                         ],
                     ]
                 );
