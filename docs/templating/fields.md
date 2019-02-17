@@ -13,6 +13,10 @@ _Add to Cart_ buttons are critical to Snipcart because they define products behi
 
 It will also simplify the process of adding custom variations (color, size, etc.) whether or not they affect the product price.
 
+:::tip
+Working with your own markup? The [Snipcart plugin's internal Twig template](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/templates/fields/front-end/buy-now.twig) may provide a helpful starting point.
+:::
+
 ## Buy Button
 
 Simplest form.
@@ -20,6 +24,25 @@ Simplest form.
 ```twig
 {# Buy Now #}
 {{ entry.productDetails.getBuyNowButton() | raw }}
+```
+
+The default markup will look something like this without any [customization](/templating/fields.md#additional-options):
+
+```html
+<a href="#"
+    class="snipcart-add-item"
+    data-item-id="to-slay-a-mockingbird"
+    data-item-name="To Slay a Mockingbird"
+    data-item-price="12.99"
+    data-item-url="https://craftcms.dev/products/to-slay-mockingbird"
+    data-item-quantity="1"
+    data-item-taxable="false"
+    data-item-shippable="true"
+    data-item-width="13"
+    data-item-length="21"
+    data-item-height="3"
+    data-item-weight="3"
+>Buy Now</a>
 ```
 
 ## Buy Button + Simple Options
@@ -38,6 +61,10 @@ Optionally supply custom options that don't affect pricing.
     ]
 }) | raw }}
 ```
+
+:::tip
+While you can hardcode these values just like the examples, they could just as well come from another Entry field, like a [Table](https://docs.craftcms.com/v3/table-fields.html#settings) or a [Matrix Block](https://docs.craftcms.com/v3/matrix-fields.html#settings) that you've established for product variations. It's up to you!
+:::
 
 ## Buy Button + Price-Variant Options
 
