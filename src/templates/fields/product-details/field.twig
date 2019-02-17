@@ -19,13 +19,17 @@
     {% if errors | length %}
         {% set fieldClasses = fieldClasses | merge(['errors']) %}
     {% endif %}
+    {% set value = value[fieldName] ?? '' %}
+    {% if options['isCurrency'] is defined and options['isCurrency'] %}
+        {% set value = value | number_format(2) %}
+    {% endif %}
     <div class="input{% if errors | length %} errors{% endif %}">
         {{- forms.text({
             id: fieldName,
             name: subfieldName,
             class: fieldClasses | join(' '),
             errors: element.getErrors(subfieldName),
-            value: value[fieldName] ?? '',
+            value: value,
             size: options['size'] ?? null
         }) -}}
     </div>
@@ -67,7 +71,7 @@
                 <div class="currency-symbol">
                     {{ craft.snipcart.defaultCurrencySymbol }}
                 </div>
-                {{- customTextInput(element, name, 'price', value, { size: 8 }) -}}
+                {{- customTextInput(element, name, 'price', value, { size: 8, isCurrency: true }) -}}
             </div>
         </div>
     </div>

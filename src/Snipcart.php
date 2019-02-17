@@ -15,6 +15,7 @@ use workingconcept\snipcart\services\Customers;
 use workingconcept\snipcart\services\Data;
 use workingconcept\snipcart\services\DigitalGoods;
 use workingconcept\snipcart\services\Discounts;
+use workingconcept\snipcart\services\Fields as SnipcartFields;
 use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
 use workingconcept\snipcart\services\Shipments;
@@ -43,15 +44,16 @@ use yii\base\Event;
  * @package   Snipcart
  * @since     1.0.0
  *
- * @property  Api           $api
- * @property  Carts         $carts
- * @property  Customers     $customers
- * @property  Data          $data
- * @property  Discounts     $discounts
- * @property  Orders        $orders
- * @property  Products      $products
- * @property  Shipments     $shipments
- * @property  Subscriptions $subscriptions
+ * @property  Api            $api
+ * @property  Carts          $carts
+ * @property  Customers      $customers
+ * @property  Data           $data
+ * @property  Discounts      $discounts
+ * @property  SnipcartFields $fields
+ * @property  Orders         $orders
+ * @property  Products       $products
+ * @property  Shipments      $shipments
+ * @property  Subscriptions  $subscriptions
  */
 class Snipcart extends Plugin
 {
@@ -99,6 +101,7 @@ class Snipcart extends Plugin
             'data'          => Data::class,
             'digitalGoods'  => DigitalGoods::class,
             'discounts'     => Discounts::class,
+            'fields'        => SnipcartFields::class,
             'orders'        => Orders::class,
             'products'      => Products::class,
             'shipments'     => Shipments::class,
