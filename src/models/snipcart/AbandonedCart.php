@@ -300,6 +300,16 @@ class AbandonedCart extends \craft\base\Model
      */
     public $compatibilitySwitches;
 
+    /**
+     * @var
+     */
+    public $notifications;
+
+    /**
+     * @var
+     */
+    public $totalPriceWithoutDiscountsAndTaxes;
+
 
     // Public Methods
     // =========================================================================
