@@ -151,16 +151,6 @@ class Snipcart extends Plugin
         }
 
         $this->_registerShippingProviders();
-
-        /*
-        $fileTarget = new \craft\log\FileTarget([
-            'logFile' => Craft::getAlias('@storage/logs/snipcart.log'),
-            'categories' => ['snipcart']
-        ]);
-
-        // include the new target file target to the dispatcher
-        Craft::getLogger()->dispatcher->targets[] = $fileTarget;
-        */
     }
 
     // Protected Methods

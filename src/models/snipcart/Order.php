@@ -440,7 +440,12 @@ class Order extends Model
         {
             if (! $item instanceof Item)
             {
-                $item = new Item((array) $item);
+                $itemData = ModelHelper::stripUnknownProperties(
+                    $item,
+                    Item::class
+                );
+
+                $item = new Item((array) $itemData);
             }
         }
 

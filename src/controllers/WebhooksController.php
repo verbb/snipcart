@@ -25,7 +25,6 @@ use workingconcept\snipcart\helpers\ModelHelper;
 
 use Craft;
 use craft\web\Controller;
-use yii\base\UnknownPropertyException;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\base\Exception;

@@ -22,9 +22,9 @@ clipboard.on('success', function(e) {
 
 const shipStationSettingsDeleteBtn = document.getElementById('shipstation-settings-delete');
 const shipStationSettings = document.getElementById('shipstation-provider-settings');
+const shipStationEnabledField = document.getElementById('shipstation-panel-enabled');
 const shipStationAddBtn = document.getElementById('shipstation-add-btn');
 const shipFromFields = document.getElementById('ship-from-fields');
-const packagingTypes = document.getElementById('packaging-types-field');
 
 shipStationSettingsDeleteBtn.onclick = removeShipStationSettings;
 shipStationAddBtn.onclick = addShipStationSettings;
@@ -36,14 +36,14 @@ function removeShipStationSettings() {
     resetShipStationFieldValues();
 
     shipFromFields.classList.add('hidden');
-    packagingTypes.classList.add('hidden');
+    shipStationEnabledField.setAttribute('value', 0);
 }
 
 function addShipStationSettings() {
     shipStationSettings.classList.remove('hidden');
     shipStationAddBtn.classList.add('hidden');
     shipFromFields.classList.remove('hidden');
-    packagingTypes.classList.remove('hidden');
+    shipStationEnabledField.setAttribute('value', 1);
 }
 
 function resetShipStationFieldValues() {
