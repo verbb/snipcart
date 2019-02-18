@@ -20,6 +20,7 @@ use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
 use workingconcept\snipcart\services\Shipments;
 use workingconcept\snipcart\services\Subscriptions;
+use workingconcept\snipcart\services\Webhooks;
 use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
@@ -57,6 +58,7 @@ use yii\base\Event;
  * @property  Products       $products
  * @property  Shipments      $shipments
  * @property  Subscriptions  $subscriptions
+ * @property  Webhooks       $webhooks
  */
 class Snipcart extends Plugin
 {
@@ -109,6 +111,7 @@ class Snipcart extends Plugin
             'products'      => Products::class,
             'shipments'     => Shipments::class,
             'subscriptions' => Subscriptions::class,
+            'webhooks'      => Webhooks::class,
         ]);
 
         Event::on(

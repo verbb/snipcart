@@ -3,6 +3,8 @@
 ## 1.0.0-beta.21 - 2019-02-17
 ### Changed
 - Isolated API caches with TagDependency.
+- Refactored webhooks into component.
+
 
 ## 1.0.0-beta.20 - 2019-02-17
 ### Added

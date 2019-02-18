@@ -17,11 +17,11 @@ use craft\db\ActiveRecord;
  *
  * @property int    $id
  * @property int    $siteId
- * @property string $type
- * @property string $body
- * @property string $mode An enum that can either be 'live' or 'test'.
- *                        Note that we store in lowercase, while Snipcart sends
- *                        `Live` or `Test`.
+ * @property string $type   The webhook event name.
+ * @property string $body   The posted payload.
+ * @property string $mode   An enum that can either be 'live' or 'test'.
+ *                          Note that we store in lowercase, while Snipcart
+ *                          sends `Live` or `Test`.
  */
 class WebhookLog extends ActiveRecord
 {
