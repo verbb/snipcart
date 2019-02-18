@@ -26,7 +26,7 @@ Triggered before any custom shipping rates are returned to Snipcart so that they
 
 ## Completed Order
 
-`WebhooksController::EVENT_BEFORE_PROCESS_COMPLETED_ORDER`
+`Webhooks::EVENT_BEFORE_PROCESS_COMPLETED_ORDER`
 
 Receives [OrderEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/OrderEvent.php) with an `order` property.
 
@@ -42,7 +42,7 @@ Triggered after an order has been completed, and contains references to each rel
 
 ## Order Status Change
 
-`WebhooksController::EVENT_ON_ORDER_STATUS_CHANGED`
+`Webhooks::EVENT_ON_ORDER_STATUS_CHANGED`
 
 Receives [OrderStatusEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/OrderStatusEvent.php) with `order`, `fromStatus`, and `toStatus` properties.
 
@@ -50,7 +50,7 @@ Triggered when an order status has changed.
 
 ## Order Payment Status Change
 
-`WebhooksController::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED`
+`Webhooks::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED`
 
 Receives [OrderStatusEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/OrderStatusEvent.php) with `order`, `fromStatus`, and `toStatus` properties.
 
@@ -58,7 +58,7 @@ Triggered when an order's payment status has changed from the dashboard or API.
 
 ## Order Tracking Number Change
 
-`WebhooksController::EVENT_ON_ORDER_TRACKING_CHANGED`
+`Webhooks::EVENT_ON_ORDER_TRACKING_CHANGED`
 
 Receives [OrderTrackingEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/OrderTrackingEvent.php) with `order`, `trackingNumber`, and `trackingUrl` properties.
 
@@ -66,7 +66,7 @@ Triggered when an order's tracking number has changed.
 
 ## Subscription Created
 
-`WebhooksController::EVENT_ON_SUBSCRIPTION_CREATED`
+`Webhooks::EVENT_ON_SUBSCRIPTION_CREATED`
 
 Receives [SubscriptionEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/SubscriptionEvent.php) with a `subscription` property.
 
@@ -74,7 +74,7 @@ Triggered when a subscription has been created.
 
 ## Subscription Cancelled
 
-`WebhooksController::EVENT_ON_SUBSCRIPTION_CANCELLED`
+`Webhooks::EVENT_ON_SUBSCRIPTION_CANCELLED`
 
 Receives [SubscriptionEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/SubscriptionEvent.php) with a `subscription` property.
 
@@ -82,7 +82,7 @@ Triggered when a subscription has been cancelled.
 
 ## Subscription Paused
 
-`WebhooksController::EVENT_ON_SUBSCRIPTION_PAUSED`
+`Webhooks::EVENT_ON_SUBSCRIPTION_PAUSED`
 
 Receives [SubscriptionEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/SubscriptionEvent.php) with a `subscription` property.
 
@@ -90,7 +90,7 @@ Triggered when a subscription has been paused.
 
 ## Subscription Resumed
 
-`WebhooksController::EVENT_ON_SUBSCRIPTION_RESUMED`
+`Webhooks::EVENT_ON_SUBSCRIPTION_RESUMED`
 
 Receives [SubscriptionEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/SubscriptionEvent.php) with a `subscription` property.
 
@@ -98,7 +98,7 @@ Triggered when a subscription has been resumed.
 
 ## Subscription Invoice Created
 
-`WebhooksController::EVENT_ON_SUBSCRIPTION_INVOICE_CREATED`
+`Webhooks::EVENT_ON_SUBSCRIPTION_INVOICE_CREATED`
 
 Receives [SubscriptionEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/SubscriptionEvent.php) with a `subscription` property.
 
@@ -106,7 +106,7 @@ Triggered when a subscription invoice has been created.
 
 ## Tax Calculation
 
-`WebhooksController::EVENT_ON_TAXES_CALCULATE`
+`Webhooks::EVENT_ON_TAXES_CALCULATE`
 
 Receives [TaxesEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/TaxesEvent.php) with `order` and `taxes` properties.
 
@@ -114,7 +114,7 @@ Triggered when an order is ready for tax calculation, and only called if you've 
 
 ## Customer Updated
 
-`WebhooksController::EVENT_ON_CUSTOMER_UPDATE`
+`Webhooks::EVENT_ON_CUSTOMER_UPDATE`
 
 Receives [CustomerEvent](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/events/CustomerEvent.php) with `customer` property.
 
