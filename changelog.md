@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.22 - 2019-02-18
+### Added
+- Added Notifications service.
+### Fixed
+- Fixed bug in console Snipcart → ShipStation verification utility.
+
 ## 1.0.0-beta.21 - 2019-02-17
 ### Added
 - Added CraftQL support for field data.

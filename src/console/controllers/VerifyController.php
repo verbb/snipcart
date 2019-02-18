@@ -9,9 +9,7 @@ namespace workingconcept\snipcart\console\controllers;
 
 use craft\helpers\DateTimeHelper;
 use workingconcept\snipcart\Snipcart;
-use Craft;
 use yii\console\Controller;
-use craft\mail\Message;
 use yii\console\ExitCode;
 
 class VerifyController extends Controller
@@ -45,7 +43,7 @@ class VerifyController extends Controller
 
         foreach ($orders as $order)
         {
-            $this->stdout("Snipcart $order->invoiceNumber ... ");
+            $this->stdout("Snipcart $order->invoiceNumber … ");
             $shipStationStatusString = '✓';
 
             if ( ! Snipcart::$plugin->shipments->
@@ -100,9 +98,12 @@ class VerifyController extends Controller
             if (DateTimeHelper::isWithinLast($order->creationDate, '10 minutes'))
             {
                 $this->stdout('-------------------------------------' . PHP_EOL);
-                $this->stdout('Attempting to re-send order ' . $order->invoiceNumber . ' to ShipStation ... ');
-                $result = Snipcart::$plugin->shipments->shipStation->createOrder($order);
+                $this->stdout(sprintf(
+                    'Attempting to re-send order %s to ShipStation … ',
+                    $order->invoiceNumber
+                ));
 
+                $result = Snipcart::$plugin->shipments->shipStation->createOrder($order);
                 $succeeded = isset($result->orderId) && empty($result->getErrors());
 
                 $statusString = $succeeded ? '✓' : '✗';
@@ -126,38 +127,22 @@ class VerifyController extends Controller
      */
     private function _sendAdminNotification($snipcartOrders, $reFeedResults): int
     {
-        // TODO: move to Orders or Shipments
+        Snipcart::$plugin->notifications->setEmailTemplate(
+            'snipcart/email/recovery'
+        );
 
-        // temporarily change template modes so we can render the plugin's template
-        $view = Craft::$app->getView();
-        $oldTemplateMode = $view->getTemplateMode();
-        $view->setTemplateMode($view::TEMPLATE_MODE_CP);
+        Snipcart::$plugin->notifications->setNotificationVars([
+            'orders'    => $snipcartOrders,
+            'reattempt' => $reFeedResults,
+        ]);
 
-        $emailSettings = Craft::$app->getProjectConfig()->get('email');
-        $message = new Message();
+        $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
+        $subject  = 'Recovered Snipcart Orders';
 
-        foreach (Snipcart::$plugin->getSettings()->notificationEmails as $address)
+        if ( ! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject))
         {
-
-            $message->setFrom([
-                $emailSettings['fromEmail'] => $emailSettings['fromName']
-            ]);
-
-            $message->setTo($address);
-            $message->setSubject('Recovered Snipcart Orders');
-            $message->setHtmlBody($view->renderPageTemplate('snipcart/email/recovery', [
-                'orders'    => $snipcartOrders,
-                'reattempt' => $reFeedResults,
-            ]));
-
-            if ( ! Craft::$app->mailer->send($message))
-            {
-                $this->stderr("Notification failed to send to {$address}!". PHP_EOL);
-                return ExitCode::UNSPECIFIED_ERROR;
-            }
+            $this->stderr('Notifications failed.'. PHP_EOL);
         }
-
-        $view->setTemplateMode($oldTemplateMode);
 
         return ExitCode::OK;
     }

@@ -15,10 +15,7 @@ use workingconcept\snipcart\models\Notification;
 use workingconcept\snipcart\models\Refund;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\helpers\ModelHelper;
-use craft\mail\Message;
 use Craft;
-use craft\errors\MissingComponentException;
-use craft\helpers\DateTimeHelper;
 
 /**
  * The Orders service lets you interact with Snipcart orders as tidy,
@@ -36,7 +33,8 @@ class Orders extends \craft\base\Component
     // =========================================================================
 
     /**
-     * @event ShippingRateEvent Triggered before shipping rates are requested from any third parties.
+     * @event ShippingRateEvent Triggered before shipping rates are requested
+     *                          from any third parties.
      */
     const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
 
@@ -276,59 +274,14 @@ class Orders extends \craft\base\Component
      */
     public function sendOrderEmailNotification($order, $extra = [], $type = self::NOTIFICATION_TYPE_ADMIN)
     {
-        $errors        = [];
-        $emailSettings = Craft::$app->getProjectConfig()->get('email');
-        $view          = Craft::$app->getView();
-
         $templateSettings = $this->_selectNotificationTemplate($type);
-
-        /**
-         * Switch template mode only if we need to rely on our own template.
-         */
-        if ($templateSettings['user'] === false)
-        {
-            /**
-             * Remember what we started with.
-             */
-            $templateMode = $view->getTemplateMode();
-
-            /**
-             * Explicitly set to CP mode.
-             *
-             * This could technically throw an exception over an invalid
-             * template mode, but we're not worried.
-             */
-            $view->setTemplateMode($view::TEMPLATE_MODE_CP);
-        }
-
-        if ( ! $view->doesTemplateExist($templateSettings['path']))
-        {
-            /**
-             * A custom template was specified that doesn't exist!
-             */
-
-            Craft::warning(sprintf(
-                'Specified template `%s` does not exist.',
-                $templateSettings['path']
-            ), 'snipcart');
-            
-            return;
-        }
-
         $emailVars = array_merge([
-            'order'     => $order,
-            'settings'  => Snipcart::$plugin->getSettings()
+            'order'    => $order,
+            'settings' => Snipcart::$plugin->getSettings()
         ], $extra);
 
-        // render the message
-        $messageHtml = $view->renderPageTemplate(
-            $templateSettings['path'],
-            $emailVars
-        );
-
-        // inline the message's styles so they're more likely to be applied
-        $emogrifier = new \Pelago\Emogrifier($messageHtml);
-        $mergedHtml = $emogrifier->emogrify();
+        Snipcart::$plugin->notifications->setEmailTemplate($templateSettings['path']);
+        Snipcart::$plugin->notifications->setNotificationVars($emailVars);
 
         $toEmails = [];
         $subject = $order->billingAddressName . ' just placed an order';
@@ -346,34 +299,9 @@ class Orders extends \craft\base\Component
             );
         }
 
-        foreach ($toEmails as $address)
+        if ( ! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject))
         {
-            $message = new Message();
-
-            $message->setFrom([
-                $emailSettings['fromEmail'] => $emailSettings['fromName']
-            ]);
-
-            $message->setTo($address);
-            $message->setSubject($subject);
-            $message->setHtmlBody($mergedHtml);
-
-            if ( ! Craft::$app->mailer->send($message))
-            {
-                $problem = "Notification failed to send to {$address}!";
-                Craft::warning($problem, 'snipcart');
-                $errors[] = $problem;
-            }
-        }
-
-        if ($templateSettings['user'] === false)
-        {
-            $view->setTemplateMode($templateMode);
-        }
-
-        if (count($errors))
-        {
-            return $errors;
+            return Snipcart::$plugin->notifications->getErrors();
         }
 
         return true;
@@ -394,7 +322,7 @@ class Orders extends \craft\base\Component
             'orderToken'     => $token,
             'amount'         => $amount,
             'comment'        => $comment,
-            'notifyCustomer' => false,
+            'notifyCustomer' => $notifyCustomer,
         ]);
 
         $response = Snipcart::$plugin->api->post(

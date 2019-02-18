@@ -16,6 +16,7 @@ use workingconcept\snipcart\services\Data;
 use workingconcept\snipcart\services\DigitalGoods;
 use workingconcept\snipcart\services\Discounts;
 use workingconcept\snipcart\services\Fields as SnipcartFields;
+use workingconcept\snipcart\services\Notifications;
 use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
 use workingconcept\snipcart\services\Shipments;
@@ -55,6 +56,7 @@ use yii\base\Event;
  * @property  Data           $data
  * @property  Discounts      $discounts
  * @property  SnipcartFields $fields
+ * @property  Notifications  $notifications
  * @property  Orders         $orders
  * @property  Products       $products
  * @property  Shipments      $shipments
@@ -109,6 +111,7 @@ class Snipcart extends Plugin
             'discounts'     => Discounts::class,
             'fields'        => SnipcartFields::class,
             'orders'        => Orders::class,
+            'notifications' => Notifications::class,
             'products'      => Products::class,
             'shipments'     => Shipments::class,
             'subscriptions' => Subscriptions::class,
@@ -261,9 +264,8 @@ class Snipcart extends Plugin
      */
     private function _registerShippingProviders()
     {
-        $shippingProviders = [
-            ShipStation::class
-        ];
+        // just one for now!
+        $shippingProviders = [ ShipStation::class ];
 
         if ($this->hasEventHandlers(self::EVENT_REGISTER_SHIPPING_PROVIDERS))
         {
