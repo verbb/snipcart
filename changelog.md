@@ -1,6 +1,8 @@
 # Snipcart Changelog
 
 ## 1.0.0-beta.21 - 2019-02-17
+### Added
+- Added CraftQL support for field data.
 ### Changed
 - Isolated API caches with TagDependency.
 - Refactored webhooks into component.

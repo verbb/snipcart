@@ -28,6 +28,7 @@ use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
 use workingconcept\snipcart\events\RegisterShippingProvidersEvent;
 use workingconcept\snipcart\helpers\RouteHelper;
+use workingconcept\snipcart\helpers\CraftQlHelper;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -145,7 +146,8 @@ class Snipcart extends Plugin
         Event::on(
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
-            function (RegisterCacheOptionsEvent $event) {
+            function (RegisterCacheOptionsEvent $event)
+            {
                 $event->options = array_merge(
                     $event->options,
                     [
@@ -159,6 +161,32 @@ class Snipcart extends Plugin
             }
         );
 
+        /**
+         * Tell CraftQL how to grab Snipcart Product Details field data.
+         */
+        if (class_exists(\markhuot\CraftQL\CraftQL::class))
+        {
+            Event::on(
+                ProductDetails::class,
+                'craftQlGetFieldSchema',
+                function($event)
+                {
+                    $event->handled = true;
+
+                    $outputSchema = CraftQlHelper::addFieldTypeToSchema(
+                        $event->sender->handle,
+                        $event->schema
+                    );
+
+                    $event->schema->addField($event->sender)
+                        ->type($outputSchema);
+                }
+            );
+        }
+
+        /**
+         * Register control panel routes only if we've got a CP request.
+         */
         if (Craft::$app->getRequest()->isCpRequest)
         {
             Event::on(
@@ -222,6 +250,7 @@ class Snipcart extends Plugin
             ]
         );
     }
+
 
     // Private Methods
     // =========================================================================
