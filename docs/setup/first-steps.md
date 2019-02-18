@@ -58,7 +58,7 @@ Nothing to set here, but you'll want to grab this URL to [link Snipcart and Craf
 
 ### Logging
 
-Caching is enabled and somewhat conservative to balance timeliness and speed, but here you can adjust that and optionally turn on webhook logging that could help with troubleshooting.
+Caching is enabled and somewhat conservative to balance timeliness and speed, but here you can adjust that and optionally turn on webhook logging [that could help with troubleshooting](/troubleshooting/logging.md).
 
 ### Shipping
 

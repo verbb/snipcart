@@ -14,11 +14,11 @@ You're ready to latch onto Events if you've...
 
 Let's say, for example, that we'd like to offer custom shipping rates depending on the specifics of an order. We've [configured our webhook](/webhooks/setup.md) and a [custom module](/examples/module.md).
 
-## Listen for Shipping Rate Request
+## Customize Shipping Rates at Checkout
 
-Snipcart will send an event to the webhook to fetch shipping rates. We'll listen for this and respond with whatever rates we want in the format Snipcart expects. The event will come with the nearly-completed order and all its details, so all you need is to tell Craft that you'd like to respond to it and provide your own logic to send back rates.
+Snipcart sends a webhook request to see if we want to provide shipping rates. We'll listen for this and respond in the format Snipcart expects. The Event will come with the nearly-completed order and all its details, so all you need is to tell Craft that you'd like to respond to it and provide your own logic to send back rates.
 
-Register an event listener for `EVENT_BEFORE_RETURN_SHIPPING_RATES` in your module's `init()` method:
+Register an event listener for [`EVENT_BEFORE_RETURN_SHIPPING_RATES`](/dev/events.md#shipping-rate-response) in your module's `init()` method:
 
 ```php
 public function init()
@@ -38,8 +38,6 @@ public function init()
     );
 }
 ```
-
-## Filter Out Rates
 
 This calls our own custom function called `modifyShippingRates()`, which looks at order details and gives back an array of rates. (This logic could all live inside of `function(WebhookEvent $event) {}`, but it'll be tidier to separate things a bit.)
 
@@ -88,7 +86,7 @@ The function above will filter out any existing rates whose description include 
 
 ## Add a Rate for Specific Orders
 
-We could just as well *add* our own rate. Here, we'll add a special shipping option if someone has ordered _only_ a trombone.
+We could just as easily add our own rate. Here, we'll add a special shipping option if someone has ordered only a trombone.
 
 ```php
 /**
