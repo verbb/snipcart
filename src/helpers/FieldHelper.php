@@ -32,7 +32,7 @@ class FieldHelper
                 {
                     if ($field instanceof ProductDetails)
                     {
-                        return $element->{$field->handle};
+                        return $element->getFieldValue($field->handle);
                     }
                 }
             }
