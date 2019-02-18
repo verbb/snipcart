@@ -133,13 +133,16 @@ class VerifyController extends Controller
         $oldTemplateMode = $view->getTemplateMode();
         $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
+        $emailSettings = Craft::$app->getProjectConfig()->get('email');
         $message = new Message();
 
         foreach (Snipcart::$plugin->getSettings()->notificationEmails as $address)
         {
-            $settings = Craft::$app->systemSettings->getSettings('email');
 
-            $message->setFrom([$settings['fromEmail'] => $settings['fromName']]);
+            $message->setFrom([
+                $emailSettings['fromEmail'] => $emailSettings['fromName']
+            ]);
+
             $message->setTo($address);
             $message->setSubject('Recovered Snipcart Orders');
             $message->setHtmlBody($view->renderPageTemplate('snipcart/email/recovery', [
