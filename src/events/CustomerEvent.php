@@ -12,7 +12,7 @@ use workingconcept\snipcart\models\Customer;
 use yii\base\Event;
 
 /**
- * Order event class.
+ * Customer event class.
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.

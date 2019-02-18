@@ -1,5 +1,15 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.21 - 2019-02-17
+### Changed
+- Isolated API caches with TagDependency.
+- Refactored webhooks into component.
+
+
+## 1.0.0-beta.20 - 2019-02-17
+### Added
+- Added support for additional AbandonedCart attributes.
+
 ## 1.0.0-beta.19 - 2019-02-16
 ### Added
 - Added Fields service.

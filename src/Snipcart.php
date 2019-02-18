@@ -20,16 +20,20 @@ use workingconcept\snipcart\services\Orders;
 use workingconcept\snipcart\services\Products;
 use workingconcept\snipcart\services\Shipments;
 use workingconcept\snipcart\services\Subscriptions;
+use workingconcept\snipcart\services\Webhooks;
 use workingconcept\snipcart\variables\SnipcartVariable;
 use workingconcept\snipcart\widgets\Orders as OrdersWidget;
 use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
 use workingconcept\snipcart\events\RegisterShippingProvidersEvent;
+use workingconcept\snipcart\helpers\RouteHelper;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterCacheOptionsEvent;
+use craft\utilities\ClearCaches;
 use craft\services\Fields;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
@@ -54,6 +58,7 @@ use yii\base\Event;
  * @property  Products       $products
  * @property  Shipments      $shipments
  * @property  Subscriptions  $subscriptions
+ * @property  Webhooks       $webhooks
  */
 class Snipcart extends Plugin
 {
@@ -106,6 +111,7 @@ class Snipcart extends Plugin
             'products'      => Products::class,
             'shipments'     => Shipments::class,
             'subscriptions' => Subscriptions::class,
+            'webhooks'      => Webhooks::class,
         ]);
 
         Event::on(
@@ -136,6 +142,23 @@ class Snipcart extends Plugin
             }
         );
 
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            function (RegisterCacheOptionsEvent $event) {
+                $event->options = array_merge(
+                    $event->options,
+                    [
+                        [
+                            'key'    => Api::CACHE_TAG,
+                            'action' => Api::invalidateCache(),
+                            'label'  => Craft::t('snipcart', 'Snipcart API cache'),
+                        ],
+                    ]
+                );
+            }
+        );
+
         if (Craft::$app->getRequest()->isCpRequest)
         {
             Event::on(
@@ -143,7 +166,10 @@ class Snipcart extends Plugin
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
                 function(RegisterUrlRulesEvent $event)
                 {
-                    $event->rules = array_merge($event->rules, $this->_cpRoutes());
+                    $event->rules = array_merge(
+                        $event->rules,
+                        RouteHelper::getCpRoutes()
+                    );
                 }
             );
         }
@@ -199,28 +225,6 @@ class Snipcart extends Plugin
 
     // Private Methods
     // =========================================================================
-
-    /**
-     * Define control panel routes.
-     * @return array
-     */
-    private function _cpRoutes(): array
-    {
-        return [
-            'snipcart' => 'snipcart/overview/index',
-            'snipcart/orders' => 'snipcart/orders/index',
-            'snipcart/order/<orderId>' => 'snipcart/orders/order-detail',
-            'snipcart/customers' => 'snipcart/customers/index',
-            'snipcart/customer/<customerId>' => 'snipcart/customers/customer-detail',
-            'snipcart/discounts' => 'snipcart/discounts/index',
-            'snipcart/discounts/new' => 'snipcart/discounts/new',
-            'snipcart/discount/<discountId>' => 'snipcart/discounts/discount-detail',
-            'snipcart/abandoned' => 'snipcart/carts/index',
-            'snipcart/abandoned/<cartId>' => 'snipcart/carts/detail',
-            'snipcart/subscriptions' => 'snipcart/subscriptions/index',
-            'snipcart/subscription/<subscriptionId>' => 'snipcart/subscriptions/detail',
-        ];
-    }
 
     /**
      * Instantiate Shipping providers and make each available in an indexed array.

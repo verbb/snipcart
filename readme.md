@@ -14,7 +14,7 @@
 
 ## Features
 
-The Snipcart plugin brings tight Snipcart integration to Craft CMS for easier setup and greater flexibility with minimal custom development.
+Quickly turn a Craft CMS website into a fully functioning store.
 
 - Fast store setup (even if you're new to Snipcart) with an optional Field Type and Twig tags.
 - Powerful store customization with developer-friendly Events, Models, and a [test project](https://github.com/workingconcept/snipcart-test) with examples and automated tests.
