@@ -12,7 +12,7 @@ One of the best things about [Snipcart](https://snipcart.com/) is how quickly it
 
 [[toc]]
 
-## Features
+## Plugin Features
 
 ### Super fast store setup.
 
@@ -83,9 +83,16 @@ Event::on(
 );
 ```
 
-## Commerce Comparison
+## Commerce as a Service
 
-The Snipcart plugin is great for stores that don't require the full complexity of Commerce, but would be too limited by Commerce Lite.
+![Snipcart order flow.](../resources/order-flow.png)
+
+Snipcart's focus is on quick site integration, so a lot of complex store functionality is handled by a hosted service. The Snipcart plugin relies on Craft and Snipcart's REST API to more tightly integrate the two and reduce your setup and development time without sacrificing the ability to have a full-featured store.
+
+
+## Craft Commerce Comparison
+
+The Snipcart plugin is great for stores that don't require the full complexity of Commerce Pro, but would be too limited by Commerce Lite.
 
 |                                                         | Snipcart Plugin | Commerce Lite | Commerce Pro                                                |
 | ------------------------------------------------------- | --------------- | ------------- | ----------------------------------------------------------- |
