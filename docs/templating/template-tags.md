@@ -4,7 +4,7 @@ meta:
     content: Snipcart plugin template tag reference.
 ---
 
- Template Tags
+# Template Tags
 
 ## Cart Snippet
 
