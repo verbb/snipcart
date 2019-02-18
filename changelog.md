@@ -3,9 +3,12 @@
 ## 1.0.0-beta.21 - 2019-02-17
 ### Added
 - Added CraftQL support for field data.
+- Improved support for [Webhooks plugin](https://github.com/craftcms/webhooks).
 ### Changed
 - Isolated API caches with TagDependency.
 - Refactored webhooks into component.
+### Fixed
+- Stopped inventory event from firing for products that don't store inventory.
 
 
 ## 1.0.0-beta.20 - 2019-02-17
