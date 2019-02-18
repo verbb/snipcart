@@ -12,21 +12,49 @@ There's lots you can do with the Snipcart plugin. Below are some examples you ca
 
 There's a lot you can do by responding to Snipcart's [webhooks](/webhooks/when.md)! Here are some examples.
 
-### Send a Custom Low Stock Email
+### Send Low Stock Warning
 
-Warn store admins when an item's stock is low or depleted.
+Use the `init()` function of a custom module to listen for changes to product inventory and send an email if there are fewer than 10 items left in stock.
 
-### Send a Slack Notification
+```php
+Event::on(
+    Products::class,
+    Products::EVENT_PRODUCT_INVENTORY_CHANGE,
+    function(InventoryEvent $event) {
 
-Post a message to Slack when an order is placed.
+        // fetch product detail info regardless of the field handle
+        $productDetails = FieldHelper::getProductInfo($event->entry);
+        
+        // adjusted inventory = current + delta
+        $newQuantity = $productDetails->inventory + $event->quantity;
 
-### Send a Digitally-Purchased File
+        // send
+        if ($newQuantity < 10) {
+            $message = new Message();
+            $message->setTo('mrmanager@suddenvalley.biz');
+            $message->setSubject($event->entry->title . ' stock is low!');
+            $message->setHtmlBody("<p>Re-stock soon! There are {$newQuantity} units left.</p>");
 
-Send a custom email from Craft when a customer purchases a digital product.
+            Craft::$app->mailer->send($message);
+        }
+    }
+);
+```
 
 ### Send Webhooks
 
-Install [Pixel & Tonic's Webhooks plugin](https://github.com/craftcms/webhooks) to trigger Zapier/IFTTT actions and more.
+Install [Pixel & Tonic's Webhooks plugin](https://github.com/craftcms/webhooks) to trigger Zapier/IFTTT actions and more. Have completed orders or updated customer information flash your lights or open your garage door. Or even something more useful.
+
+![](../../resources/webhooks.png)
+
+Install the Webhooks plugin and create a new webhook. To fire an outgoing webhook when an order is completed, use...
+
+- **Sender Class** `workingconcept\snipcart\services\Webhooks`
+- **Event Name** `beforeProcessCompletedOrder`
+
+Post to whatever URL is relevant. (The [webhook.site](https://webhook.site) URL in the screenshot above is convenient for testing.)
+
+The resulting post will come complete with all the order data.
 
 ## Frontend
 
@@ -149,3 +177,55 @@ $entry->setFieldValue(
 
 Craft::$app->getElements()->saveElement($entry);
 ```
+
+### Query Product Details with [CraftQL](https://github.com/markhuot/craftql)
+
+If you have a section with a `products` handle and a Product Details field whose handle is `productDetails`...
+
+```graphql
+query {
+  entries(section:[products]) {
+    ... on Products {
+      productDetails {
+        price
+        sku
+        shippable
+        taxable
+        weight
+        weightUnit
+        length
+        width
+        height
+        dimensionsUnit
+        inventory
+      }
+    }
+  }
+}
+```
+
+Result:
+
+```json
+{
+  "data": {
+    "entries": [
+      {
+        "productDetails": {
+          "price": 8.99,
+          "sku": "win-fries-influence-purple",
+          "shippable": true,
+          "taxable": true,
+          "weight": 454,
+          "weightUnit": "grams",
+          "length": 7,
+          "width": 5,
+          "height": 1,
+          "dimensionsUnit": "centimeters",
+          "inventory": 92
+        }
+      },
+      ...
+    ]
+  }
+}
