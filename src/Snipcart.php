@@ -210,6 +210,7 @@ class Snipcart extends Plugin
         $this->_registerShippingProviders();
     }
 
+
     // Protected Methods
     // =========================================================================
 

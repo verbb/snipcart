@@ -49,6 +49,14 @@ class Products extends \craft\base\Component
     {
         // subtract the order quantity
         $quantityToAdjust = - $quantity;
+        $fieldHandle = FieldHelper::getProductInfoFieldHandle($entry);
+        $usesInventory = isset($fieldHandle) &&
+            $entry->{$fieldHandle}->inventory !== null;
+
+        if (! $usesInventory)
+        {
+            return;
+        }
 
         if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE))
         {
@@ -66,7 +74,7 @@ class Products extends \craft\base\Component
             $quantityToAdjust = $event->quantity;
         }
 
-        if ($fieldHandle = FieldHelper::getProductInfoFieldHandle($entry))
+        if ($fieldHandle)
         {
             $originalQuantity = $entry->{$fieldHandle}->inventory;
             $newQuantity      = $originalQuantity + $quantityToAdjust;
