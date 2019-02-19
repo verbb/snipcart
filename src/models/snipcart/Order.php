@@ -11,8 +11,6 @@ namespace workingconcept\snipcart\models;
 use workingconcept\snipcart\behaviors\BillingAddressBehavior;
 use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
 use workingconcept\snipcart\helpers\ModelHelper;
-use yii\base\Model;
-
 
 /**
  * Snipcart Order model
@@ -48,7 +46,7 @@ use yii\base\Model;
  * @property string $shippingAddressPhone
  * @property string $dashboardUrl
  */
-class Order extends Model
+class Order extends \craft\base\Model
 {
     const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
     const PAYMENT_STATUS_PAID = 'Paid';
