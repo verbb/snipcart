@@ -10,6 +10,7 @@ module.exports = {
         repo: 'workingconcept/snipcart-craft-plugin',
         docsBranch: 'docs',
         docsDir: 'docs',
+        editLinks: true,
         sidebar: [
             {
                 title: 'Getting Started',

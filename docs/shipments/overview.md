@@ -8,10 +8,8 @@ meta:
 
 The Snipcart plugin offers basic integration with [ShipStation](https://www.shipstation.com/), a third-party service that can be used to get rates, print postage, manage inventory, or even manage multiple warehouses and a whole fulfillment process. This integration can be used to get live shipping rates directly from ShipStation, and send Snipcart orders to ShipStation once they're completed.
 
-For anything here to work, you'll need to configure Snipcart to [use the provided webhook](/webhooks/setup.md).
-
 ::: warning
-ShipStaton settings and the _Ship From_ fields aren't validated yet, so please fill in "required" fields on the honor system for now.
+Nothing will happen with ShipStation until you've [configured the Snipcart webhook](/webhooks/setup.md) and switched on _Enable Shipping Rates?_ and/or _Send Completed Orders?_.
 :::
 
 ## Fetching Rates
@@ -23,10 +21,6 @@ If for some reason no rates are available, the cart will display a generic messa
 ## Sending Completed Orders
 
 If you've configured the Snipcart plugin to send completed orders to ShipStation, webhook responses and admin confirmation emails will both include the resulting ShipStation order ID that was created.
-
-:::tip
-If _Enable Shipping Rates?_ and _Send Completed Orders?_ are both disabled, there will be no interaction between the Craft site and ShipStation.
-:::
 
 ### Development Mode
 
