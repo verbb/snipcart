@@ -54,7 +54,9 @@ Everything in this section is quiet and off by default, but you can turn on any 
 
 ### Webhooks
 
-Nothing to set here, but you'll want to grab this URL to [link Snipcart and Craft with webhooks](/webhooks/setup.md)!
+![Craft's webhook endpoint](../../resources/settings-webhooks.png)
+
+There's nothing to set here, but this part is important: use this URL to [link Snipcart and Craft with webhooks](/webhooks/setup.md)!
 
 ### Logging
 

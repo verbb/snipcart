@@ -8,9 +8,9 @@ meta:
 
 Get your webhook endpoint from the _Webhooks_ tab in the plugin settings:
 
-![Craft's webhook endpoint](../../resources/craft-webhook.png)
+![Craft's webhook endpoint](../../resources/settings-webhooks.png)
 
-Add it to the Webhooks URL field in Snipcart's control panel:
+Add it to the _Webhooks URL_ field in [Snipcart's control panel](https://app.snipcart.com/):
 
 ![Snipcart webhook setting](../../resources/snipcart-webhook.png)
 
