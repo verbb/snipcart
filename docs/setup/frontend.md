@@ -6,9 +6,11 @@ meta:
 
 # Add Snipcart to Your Site
 
-Snipcart's shopping cart is added with a simple JavaScript snippet, and its concept of a product comes from whatever information you build into each "buy" button on your site.
+If there's one thing you need to know, it's that **store products are defined entirely by the information you choose to embed in buy buttons.**
 
-Start with [Snipcart's installation guide](https://docs.snipcart.com/getting-started/installation) if you'd prefer to write your own markup, or use the following Twig tags to have it generated for you.
+Set up your Craft site and Elements however you'd like, just make sure your buy buttons send exactly the details you want into the cart.
+
+Start with [Snipcart's installation guide](https://docs.snipcart.com/getting-started/installation) if you'd prefer to write your own markup, or use the following template tags to have it generated for you.
 
 ## Cart Snippet
 
