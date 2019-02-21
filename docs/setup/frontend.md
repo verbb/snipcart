@@ -6,6 +6,8 @@ meta:
 
 # Add Snipcart to Your Site
 
+![](../../resources/buy-buttons.png)
+
 If there's one thing you need to know, it's that **store products are defined entirely by the information you choose to embed in buy buttons.**
 
 Set up your Craft site and Elements however you'd like, just make sure your buy buttons send exactly the details you want into the cart.
