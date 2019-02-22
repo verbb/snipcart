@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\base\Model;
 
@@ -159,8 +160,8 @@ class Settings extends Model
 
     public function isConfigured(): bool
     {
-        return ! empty($this->publicApiKey) &&
-            ! empty($this->secretApiKey);
+        return $this->_hasNonEmptyEnvValue('publicApiKey') &&
+            $this->_hasNonEmptyEnvValue('secretApiKey');
     }
 
     /**
@@ -355,6 +356,22 @@ class Settings extends Model
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns `true` if the setting has a value and that value isn't
+     * simply an unparsed environment variable.
+     *
+     * @param $property
+     * @return bool
+     */
+    private function _hasNonEmptyEnvValue($property)
+    {
+        $settingValue = $this->{$property};
+        $parsedSettingValue = Craft::parseEnv($this->{$property});
+        $parsedDiffers = $settingValue !== $parsedSettingValue;
+
+        return $parsedDiffers && ! empty($parsedSettingValue);
+    }
 
     private function _getNotificationEmailsFromTable()
     {
