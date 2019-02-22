@@ -8,7 +8,6 @@
 
 namespace workingconcept\snipcart\models;
 
-use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\base\Model;
 
