@@ -35,6 +35,8 @@
         {{ order.shippingAddress.city }}, {{ order.shippingAddress.province }} {{ order.shippingAddress.postalCode }}
     </p>
 
-    <p>{{ order.shippingAddressPhone }}</p>
+    {% if order.shippingAddress.phone %}
+        <p>{{ order.shippingAddress.phone }}</p>
+    {% endif %}
 
 {% endif %}

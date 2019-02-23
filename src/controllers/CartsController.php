@@ -9,6 +9,8 @@
 namespace workingconcept\snipcart\controllers;
 
 use workingconcept\snipcart\Snipcart;
+use craft\helpers\UrlHelper;
+use craft\helpers\DateTimeHelper;
 use Craft;
 
 class CartsController extends \craft\web\Controller
@@ -29,11 +31,45 @@ class CartsController extends \craft\web\Controller
 
         return $this->renderTemplate('snipcart/cp/abandoned-carts/index',
             [
-                'pageNumber' => $page,
-                'totalPages' => $totalPages,
-                'carts'      => $carts->items,
+                'pageNumber'        => $page,
+                'totalPages'        => $totalPages,
+                'carts'             => $carts->items,
+                'continuationToken' => $carts->continuationToken ?? null,
+                'hasMoreResults'    => $carts->hasMoreResults ?? false,
             ]
         );
+    }
+
+    /**
+     * Get the next page/grouping of abandoned carts.
+     * @return \yii\web\Response
+     * @throws
+     */
+    public function actionGetNextCarts()
+    {
+        $this->requirePostRequest();
+
+        $token = Craft::$app->getRequest()->getRequiredParam('continuationToken');
+
+        $response = Snipcart::$plugin->api->get('carts/abandoned', [
+            'continuationToken' => $token
+        ]);
+
+        if (isset($response->items))
+        {
+            foreach ($response->items as &$item)
+            {
+                $item->total = Craft::$app->getFormatter()->asCurrency($item->total);
+                $item->cpUrl = UrlHelper::cpUrl('snipcart/abandoned/' . $item->token);
+
+                $date = DateTimeHelper::toDateTime($item->modificationDate);
+
+
+                $item->modificationDate = $date->format('M j, Y');
+            }
+        }
+
+        return $this->asJson($response);
     }
 
     /**

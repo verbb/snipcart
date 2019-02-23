@@ -35,11 +35,11 @@
             </tbody>
         </table>
 
-        {% include "snipcart/cp/_parts/pagination" with {
-            currentPage: pageNumber,
-            totalPages: totalPages,
-            path: 'snipcart/carts/'
-        } %}
+        {% if hasMoreResults and continuationToken %}
+        <div class="text-center mt-8">
+            <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">Load More …</a>
+        </div>
+        {% endif %}
 
     {% endif %}
 
