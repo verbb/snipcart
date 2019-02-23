@@ -1,5 +1,10 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.23 - 2019-02-23
+### Added
+- Added pagination support to Abandoned Carts.
+
+
 ## 1.0.0-beta.22 - 2019-02-18
 ### Added
 - Added Notifications service.
