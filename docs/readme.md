@@ -89,26 +89,8 @@ Event::on(
 
 Snipcart's focus is on quick site integration, so a lot of complex store functionality is handled by a hosted service. The Snipcart plugin relies on Craft and Snipcart's REST API to more tightly integrate the two and reduce your setup and development time without sacrificing the ability to have a full-featured store.
 
-
 ## Craft Commerce Comparison
 
 The Snipcart plugin is great for stores that don't require the full complexity of Commerce Pro, but would be too limited by Commerce Lite.
 
-|                                                         | Snipcart Plugin | Commerce Lite | Commerce Pro                                                |
-| ------------------------------------------------------- | --------------- | ------------- | ----------------------------------------------------------- |
-| Price                                                   | \$179\*         | \$199         | \$999                                                       |
-| Products                                                | ✓               | ✓             | ✓                                                           |
-| Subscriptions                                           | ✓               | ✓             | ✓                                                           |
-| Custom Payment Gateways                                 | ✓\*\*           | ✓             | ✓                                                           |
-| Custom Checkout Process                                 | ✓\*\*\*         | ✓             | ✓                                                           |
-| Taxes & Shipping                                        | ✓               | ×             | ✓                                                           |
-| Shopping Cart                                           | ✓               | ×             | ✓                                                           |
-| Multi-Step Checkout Flow                                | ✓               | ×             | ✓                                                           |
-| Sales & Discounts                                       | ✓               | ×             | ✓                                                           |
-| Digital Products                                        | ✓               | ×             | ✓                                                           |
-| Live Tax & Shipping Rates                               | ✓               | ×             | ×                                                           |
-| [ShipStation](https://www.shipstation.com/) Integration | ✓               | ×             | [+ plugin](https://plugins.craftcms.com/shipstationconnect) |
-
-<small>\*</small> Snipcart is a hosted service with [its own service fee](https://snipcart.com/pricing).  
-<small>\*\*</small> [Snipcart supports more gateways](https://snipcart.com/list-ecommerce-payment-gateways) [than Commerce](https://docs.craftcms.com/commerce/v2/payment-gateways.html), but Commerce plugins can add more.  
-<small>\*\*\*</small> Snipcart offers a customizable cart template you can tailor however you'd like.
+![Snipcart vs. Craft Commerce](../resources/commerce-comparison.png)
