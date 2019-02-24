@@ -1,3 +1,4 @@
+{# @var order \workingconcept\snipcart\models\Order #}
 {% extends 'snipcart/email/_layout' %}
 
 {% set heroImage = craft.app.assetManager.getPublishedUrl(
@@ -48,6 +49,7 @@
         </thead>
         <tbody>
             {% for item in order.items %}
+                {# @var item \workingconcept\snipcart\models\Item #}
                 <tr>
                     <td class="align-left first-cell-padding">{{ item.quantity }}</td>
                     <td class="align-left normal-cell-padding" width="50%">
