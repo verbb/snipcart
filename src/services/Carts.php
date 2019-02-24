@@ -30,9 +30,9 @@ class Carts extends \craft\base\Component
     /**
      * List abandoned carts.
      *
-     * Note that there's a bug with Snipcart's REST API, and totalItems
-     * currently gives back a number equal to the limit even when there are
-     * more records.
+     * Note that Snipcart's API is weird here, and totalItems+offset don't
+     * behave like pagination anywhere else. Instead we have only `hasMoreResults`
+     * and `continuationToken` in the response.
      *
      * @return \stdClass
      *              ->items (AbandonedCart[])
@@ -59,9 +59,11 @@ class Carts extends \craft\base\Component
                 $response->items,
                 AbandonedCart::class
             ),
-            'totalItems' => $response->totalItems,
-            'offset'     => $response->offset,
-            'limit'      => $limit
+            'totalItems'        => $response->totalItems,
+            'offset'            => $response->offset,
+            'continuationToken' => $response->continuationToken ?? null,
+            'hasMoreResults'    => $response->hasMoreResults ?? false,
+            'limit'             => $limit
         ];
     }
 

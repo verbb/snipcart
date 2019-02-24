@@ -71,7 +71,10 @@ class Api extends Component
     public function init()
     {
         parent::init();
-        $this->isLinked = isset(Snipcart::$plugin->getSettings()->secretApiKey);
+        $secretApiKey = Craft::parseEnv(
+            Snipcart::$plugin->getSettings()->secretApiKey
+        );
+        $this->isLinked = $secretApiKey !== null;
     }
 
     /**
@@ -351,6 +354,7 @@ class Api extends Component
      * @param string           $endpoint   the endpoint that was queried
      *
      * @return null
+     * @throws \Exception
      */
     private function _handleRequestException(
         RequestException $exception,
@@ -370,6 +374,12 @@ class Api extends Component
 
         if ($statusCode !== null && $reason !== null)
         {
+            if ($statusCode === 401)
+            {
+                // unauthorized, meaning invalid API credentials
+                throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
+            }
+
             // return code and message
             Craft::warning(sprintf(
                 'Snipcart API responded with %d: %s',

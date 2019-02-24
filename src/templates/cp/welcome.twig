@@ -5,7 +5,15 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
+{% set graphicUrl = craft.app.assetManager.getPublishedUrl(
+    '@workingconcept/snipcart/assetbundles/dist/img/disconnected.svg',
+    true
+) %}
+
 {% block content %}
-    <p>Nothing to see here yet. Be sure to configure the <a href="{{ cpUrl('settings/plugins/snipcart') }}">plugin settings</a>.</p>
-    <a class="btn" href="{{ cpUrl('settings/plugins/snipcart') }}">Configure Snipcart</a>
+    <div class="text-center pt-12">
+        <img src="{{ graphicUrl }}" alt="">
+        <p class="pt-6 pb-2 text-lg">Nothing to see here yet. Be sure to configure the <a href="{{ cpUrl('settings/plugins/snipcart') }}">plugin settings</a>.</p>
+        <a class="btn submit large" href="{{ cpUrl('settings/plugins/snipcart') }}">Configure Snipcart</a>
+    </div>
 {% endblock %}
