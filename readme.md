@@ -25,7 +25,7 @@ Quickly turn a Craft CMS website into a fully functioning store.
 
 If Commerce Pro is too complex for your project and Commerce Lite is bit too limiting, Snipcart will be a great fit.
 
-![Snipcart vs. Craft Commerce](resources/commerce-comparison.png)
+<img src="https://github.com/workingconcept/snipcart-craft-plugin/raw/master/resources/commerce-comparison.png" style="display: block; max-width: 750px; margin: 75px auto;" alt="Snipcart vs. Craft Commerce comparison chart" />
 
 ## Installation
 
