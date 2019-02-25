@@ -9,51 +9,81 @@
 
 {% block content %}
 
-    <h2>{{ startDate | date('F j, Y') }} – {{ endDate | date('F j, Y') }}</h2>
+    <h2>
+        {{- startDate | date('F j, Y') }} – {{ endDate | date('F j, Y') -}}
+    </h2>
 
-    <div class="snipcart-stat-panels px-2">
+    <div id="stat-panels" class="snipcart-stat-panels px-2">
         <div class="-mx-4 flex-wrap md:flex-no-wrap md:flex-row flex-wrapper justify-center h-full">
-            <div class="flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
+            <div class="stat-panel flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
                 <div class="px-3 pt-4 pb-5 text-center">
-                    <div class="stat text-slate mb-3 leading-tight">{{ "Orders"|t }}</div>
-                    <div class="number text-2xl">{{ stats.ordersCount | number_format }}</div>
+                    <div class="stat text-slate mb-3 leading-tight">
+                        {{- "Orders"|t -}}
+                    </div>
+                    <div id="stat-ordersCount" class="number text-2xl">
+                        <div class="spinner"></div>
+                        {#{- stats.ordersCount | number_format -}#}
+                    </div>
                 </div>
             </div>
-            <div class="flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
+            <div class="stat-panel flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
                 <div class="px-3 pt-4 pb-5 text-center">
-                    <div class="stat text-slate mb-3 leading-tight">{{ "Sales"|t }}</div>
-                    <div class="number text-2xl">{{ stats.ordersSales | currency }}</div>
+                    <div class="stat text-slate mb-3 leading-tight">
+                        {{- "Sales"|t -}}
+                    </div>
+                    <div id="stat-ordersSales" class="number text-2xl">
+                        <div class="spinner"></div>
+                        {#{- stats.ordersSales | currency -}#}
+                    </div>
                 </div>
             </div>
-            <div class="flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
+            <div class="stat-panel flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
                 <div class="px-3 pt-4 pb-5 text-center">
-                    <div class="stat text-slate mb-3 leading-tight">{{ "Average Order"|t }}</div>
-                    <div class="number text-2xl">{{ stats.averageOrdersValue | currency }}</div>
+                    <div class="stat text-slate mb-3 leading-tight">
+                        {{- "Average Order"|t -}}
+                    </div>
+                    <div id="stat-averageOrdersValue" class="number text-2xl">
+                        <div class="spinner"></div>
+                        {#{- stats.averageOrdersValue | currency -}#}
+                    </div>
                 </div>
             </div>
-            <div class="flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
+            <div class="stat-panel flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
                 <div class="px-3 pt-4 pb-4 text-center">
-                    <div class="stat text-slate mb-3 leading-tight">{{ "Customers"|t }}</div>
+                    <div class="stat text-slate mb-3 leading-tight">
+                        {{- "Customers"|t -}}
+                    </div>
                     <div class="number flex-wrapper">
                         <div class="w-1/2">
-                            <div class="text-2xl">
-                                {{ stats.customers.newCustomers }}
+                            <div id="stat-newCustomers" class="text-2xl">
+                                <div class="spinner"></div>
+                                {#{- stats.customers.newCustomers -}#}
                             </div>
-                            <div class="text-xs">{{ "New"|t }}</div>
+                            <div class="text-xs">
+                                {{- "New"|t -}}
+                            </div>
                         </div>
                         <div class="w-1/2">
-                            <div class="text-2xl">
-                                {{ stats.customers.returningCustomers }}
+                            <div id="stat-returningCustomers" class="text-2xl">
+                                <div class="spinner"></div>
+                                {#{- stats.customers.returningCustomers -}#}
                             </div>
-                            <div class="text-xs">{{ "Returning"|t }}</div>
+                            <div class="text-xs">
+                                {{- "Returning"|t -}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
+            <div class="stat-panel flex-wrapper flex-col mb-4 md:mb-0 bg-light-grey border-grey rounded w-1/3 md:w-1/5 mx-2 justify-center content-center">
                 <div class="px-3 pt-4 pb-5 text-center">
-                    <div class="stat text-slate mb-3 leading-tight">{{ "Average Customer Value"|t }}</div>
-                    <div class="number text-2xl">{{ stats.averageCustomerValue | currency }}</div>
+                    <div class="stat text-slate mb-3 leading-tight">
+                        {{- "Average Customer Value"|t -}}
+                    </div>
+                    <div id="stat-averageCustomerValue" class="number text-2xl">
+                        <div class="spinner"></div>
+                        {#{- stats.averageCustomerValue | currency -}#}
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,7 +97,7 @@
                 <div class="inner">
                     <h2>{{ "Recent Orders"|t }}</h2>
 
-                    <table id="orders" class="data w-full">
+                    <table id="stat-orders" class="data w-full">
                         <thead>
                             <th scope="col">{{ "Invoice"|t }}</th>
                             <th scope="col">{{ "Placed"|t }}</th>
@@ -93,7 +123,7 @@
                 <div class="inner">
                     <h2>{{ "Top Customers"|t }}</h2>
 
-                    <table id="customers" class="data w-full">
+                    <table id="stat-customers" class="data w-full">
                         <thead>
                             <th scope="col">{{ "Name"|t }}</th>
                             <th scope="col">{{ "Orders"|t }}</th>
@@ -110,7 +140,9 @@
                         </tbody>
                     </table>
 
-                    <a href="{{ url('snipcart/customers') }}" class="btn mt-6">{{ "All Customers"|t }}</a>
+                    <a href="{{ url('snipcart/customers') }}" class="btn mt-6">
+                        {{- "All Customers"|t -}}
+                    </a>
                 </div>
             </div>
         </div>

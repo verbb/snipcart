@@ -691,6 +691,7 @@ class Order extends \craft\base\Model
             'shippingAddressProvince',
             'shippingAddressPostalCode',
             'shippingAddressPhone',
+            'cpUrl',
         ];
     }
 
