@@ -365,11 +365,41 @@ class Settings extends Model
      */
     private function _hasNonEmptyEnvValue($property)
     {
+        // value stored on the model
         $settingValue = $this->{$property};
-        $parsedSettingValue = Craft::parseEnv($this->{$property});
-        $parsedDiffers = $settingValue !== $parsedSettingValue;
 
-        return $parsedDiffers && ! empty($parsedSettingValue);
+        if (empty($settingValue))
+        {
+            // null or false or empty string
+            return false;
+        }
+
+        // first character is `@`
+        $isAlias = $settingValue[0] === '@';
+
+        // first character is `$`
+        $isEnvVar = $settingValue[0] === '$';
+
+        if ($isAlias || $isEnvVar)
+        {
+            // have Craft parse aliases and environment variables
+            $parsedSettingValue = Craft::parseEnv($settingValue);
+
+            // does the stored setting get expanded?
+            $parses = $settingValue !== $parsedSettingValue;
+
+            if ( ! $parses || empty($parsedSettingValue))
+            {
+                /**
+                 * If it parsed to an empty value or is just
+                 * an unparsed variable, don't consider that
+                 * "non-empty"!
+                 */
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function _getNotificationEmailsFromTable()

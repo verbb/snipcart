@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.24 - 2019-02-24
+### Fixed
+- Fixed a bug that kept static config settings from counting toward a configured state.
+
 ## 1.0.0-beta.23 - 2019-02-24
 ### Added
 - Added pagination support to Abandoned Carts.
