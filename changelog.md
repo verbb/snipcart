@@ -1,9 +1,16 @@
 # Snipcart Changelog
 
-## 1.0.0-beta.23 - 2019-02-23
+## 1.0.0-beta.23 - 2019-02-24
 ### Added
 - Added pagination support to Abandoned Carts.
-
+- Added a friendlier CP section empty state before plugin is configured.
+### Changed
+- Ajaxified CP landing stat panels to speed up page load.
+- Spiffed up the Craft Commerce comparison table in the readme.
+### Fixed
+- Fixed template error when `shipFrom` settings are empty.
+- Fixed incorrect reference that interfered with subscription invoice creation webhook.
+- Invalid/unparsed environment variables won't count as a "configured" state for the plugin.
 
 ## 1.0.0-beta.22 - 2019-02-18
 ### Added
