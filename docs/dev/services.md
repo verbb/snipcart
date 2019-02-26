@@ -259,9 +259,9 @@ Returns the Snipcart API's decoded response.
 
 Gets an existing discount.
 
-| Argument            | Required | Description                   |
-| ------------------- | -------- | ----------------------------- |
-| **\$discountToken** | yes      | unique ID of desired discount |
+| Argument                   | Required | Description                   |
+| -------------------------- | -------- | ----------------------------- |
+| **\$discountToken** string | yes      | unique ID of desired discount |
 
 Returns a [Discount model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Discount.php) or `null`.
 
@@ -281,31 +281,203 @@ Gets and saves Product Details field data. (Used by included Field Type.)
 
 ### saveProductDetailsField()
 
+Saves data (in a record) for a Product Details field.
+
+| Argument                                                                                                                        | Required | Description       |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------- |
+| **\$field** [ProductDetails](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/fields/ProductDetails.php) | yes      | field to be saved |
+| **\$element** ElementInterface                                                                                                  | yes      | relevant Element  |
+
+Returns `true` if successful or `null` if the field's data is empty.
+
 ### getProductDetailsField()
+
+Fetches the data for a Product Details field.
+
+| Argument                                                                                                                        | Required | Description                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **\$field** [ProductDetails](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/fields/ProductDetails.php) | yes      | related Field                                                                                                                           |
+| **\$element** ElementInterface                                                                                                  |          | relevant Element                                                                                                                        |
+| **\$value**                                                                                                                     |          | optional value that should be used to populate the model, otherwise it will be populated with record data or field defaults accordingly |
+
+Returns [ProductDetails model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/ProductDetails.php) or `null`.
+
+## [Notifications](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Notifications.php)
+
+Sends notifications as things happen. Currently just email.
+
+::: warning
+This service is likely to change as parts are abstracted to a future Notification model for validation and broader notification options (Slack, etc.).
+:::
+
+### setNotificationVars()
+
+Sets template variables for the notification. Should be called before `sendEmail()`.
+
+| Argument                 | Required | Description                                        |
+| ------------------------ | -------- | -------------------------------------------------- |
+| **\$data** array\|object | yes      | Twig variables meant for the notification template |
+
+Doesn't return anything.
+
+### getNotificationVars()
+
+Gets template variables for the notification.
+
+Returns an array, object, or `null`.
+
+### setErrors()
+
+Sets notification errors.
+
+| Argument         | Required | Description                                                   |
+| ---------------- | -------- | ------------------------------------------------------------- |
+| **\$data** array | yes      | array of error strings compatible with parent's `setErrors()` |
+
+Doesn't return anything.
+
+### setEmailTemplate()
+
+Sets notification email template.
+
+| Argument                  | Required | Description                                                                                                                                   |
+| ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **\$htmlTemplate** string | yes      | Twig template path to be used for the HTML email notification                                                                                 |
+| **\$textTemplate** string |          | Twig template path to be used for an alternate, plain text email notification                                                                 |
+| **\$frontend** boolean    |          | whether the supplied path is on the front (site) end or the back (plugin) end, which matters for setting the template mode (default: `false`) |
+
+Doesn't return anything.
+
+### sendEmail()
+
+Sends an email notification.
+
+| Argument             | Required | Description                    |
+| -------------------- | -------- | ------------------------------ |
+| **\$to** array       | yes      | array of valid email addresses |
+| **\$subject** string | yes      | message subject                |
+
+Returns `true` if successful, otherwise `false`. If it didn't go well, use `getErrors()` to find out why.
 
 ## [Orders](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Orders.php)
 
-Largest service, interacts with Order data.
+Interacts with Orders.
 
 ### getOrder()
 
+Gets a Snipcart order by ID.
+
+| Argument                | Required | Description            |
+| ----------------------- | -------- | ---------------------- |
+| **\$orderToken** string | yes      | unique ID of the order |
+
+Returns [Order model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) or `null`.
+
 ### getOrders()
+
+Gets Snipcart orders, optionally by parameters supported by [Snipcart's REST API](https://docs.snipcart.com/api-reference/orders).
+
+| Argument           | Required | Description                          |
+| ------------------ | -------- | ------------------------------------ |
+| **\$params** array |          | parameters used for fetching results |
+
+Returns an array of [Order models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php).
 
 ### getAllOrders()
 
+Gets Snipcart orders, optionally by parameters supported by [Snipcart's REST API](https://docs.snipcart.com/api-reference/orders), quietly aggreggating results across pagination from the REST API.
+
+::: warning
+Careful using this as long result sets could require a long wait!
+:::
+
+| Argument           | Required | Description                          |
+| ------------------ | -------- | ------------------------------------ |
+| **\$params** array |          | parameters used for fetching results |
+
+Returns an array of [Order models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php).
+
 ### getOrderNotifications()
+
+Gets the notifications Snipcart has sent regarding a specific order.
+
+| Argument                | Required | Description            |
+| ----------------------- | -------- | ---------------------- |
+| **\$orderToken** string | yes      | unique ID of the order |
+
+Returns an array of [Notification models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Notification.php).
 
 ### getOrderRefunds()
 
+Gets a Snipcart order's refunds.
+
+| Argument                | Required | Description            |
+| ----------------------- | -------- | ---------------------- |
+| **\$orderToken** string | yes      | unique ID of the order |
+
+Returns an array of [Refund models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Refund.php).
+
 ### listOrders()
+
+Gets Snipcart orders specifically including pagination info.
+
+| Argument           | Required | Description                                |
+| ------------------ | -------- | ------------------------------------------ |
+| **\$page** int     |          | desired page of results (default: `1`)     |
+| **\$limit** int    |          | number of results per page (default: `25`) |
+| **\$params** array |          | parameters used for fetching results       |
+
+Returns an object with the following keys:
+
+-   **items**: array of [Order models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) up to the pagination limit
+-   **totalItems**: int representing the result set's total number of orders
+-   **offset**: int pagination offset
+-   **limit**: pagination limit
 
 ### updateElementsFromOrder()
 
+Get Craft Elements that relate to order items, updating quantities if that field setting is enabled and the item has a non-zero quantity value.
+
+| Argument                                                                                                               | Required | Description                         |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------- |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | order whose items should be checked |
+
+Returns `true` if successful, or an array of errors if a resulting notification failed.
+
 ### getOrderPackaging()
+
+Triggers [`EVENT_BEFORE_REQUEST_SHIPPING_RATES`](/dev/events.md#shipping-rate-request) to allow another plugin or module to provide packaging details for an order before shipping rates are requested.
+
+| Argument                                                                                                               | Required | Description                                      |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | order for which shipping rates will be requested |
+
+Returns the [Package](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Package.php) model, populated by an event hook or instantiated but literally and symbolically empty.
 
 ### sendOrderEmailNotification()
 
+Have Craft email an order notification.
+
+| Argument                                                                                                               | Required | Description                                                |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------- |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | the relevant Snipcart order                                |
+| **\$extra** array                                                                                                      |          | extra variables meant for the Twig notification template   |
+| **\$type** string                                                                                                      |          | `notifyAdmin` or `notifyCustomer` (default: `notifyAdmin`) |
+
+Returns `true` if successful, otherwise an array of error strings.
+
 ### refundOrder()
+
+Applies a refund to an order.
+
+| Argument                                                                                                               | Required | Description                                                                |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | the relevant Snipcart order                                                |
+| **\$amount** float                                                                                                     | yes      | the amount to be refunded                                                  |
+| **\$comment** string                                                                                                   |          | refund comment                                                             |
+| **\$notifyCustomer** bool                                                                                              |          | whether to send a Snipcart notification to the customer (default: `false`) |
+
+Returns the decoded response from the Snipcart REST API.
 
 ## [Products](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Products.php)
 
