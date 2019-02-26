@@ -9,10 +9,15 @@
 namespace workingconcept\snipcart\controllers;
 
 use workingconcept\snipcart\Snipcart;
+use craft\helpers\DateTimeHelper;
+use Craft;
 use DateTime;
 
 class OverviewController extends \craft\web\Controller
 {
+    // Public Methods
+    // =========================================================================
+
     /**
      * Display store overview.
      * @return \yii\web\Response
@@ -25,22 +30,136 @@ class OverviewController extends \craft\web\Controller
             return $this->renderTemplate('snipcart/cp/welcome');
         }
 
-        $startDate = (new DateTime())->modify('-1 month');
-        $endDate   = new DateTime();
+        return $this->renderTemplate(
+            'snipcart/cp/index',
+            $this->_getOrderAndCustomerSummary()
+        );
+    }
+
+    /**
+     * Get the stats for the top panels.
+     * @return \yii\web\Response
+     * @throws
+     */
+    public function actionGetStats(): \yii\web\Response
+    {
+        return $this->asJson(
+            $this->_getOverviewStats(true)
+        );
+    }
+
+    /**
+     * Get the data for the recent order and top customer summary tables.
+     * @return \yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionGetOrdersCustomers(): \yii\web\Response
+    {
+        return $this->asJson(
+            $this->_getOrderAndCustomerSummary(true)
+        );
+    }
+
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Get store statistics for the Snipcart landing/overview.
+     *
+     * @param bool $preformat
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function _getOverviewStats($preformat = false)
+    {
+        $startDate = $this->_getStartDate();
+        $endDate   = $this->_getEndDate();
         $stats     = Snipcart::$plugin->data->getPerformance($startDate, $endDate);
+
+        if ($preformat)
+        {
+            $formatter = Craft::$app->getFormatter();
+
+            $stats->ordersCount = number_format($stats->ordersCount);
+            $stats->ordersSales = $formatter->asCurrency($stats->ordersSales);
+            $stats->averageOrdersValue = $formatter->asCurrency($stats->averageOrdersValue);
+            $stats->averageCustomerValue = $formatter->asCurrency($stats->averageCustomerValue);
+        }
+        
+        return [ 'stats' => $stats ];
+    }
+
+    /**
+     * Get recent order and top customer statistics.
+     *
+     * @param bool $preformat
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function _getOrderAndCustomerSummary($preformat = false): array
+    {
+        $startDate = $this->_getStartDate();
+        $endDate   = $this->_getEndDate();
         $orders    = Snipcart::$plugin->orders->listOrders(1, 10);
         $customers = Snipcart::$plugin->customers->listCustomers(1, 10, [
             'orderBy' => 'ordersValue'
         ]);
 
-        return $this->renderTemplate('snipcart/cp/index',
-            [
-                'startDate' => $startDate,
-                'endDate'   => $endDate,
-                'stats'     => $stats,
-                'orders'    => $orders,
-                'customers' => $customers,
-            ]
-        );
+        if ($preformat)
+        {
+            $formatter = Craft::$app->getFormatter();
+
+            foreach ($orders->items as &$item)
+            {
+                // TODO: see if there's a better way to attach dynamic fields
+                $item = $item->toArray(
+                    ['id', 'invoiceNumber', 'creationDate', 'finalGrandTotal'],
+                    ['cpUrl', 'billingAddressName']
+                );
+
+                $item['creationDate'] = DateTimeHelper::toDateTime($item['creationDate'])->format('n/j');
+                $item['finalGrandTotal'] = $formatter->asCurrency($item['finalGrandTotal']);
+            }
+
+            foreach ($customers->items as &$item)
+            {
+                // TODO: see if there's a better way to attach dynamic fields
+                $item = $item->toArray(
+                    ['id', 'billingAddressName', 'statistics'],
+                    ['cpUrl']
+                );
+
+                $item['statistics']['ordersCount'] = number_format($item['statistics']['ordersCount']);
+                $item['statistics']['ordersAmount'] = $formatter->asCurrency($item['statistics']['ordersAmount']);
+            }
+        }
+        
+        return [
+            'startDate' => $startDate,
+            'endDate'   => $endDate,
+            'orders'    => $orders,
+            'customers' => $customers,
+        ];
+    }
+
+    /**
+     * Get the beginning of the range used for visualizing stats.
+     * @return DateTime
+     * @throws
+     */
+    private function _getStartDate(): DateTime
+    {
+        return (new DateTime())->modify('-1 month');
+    }
+
+    /**
+     * Get the end of the range used for visualizing stats.
+     * @return DateTime
+     * @throws
+     */
+    private function _getEndDate(): DateTime
+    {
+        return new DateTime();
     }
 }

@@ -64,7 +64,6 @@ class CartsController extends \craft\web\Controller
 
                 $date = DateTimeHelper::toDateTime($item->modificationDate);
 
-
                 $item->modificationDate = $date->format('M j, Y');
             }
         }

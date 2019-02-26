@@ -424,7 +424,7 @@
                     name: 'settings[shipFromAddress][name]',
                     required: true,
                     value: shipFrom.name ?? '',
-                    errors: shipFrom.getErrors('name'),
+                    errors: shipFrom.getErrors('name') ?? [],
                     instructions: ""
                 }) }}
 
@@ -433,7 +433,7 @@
                     id: 'shipFromCompanyName',
                     name: 'settings[shipFromAddress][companyName]',
                     value: shipFrom.companyName ?? '',
-                    errors: shipFrom.getErrors('companyName'),
+                    errors: shipFrom.getErrors('companyName') ?? [],
                     instructions: ""
                 }) }}
 
@@ -444,7 +444,7 @@
                     required: true,
                     placeholder: 'Address Line 1'|t,
                     value: shipFrom.address1 ?? '',
-                    errors: shipFrom.getErrors('address1'),
+                    errors: shipFrom.getErrors('address1') ?? [],
                     instructions: ""
                 }) }}
 
@@ -453,7 +453,7 @@
                     name: 'settings[shipFromAddress][address2]',
                     placeholder: 'Address Line 2'|t,
                     value: shipFrom.address2 ?? '',
-                    errors: shipFrom.getErrors('address2'),
+                    errors: shipFrom.getErrors('address2') ?? [],
                     instructions: ""
                 }) }}
 
@@ -466,7 +466,7 @@
                             size: 30,
                             placeholder: 'City',
                             value: shipFrom.city ?? '',
-                            errors: shipFrom.getErrors('city'),
+                            errors: shipFrom.getErrors('city') ?? [],
                             instructions: ""
                         }) }}
                     </div>
@@ -479,7 +479,7 @@
                             size: 8,
                             maxlength: 2,
                             value: shipFrom.province ?? '',
-                            errors: shipFrom.getErrors('province'),
+                            errors: shipFrom.getErrors('province') ?? [],
                             instructions: ""
                         }) }}
                     </div>
@@ -490,7 +490,7 @@
                             required: true,
                             placeholder: 'Postal Code'|t,
                             value: shipFrom.postalCode ?? '',
-                            errors: shipFrom.getErrors('postalCode'),
+                            errors: shipFrom.getErrors('postalCode') ?? [],
                             instructions: ""
                         }) }}
                     </div>
@@ -503,7 +503,7 @@
                             size: 8,
                             maxlength: 2,
                             value: shipFrom.country ?? '',
-                            errors: shipFrom.getErrors('country'),
+                            errors: shipFrom.getErrors('country') ?? [],
                             instructions: ""
                         }) }}
                     </div>
@@ -515,7 +515,7 @@
                     name: 'settings[shipFromAddress][phone]',
                     required: true,
                     value: shipFrom.phone ?? '',
-                    errors: shipFrom.getErrors('phone'),
+                    errors: shipFrom.getErrors('phone') ?? [],
                     instructions: ""
                 }) }}
 
@@ -525,7 +525,7 @@
                     name: 'settings[shipFromAddress][email]',
                     required: true,
                     value: shipFrom.email ?? '',
-                    errors: shipFrom.getErrors('email'),
+                    errors: shipFrom.getErrors('email') ?? [],
                     instructions: ""
                 }) }}
             </div>

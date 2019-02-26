@@ -51,7 +51,7 @@ class WebhooksController extends Controller
         self::WEBHOOK_SUBSCRIPTION_CANCELLED        => 'handleSubscriptionCancelled',
         self::WEBHOOK_SUBSCRIPTION_PAUSED           => 'handleSubscriptionPaused',
         self::WEBHOOK_SUBSCRIPTION_RESUMED          => 'handleSubscriptionResumed',
-        self::WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  => 'handleOrderSubscriptionInvoiceCreated',
+        self::WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  => 'handleSubscriptionInvoiceCreated',
         self::WEBHOOK_TAXES_CALCULATE               => 'handleTaxesCalculate',
         self::WEBHOOK_CUSTOMER_UPDATED              => 'handleCustomerUpdated',
     ];

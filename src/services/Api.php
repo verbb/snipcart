@@ -113,7 +113,7 @@ class Api extends Component
     /**
      * Perform get with the Snipcart API.
      *
-     * @param  string $endpoint    Snipcart API method to be queried
+     * @param  string $endpoint    Snipcart API endpoint to be queried
      * @param  array  $parameters  array of parameters to be URL formatted
      * @param  bool   $useCache    whether or not to cache responses
      *
@@ -121,7 +121,7 @@ class Api extends Component
      *                               of objects or null for an invalid response.
      * @throws \Exception if our API key is missing.
      */
-    public function get(string $endpoint = '', array $parameters = [], bool $useCache = true)
+    public function get(string $endpoint, array $parameters = [], bool $useCache = true)
     {
         if ( ! empty($parameters))
         {
@@ -159,13 +159,13 @@ class Api extends Component
     /**
      * Perform post request to the Snipcart API.
      *
-     * @param  string $endpoint    Snipcart API method to receive post
+     * @param  string $endpoint    Snipcart API endpoint to receive post
      * @param  array  $data        array of post values to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
      */
-    public function post(string $endpoint = '', array $data = [])
+    public function post(string $endpoint, array $data = [])
     {
         return $this->_postRequest($endpoint, $data);
     }
@@ -173,13 +173,13 @@ class Api extends Component
     /**
      * Perform put request to the Snipcart API.
      *
-     * @param  string $endpoint    Snipcart API method to receive post
+     * @param  string $endpoint    Snipcart API endpoint to receive post
      * @param  array  $data        array of post values to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
      */
-    public function put(string $endpoint = '', array $data = [])
+    public function put(string $endpoint, array $data = [])
     {
         return $this->_putRequest($endpoint, $data);
     }
@@ -187,13 +187,13 @@ class Api extends Component
     /**
      * Perform delete request to the Snipcart API.
      *
-     * @param  string $endpoint    Snipcart API method to receive post
+     * @param  string $endpoint    Snipcart API endpoint to receive post
      * @param  array  $data        array of post values to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
      */
-    public function delete(string $endpoint = '', array $data = [])
+    public function delete(string $endpoint, array $data = [])
     {
         return $this->_deleteRequest($endpoint, $data);
     }

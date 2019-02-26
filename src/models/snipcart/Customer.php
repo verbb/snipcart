@@ -185,6 +185,7 @@ class Customer extends \craft\base\Model
      * @var
      */
     public $shippingAddress;
+    
 
     // Public Methods
     // =========================================================================
@@ -221,5 +222,14 @@ class Customer extends \craft\base\Model
         return ['creationDate'];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return [
+            'cpUrl'
+        ];
+    }
 
 }
