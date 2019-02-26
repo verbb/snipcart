@@ -77,7 +77,7 @@ Returns `true` if valid, otherwise `false`.
 
 ### invalidateCache()
 
-Invalidate any cached GET requests.
+Invalidate any of the plugin's cached GET requests.
 
 Doesn't return anything.
 
