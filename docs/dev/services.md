@@ -83,11 +83,34 @@ Doesn't return anything.
 
 ## [Carts](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Carts.php)
 
-Currently lists abandoned carts to be displayed in the control panel.
+Gets abandoned cart info.
 
 ### listAbandonedCarts()
 
+Lists the first page of abandoned cart objects.
+
+::: warning
+The plugin's interface matches others with pagination, but Snipcart's API follows a different pagination scheme here and returns `hasMoreResults` and `continuationToken`. `limit` and `offset` are effectively ignored.
+
+This method will most likely be changed or deprecated in the future.
+:::
+
+Returns an object with the following properties.
+
+-   **items** [AbandonedCart[]](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/AbandonedCart.php)
+-   **totalItems** int
+-   **offset** int
+-   **continuationToken** string|null
+-   **hasMoreResults** bool
+-   **limit** int
+
 ### getAbandonedCart()
+
+| Argument           | Required | Description                    |
+| ------------------ | -------- | ------------------------------ |
+| **\$token** string | yes      | unique ID of an abandoned cart |
+
+Returns an [AbandonedCart model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/AbandonedCart.php) or `null`.
 
 ## [Customers](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Customers.php)
 
@@ -95,9 +118,35 @@ Lists and searches customer data.
 
 ### listCustomers()
 
+List Snipcart customers.
+
+| Argument           | Required | Description                                                                                                                                                                  |
+| ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **\$page** int     |          | page of results (default: `1`)                                                                                                                                               |
+| **\$limit** array  |          | number of results per page (default: `20`)                                                                                                                                   |
+| **\$params** array |          | additional [parameters](https://docs.snipcart.com/api-reference/customers) to pass with the REST request; page and limit _method_ parameters will be honored (default: `[]`) |
+
+Returns an array of [Customer models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Customer.php) or `null`.
+
 ### getCustomer()
 
+Get a specific customer by the related Snipcart ID.
+
+| Argument                | Required | Description          |
+| ----------------------- | -------- | -------------------- |
+| **\$customerId** string | yes      | Snipcart customer ID |
+
+Returns a [Customer model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Customer.php) or `null`.
+
 ### getCustomerOrders()
+
+Get a customer's complete order history, sorted by descending date.
+
+| Argument                | Required | Description          |
+| ----------------------- | -------- | -------------------- |
+| **\$customerId** string | yes      | Snipcart customer ID |
+
+Returns an array of [Order models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php).
 
 ## [Data](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Data.php)
 
@@ -105,9 +154,88 @@ Returns store statistics.
 
 ### getOrderCount()
 
+Get the number of orders by day between two dates.
+
+| Argument                 | Required | Description                                                                 |
+| ------------------------ | -------- | --------------------------------------------------------------------------- |
+| **\$from** DateTime\|int | yes      | DateTime object or Unix timestamp that describes the beginning of the range |
+| **\$to** DateTime\|int   | yes      | DateTime object or Unix timestamp that describes the end of the range       |
+
+Returns an object decoded from the following JSON format:
+
+```
+{
+  "labels": [
+    "Number of orders"
+  ],
+  "data": [
+    {
+      "name": "2017-04-04",
+      "value": 12
+    },
+    ...
+  ],
+  "to": 1493881200,
+  "from": 1491289200,
+  "currency": null
+}
+```
+
 ### getPerformance()
 
+Get store performance stats between two dates.
+
+| Argument                 | Required | Description                                                                 |
+| ------------------------ | -------- | --------------------------------------------------------------------------- |
+| **\$from** DateTime\|int | yes      | DateTime object or Unix timestamp that describes the beginning of the range |
+| **\$to** DateTime\|int   | yes      | DateTime object or Unix timestamp that describes the end of the range       |
+
+Returns an object decoded from the following JSON format:
+
+```
+{
+  "ordersSales": 100.00,
+  "ordersCount": 10,
+  "averageCustomerValue": 10.000000,
+  "taxesCollected": 10.00,
+  "shippingCollected": 10.00,
+  "customers": {
+    "newCustomers": 10,
+    "returningCustomers": 10
+  },
+  "averageOrdersValue": 0.000000000000000000000000000,
+  "totalRecovered": 0.0
+}
+```
+
 ### getSales()
+
+Get store saltes totals between two dates.
+
+| Argument                 | Required | Description                                                                 |
+| ------------------------ | -------- | --------------------------------------------------------------------------- |
+| **\$from** DateTime\|int | yes      | DateTime object or Unix timestamp that describes the beginning of the range |
+| **\$to** DateTime\|int   | yes      | DateTime object or Unix timestamp that describes the end of the range       |
+
+Returns an object decoded from the following JSON format:
+
+```
+{
+  "labels": [
+    "Total sales"
+  ],
+  "data": [
+    {
+      "name": "2017-04-04",
+      "value": 120.13
+    },
+    ...
+  ],
+  "to": 1493881200,
+  "from": 1491289200,
+  "currency": null
+}
+```
 
 ## [Discounts](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Discounts.php)
 
@@ -115,11 +243,37 @@ Lists, modifies, and creates store discounts.
 
 ### listDiscounts()
 
+Returns an array of [Discount](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Discount.php) models.
+
 ### createDiscount()
+
+Creates a new discount.
+
+| Argument                                                                                                                        | Required | Description          |
+| ------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------- |
+| **\$discount** [Discount](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Discount.php) | yes      | discount to be saved |
+
+Returns the Snipcart API's decoded response.
 
 ### getDiscount()
 
+Gets an existing discount.
+
+| Argument            | Required | Description                   |
+| ------------------- | -------- | ----------------------------- |
+| **\$discountToken** | yes      | unique ID of desired discount |
+
+Returns a [Discount model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Discount.php) or `null`.
+
 ### deleteDiscountById()
+
+Deletes a discount by the supplied ID.
+
+| Argument            | Required | Description                   |
+| ------------------- | -------- | ----------------------------- |
+| **\$discountToken** | yes      | unique ID of desired discount |
+
+Returns the Snipcart API's decoded response.
 
 ## [Fields](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Fields.php)
 
