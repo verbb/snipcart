@@ -54,6 +54,7 @@ module.exports = {
                 children: [
                     '/troubleshooting/logging',
                     '/troubleshooting/testing-webhooks',
+                    '/troubleshooting/verify-orders',
                     //'/troubleshooting/common-problems',
                     '/troubleshooting/getting-help'
                 ]
@@ -80,7 +81,7 @@ module.exports = {
                     '/dev/overview',
                     '/dev/events',
                     '/dev/services',
-                    '/dev/models',
+                    //'/dev/models',
                 ]
             }
             /*
