@@ -303,7 +303,8 @@ class ProductDetails extends \craft\base\Model
      * Returns true if at least one dimension (length, width, height) has a
      * non-zero value.
      *
-     * @param null $model
+     * @param ProductDetails $model
+     *
      * @return bool
      */
     public function hasDimensions($model = null): bool
@@ -314,7 +315,7 @@ class ProductDetails extends \craft\base\Model
 
     /**
      * Returns true if each dimension (length, width, height) as a non-zero value.
-     * @param null $model
+     * @param ProductDetails $model
      * @return bool
      */
     public function hasAllDimensions($model = null): bool
@@ -324,7 +325,10 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * @param null $model
+     * Returns true if product is shippable.
+     *
+     * @param ProductDetails $model
+     *
      * @return bool
      */
     public function isShippable($model = null): bool
