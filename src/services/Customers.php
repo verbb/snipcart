@@ -103,18 +103,6 @@ class Customers extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Ascending sort method for Customer object `creationDate` property.
-     *
-     * @param $a
-     * @param $b
-     * @return bool
-     */
-    private function sortOrdersByDateAscending($a, $b): bool
-    {
-        return $a->creationDate->getTimestamp() > $b->creationDate->getTimestamp();
-    }
-
-    /**
      * Descending sort method for Customer object `creationDate` property.
      *
      * @param $a
