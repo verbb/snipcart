@@ -441,8 +441,6 @@ class ShipStation extends ShippingProvider
      */
     private function _getShippingMethodFromOrder(SnipcartOrder $order)
     {
-        $closest = null;
-
         /**
          * First try and find a matching rate quote, which would have preceded
          * the completed order.
