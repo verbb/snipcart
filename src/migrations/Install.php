@@ -35,8 +35,6 @@ class Install extends Migration
     public function safeUp()
     {
         $this->_createTables();
-        $this->_addIndexes();
-        $this->_addForeignKeys();
     }
 
     /**
@@ -44,8 +42,7 @@ class Install extends Migration
      */
     public function safeDown()
     {
-        // TODO: test thoroughly rather than just deleting data
-        // $this->_removeTables();
+
     }
 
 
@@ -68,6 +65,9 @@ class Install extends Migration
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid'         => $this->uid(),
             ]);
+
+            $this->createIndex(null, $this->webhookLogTable, ['siteId']);
+            $this->addForeignKey(null, $this->webhookLogTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
         if ( ! $this->getDb()->tableExists($this->shippingQuotesTable))
@@ -81,6 +81,9 @@ class Install extends Migration
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid'         => $this->uid(),
             ]);
+
+            $this->createIndex(null, $this->shippingQuotesTable, ['siteId']);
+            $this->addForeignKey(null, $this->shippingQuotesTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
         if ( ! $this->getDb()->tableExists($this->productDetailsTable))
@@ -114,31 +117,14 @@ class Install extends Migration
                 'dateUpdated'    => $this->dateTime()->notNull(),
                 'uid'            => $this->uid(),
             ]);
+
+            $this->createIndex(null, $this->productDetailsTable, ['elementId']);
+            $this->createIndex(null, $this->productDetailsTable, ['fieldId']);
+            $this->createIndex(null, $this->productDetailsTable, ['siteId']);
+
+            $this->addForeignKey(null, $this->productDetailsTable, ['elementId'], '{{%elements}}', ['id'], 'CASCADE');
+            $this->addForeignKey(null, $this->productDetailsTable, ['fieldId'], '{{%fields}}', ['id'], 'CASCADE');
+            $this->addForeignKey(null, $this->productDetailsTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
-    }
-
-    private function _removeTables()
-    {
-        $this->dropTableIfExists($this->webhookLogTable);
-        $this->dropTableIfExists($this->productDetailsTable);
-        $this->dropTableIfExists($this->shippingQuotesTable);
-    }
-
-    private function _addIndexes()
-    {
-        $this->createIndex(null, $this->productDetailsTable, ['elementId'], false);
-        $this->createIndex(null, $this->productDetailsTable, ['fieldId'], false);
-        $this->createIndex(null, $this->productDetailsTable, ['siteId'], false);
-        $this->createIndex(null, $this->shippingQuotesTable, ['siteId'], false);
-        $this->createIndex(null, $this->webhookLogTable, ['siteId'], false);
-    }
-
-    private function _addForeignKeys()
-    {
-        $this->addForeignKey(null, $this->productDetailsTable, ['elementId'], '{{%elements}}', ['id'], 'CASCADE', null);
-        $this->addForeignKey(null, $this->productDetailsTable, ['fieldId'], '{{%fields}}', ['id'], 'CASCADE', null);
-        $this->addForeignKey(null, $this->productDetailsTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE', null);
-        $this->addForeignKey(null, $this->shippingQuotesTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE', null);
-        $this->addForeignKey(null, $this->webhookLogTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE', null);
     }
 }
