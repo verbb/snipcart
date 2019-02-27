@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.26 - 2019-02-27
+### Fixed
+- Fixed Install migration to prevent blocking re-install.
+### Changed
+- Added a nicer configured+empty landing state graphic.
+
 ## 1.0.0-beta.25 - 2019-02-26
 ### Fixed
 - Cleaned up docblocks and variable names for consistency.
