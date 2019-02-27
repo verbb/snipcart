@@ -167,7 +167,7 @@ class Snipcart extends Plugin
         /**
          * Tell CraftQL how to grab Snipcart Product Details field data.
          */
-        if (class_exists(\markhuot\CraftQL\CraftQL::class))
+        if (Craft::$app->getPlugins()->isPluginInstalled('craftql'))
         {
             Event::on(
                 ProductDetails::class,

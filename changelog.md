@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.27 - 2019-02-27
+### Fixed
+- Improved safety of CraftQL check.
+
 ## 1.0.0-beta.26 - 2019-02-27
 ### Fixed
 - Fixed Install migration to prevent blocking re-install.
