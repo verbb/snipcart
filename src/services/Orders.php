@@ -53,17 +53,18 @@ class Orders extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Get a Snipcart order.
+     * Gets a Snipcart order.
      *
-     * @param string $orderToken Snipcart order GUID
+     * @param string $orderId Snipcart order ID
+     *
      * @return Order|null
      * @throws \Exception if our API key is missing.
      */
-    public function getOrder($orderToken)
+    public function getOrder($orderId)
     {
         if ($orderData = Snipcart::$plugin->api->get(sprintf(
             'orders/%s',
-            $orderToken
+            $orderId
         )))
         {
             return new Order((array)$orderData);
@@ -73,9 +74,10 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Get Snipcart orders.
+     * Gets multiple Snipcart orders.
      *
-     * @param array $params
+     * @param array $params Parameters to send with the request
+     *
      * @return Order[]
      * @throws \Exception if our API key is missing.
      *
@@ -90,11 +92,12 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Get Snipcart orders using multiple requests if there are
+     * Gets Snipcart orders using multiple requests to overcome
      * pagination limits.
      *
-     * @param array $params
-     * @return array
+     * @param array $params Parameters to send with the request
+     *
+     * @return Order[]
      * @throws
      */
     public function getAllOrders($params = []): array
@@ -138,47 +141,49 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Get the notifications Snipcart has sent regarding a specific order.
+     * Gets the notifications Snipcart has sent regarding a specific order.
      *
-     * @param string $orderToken Snipcart order ID
+     * @param string $orderId Snipcart order ID
+     *
      * @return Notification[]
      * @throws \Exception if our API key is missing.
      */
-    public function getOrderNotifications($orderToken): array
+    public function getOrderNotifications($orderId): array
     {
         return ModelHelper::populateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'orders/%s/notifications',
-                $orderToken
+                $orderId
             )),
             Notification::class
         );
     }
 
     /**
-     * Get a Snipcart order's refunds.
+     * Gets a Snipcart order's refunds.
      *
-     * @param int $orderToken Snipcart order ID
+     * @param string $orderId Snipcart order ID
+     *
      * @return Refund[]
      * @throws \Exception if our API key is missing.
      */
-    public function getOrderRefunds($orderToken): array
+    public function getOrderRefunds($orderId): array
     {
         return ModelHelper::populateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'orders/%s/refunds',
-                $orderToken
+                $orderId
             )),
             Refund::class
         );
     }
 
     /**
-     * Get Snipcart orders with pagination info.
+     * Gets Snipcart orders with pagination info.
      *
-     * @param int   $page
-     * @param int   $limit
-     * @param array $params
+     * @param int    $page   Page of results
+     * @param int    $limit  Number of results per page
+     * @param array  $params Parameters to send with the request
      *
      * @return \stdClass
      *              ->items (Order[])
@@ -209,7 +214,7 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Get Craft Elements that relate to order items, updating quantities
+     * Gets Craft Elements that relate to order items, updating quantities
      * and sending a notification if relevant.
      *
      * @param Order $order
@@ -238,8 +243,9 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Trigger an Event that will allow another plugin or module to provide
-     * packaging details for an order before shipping rates are requested.
+     * Triggers an Event that will allow another plugin or module to provide
+     * packaging details and/or modify an order before shipping rates
+     * are requested for that order.
      *
      * @param Order $order
      *
@@ -263,7 +269,7 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Have Craft email order notifications.
+     * Sends email order notifications.
      *
      * @param Order  $order The relevant Snipcart order.
      * @param array  $extra Additional variables for email template.
@@ -308,25 +314,28 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * @param string $token          The order's unique identifier.
-     * @param float  $amount         The amount of the refund.
-     * @param string $comment        The reason for the refund.
-     * @param bool   $notifyCustomer
+     * Creates a refund for an order.
+     *
+     * @param string $orderId         The order ID
+     * @param float  $amount          Amount to be refunded
+     * @param string $comment         Reason for the refund
+     * @param bool   $notifyCustomer  Whether Snipcart should send
+     *                                a notification to the customer
      *
      * @return mixed
      * @throws \Exception if our API key is missing.
      */
-    public function refundOrder($token, $amount, $comment = '', $notifyCustomer = false)
+    public function refundOrder($orderId, $amount, $comment = '', $notifyCustomer = false)
     {
         $refund = new Refund([
-            'orderToken'     => $token,
+            'orderToken'     => $orderId,
             'amount'         => $amount,
             'comment'        => $comment,
             'notifyCustomer' => $notifyCustomer,
         ]);
 
         $response = Snipcart::$plugin->api->post(
-            sprintf('orders/%s/refunds', $token),
+            sprintf('orders/%s/refunds', $orderId),
             $refund->getPayloadForPost()
         );
 
@@ -337,7 +346,7 @@ class Orders extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Query the API for orders with the provided parameters.
+     * Queries the API for orders with the provided parameters.
      * Invalid parameters are ignored and not sent to Snipcart.
      *
      * @param array $params
@@ -388,13 +397,14 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Select whatever Twig template should be used for an order notification,
+     * Selects whatever Twig template should be used for an order notification,
      * and if it's a custom template make sure it exists before relying on it.
      *
-     * @param string $type Either `admin` or `customer`.
+     * @param string $type `admin` or `customer`
+     *
      * @return array       Returns an array with a `path` string property
      *                     and `user` bool which is true if the template exists
-     *                     on the front end—false if it's scoped to the plugin.
+     *                     on the front end—false if it's scoped to the plugin
      */
     private function _selectNotificationTemplate($type): array
     {

@@ -14,11 +14,12 @@ namespace workingconcept\snipcart\helpers;
 class ModelHelper
 {
     /**
-     * Take an array of objects and turn each top-level element into an instance
+     * Takes an array of objects and turn each top-level element into an instance
      * of the given data model.
      *
      * @param array   $array  array where each item can be transformed into model
      * @param string  $class  name of desired model class
+     *
      * @return array
      */
     public static function populateArrayWithModels(array $array, $class): array
@@ -32,7 +33,7 @@ class ModelHelper
     }
 
     /**
-     * Strip root-level properties from an object if they aren't attributes on
+     * Strips root-level properties from an object if they aren't attributes on
      * the designated model.
      *
      * @param object $data       Object with data, like a webhook payload.

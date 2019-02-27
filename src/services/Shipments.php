@@ -11,7 +11,6 @@ namespace workingconcept\snipcart\services;
 use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\models\Order;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\Settings;
 use workingconcept\snipcart\providers\ShipStation;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use Craft;
@@ -38,6 +37,9 @@ class Shipments extends \craft\base\Component
     // Private Properties
     // =========================================================================
 
+    /**
+     * @var ShipStation Local reference to instantiated ShipStation provider
+     */
     private $_shipStation;
 
 
@@ -60,9 +62,10 @@ class Shipments extends \craft\base\Component
     }
 
     /**
-     * Collect shipping rate options for a Snipcart order.
+     * Collects shipping rate options for a Snipcart order.
      *
      * @param Order $order
+     *
      * @return array [ 'rates' => ShippingRate[], 'package' => Package ]
      */
     public function collectRatesForOrder(Order $order): array
@@ -115,7 +118,8 @@ class Shipments extends \craft\base\Component
     }
 
     /**
-     * Handle an order we've received via webhook.
+     * Handles an order that's been completed, normally sent after
+     * receiving a webhook post from Snipcart.
      *
      * @param Order $order
      * @return object
@@ -147,7 +151,7 @@ class Shipments extends \craft\base\Component
     }
 
     /**
-     * Get the last shipping rate quote that was returned for the given order.
+     * Gets the last shipping rate quote that was returned for the given order.
      *
      * @param $order
      * @return array|ShippingQuoteLog|\yii\db\ActiveRecord|null
@@ -159,8 +163,5 @@ class Shipments extends \craft\base\Component
             ->orderBy(['dateCreated' => SORT_DESC])
             ->one();
     }
-
-    // Private Methods
-    // =========================================================================
 
 }

@@ -21,17 +21,14 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Discounts extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     // Public Methods
     // =========================================================================
 
     /**
-     * List discounts.
+     * Lists discounts.
      *
      * @return Discount[]
-     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     * @throws \Exception when there isn't an API key to authenticate requests.
      */
     public function listDiscounts(): array
     {
@@ -44,9 +41,12 @@ class Discounts extends \craft\base\Component
     }
 
     /**
+     * Creates a new discount.
+     *
      * @param Discount $discount
+     *
      * @return mixed $response
-     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     * @throws \Exception when there isn't an API key to authenticate requests.
      */
     public function createDiscount($discount)
     {
@@ -59,15 +59,18 @@ class Discounts extends \craft\base\Component
     }
 
     /**
-     * @param string $discountToken
+     * Gets a discount.
+     *
+     * @param string $discountId
+     *
      * @return Discount|null
-     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     * @throws \Exception when there isn't an API key to authenticate requests.
      */
-    public function getDiscount($discountToken)
+    public function getDiscount($discountId)
     {
         if ($discountData = Snipcart::$plugin->api->get(sprintf(
             'discounts/%s',
-            $discountToken
+            $discountId
         )))
         {
             return new Discount((array)$discountData);
@@ -77,20 +80,19 @@ class Discounts extends \craft\base\Component
     }
 
     /**
-     * @param string $discountToken
+     * Deletes a discount.
+     *
+     * @param string $discountId
+     *
      * @return mixed
-     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     * @throws \Exception when there isn't an API key to authenticate requests.
      */
-    public function deleteDiscountById($discountToken)
+    public function deleteDiscountById($discountId)
     {
         return Snipcart::$plugin->api->delete(sprintf(
             'discounts/%s',
-            $discountToken
+            $discountId
         ));
     }
-
-
-    // Private Methods
-    // =========================================================================
 
 }

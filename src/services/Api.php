@@ -25,7 +25,6 @@ use yii\base\Exception;
  * tokens.
  *
  * @package workingconcept\snipcart\services
- * @property bool $isLinked
  */
 class Api extends Component
 {
@@ -57,7 +56,7 @@ class Api extends Component
     protected $isLinked;
 
     /**
-     * @var Client
+     * @var Client Instantiated REST client.
      */
     protected $client;
 
@@ -111,11 +110,11 @@ class Api extends Component
     }
 
     /**
-     * Perform get with the Snipcart API.
+     * Sends a GET request to the Snipcart REST API.
      *
      * @param  string $endpoint    Snipcart API endpoint to be queried
-     * @param  array  $parameters  array of parameters to be URL formatted
-     * @param  bool   $useCache    whether or not to cache responses
+     * @param  array  $parameters  Array of parameters to be URL formatted
+     * @param  bool   $useCache    Whether or not to cache responses
      *
      * @return \stdClass|array|null  Response as single object, array
      *                               of objects or null for an invalid response.
@@ -157,10 +156,10 @@ class Api extends Component
     }
 
     /**
-     * Perform post request to the Snipcart API.
+     * Sends a POST request to the Snipcart REST API.
      *
-     * @param  string $endpoint    Snipcart API endpoint to receive post
-     * @param  array  $data        array of post values to be formatted and sent
+     * @param  string $endpoint    Desired endpoint
+     * @param  array  $data        Parameters to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
@@ -171,10 +170,10 @@ class Api extends Component
     }
 
     /**
-     * Perform put request to the Snipcart API.
+     * Sends a PUT request to the Snipcart REST API.
      *
-     * @param  string $endpoint    Snipcart API endpoint to receive post
-     * @param  array  $data        array of post values to be formatted and sent
+     * @param  string $endpoint    Desired endpoint
+     * @param  array  $data        Parameters to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
@@ -185,10 +184,10 @@ class Api extends Component
     }
 
     /**
-     * Perform delete request to the Snipcart API.
+     * Sends a DELETE request to the Snipcart REST API.
      *
-     * @param  string $endpoint    Snipcart API endpoint to receive post
-     * @param  array  $data        array of post values to be formatted and sent
+     * @param  string $endpoint    Desired endpoint
+     * @param  array  $data        Parameters to be formatted and sent
      *
      * @return \stdClass|array     Response object or array of objects
      * @throws \Exception if our API key is missing.
@@ -199,8 +198,8 @@ class Api extends Component
     }
 
     /**
-     * Ask Snipcart whether its provided token is genuine
-     * (We use this for webhook posts to be sure they came from Snipcart)
+     * Ask Snipcart whether its provided token is genuine.
+     * (Used for webhook posts to be sure they came from Snipcart.)
      *
      * Tokens are deleted after this call, so it can only be used once to verify
      * and tokens expire in one hour. Expect a 404 if the token is deleted
@@ -222,6 +221,9 @@ class Api extends Component
         return isset($response->token) && $response->token === $token;
     }
 
+    /**
+     * Invalidate any cached GET requests we may have accumulated.
+     */
     public static function invalidateCache()
     {
         TagDependency::invalidate(
@@ -236,9 +238,9 @@ class Api extends Component
     // =========================================================================
 
     /**
-     * Send a get request to the Snipcart API.
+     * Send a get request to the Snipcart REST API.
      * 
-     * @param string $endpoint
+     * @param string $endpoint The desired endpoint
      *
      * @return mixed
      * @throws \Exception if our API key is missing.
@@ -257,10 +259,10 @@ class Api extends Component
     }
 
     /**
-     * Send a post request to the Snipcart API.
+     * Send a post request to the Snipcart REST API.
      * 
-     * @param string $endpoint
-     * @param array  $data
+     * @param string $endpoint The desired endpoint
+     * @param array  $data     Parameters to be sent with the request
      *
      * @return mixed
      * @throws \Exception if our API key is missing.
@@ -284,8 +286,8 @@ class Api extends Component
     /**
      * Send a put request to the Snipcart API.
      *
-     * @param string $endpoint
-     * @param array  $data
+     * @param string $endpoint The desired endpoint
+     * @param array  $data     Parameters to be sent with the request
      *
      * @return mixed
      * @throws \Exception if our API key is missing.
@@ -309,8 +311,8 @@ class Api extends Component
     /**
      * Send a delete request to the Snipcart API.
      *
-     * @param string $endpoint
-     * @param array  $data
+     * @param string $endpoint The desired endpoint
+     * @param array  $data     Parameters to be sent with the request
      *
      * @return mixed
      * @throws \Exception if our API key is missing.
@@ -342,7 +344,7 @@ class Api extends Component
     private function _prepResponseData($body)
     {
         /**
-         * get response data as object, not an associative array
+         * Get the response data as an object, not an associative array.
          */
         return json_decode($body, false);
     }
@@ -350,8 +352,8 @@ class Api extends Component
     /**
      * Handle a failed request.
      *
-     * @param RequestException $exception  the exception that was thrown
-     * @param string           $endpoint   the endpoint that was queried
+     * @param RequestException $exception  Exception that was thrown
+     * @param string           $endpoint   Endpoint that was queried
      *
      * @return null
      * @throws \Exception

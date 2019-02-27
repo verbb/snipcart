@@ -21,18 +21,22 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Carts extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     // Public Methods
     // =========================================================================
 
     /**
-     * List abandoned carts.
+     * Lists abandoned carts.
      *
-     * Note that Snipcart's API is weird here, and totalItems+offset don't
-     * behave like pagination anywhere else. Instead we have only `hasMoreResults`
-     * and `continuationToken` in the response.
+     * Note that Snipcart's API is weird here, and `totalItems`+`offset` don't
+     * behave like pagination anywhere else. Instead we have to use
+     * `hasMoreResults` and `continuationToken` provided in the response and
+     * disregard `totalItems`+`offset`.
+     *
+     * @param int   $page   Page of results (starting at 1)
+     * @param int   $limit  Results per page
+     * @param array $params Parameters to be sent ($page and $limit will be
+     *                      overwritten, so set those in this method and not
+     *                      as arguments here)
      *
      * @return \stdClass
      *              ->items (AbandonedCart[])
@@ -44,7 +48,7 @@ class Carts extends \craft\base\Component
     public function listAbandonedCarts($page = 1, $limit = 20, $params = []): \stdClass
     {
         /**
-         * define offset and limit since that's pretty much all we're doing here
+         * Define offset and limit since that's pretty much all we're doing here.
          */
         $params['offset'] = ($page - 1) * $limit;
         $params['limit']  = $limit;
@@ -68,18 +72,18 @@ class Carts extends \craft\base\Component
     }
 
     /**
-     * Get an abandoned cart.
+     * Gets an abandoned cart.
      * 
-     * @param string $token
+     * @param string $cartId
      *
      * @return AbandonedCart|null
      * @throws \Exception if our API key is missing.
      */
-    public function getAbandonedCart($token)
+    public function getAbandonedCart($cartId)
     {
         if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
             'carts/abandoned/%s',
-            $token
+            $cartId
         )))
         {
             return new AbandonedCart((array)$abandonedCartData);
@@ -87,8 +91,5 @@ class Carts extends \craft\base\Component
 
         return null;
     }
-
-    // Private Methods
-    // =========================================================================
-
+    
 }

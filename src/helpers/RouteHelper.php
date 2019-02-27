@@ -11,6 +11,8 @@ namespace workingconcept\snipcart\helpers;
 class RouteHelper
 {
     /**
+     * Returns an array of control panel routes.
+     *
      * @return array
      */
     public static function getCpRoutes(): array

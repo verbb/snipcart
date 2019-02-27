@@ -18,26 +18,38 @@ use craft\base\Model;
  */
 class ShippingQuoteLog extends Model
 {
+    /**
+     * @var int
+     */
     public $id;
-    public $siteId;
-    public $token;
-    public $body;
-    public $dateCreated;
-    public $dateUpdated;
-    public $uid;
-
-    public function init()
-    {
-        parent::init();
-    }
 
     /**
-     * @return array
+     * @var int
      */
-    public function rules()
-    {
-        $rules = parent::rules();
+    public $siteId;
 
-        return $rules;
-    }
+    /**
+     * @var string
+     */
+    public $token;
+
+    /**
+     * @var string
+     */
+    public $body;
+
+    /**
+     * @var
+     */
+    public $dateCreated;
+
+    /**
+     * @var
+     */
+    public $dateUpdated;
+
+    /**
+     * @var string
+     */
+    public $uid;
 }

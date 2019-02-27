@@ -22,18 +22,15 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Customers extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     // Public Methods
     // =========================================================================
 
     /**
-     * List Snipcart customers.
+     * Lists Snipcart customers.
      *
-     * @param integer $page  page of results
-     * @param integer $limit number of results per page
-     * @param array   $params
+     * @param int    $page   Page of results
+     * @param int    $limit  Number of results per page
+     * @param array  $params Parameters to send with the request
      *
      * @return \stdClass|array|null
      *              ->totalItems (int)
@@ -58,9 +55,10 @@ class Customers extends \craft\base\Component
     }
 
     /**
-     * Get a customer from Snipcart
+     * Gets a Snipcart customer.
      *
      * @param string $customerId Snipcart customer ID
+     *
      * @return Customer|null
      * @throws \Exception if our API key is missing.
      */
@@ -78,7 +76,7 @@ class Customers extends \craft\base\Component
     }
 
     /**
-     * Get a given customer's order history
+     * Gets a customer's order history.
      *
      * @param string $customerId Snipcart customer ID
      *
@@ -100,14 +98,29 @@ class Customers extends \craft\base\Component
         return $orders;
     }
 
+
     // Private Methods
     // =========================================================================
 
+    /**
+     * Ascending sort method for Customer object `creationDate` property.
+     *
+     * @param $a
+     * @param $b
+     * @return bool
+     */
     private function sortOrdersByDateAscending($a, $b): bool
     {
         return $a->creationDate->getTimestamp() > $b->creationDate->getTimestamp();
     }
 
+    /**
+     * Descending sort method for Customer object `creationDate` property.
+     *
+     * @param $a
+     * @param $b
+     * @return bool
+     */
     private function sortOrdersByDateDescending($a, $b): bool
     {
         return $a->creationDate->getTimestamp() < $b->creationDate->getTimestamp();

@@ -23,8 +23,11 @@ class Fields extends \craft\base\Component
     // =========================================================================
 
     /**
-     * @param ProductDetails $field
-     * @param ElementInterface $element
+     * Saves data for a Product Details field.
+     *
+     * @param ProductDetails   $field   Related Field instance
+     * @param ElementInterface $element Related Element
+     *
      * @return bool|null
      * @throws
      */
@@ -46,11 +49,13 @@ class Fields extends \craft\base\Component
     }
 
     /**
-     * Get related ProductDetails.
+     * Gets data for a Product Details field.
      *
-     * @param ProductDetails $field
-     * @param ElementInterface|null $element
-     * @param $value
+     * @param ProductDetails        $field   Related Field
+     * @param ElementInterface|null $element Related Element
+     * @param array                 $value   Data that should be used
+     *                                       to populate the model
+     *
      * @return ProductDetailsModel|null
      * @throws
      */
@@ -109,7 +114,17 @@ class Fields extends \craft\base\Component
     // Private Methods
     // =========================================================================
 
-    private function _saveRecord($data, $siteId, $elementId, $fieldId)
+    /**
+     * Saves the record that stores the field data.
+     *
+     * @param \stdClass $data       Field data to be saved
+     * @param int       $siteId     Relevant Site ID
+     * @param int       $elementId  Relevant Element ID
+     * @param int       $fieldId    Relevant Field ID
+     *
+     * @return bool
+     */
+    private function _saveRecord($data, $siteId, $elementId, $fieldId): bool
     {
         $record = $this->_getRecord($siteId, $elementId, $fieldId);
 
@@ -132,9 +147,13 @@ class Fields extends \craft\base\Component
     }
 
     /**
-     * @param $siteId
-     * @param $elementId
-     * @param $fieldId
+     * Gets a ProductDetailsRecord with stored field data, or initializes
+     * a new one.
+     *
+     * @param int $siteId     Relevant Site ID
+     * @param int $elementId  Relevant Element ID
+     * @param int $fieldId    Relevant Field ID
+     *
      * @return \craft\db\ActiveRecord
      */
     private function _getRecord($siteId, $elementId, $fieldId): \craft\db\ActiveRecord
