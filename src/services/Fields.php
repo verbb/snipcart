@@ -126,11 +126,6 @@ class Fields extends \craft\base\Component
      */
     private function _saveRecord($data, $siteId, $elementId, $fieldId): bool
     {
-        if (is_string($fieldId))
-        {
-            $fieldId = (int) $fieldId;
-        }
-
         $record = $this->_getRecord($siteId, $elementId, $fieldId);
 
         $record->setAttributes([
@@ -155,19 +150,14 @@ class Fields extends \craft\base\Component
      * Gets a ProductDetailsRecord with stored field data, or initializes
      * a new one.
      *
-     * @param int        $siteId     Relevant Site ID
-     * @param int        $elementId  Relevant Element ID
-     * @param int        $fieldId    Relevant Field ID
+     * @param int  $siteId     Relevant Site ID
+     * @param int  $elementId  Relevant Element ID
+     * @param int  $fieldId    Relevant Field ID
      *
      * @return \craft\db\ActiveRecord
      */
     private function _getRecord($siteId, $elementId, $fieldId): \craft\db\ActiveRecord
     {
-        if (is_string($fieldId))
-        {
-            $fieldId = (int) $fieldId;
-        }
-
         $record = ProductDetailsRecord::findOne([
             'siteId'    => $siteId,
             'elementId' => $elementId,
