@@ -35,7 +35,7 @@ Perform post request to the Snipcart API.
 | Argument              | Required | Description                             |
 | --------------------- | -------- | --------------------------------------- |
 | **\$endpoint** string | yes      | Snipcart API endpoint to be queried     |
-| **\$data** array      |          | array of parameters to be URL formatted |
+| **\$data** array      |          | array of parameters to be sent          |
 
 Returns decoded response data.
 
@@ -46,7 +46,7 @@ Perform put request to the Snipcart API.
 | Argument              | Required | Description                             |
 | --------------------- | -------- | --------------------------------------- |
 | **\$endpoint** string | yes      | Snipcart API endpoint to be queried     |
-| **\$data** array      |          | array of parameters to be URL formatted |
+| **\$data** array      |          | array of parameters to be sent          |
 
 Returns decoded response data.
 
@@ -57,7 +57,7 @@ Perform delete request to the Snipcart API.
 | Argument              | Required | Description                             |
 | --------------------- | -------- | --------------------------------------- |
 | **\$endpoint** string | yes      | Snipcart API endpoint to be queried     |
-| **\$data** array      |          | array of parameters to be URL formatted |
+| **\$data** array      |          | array of parameters to be sent          |
 
 Returns decoded response data.
 
