@@ -485,17 +485,63 @@ Handles local product data related to Snipcart Orders.
 
 ### reduceProductInventory()
 
+Adjusts the supplied Entry's product inventory by the quantity value if...
+
+-   it uses the Product Details field and
+-   its inventory value exists and is greater than zero
+
+[`EVENT_PRODUCT_INVENTORY_CHANGE`](/dev/events.md#product-inventory-change) will also be fired before the adjustment so an Event hook can modifies the `quantity` property prior to the adjustment.
+
+| Argument           | Required | Description                                                        |
+| ------------------ | -------- | ------------------------------------------------------------------ |
+| **\$entry** Entry  | yes      | the Entry related to an order item by a Product Details field      |
+| **\$quantity** int | yes      | a whole number, usually negative, representing the quantity change |
+
+Doesn't return anything.
+
 ## [Shipments](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Shipments.php)
 
-Facilitates optional interaction with shipping providers.
+Facilitates optional interaction with ShipStation.
 
 ### getShipStation()
 
+Returns an instance of the [ShipStation provider](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/providers/shipstation/ShipStation.php).
+
 ### collectRatesForOrder()
+
+Collects shipping rate options for a Snipcart order. Triggers `EVENT_BEFORE_RETURN_SHIPPING_RATES` so that existing rate, order, or packaging details can be modified by an Event hook before querying ShipStation's REST API for rates.
+
+| Argument                                                                                                               | Required | Description                                      |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | order for which shipping rate options are needed |
+
+Returns an array with two keys:
+
+-   `rates`: array [ShippingRate[]](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/ShippingRate.php)
+-   `package`: [Package](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Package.php)
 
 ### handleCompletedOrder()
 
+Handles an order that's been completed, normally sent after receiving a webhook post from Snipcart.
+
+| Argument                                                                                                               | Required | Description                      |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------- |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | order that's just been completed |
+
+Returns an array with the following keys:
+
+-   `orders`: array containing a [ShipStation Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/shipstation/Order.php) if one was created
+-   `errors`: array of error strings encountered attempting to send the Snipcart order to ShipStation
+
 ### getQuoteLogForOrder()
+
+Get the last shipping rate quote that was returned for the given order.
+
+| Argument                                                                                                               | Required | Description                               |
+| ---------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------- |
+| **\$order** [Order](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) | yes      | order whose rate quotes we're looking for |
+
+Returns most recent [ShippingQuoteLog]() that matches the Snipcart order ID, if found.
 
 ## [Subscriptions](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Subscriptions.php)
 
@@ -503,10 +549,136 @@ Interacts with Snipcart subscriptions.
 
 ### listSubscriptions()
 
+Returns Snipcart subscriptions.
+
+| Argument           | Required | Description                                |
+| ------------------ | -------- | ------------------------------------------ |
+| **\$page** int     |          | desired page of results (default: `1`)     |
+| **\$limit** int    |          | number of results per page (default: `25`) |
+| **\$params** array |          | parameters used for fetching results       |
+
+Returns an object with the following keys:
+
+-   **items**: array of [Subscription models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Subscription.php) up to the pagination limit
+-   **totalItems**: int representing the result set's total number of subscriptions
+-   **offset**: int pagination offset
+-   **limit**: pagination limit
+
 ### getSubscription()
+
+Gets a Snipcart subscription.
+
+| Argument                    | Required | Description              |
+| --------------------------- | -------- | ------------------------ |
+| **\$subscriptionId** string | yes      | Snipcart subscription ID |
+
+Returns a [Subscription model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Subscription.php) or `null`.
 
 ### cancel()
 
+Cancels a subscription.
+
+| Argument                    | Required | Description              |
+| --------------------------- | -------- | ------------------------ |
+| **\$subscriptionId** string | yes      | Snipcart subscription ID |
+
+Returns decoded response data from the Snipcart REST API.
+
 ### pause()
 
+Pauses a subscription.
+
+| Argument                    | Required | Description              |
+| --------------------------- | -------- | ------------------------ |
+| **\$subscriptionId** string | yes      | Snipcart subscription ID |
+
+Returns decoded response data from the Snipcart REST API.
+
 ### resume()
+
+Resumes a subscription.
+
+| Argument                    | Required | Description              |
+| --------------------------- | -------- | ------------------------ |
+| **\$subscriptionId** string | yes      | Snipcart subscription ID |
+
+Returns decoded response data from the Snipcart REST API.
+
+## [Webhooks](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/services/Webhooks.php)
+
+Handles posts sent to the [Webhooks controller](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/controllers/WebhooksController.php) by prepping models and dispatching [Events](/dev/events.md).
+
+### setData()
+
+Sets the payload data and derived mode to be utilized within the service and quietly logs the request before processing if logging is enabled.
+
+| Argument            | Required | Description                                              |
+| ------------------- | -------- | -------------------------------------------------------- |
+| **\$payload** mixed | yes      | decoded request body that Snipcart posted to the webhook |
+
+Doesn't return anything.
+
+### getData()
+
+Returns payload data in whatever format it was received. Or `null`.
+
+### setMode()
+
+Explicitly sets the webhook mode, which should be either `Live` or `Test`. Returns that mode.
+
+### getMode()
+
+Returns the current webhook mode, which should be either `Live` or `Test`.
+
+### handleOrderCompleted()
+
+Handles a completed order. Returns an array with the following keys:
+
+-   `success`: boolean, `true` if everything went as expected with no errors
+-   `errors`: an array of strings that represent errors encountered handling the order
+
+### handleShippingRatesFetch()
+
+Handles a shipping rate request by calling [`shipments->collectRatesForOrder()`](/dev/services.md#collectratesfororder), logging any custom rates, and returning that array of [ShippingRate models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/ShippingRate.php).
+
+### handleOrderStatusChange()
+
+Handles an order status change. Returns `[ 'success' => true ]`.
+
+### handleOrderPaymentStatusChange()
+
+Handles an order payment status change. Returns `[ 'success' => true ]`.
+
+### handleOrderTrackingNumberChange()
+
+Handles an order tracking number change. Returns `[ 'success' => true ]`.
+
+### handleSubscriptionCreated()
+
+Handles a created subscription. Returns `[ 'success' => true ]`.
+
+### handleSubscriptionCancelled()
+
+Handles a cancelled subscription. Returns `[ 'success' => true ]`.
+
+### handleSubscriptionPaused()
+
+Handles a paused subscription. Returns `[ 'success' => true ]`.
+
+### handleSubscriptionResumed()
+
+Handles a resumed subscription. Returns `[ 'success' => true ]`.
+
+### handleSubscriptionInvoiceCreated()
+
+Handles a new subscription invoice. Returns `[ 'success' => true ]`.
+
+### handleTaxesCalculate()
+
+Handles a tax calculation request. Returns array with `taxes` key (required by [Snipcart REST API](https://docs.snipcart.com/configuration/taxes)):
+
+-   `taxes`: array of [Tax models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Tax.php)
+
+### handleCustomerUpdated()
+
+Handles updated customer details. Returns `[ 'success' => true ]`.
