@@ -21,26 +21,27 @@ use workingconcept\snipcart\models\Subscription;
  */
 class Subscriptions extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     // Public Methods
     // =========================================================================
 
     /**
-     * List subscriptions.
+     * Lists subscriptions.
+     *
+     * @param int    $page   Page of results
+     * @param int    $limit  Number of results per page
+     * @param array  $params Parameters to send with the request
      *
      * @return \stdClass
      *              ->items (Subscription[])
      *              ->totalItems (int)
      *              ->offset (int)
      *              ->limit (int)
-     * @throws \Exception  Thrown when there isn't an API key to authenticate requests.
+     * @throws \Exception when there isn't an API key to authenticate requests.
      */
     public function listSubscriptions($page = 1, $limit = 20, $params = []): \stdClass
     {
         /**
-         * define offset and limit since that's pretty much all we're doing here
+         * Define offset and limit since that's pretty much all we're doing here.
          */
         $params['offset'] = ($page - 1) * $limit;
         $params['limit']  = $limit;
@@ -62,9 +63,10 @@ class Subscriptions extends \craft\base\Component
     }
 
     /**
-     * Get a Snipcart subscription.
+     * Gets a Snipcart subscription.
      *
-     * @param string $subscriptionId Snipcart order GUID
+     * @param string $subscriptionId Snipcart subscription ID
+     *
      * @return Subscription|null
      * @throws \Exception if our API key is missing.
      */
@@ -82,9 +84,10 @@ class Subscriptions extends \craft\base\Component
     }
 
     /**
-     * Cancel a subscription.
+     * Cancels a subscription.
      *
-     * @param $subscriptionId
+     * @param string $subscriptionId Snipcart subscription ID
+     *
      * @return mixed
      * @throws \Exception if our API key is missing.
      */
@@ -96,9 +99,10 @@ class Subscriptions extends \craft\base\Component
     }
 
     /**
-     * Pause a subscription.
+     * Pauses a subscription.
      *
-     * @param $subscriptionId
+     * @param string $subscriptionId Snipcart subscription ID
+     *
      * @return mixed
      * @throws \Exception if our API key is missing.
      */
@@ -110,9 +114,10 @@ class Subscriptions extends \craft\base\Component
     }
 
     /**
-     * Resume a subscription.
+     * Resumes a subscription.
      *
-     * @param $subscriptionId
+     * @param string $subscriptionId Snipcart subscription ID
+     *
      * @return mixed
      * @throws \Exception if our API key is missing.
      */
@@ -122,8 +127,5 @@ class Subscriptions extends \craft\base\Component
             sprintf('subscriptions/%s/resume', $subscriptionId)
         );
     }
-
-    // Private Methods
-    // =========================================================================
 
 }

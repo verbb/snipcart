@@ -19,6 +19,7 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\OrderEvent;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\ShippingRate;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\records\WebhookLog;
 use Craft;
@@ -89,12 +90,12 @@ class Webhooks extends \craft\base\Component
     const EVENT_ON_CUSTOMER_UPDATE = 'onCustomerUpdate';
 
     /**
-     * @var string
+     * @var string Indicates that the webhook payload is live
      */
     const WEBHOOK_MODE_LIVE = 'Live';
 
     /**
-     * @var string
+     * @var string Indicates that the webhook payload is for testing
      */
     const WEBHOOK_MODE_TEST = 'Test';
 
@@ -108,7 +109,7 @@ class Webhooks extends \craft\base\Component
     private $_webhookData;
 
     /**
-     * @var string Set to WEBHOOK_MODE_LIVE or WEBHOOK_MODE_TEST
+     * @var string Should be either WEBHOOK_MODE_LIVE or WEBHOOK_MODE_TEST
      */
     private $_currentMode;
 
@@ -116,6 +117,12 @@ class Webhooks extends \craft\base\Component
     // Public Methods
     // =========================================================================
 
+    /**
+     * Sets the payload data and derived mode to be utilized within the service
+     * and quietly logs the request before processing if logging is enabled.
+     *
+     * @param $payload
+     */
     public function setData($payload)
     {
         /**
@@ -138,15 +145,21 @@ class Webhooks extends \craft\base\Component
         }
     }
 
+    /**
+     * Returns payload data in whatever format it was received.
+     *
+     * @return mixed|null
+     */
     public function getData()
     {
         return $this->_webhookData;
     }
 
     /**
-     * Set the mode of the current request, which is either `Live` or `Test`.
+     * Sets the mode of the current request, which is either `Live` or `Test`.
      *
      * @param string $mode 'Live' or 'Test'
+     *
      * @return mixed
      */
     public function setMode($mode)
@@ -155,7 +168,7 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Get the mode of the current request, which is either `Live` or `Test`.
+     * Gets the mode of the current request, which is either `Live` or `Test`.
      * @return string
      */
     public function getMode(): string
@@ -164,8 +177,9 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Handle a completed order.
-     * @return array
+     * Handles a completed order.
+     *
+     * @return array Array with `success` (bool) and `errors` (string[])
      * @throws
      */
     public function handleOrderCompleted(): array
@@ -239,9 +253,10 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Process Snipcart's shipping rate event, which gives us order details
+     * Processes Snipcart's shipping rate event, which gives us order details
      * and lets us send back shipping options.
-     * @return array
+     *
+     * @return ShippingRate[]
      */
     public function handleShippingRatesFetch(): array
     {
@@ -261,6 +276,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles an order status change.
+     *
      * @return array
      */
     public function handleOrderStatusChange(): array
@@ -285,6 +302,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles an order payment status change.
+     *
      * @return array
      */
     public function handleOrderPaymentStatusChange(): array
@@ -309,6 +328,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles an order tracking number change.
+     *
      * @return array
      */
     public function handleOrderTrackingNumberChange(): array
@@ -333,6 +354,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles a created subscription.
+     *
      * @return array
      */
     public function handleSubscriptionCreated(): array
@@ -353,6 +376,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles a cancelled subscription.
+     *
      * @return array
      */
     public function handleSubscriptionCancelled(): array
@@ -373,6 +398,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles a paused subscription.
+     *
      * @return array
      */
     public function handleSubscriptionPaused(): array
@@ -393,6 +420,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles a resumed subscription.
+     *
      * @return array
      */
     public function handleSubscriptionResumed(): array
@@ -413,6 +442,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles a new subscription invoice.
+     *
      * @return array
      */
     public function handleSubscriptionInvoiceCreated(): array
@@ -433,7 +464,9 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * @return array
+     * Handles a tax calculation request.
+     *
+     * @return array `taxes` => Tax[]
      */
     public function handleTaxesCalculate(): array
     {
@@ -455,6 +488,8 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
+     * Handles updated customer details.
+     *
      * @return array
      */
     public function handleCustomerUpdated(): array
@@ -536,7 +571,7 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Store webhook details to the database for later scrutiny.
+     * Stores webhook details to the database for later scrutiny.
      */
     private function _logWebhookTransaction()
     {
@@ -551,8 +586,9 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Send back a consistent response to indicate the webhook has been handled
+     * Sends back a positive non-response to indicate the webhook was handled
      * even though we don't have any meaningful data to give back.
+     *
      * @return array
      */
     private function _nonResponse(): array

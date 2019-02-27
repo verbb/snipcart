@@ -13,22 +13,22 @@ use craft\base\Model;
 class WebhookLog extends Model
 {
     /**
-     * @var
+     * @var int
      */
     public $id;
 
     /**
-     * @var
+     * @var int
      */
     public $siteId;
 
     /**
-     * @var
+     * @var string
      */
     public $type;
 
     /**
-     * @var
+     * @var string
      */
     public $body;
 
@@ -43,22 +43,7 @@ class WebhookLog extends Model
     public $dateUpdated;
 
     /**
-     * @var
+     * @var string
      */
     public $uid;
-
-    public function init()
-    {
-        parent::init();
-    }
-
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        $rules = parent::rules();
-
-        return $rules;
-    }
 }

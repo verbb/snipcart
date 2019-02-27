@@ -38,11 +38,17 @@ class Products extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Trigger an Event that will allow another plugin or module to adjust
-     * product inventory for a relevant Entry.
+     * Adjusts the supplied Entry's product inventory by the quantity value if...
+     *   a) it uses the Product Details field and
+     *   b) its inventory value exists and is greater than zero
+     *
+     * `EVENT_PRODUCT_INVENTORY_CHANGE` will also be fired before the adjustment
+     * so an Event hook can modifies the quantity property
+     * prior to the adjustment.
      *
      * @param Entry $entry     Entry that's used as a product definition
-     * @param int   $quantity  a whole number representing the quantity change
+     * @param int   $quantity  Whole number representing the quantity change
+     *
      * @throws
      */
     public function reduceProductInventory($entry, $quantity)
@@ -86,9 +92,5 @@ class Products extends \craft\base\Component
             }
         }
     }
-
-
-    // Private Methods
-    // =========================================================================
 
 }

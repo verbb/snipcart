@@ -11,7 +11,7 @@ namespace workingconcept\snipcart\helpers;
 use workingconcept\snipcart\fields\ProductDetails;
 
 /**
- * Model utility methods.
+ * Field utility methods.
  */
 class FieldHelper
 {
@@ -20,6 +20,7 @@ class FieldHelper
      * field handle.
      *
      * @param \craft\base\Element $element
+     *
      * @return ProductDetails|null
      */
     public static function getProductInfo($element)
@@ -46,6 +47,7 @@ class FieldHelper
      * if it exists.
      *
      * @param \craft\base\Element $element
+     *
      * @return string|null
      */
     public static function getProductInfoFieldHandle($element)

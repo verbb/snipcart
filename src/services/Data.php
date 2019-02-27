@@ -21,10 +21,13 @@ class Data extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Get number of orders for a date range.
+     * Gets number of orders, by date, between two dates.
      *
-     * @param $from
-     * @param $to
+     * @param int|\DateTime $from Beginning of date range as Unix timestamp
+     *                            or DateTime
+     * @param int|\DateTime $to   End of date range as Unix timestamp
+     *                            or DateTime
+     *
      * @return array|\stdClass|null
      *
      * Return example:
@@ -60,10 +63,13 @@ class Data extends \craft\base\Component
     }
 
     /**
-     * Get store performance statistics.
+     * Gets store performance statistics between two dates.
      *
-     * @param $from
-     * @param $to
+     * @param int|\DateTime $from Beginning of date range as Unix timestamp
+     *                            or DateTime
+     * @param int|\DateTime $to   End of date range as Unix timestamp
+     *                            or DateTime
+     *
      * @return array|\stdClass|null
      *
      * Return example:
@@ -96,10 +102,13 @@ class Data extends \craft\base\Component
     }
 
     /**
-     * Get store sales totals for a date range.
+     * Gets store sales totals between to dates.
      *
-     * @param $from
-     * @param $to
+     * @param int|\DateTime $from Beginning of date range as Unix timestamp
+     *                            or DateTime
+     * @param int|\DateTime $to   End of date range as Unix timestamp
+     *                            or DateTime
+     *
      * @return array|\stdClass|null
      *
      * Return example:
@@ -139,9 +148,10 @@ class Data extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Make sure to pass timestamps to these API endpoints.
+     * Takes a timestamp or DateTime instance and returns a Unix timestamp
+     * string for the REST API request.
      *
-     * @param $date
+     * @param int|\DateTime $date
      * @return string
      */
     private function _prepDate($date): string
@@ -151,6 +161,6 @@ class Data extends \craft\base\Component
             return $date->format('U');
         }
 
-        return $date;
+        return (string) $date;
     }
 }

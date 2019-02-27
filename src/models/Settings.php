@@ -36,7 +36,7 @@ class Settings extends Model
     public $publicApiKey = '';
 
     /**
-     * @var string Snipcart public API key
+     * @var string Snipcart public test API key
      */
     public $publicTestApiKey = '';
 
@@ -46,33 +46,35 @@ class Settings extends Model
     public $secretApiKey = '';
 
     /**
-     * @var string Snipcart secret API key
+     * @var string Snipcart secret test API key
      */
     public $secretTestApiKey = '';
 
     /**
-     * @var bool
+     * @var bool Whether to send an email notification to store admins if an
+     *           order is completed and email addresses are specified
      */
     public $sendOrderNotificationEmail = false;
     
     /**
-     * @var array valid email addresses
+     * @var array Valid email addresses
      */
     public $notificationEmails = [];
 
     /**
-     * @var string optional path to a custom template to be used for admin order
+     * @var string Optional path to a custom template to be used for admin order
      *             notification emails
      */
     public $notificationEmailTemplate = '';
 
     /**
-     * @var bool
+     * @var bool Whether to send each customer a custom email notification after
+     *           an order is completed
      */
     public $sendCustomerOrderNotificationEmail = false;
 
     /**
-     * @var string optional path to a custom template to be used for customer
+     * @var string Optional path to a custom template to be used for customer
      *             order notification emails
      */
     public $customerNotificationEmailTemplate = '';
@@ -83,42 +85,45 @@ class Settings extends Model
     public $enabledCurrencies = [ self::CURRENCY_USD ];
 
     /**
-     * @var string Name of custom field sent to Snipcart for order gift notes.
+     * @var string Name of custom field sent to Snipcart for order gift notes
      */
     public $orderGiftNoteFieldName;
 
     /**
-     * @var string Name of field sent to Snipcart for order comments.
+     * @var string Name of field sent to Snipcart for order comments
      */
     public $orderCommentsFieldName;
 
     /**
-     * @var bool
+     * @var bool Whether to reduce inventory values for Product Details fields
+     *           when orders are completed
      */
     public $reduceQuantitiesOnOrder = false;
 
     /**
-     * @var bool
+     * @var bool Whether to cache GET responses and improve control panel
+     *           performance
      */
     public $cacheResponses = true;
 
     /**
-     * @var int
+     * @var int Maximum number of seconds to keep cached GET responses
      */
     public $cacheDurationLimit = 300; // 5 minutes
 
     /**
-     * @var bool
+     * @var bool Whether to log custom rate quotes for matching any ShipStation
+     *           discrepancies between checkout and order completion
      */
     public $logCustomRates = false;
 
     /**
-     * @var bool
+     * @var bool Whether to log received webhook requests for troubleshooting
      */
     public $logWebhookRequests = false;
 
     /**
-     * @var Address
+     * @var Address Origin shipping address
      */
     private $_shipFrom;
 
@@ -128,12 +133,13 @@ class Settings extends Model
     public $shipFromAddress = [];
 
     /**
-     * @var array Key-value array of refHandle => instance of each registered provider.
+     * @var array Key-value array of refHandle => instance of each
+     *            registered provider
      */
     public $providers = [];
 
     /**
-     * @var array Indexed array used for storing provider settings.
+     * @var array Indexed array used for storing provider settings
      */
     public $providerSettings = [];
 
@@ -142,6 +148,8 @@ class Settings extends Model
     // =========================================================================
 
     /**
+     * Returns an indexed array of store currency options.
+     *
      * @return array
      */
     public static function getCurrencyOptions(): array
@@ -157,6 +165,11 @@ class Settings extends Model
     // Public Methods
     // =========================================================================
 
+    /**
+     * Is the plugin ready to attempt Snipcart REST API requests?
+     *
+     * @return bool
+     */
     public function isConfigured(): bool
     {
         return $this->_hasNonEmptyEnvValue('publicApiKey') &&
@@ -182,6 +195,15 @@ class Settings extends Model
         ];
     }
 
+    /**
+     * Jumps into the validation flow and make sure provider and ship from
+     * settings are agreeable.
+     *
+     * @param null $attributeNames
+     * @param bool $clearErrors
+     *
+     * @return bool
+     */
     public function validate($attributeNames = null, $clearErrors = true): bool
     {
         $validates = parent::validate($attributeNames, $clearErrors);
@@ -202,24 +224,11 @@ class Settings extends Model
         return $validates;
     }
 
-    private function _hasEnabledProviders(): bool
-    {
-        $request = Craft::$app->getRequest();
-
-        if ($providers = $request->getBodyParam('providers'))
-        {
-            foreach ($providers as $handle => $settings)
-            {
-                if ($settings['enabled'])
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
+    /**
+     * Requires valid ship from Address if we're using any shipping providers.
+     *
+     * @return bool
+     */
     public function validateShipFrom(): bool
     {
         if ($this->_hasEnabledProviders() && ! $this->getShipFrom()->validate())
@@ -231,6 +240,12 @@ class Settings extends Model
         return true;
     }
 
+    /**
+     * Validates shipping provider settings, which are basically like
+     * sub-plugins with their own settings models.
+     *
+     * @return bool
+     */
     public function validateProviderSettings(): bool
     {
         $request = Craft::$app->getRequest();
@@ -243,7 +258,11 @@ class Settings extends Model
                 {
                     if (! $provider->getSettings()->validate())
                     {
-                        $this->addError('providerSettings', 'Provider settings are missing.');
+                        $this->addError(
+                            'providerSettings',
+                            'Provider settings are missing.'
+                        );
+
                         return false;
                     }
                 }
@@ -253,6 +272,12 @@ class Settings extends Model
         return true;
     }
 
+    /**
+     * Grabs email addresses posted from a table input and reformat them before
+     * this model is validated.
+     *
+     * @return bool
+     */
     public function beforeValidate(): bool
     {
         $this->_getNotificationEmailsFromTable();
@@ -260,8 +285,9 @@ class Settings extends Model
     }
 
     /**
-     * Format an array of email addresses (`['gob@bluth.com', 'george@bluth.com']`) for the table in
-     * the control panel settings (`[[0 => 'gob@bluth.com'], [0 => 'george@bluth.com']]`).
+     * Formats an array of email addresses
+     * (`['gob@bluth.com', 'george@bluth.com']`) for a control panel table input
+     * (`[[0 => 'gob@bluth.com'], [0 => 'george@bluth.com']]`).
      *
      * @return array
      */
@@ -285,6 +311,8 @@ class Settings extends Model
     }
 
     /**
+     * Gets the ship from address.
+     *
      * @return Address|null
      */
     public function getShipFrom()
@@ -298,6 +326,8 @@ class Settings extends Model
     }
 
     /**
+     * Sets the ship from address.
+     *
      * @param $address
      *
      * @return Address
@@ -308,7 +338,7 @@ class Settings extends Model
     }
 
     /**
-     * Get the default (first listed) currency.
+     * Gets the default (first listed) currency.
      *
      * @return string
      */
@@ -318,7 +348,7 @@ class Settings extends Model
     }
 
     /**
-     * Get the symbol for the default currency.
+     * Gets the symbol for the default currency.
      *
      * @return string
      */
@@ -341,7 +371,7 @@ class Settings extends Model
     }
 
     /**
-     * Set the array of enabled currencies to the supplied value, since we
+     * Sets the array of enabled currencies to the supplied value, since we
      * don't yet support setting multiple currencies.
      *
      * @param $value
@@ -363,7 +393,7 @@ class Settings extends Model
      * @param $property
      * @return bool
      */
-    private function _hasNonEmptyEnvValue($property)
+    private function _hasNonEmptyEnvValue($property): bool
     {
         // value stored on the model
         $settingValue = $this->{$property};
@@ -402,12 +432,12 @@ class Settings extends Model
         return true;
     }
 
+    /**
+     * Takes email addresses posted from a table input and formats them into a
+     * clean, one-dimensional array.
+     */
     private function _getNotificationEmailsFromTable()
     {
-        /**
-         * If the `notificationEmails` value came from a table in the settings UI,
-         * convert it to a clean, one-dimensional array of email addresses.
-         */
         if (
             is_array($this->notificationEmails) &&
             count($this->notificationEmails) &&
@@ -423,6 +453,29 @@ class Settings extends Model
 
             $this->notificationEmails = $arrayFromTableData;
         }
+    }
+
+    /**
+     * Did the posted settings include any enabled shipping providers?
+     *
+     * @return bool
+     */
+    private function _hasEnabledProviders(): bool
+    {
+        $request = Craft::$app->getRequest();
+
+        if ($providers = $request->getBodyParam('providers'))
+        {
+            foreach ($providers as $handle => $settings)
+            {
+                if ($settings['enabled'])
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }

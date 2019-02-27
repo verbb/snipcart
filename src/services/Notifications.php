@@ -23,12 +23,12 @@ class Notifications extends \craft\base\Component
     // =========================================================================
 
     /**
-     * @var
+     * @var string Path to Twig template for HTML email.
      */
     private $_htmlEmailTemplate;
 
     /**
-     * @var
+     * @var string Path to Twig template for plain text email.
      */
     private $_textEmailTemplate;
 
@@ -40,17 +40,17 @@ class Notifications extends \craft\base\Component
     private $_emailTemplatesAreFrontEnd;
 
     /**
-     * @var string Not used. Yet.
+     * @var string Slack webhook URL for notifications. (Not implemented.)
      */
     private $_slackWebhook;
 
     /**
-     * @var mixed Variables that should be fed to the notification template.
+     * @var mixed Variables that should be fed to the Twig notification template.
      */
     private $_notificationVars;
 
     /**
-     * @var array
+     * @var array Error strings accumulated during notification setup+attempt.
      */
     private $_errors = [];
 
@@ -59,6 +59,9 @@ class Notifications extends \craft\base\Component
     // =========================================================================
 
     /**
+     * Sets template variables for the notification.
+     * Should be called before `sendEmail()`.
+     *
      * @param mixed $data
      */
     public function setNotificationVars($data)
@@ -67,6 +70,8 @@ class Notifications extends \craft\base\Component
     }
 
     /**
+     * Gets template variables for the notification.
+     *
      * @return mixed
      */
     public function getNotificationVars()
@@ -75,6 +80,8 @@ class Notifications extends \craft\base\Component
     }
 
     /**
+     * Sets notification errors.
+     *
      * @param $errors
      */
     public function setErrors($errors)
@@ -83,9 +90,15 @@ class Notifications extends \craft\base\Component
     }
 
     /**
-     * @param string $htmlTemplate
-     * @param string $textTemplate
-     * @param bool   $frontend
+     * Sets notification email template.
+     *
+     * @param string $htmlTemplate Twig template path to be used for the HTML
+     *                             email notification
+     * @param string $textTemplate Twig template path to be used for an
+     *                             alternate, plain text email notification
+     * @param bool   $frontend     Whether the supplied path is on the front
+     *                             (site) end or the back (plugin) end, which
+     *                             matters for setting the template mode.
      */
     public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false)
     {
@@ -95,6 +108,8 @@ class Notifications extends \craft\base\Component
     }
 
     /**
+     * Sets the Slack webhook URL.
+     *
      * @param string $url
      */
     public function setSlackWebhook($url)
@@ -103,10 +118,13 @@ class Notifications extends \craft\base\Component
     }
 
     /**
+     * Sends an email notification.
+     *
      * @param array  $to       Array of email addresses
      * @param string $subject  Email subject
+     *
      * @return bool `true` on success, `false` otherwise (see ->getErrors())
-     * @throws \yii\base\Exception
+     * @throws
      */
     public function sendEmail($to, $subject): bool
     {
@@ -206,7 +224,7 @@ class Notifications extends \craft\base\Component
     // =========================================================================
 
     /**
-     * Make sure that the HTML email template exists at the specified path,
+     * Makes sure that the HTML email template exists at the specified path,
      * and that the text template exists if it was provided.
      *
      * @return bool
@@ -229,7 +247,7 @@ class Notifications extends \craft\base\Component
     }
 
     /**
-     * Make sure the template exists at the supplied path!
+     * Makes sure the template exists at the supplied path!
      *
      * @param $path
      * @return bool
@@ -238,9 +256,6 @@ class Notifications extends \craft\base\Component
     {
         if ( ! Craft::$app->getView()->doesTemplateExist($path))
         {
-            /**
-             * A template was specified that doesn't exist!
-             */
             Craft::error(sprintf(
                 'Specified email template `%s` does not exist.',
                 $path

@@ -13,7 +13,13 @@ use markhuot\CraftQL\Builders\Schema as SchemaBuilder;
 class CraftQlHelper
 {
     /**
-     * @return
+     * Populates a field schema that tells CraftQL how to handle Product Details
+     * field information.
+     *
+     * @param string        $handle Field handle
+     * @param SchemaBuilder $schema Schema instance
+     *
+     * @return SchemaBuilder
      */
     public static function addFieldTypeToSchema(string $handle, SchemaBuilder $schema)
     {
