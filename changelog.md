@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.0.0-beta.25 - 2019-02-26
+### Fixed
+- Cleaned up docblocks and variable names for consistency.
+### Changed
+- Required endpoint parameter for `get()` , `post()`, `put()`, and `delete()` API service methods.
+
 ## 1.0.0-beta.24 - 2019-02-24
 ### Fixed
 - Fixed a bug that kept static config settings from counting toward a configured state.
