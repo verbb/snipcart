@@ -108,7 +108,7 @@ Returns an object with the following properties.
 
 | Argument           | Required | Description                    |
 | ------------------ | -------- | ------------------------------ |
-| **\$token** string | yes      | unique ID of an abandoned cart |
+| **\$cartId** string | yes      | unique ID of an abandoned cart |
 
 Returns an [AbandonedCart model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/AbandonedCart.php) or `null`.
 
@@ -261,7 +261,7 @@ Gets an existing discount.
 
 | Argument                   | Required | Description                   |
 | -------------------------- | -------- | ----------------------------- |
-| **\$discountToken** string | yes      | unique ID of desired discount |
+| **\$discountId** string    | yes      | unique ID of desired discount |
 
 Returns a [Discount model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Discount.php) or `null`.
 
@@ -271,7 +271,7 @@ Deletes a discount by the supplied ID.
 
 | Argument            | Required | Description                   |
 | ------------------- | -------- | ----------------------------- |
-| **\$discountToken** | yes      | unique ID of desired discount |
+| **\$discountId**    | yes      | unique ID of desired discount |
 
 Returns the Snipcart API's decoded response.
 
