@@ -199,10 +199,7 @@ class Settings extends Model
      * Jumps into the validation flow and make sure provider and ship from
      * settings are agreeable.
      *
-     * @param null $attributeNames
-     * @param bool $clearErrors
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function validate($attributeNames = null, $clearErrors = true): bool
     {

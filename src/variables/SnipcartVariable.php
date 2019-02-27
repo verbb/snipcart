@@ -20,6 +20,8 @@ class SnipcartVariable
     // =========================================================================
 
     /**
+     * Returns Snipcart public API key.
+     *
      * @return string
      */
     public function publicApiKey(): string
@@ -28,14 +30,8 @@ class SnipcartVariable
     }
 
     /**
-     * @return bool
-     */
-    public function isLinked(): bool
-    {
-        return Snipcart::$plugin->api->isLinked;
-    }
-
-    /**
+     * Returns the default currency symbol.
+     *
      * @return string
      */
     public function defaultCurrencySymbol(): string
@@ -56,11 +52,12 @@ class SnipcartVariable
     }
 
     /**
-     * Get a cart anchor with a count.
+     * Gets a cart anchor with a count.
      *
      * @param string $text
      *
      * @return \Twig_Markup
+     *
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
@@ -73,7 +70,8 @@ class SnipcartVariable
     }
 
     /**
-     * Get the main Snipcart JavaScript snippet, optionally including jQuery.
+     * Get the main Snipcart JavaScript snippet, optionally including jQuery
+     * and Snipcart's cart stylesheet.
      *
      * @param bool   $includejQuery
      * @param string $onload
@@ -96,12 +94,16 @@ class SnipcartVariable
         );
     }
 
+
     // Private Methods
     // =========================================================================
 
     /**
+     * Renders an internal (plugin) Twig template.
+     *
      * @param $template
      * @param array $data
+     *
      * @return \Twig_Markup
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception

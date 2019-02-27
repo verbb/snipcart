@@ -256,7 +256,7 @@ class Webhooks extends \craft\base\Component
      * Processes Snipcart's shipping rate event, which gives us order details
      * and lets us send back shipping options.
      *
-     * @return ShippingRate[]
+     * @return array [ 'rates' => ShippingRate[], 'package' => Package ]
      */
     public function handleShippingRatesFetch(): array
     {
