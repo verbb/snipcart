@@ -369,7 +369,7 @@ Gets a Snipcart order by ID.
 
 | Argument                | Required | Description            |
 | ----------------------- | -------- | ---------------------- |
-| **\$orderToken** string | yes      | unique ID of the order |
+| **\$orderId** string    | yes      | unique ID of the order |
 
 Returns [Order model](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Order.php) or `null`.
 
@@ -403,7 +403,7 @@ Gets the notifications Snipcart has sent regarding a specific order.
 
 | Argument                | Required | Description            |
 | ----------------------- | -------- | ---------------------- |
-| **\$orderToken** string | yes      | unique ID of the order |
+| **\$orderId** string    | yes      | unique ID of the order |
 
 Returns an array of [Notification models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Notification.php).
 
@@ -413,7 +413,7 @@ Gets a Snipcart order's refunds.
 
 | Argument                | Required | Description            |
 | ----------------------- | -------- | ---------------------- |
-| **\$orderToken** string | yes      | unique ID of the order |
+| **\$orderId** string    | yes      | unique ID of the order |
 
 Returns an array of [Refund models](https://github.com/workingconcept/snipcart-craft-plugin/blob/master/src/models/snipcart/Refund.php).
 
