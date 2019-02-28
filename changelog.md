@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.0.0
+## 1.0.0 - 2019-02-27
 ### Changed
 - Removed beta tag! 🎉
 
