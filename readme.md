@@ -8,10 +8,6 @@
 
 ---
 
-<p align="center">🚧 <b>This plugin is under development and will require a paid license once it's ready for the plugin store.</b> 🚧</p>
-
----
-
 ## Features
 
 Quickly turn a Craft CMS website into a fully functioning store.
