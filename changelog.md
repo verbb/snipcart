@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.1 - 2019-03-02
+### Added
+- Added support for pre-3.1 versions of Craft CMS.
+
 ## 1.0.0 - 2019-02-27
 ### Changed
 - Removed beta tag! 🎉

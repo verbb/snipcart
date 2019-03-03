@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\providers;
 
 use Craft;
 use GuzzleHttp\Client;
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\models\Order as SnipcartOrder;
 use workingconcept\snipcart\models\Package;
 use workingconcept\snipcart\models\ShippingRate as SnipcartRate;
@@ -97,12 +98,18 @@ class ShipStation extends ShippingProvider
             return $this->client;
         }
 
+        $key = $this->getSettings()->apiKey;
+        $secret = $this->getSettings()->apiSecret;
+
+        if (VersionHelper::isCraft31())
+        {
+            $key = Craft::parseEnv($key);
+            $secret = Craft::parseEnv($secret);
+        }
+
         $this->client = new Client([
             'base_uri' => self::apiBaseUrl(),
-            'auth' => [
-                Craft::parseEnv($this->getSettings()->apiKey),
-                Craft::parseEnv($this->getSettings()->apiSecret)
-            ],
+            'auth' => [ $key, $secret ],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
                 'Accept'       => 'application/json',
