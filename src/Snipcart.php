@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart;
 
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\providers\ShipStation;
 use workingconcept\snipcart\services\Api;
 use workingconcept\snipcart\services\Carts;
@@ -237,7 +238,8 @@ class Snipcart extends Plugin
         return \Craft::$app->controller->renderTemplate(
             'snipcart/_settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
+                'isCraft31' => VersionHelper::isCraft31(),
             ]
         );
     }
@@ -250,7 +252,8 @@ class Snipcart extends Plugin
         return Craft::$app->view->renderTemplate(
             'snipcart/_settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
+                'isCraft31' => VersionHelper::isCraft31(),
             ]
         );
     }
