@@ -58,7 +58,7 @@ The Snipcart plugin's purpose is to offer a friendly, stable, and extensible way
 
 Please [file a GitHub issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [submit a pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls) and expect a response within 48 hours.
 
-Since replicating your store specific environment can be challenging, anything that can be demonstrated or illustrated using the [test project](https://github.com/workingconcept/snipcart-test) will be helpful and likely get resolved faster.
+Since replicating your store setup can be challenging, anything that can be demonstrated or illustrated using the [test project](https://github.com/workingconcept/snipcart-test) will be helpful and likely get resolved faster.
 
 ---
 
