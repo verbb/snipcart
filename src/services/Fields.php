@@ -117,10 +117,10 @@ class Fields extends \craft\base\Component
     /**
      * Saves the record that stores the field data.
      *
-     * @param \stdClass $data       Field data to be saved
-     * @param int       $siteId     Relevant Site ID
-     * @param int       $elementId  Relevant Element ID
-     * @param int       $fieldId    Relevant Field ID
+     * @param \stdClass  $data       Field data to be saved
+     * @param int        $siteId     Relevant Site ID
+     * @param int        $elementId  Relevant Element ID
+     * @param int        $fieldId    Relevant Field ID
      *
      * @return bool
      */
@@ -150,9 +150,9 @@ class Fields extends \craft\base\Component
      * Gets a ProductDetailsRecord with stored field data, or initializes
      * a new one.
      *
-     * @param int $siteId     Relevant Site ID
-     * @param int $elementId  Relevant Element ID
-     * @param int $fieldId    Relevant Field ID
+     * @param int  $siteId     Relevant Site ID
+     * @param int  $elementId  Relevant Element ID
+     * @param int  $fieldId    Relevant Field ID
      *
      * @return \craft\db\ActiveRecord
      */

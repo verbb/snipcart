@@ -22,12 +22,9 @@ class DiscountsController extends \craft\web\Controller
      */
     public function actionIndex(): \yii\web\Response
     {
-        $page = Craft::$app->getRequest()->getPageNum();
-        $discounts = Snipcart::$plugin->discounts->listDiscounts();
-
         return $this->renderTemplate('snipcart/cp/discounts/index',
             [
-                'discounts'  => $discounts
+                'discounts'  => Snipcart::$plugin->discounts->listDiscounts()
             ]
         );
     }
@@ -40,11 +37,9 @@ class DiscountsController extends \craft\web\Controller
      */
     public function actionDiscountDetail(string $discountId): \yii\web\Response
     {
-        $discount = Snipcart::$plugin->discounts->getDiscount($discountId);
-
         return $this->renderTemplate('snipcart/cp/discounts/detail',
             [
-                'discount' => $discount,
+                'discount' => Snipcart::$plugin->discounts->getDiscount($discountId)
             ]
         );
     }

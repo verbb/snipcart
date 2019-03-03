@@ -8,10 +8,6 @@
 
 ---
 
-<p align="center">🚧 <b>This plugin is under development and will require a paid license once it's ready for the plugin store.</b> 🚧</p>
-
----
-
 ## Features
 
 Quickly turn a Craft CMS website into a fully functioning store.
@@ -23,7 +19,7 @@ Quickly turn a Craft CMS website into a fully functioning store.
 -   Live shipping rates and tax calculation at checkout with Snipcart's various shipping and tax providers.
 -   Included ShipStation integration for fetching shipping rates and forwarding completed Snipcart orders for processing.
 
-If Commerce Pro is too complex for your project and Commerce Lite is bit too limiting, Snipcart will be a great fit.
+If Commerce Pro is too complex for your project and Commerce Lite is too limiting, Snipcart will be a great fit.
 
 <hr>
 
