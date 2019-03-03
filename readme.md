@@ -52,14 +52,6 @@ Setup guide, documentation and developer reference: https://snipcart.docs.workin
 
 This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com) and you'll receive a response within 24 hours—probably sooner.
 
-## Contributing
-
-The Snipcart plugin's purpose is to offer a friendly, stable, and extensible way of working with Snipcart that feels at home with Craft CMS. If you have issues or pull requests that address problems or offer new ideas, I'd be happy to review them!
-
-Please [file a GitHub issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [submit a pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls) and expect a response within 48 hours.
-
-Since replicating your store setup can be challenging, anything that can be demonstrated or illustrated using the [test project](https://github.com/workingconcept/snipcart-test) will be helpful and likely get resolved faster.
-
 ---
 
 This plugin is brought to you by [Working Concept](https://workingconcept.com), which has no affiliation with [Snipcart](https://snipcart.com/).
