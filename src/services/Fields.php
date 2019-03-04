@@ -91,19 +91,17 @@ class Fields extends \craft\base\Component
             if ( ! $this->_isUnsavedRecord($record))
             {
                 // populate with stored values
-                $model = new ProductDetailsModel($record->getAttributes());
+                return new ProductDetailsModel($record->getAttributes());
             }
-            else
-            {
-                $model = new ProductDetailsModel();
 
-                /**
-                 * Populate empty model with defaults, being sure fieldId is
-                 * set since defaults depend on field configuration.
-                 */
-                $model->fieldId = $field->id;
-                $model->populateDefaults();
-            }
+            $model = new ProductDetailsModel();
+
+            /**
+             * Populate empty model with defaults, being sure fieldId is
+             * set since defaults depend on field configuration.
+             */
+            $model->fieldId = $field->id;
+            $model->populateDefaults();
 
             return $model;
         }
