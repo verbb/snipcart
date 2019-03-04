@@ -1,10 +1,11 @@
 # Snipcart Changelog
 
-## 1.0.1 - 2019-03-02
+## 1.0.1 - 2019-03-03
 ### Added
 - Added support for pre-3.1 versions of Craft CMS.
 ### Fixed
 - Fixed an issue that would cause a Section re-save task to fail after a Product Details field is added to an existing Section.
+- Product defaults are honored correctly per field setting on new and existing entries.
 - Fixed a JS error in Product Details field settings.
 
 ## 1.0.0 - 2019-02-27

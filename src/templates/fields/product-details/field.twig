@@ -39,6 +39,12 @@
 {% from _self import errorList %}
 {% from _self import customTextInput %}
 
+{% set showInventory = settings.displayInventory is defined and settings.displayInventory %}
+{% set showWeight = value.shippable is defined and value.shippable %}
+{% set showDimensions = showWeight %}
+{% set showTaxable = settings.displayTaxableSwitch %}
+{% set showShippable = settings.displayShippableSwitch %}
+
 <div class="snipcart-product-details">
     <div id="snipcart-sku-field" class="field-group border-t-0">
         <div class="field-label w-2/5 sm:w-1/5">
@@ -50,7 +56,7 @@
             {{ customTextInput(element, name, 'sku', value, { classes: ['code'] }) }}
         </div>
     </div>
-    <div id="snipcart-inventory-field" class="field-group border-t{% if settings.displayInventory is not defined or settings.displayInventory != true %} hidden{% endif %}">
+    <div id="snipcart-inventory-field" class="field-group border-t{% if not showInventory %} hidden{% endif %}">
         <div class="field-label w-2/5 sm:w-1/5">
             <label for="inventory">
                 {{- "Inventory"|t -}}
@@ -75,7 +81,7 @@
             </div>
         </div>
     </div>
-    <div id="snipcart-taxable-field" class="field-group border-t">
+    <div id="snipcart-taxable-field" class="field-group border-t{% if not showTaxable %} hidden{% endif %}">
         <div class="field-label w-2/5 sm:w-1/5">
             <label for="taxable">
                 {{- "Taxable"|t -}}
@@ -91,7 +97,7 @@
             {{ errorList(element.getErrors(name ~ '[taxable]')) }}
         </div>
     </div>
-    <div id="snipcart-shippable-field" class="field-group border-t">
+    <div id="snipcart-shippable-field" class="field-group border-t{% if not showShippable %} hidden{% endif %}">
         <div class="field-label w-2/5 sm:w-1/5">
             <label for="shippable">
                 {{- "Shippable"|t -}}
@@ -107,7 +113,7 @@
             {{ errorList(element.getErrors(name ~ '[shippable]')) }}
         </div>
     </div>
-    <div id="snipcart-weight-field" class="field-group border-t{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+    <div id="snipcart-weight-field" class="field-group border-t{% if not showWeight %} hidden{% endif %}">
         <div class="field-label w-2/5 sm:w-1/5">
             <label for="weight">
                 {{- "Weight"|t -}}
@@ -135,7 +141,7 @@
             {{ errorList(element.getErrors(name ~ '[weightUnit]')) }}
         </div>
     </div>
-    <div id="snipcart-dimensions-field" class="field-group border-t{% if value.shippable is not defined or value.shippable != true %} hidden{% endif %}">
+    <div id="snipcart-dimensions-field" class="field-group border-t{% if not showDimensions %} hidden{% endif %}">
         <div class="field-label w-2/5 sm:w-1/5">
             <label>
                 {{- "Dimensions"|t -}}

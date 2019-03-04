@@ -37,6 +37,18 @@ use craft\db\ActiveRecord;
  */
 class ProductDetails extends ActiveRecord
 {
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var bool Whether the record has been created but not saved.
+     */
+    public $isNew = false;
+
+
+    // Public Methods
+    // =========================================================================
+
     /**
      * @inheritdoc
      */
