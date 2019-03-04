@@ -50,7 +50,7 @@ Setup guide, documentation and developer reference: https://snipcart.docs.workin
 
 ## Support
 
-This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com) and you'll receive a response within 24 hours.
+This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com) and you'll receive a response within one business day (U.S. west coast).
 
 ## Contributing
 
