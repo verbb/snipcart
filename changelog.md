@@ -3,6 +3,9 @@
 ## 1.0.1 - 2019-03-02
 ### Added
 - Added support for pre-3.1 versions of Craft CMS.
+### Fixed
+- Fixed an issue that would cause a Section re-save task to fail after a Product Details field is added to an existing Section.
+- Fixed a JS error in Product Details field settings.
 
 ## 1.0.0 - 2019-02-27
 ### Changed
@@ -55,7 +58,6 @@
 - Refactored webhooks into component.
 ### Fixed
 - Stopped inventory event from firing for products that don't store inventory.
-
 
 ## 1.0.0-beta.20 - 2019-02-17
 ### Added
