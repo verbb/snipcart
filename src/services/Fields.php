@@ -88,17 +88,21 @@ class Fields extends \craft\base\Component
             )
         )
         {
-            $model = new ProductDetailsModel();
-
-            // always start with the defaults, which require field and site IDs
-            $model->fieldId = $field->id;
-            $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
-            $model->populateDefaults();
-
             if ( ! $this->_isUnsavedRecord($record))
             {
-                // if we have an existing record, apply its attributes
-                $model->setAttributes($record->getAttributes());
+                // populate with stored values
+                $model = new ProductDetailsModel($record->getAttributes());
+            }
+            else
+            {
+                $model = new ProductDetailsModel();
+
+                /**
+                 * Populate empty model with defaults, being sure fieldId is
+                 * set since defaults depend on field configuration.
+                 */
+                $model->fieldId = $field->id;
+                $model->populateDefaults();
             }
 
             return $model;

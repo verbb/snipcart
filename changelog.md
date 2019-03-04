@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.2 - 2019-03-04
+### Fixed
+- Fixed bug populating existing Element's product detail.
+
 ## 1.0.1 - 2019-03-03
 ### Added
 - Added support for pre-3.1 versions of Craft CMS.
