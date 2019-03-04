@@ -241,7 +241,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Set defaults according to each configured field instance.
+     * Set default values according to what's configured on the field instance.
      */
     public function populateDefaults()
     {

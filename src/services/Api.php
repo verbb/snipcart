@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\services;
 
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 
 use Craft;
@@ -70,10 +71,7 @@ class Api extends Component
     public function init()
     {
         parent::init();
-        $secretApiKey = Craft::parseEnv(
-            Snipcart::$plugin->getSettings()->secretApiKey
-        );
-        $this->isLinked = $secretApiKey !== null;
+        $this->isLinked = $this->_getSecretApiKey() !== null;
     }
 
     /**
@@ -96,10 +94,7 @@ class Api extends Component
 
         return $this->client = new Client([
             'base_uri' => self::$apiBaseUrl,
-            'auth' => [
-                Craft::parseEnv(Snipcart::$plugin->getSettings()->secretApiKey),
-                'password'
-            ],
+            'auth' => [ $this->_getSecretApiKey(), 'password' ],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
                 'Accept'       => 'application/json',
@@ -236,6 +231,15 @@ class Api extends Component
 
     // Private Methods
     // =========================================================================
+
+    private function _getSecretApiKey()
+    {
+        $keyValue = Snipcart::$plugin->getSettings()->secretApiKey;
+
+        return VersionHelper::isCraft31() ?
+            Craft::parseEnv($keyValue) :
+            $keyValue;
+    }
 
     /**
      * Send a get request to the Snipcart REST API.

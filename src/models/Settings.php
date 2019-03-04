@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\models;
 
 use Craft;
 use craft\base\Model;
+use workingconcept\snipcart\helpers\VersionHelper;
 
 /**
  * Settings model
@@ -410,7 +411,9 @@ class Settings extends Model
         if ($isAlias || $isEnvVar)
         {
             // have Craft parse aliases and environment variables
-            $parsedSettingValue = Craft::parseEnv($settingValue);
+            $parsedSettingValue = VersionHelper::isCraft31() ?
+                Craft::parseEnv($settingValue) :
+                Craft::getAlias($settingValue);
 
             // does the stored setting get expanded?
             $parses = $settingValue !== $parsedSettingValue;
