@@ -4,7 +4,9 @@ var shippableSwitch = document.getElementById('fields-shippable');
 var weightField = document.getElementById('fields-snipcart-weight-field');
 var dimensionsField = document.getElementById('fields-snipcart-dimensions-field');
 
-shippableSwitch.onchange = togglePhysicalFields;
+if (shippableSwitch) {
+    shippableSwitch.onchange = togglePhysicalFields;
+}
 
 function togglePhysicalFields() {
     if (shippableSwitch.classList.contains('on')) {
