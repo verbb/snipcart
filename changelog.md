@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.3 - 2019-03-05
+### Fixed
+- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2. 
+
 ## 1.0.2 - 2019-03-04
 ### Fixed
 - Fixed bug populating existing Element's product detail.
