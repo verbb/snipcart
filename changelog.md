@@ -1,5 +1,21 @@
 # Snipcart Changelog
 
+## 1.0.3 - 2019-03-05
+### Fixed
+- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2. 
+
+## 1.0.2 - 2019-03-04
+### Fixed
+- Fixed bug populating existing Element's product detail.
+
+## 1.0.1 - 2019-03-03
+### Added
+- Added support for pre-3.1 versions of Craft CMS.
+### Fixed
+- Fixed an issue that would cause a Section re-save task to fail after a Product Details field is added to an existing Section.
+- Product defaults are honored correctly per field setting on new and existing entries.
+- Fixed a JS error in Product Details field settings.
+
 ## 1.0.0 - 2019-02-27
 ### Changed
 - Removed beta tag! 🎉
@@ -51,7 +67,6 @@
 - Refactored webhooks into component.
 ### Fixed
 - Stopped inventory event from firing for products that don't store inventory.
-
 
 ## 1.0.0-beta.20 - 2019-02-17
 ### Added

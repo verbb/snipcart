@@ -40,7 +40,7 @@
     <div class="form-wrap">
         <div id="account" class="">
 
-            {{ forms.autosuggestField({
+            {% set publicKeyFieldOptions = {
                 label: 'Snipcart Public API Key'|t,
                 class: 'code',
                 id: 'publicApiKey',
@@ -49,10 +49,9 @@
                 value: settings.publicApiKey,
                 errors: settings.getErrors('publicApiKey'),
                 instructions: "Add your public Snipcart API key. You can find this on your account page in Snipcart.",
-                suggestions: craft.cp.getEnvSuggestions(),
-            }) }}
+            } %}
 
-            {{ forms.autosuggestField({
+            {% set secretKeyFieldOptions = {
                 label: 'Snipcart Secret API Key'|t,
                 id: 'secretApiKey',
                 class: 'code',
@@ -62,8 +61,20 @@
                 autocomplete: false,
                 errors: settings.getErrors('secretApiKey'),
                 instructions: "Add your secret Snipcart API key. You can find this on your account page in Snipcart.",
-                suggestions: craft.cp.getEnvSuggestions(),
-            }) }}
+            } %}
+
+            {% if isCraft31 %}
+                {% set publicKeyFieldOptions = publicKeyFieldOptions
+                    | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                {{ forms.autosuggestField(publicKeyFieldOptions) }}
+
+                {% set secretKeyFieldOptions = secretKeyFieldOptions
+                    | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                {{ forms.autosuggestField(secretKeyFieldOptions) }}
+            {% else %}
+                {{ forms.passwordField(publicKeyFieldOptions) }}
+                {{ forms.passwordField(secretKeyFieldOptions) }}
+            {% endif %}
 
             {{ forms.selectField({
                 label: 'Currency'|t,
@@ -139,7 +150,7 @@
                 instructions: "Add comma-separated email addresses for *store admins* that should receive email notifications as orders are placed."
             }) }}
 
-            {{ forms.autosuggestField({
+            {% set notificationTemplateFieldOptions = {
                 label: 'Order Email Notification Template'|t,
                 id: 'notificationEmailTemplate',
                 name: 'settings[notificationEmailTemplate]',
@@ -147,8 +158,15 @@
                 value: settings.notificationEmailTemplate,
                 placeholder: '_email/order-notification',
                 instructions: "Specify the path to a custom Twig template to be used for admin order email notifications.",
-                suggestions: craft.cp.getTemplateSuggestions(),
-            }) }}
+            } %}
+
+            {% if isCraft31 %}
+                {% set notificationTemplateFieldOptions = notificationTemplateFieldOptions
+                    | merge({ suggestions: craft.cp.getTemplateSuggestions() }) %}
+                {{ forms.autosuggestField(notificationTemplateFieldOptions) }}
+            {% else %}
+                {{ forms.textField(notificationTemplateFieldOptions) }}
+            {% endif %}
 
             {{ forms.lightswitchField({
                 label: 'Send Order Email Notifications to Customers?'|t,
@@ -161,7 +179,7 @@
                 instructions: "Switch on if you'd like to send customers custom order email notifications from Craft. Be sure to disable Snipcart's so you don't inundate customers with multiple order confirmations!"
             }) }}
 
-            {{ forms.autosuggestField({
+            {% set customerNotificationTemplateFieldOptions = {
                 label: 'Customer Order Email Notification Template'|t,
                 id: 'customerNotificationEmailTemplate',
                 name: 'settings[customerNotificationEmailTemplate]',
@@ -169,9 +187,15 @@
                 value: settings.customerNotificationEmailTemplate,
                 placeholder: '_email/customer-order-notification',
                 instructions: "Specify the path to a custom Twig template to be used for customer order email notifications.",
-                suggestions: craft.cp.getTemplateSuggestions(),
-            }) }}
+            } %}
 
+            {% if isCraft31 %}
+                {% set customerNotificationTemplateFieldOptions = customerNotificationTemplateFieldOptions
+                    | merge({ suggestions: craft.cp.getTemplateSuggestions() }) %}
+                {{ forms.autosuggestField(customerNotificationTemplateFieldOptions) }}
+            {% else %}
+                {{ forms.textField(customerNotificationTemplateFieldOptions) }}
+            {% endif %}
         </div>
 
         <div id="webhooks" class="hidden">
@@ -282,7 +306,7 @@
                                         title="ShipStation"
                                     >
 
-                                    {{ forms.autosuggestField({
+                                    {% set apiKeyFieldOptions = {
                                         label: 'API Key'|t,
                                         id: 'apiKey',
                                         class: 'code',
@@ -292,10 +316,9 @@
                                         autocomplete: false,
                                         errors: providerSettings.getErrors('apiKey'),
                                         instructions: "_Account_ → _API Settings_ → _API Keys_",
-                                        suggestions: craft.cp.getEnvSuggestions(),
-                                    }) }}
+                                    } %}
 
-                                    {{ forms.autosuggestField({
+                                    {% set apiSecretFieldOptions = {
                                         label: 'API Secret'|t,
                                         id: 'apiSecret',
                                         class: 'code',
@@ -305,9 +328,21 @@
                                         autocomplete: false,
                                         errors: providerSettings.getErrors('apiSecret'),
                                         instructions: "_Account_ → _API Settings_ → _API Keys_",
-                                        suggestions: craft.cp.getEnvSuggestions(),
-                                    }) }}
-                                    
+                                    } %}
+
+                                    {% if isCraft31 %}
+                                        {% set apiKeyFieldOptions = apiKeyFieldOptions
+                                            | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                                        {{ forms.autosuggestField(apiKeyFieldOptions) }}
+
+                                        {% set apiSecretFieldOptions = apiSecretFieldOptions
+                                            | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                                        {{ forms.autosuggestField(apiSecretFieldOptions) }}
+                                    {% else %}
+                                        {{ forms.passwordField(apiKeyFieldOptions) }}
+                                        {{ forms.passwordField(apiSecretFieldOptions) }}
+                                    {% endif %}
+
                                     {{ forms.textField({
                                         label: 'Default Carrier Code'|t,
                                         id: 'defaultCarrierCode',
@@ -343,7 +378,7 @@
                                         limit: 2,
                                         autocomplete: false,
                                         errors: providerSettings.getErrors('defaultCountry'),
-                                        instructions: ""
+                                        instructions: "Two-character country code."
                                     }) }}
 
                                     {{ forms.selectField({

@@ -101,7 +101,7 @@ class Install extends Migration
                 'elementId'      => $this->integer()->notNull(),
                 'fieldId'        => $this->integer()->notNull(),
                 'siteId'         => $this->integer(),
-                'sku'            => $this->string()->notNull(),
+                'sku'            => $this->string(),
                 'price'          => $this->float(),
                 'shippable'      => $this->boolean(),
                 'taxable'        => $this->boolean(),

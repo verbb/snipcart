@@ -76,6 +76,9 @@ class Fields extends \craft\base\Component
             return $model;
         }
 
+        /**
+         * Populate a ProductDetailsModel on an existing Element.
+         */
         if (
             $element !== null &&
             $record = $this->_getRecord(
@@ -85,34 +88,69 @@ class Fields extends \craft\base\Component
             )
         )
         {
-            $model = new ProductDetailsModel($record->getAttributes());
-
-            if ($element->getId() === null)
+            if ( ! $this->_isUnsavedRecord($record))
             {
-                $model->populateDefaults();
+                // populate with stored values
+                return new ProductDetailsModel($record->getAttributes());
             }
+
+            $model = new ProductDetailsModel();
+
+            /**
+             * Populate empty model with defaults, being sure fieldId is
+             * set since defaults depend on field configuration.
+             */
+            $model->fieldId = $field->id;
+            $model->populateDefaults();
 
             return $model;
         }
 
-        $productDetails = new ProductDetailsModel();
+        $model = new ProductDetailsModel();
 
-        $productDetails->fieldId = $field->id;
-        $productDetails->siteId  = Craft::$app->sites->getCurrentSite()->id;
+        $model->fieldId = $field->id;
+        $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
 
         if ($element !== null)
         {
-            $productDetails->elementId = $element->getId();
+            $model->elementId = $element->getId();
         }
 
-        $productDetails->populateDefaults();
+        $model->populateDefaults();
 
-        return $productDetails;
+        return $model;
     }
 
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Returns true if the record has not yet been saved to the database, or
+     * if it was created without yet being populated like during a bulk Element
+     * re-save after the field is newly added.
+     *
+     * @param ProductDetailsRecord $record
+     * @return bool
+     */
+    private function _isUnsavedRecord($record): bool
+    {
+        if ($record->isNew)
+        {
+            return true;
+        }
+
+        /**
+         * A record can only have a `null` sku and price if saved during a
+         * bulk operation.
+         */
+        if ($record->sku === null && $record->price === null)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Saves the record that stores the field data.
@@ -154,9 +192,9 @@ class Fields extends \craft\base\Component
      * @param int  $elementId  Relevant Element ID
      * @param int  $fieldId    Relevant Field ID
      *
-     * @return \craft\db\ActiveRecord
+     * @return ProductDetailsRecord
      */
-    private function _getRecord($siteId, $elementId, $fieldId): \craft\db\ActiveRecord
+    private function _getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
     {
         $record = ProductDetailsRecord::findOne([
             'siteId'    => $siteId,
@@ -168,6 +206,7 @@ class Fields extends \craft\base\Component
         {
             $record = new ProductDetailsRecord();
 
+            $record->isNew     = true;
             $record->siteId    = $siteId;
             $record->elementId = $elementId;
             $record->fieldId   = $fieldId;

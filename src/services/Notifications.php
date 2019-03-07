@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use Craft;
 use craft\mail\Message;
+use workingconcept\snipcart\helpers\VersionHelper;
 
 /**
  * Sends notifications as things happen. Currently just email.
@@ -128,9 +129,17 @@ class Notifications extends \craft\base\Component
      */
     public function sendEmail($to, $subject): bool
     {
-        $errors        = [];
-        $emailSettings = Craft::$app->getProjectConfig()->get('email');
-        $view          = Craft::$app->getView();
+        $errors = [];
+        $view = Craft::$app->getView();
+
+        if (VersionHelper::isCraft31())
+        {
+            $emailSettings = Craft::$app->getProjectConfig()->get('email');
+        }
+        else
+        {
+            $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
+        }
 
         /**
          * Switch template mode only if we need to rely on our own template.
@@ -198,7 +207,7 @@ class Notifications extends \craft\base\Component
                 $message->setTextBody($messageText);
             }
 
-            if ( ! Craft::$app->mailer->send($message))
+            if ( ! Craft::$app->getMailer()->send($message))
             {
                 $problem = "Notification failed to send to {$address}!";
                 Craft::warning($problem, 'snipcart');

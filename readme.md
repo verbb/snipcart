@@ -50,7 +50,11 @@ Setup guide, documentation and developer reference: https://snipcart.docs.workin
 
 ## Support
 
-This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com), [file a GitHub issue](https://github.com/workingconcept/snipcart-craft-plugin/issues) or [submit a pull request](https://github.com/workingconcept/snipcart-craft-plugin/pulls) and you'll receive a response within 24 hours—probably sooner.
+This plugin is actively supported and maintained. Please email [support@workingconcept.com](mailto:support@workingconcept.com) and you'll receive a response within one business day (U.S. west coast).
+
+## Contributing
+
+Issues and PRs welcome! Please see [the contributing guide](contributing.md).
 
 ---
 

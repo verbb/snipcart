@@ -241,7 +241,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Set defaults according to each configured field instance.
+     * Set default values according to what's configured on the field instance.
      */
     public function populateDefaults()
     {
@@ -444,7 +444,10 @@ class ProductDetails extends \craft\base\Model
          * If we have a simple array without pricing, reformat it
          * for consistency and set all prices to 0.
          */
-        if (count($params['customOptions']) > 0)
+        if (
+            is_array($params['customOptions']) &&
+            count($params['customOptions']) > 0
+        )
         {
 
             foreach ($params['customOptions'] as &$customOption) 

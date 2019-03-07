@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\variables;
 
 use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\helpers\FieldHelper;
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -83,12 +84,21 @@ class SnipcartVariable
      */
     public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = false): \Twig_Markup
     {
+        $settings = Snipcart::$plugin->getSettings();
+        $publicApiKey = $settings->publicApiKey;
+
+        if (VersionHelper::isCraft31())
+        {
+            $publicApiKey = Craft::parseEnv($publicApiKey);
+        }
+
         return $this->_renderTemplate(
             'snipcart/front-end/cart-js',
             [
-                'settings'      => Snipcart::$plugin->getSettings(),
+                'settings'      => $settings,
                 'includejQuery' => $includejQuery,
                 'includeStyles' => $includeStyles,
+                'publicApiKey'  => $publicApiKey,
                 'onload'        => $onload
             ]
         );
