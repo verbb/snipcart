@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.4 - 2019-03-07
+### Added
+- Added Twig template methods: `craft.snipcart.getCustomer()`, `craft.snipcart.getOrder()` and `craft.snipcart.getSubscription()`.
+
 ## 1.0.3 - 2019-03-05
 ### Fixed
 - Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2. 
