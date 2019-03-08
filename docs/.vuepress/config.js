@@ -11,6 +11,7 @@ module.exports = {
         docsBranch: 'docs',
         docsDir: 'docs',
         editLinks: true,
+        searchMaxSuggestions: 10,
         sidebar: [
             {
                 title: 'Getting Started',
