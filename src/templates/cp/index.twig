@@ -7,6 +7,8 @@
 {% set title = "Snipcart"|t %}
 {% set selectedTab = "overview" %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     <h2>
@@ -110,7 +112,7 @@
                                     <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
                                     <td>{{ order.creationDate | date('n/j') }}</td>
                                     <td>{{ order.billingAddress.name }}</td>
-                                    <td>{{ order.finalGrandTotal | currency(order.currency|upper) }}</td>
+                                    <td>{{ utils.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -134,7 +136,7 @@
                             <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
                                 <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
                                 <td>{{ customer.statistics.ordersCount }}</td>
-                                <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }}</td>
+                                <td>{{ utils.formatCurrency(customer.statistics.ordersAmount) }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

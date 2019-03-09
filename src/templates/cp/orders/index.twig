@@ -7,6 +7,8 @@
 {% set title = "Snipcart Orders"|t %}
 {% set selectedTab = "orders" %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
@@ -59,14 +61,14 @@
                         <td>{{ order.creationDate | date('n/j/Y') }}</td>
                         <td>{{ order.billingAddress.name }}</td>
                         <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
-                        <td>{{ order.finalGrandTotal | currency(order.currency|upper) }}</td>
+                        <td>{{ utils.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
                         <td>
-                            {% if order.status == "Open" %}
-                            <div class="status"></div>
-                            {% elseif order.status == "Processed" %}
-                            <div class="status active"></div>
+                            {%- if order.status == "Open" -%}
+                                <div class="status"></div>
+                            {% elseif order.status == "Processed" -%}
+                                <div class="status active"></div>
                             {% endif %}
-                            {{ order.status }}
+                            {{ order.status -}}
                         </td>
                     </tr>
                 {% endfor %}

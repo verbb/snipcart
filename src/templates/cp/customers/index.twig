@@ -7,6 +7,8 @@
 {% set title = "Snipcart Customers"|t %}
 {% set selectedTab = "customers" %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
@@ -57,7 +59,7 @@
                         <td>{{ customer.email }}</td>
                         <td>{{ customer.billingAddressAddress1 }}</td>
                         <td>{{ customer.statistics.ordersCount }}</td>
-                        <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ customer.statistics.ordersAmount | number_format(2) }}</td>
+                        <td>{{ utils.formatCurrency(customer.statistics.ordersAmount) }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

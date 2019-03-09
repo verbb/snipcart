@@ -14,9 +14,14 @@ use yii\base\Response;
 
 class ChartsController extends \craft\web\Controller
 {
+    // Public Methods
+    // =========================================================================
 
     /**
      * Fetch order data JSON for the Dashboard widget's chart.
+     *
+     * @todo Use another chart renderer so we can support displaying currencies
+     *       that don't use a dollar sign.
      *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
@@ -90,6 +95,9 @@ class ChartsController extends \craft\web\Controller
             'localeDefinition' => [],
         ]);
     }
+
+    // Private Methods
+    // =========================================================================
 
     /**
      * Reformat Snipcart's returned data into a chart-friendly format.

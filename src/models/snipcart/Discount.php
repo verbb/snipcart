@@ -94,6 +94,11 @@ class Discount extends \craft\base\Model
     public $rate;
 
     /**
+     * @var
+     */
+    public $normalizedRate;
+
+    /**
      * @var string|null The name of the alternate price list to use. Required when type is `AlternatePrice`.
      */
     public $alternatePrice;

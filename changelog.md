@@ -3,6 +3,11 @@
 ## 1.0.4 - 2019-03-07
 ### Added
 - Added Twig template methods: `craft.snipcart.getCustomer()`, `craft.snipcart.getOrder()` and `craft.snipcart.getSubscription()`.
+- Added ability to override Twig `getBuyNowButton()` price with support for multiple currencies.
+### Fixed
+- Currency setting is now saved properly.
+- Improved consistency of currency values displayed in the control panel and email templates.
+- Fixed UnknownPropertyException when viewing Discounts because of new `normalizedRate` property.
 
 ## 1.0.3 - 2019-03-05
 ### Fixed

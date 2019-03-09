@@ -21,6 +21,8 @@ TODO:
     { label: "Orders"|t('snipcart'), url: url('snipcart/orders') }
 ] %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     {% if orderRefunds %}
@@ -40,7 +42,7 @@ TODO:
                 {% for refund in orderRefunds %}
                     <tr>
                         <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
-                        <td>{{ refund.amount | currency(order.currency|upper) }}</td>
+                        <td>{{ utils.formatCurrency(refund.amount, order.currency) }}</td>
                         <td>{{ refund.comment }}</td>
                         <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
                         <td>{{ refund.refundedByPaymentGateway ? "yes" : "no" }}</td>
@@ -85,7 +87,6 @@ TODO:
                                 order: order,
                                 shippingSameAsBilling: order.shippingAddressSameAsBilling
                             } %}
-
                         </div>
                     </div>
                 </div>

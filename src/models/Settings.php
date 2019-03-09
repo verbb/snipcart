@@ -81,6 +81,12 @@ class Settings extends Model
     public $customerNotificationEmailTemplate = '';
 
     /**
+     * @var string `usd`, `cad`, or `eur`. Defaults to `usd` unless another
+     *             value is saved.
+     */
+    public $defaultCurrency;
+
+    /**
      * @var array
      */
     public $enabledCurrencies = [ self::CURRENCY_USD ];
@@ -342,6 +348,11 @@ class Settings extends Model
      */
     public function getDefaultCurrency(): string
     {
+        if ( ! empty($this->defaultCurrency))
+        {
+            return $this->defaultCurrency;
+        }
+
         return $this->enabledCurrencies[0];
     }
 

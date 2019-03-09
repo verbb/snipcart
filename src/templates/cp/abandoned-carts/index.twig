@@ -6,6 +6,8 @@
 {% set title       = "Snipcart Abandoned Carts"|t %}
 {% set selectedTab = "abandoned" %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     <p id="noredirects"{% if carts | length %} class="hidden"{% endif %}>
@@ -29,7 +31,7 @@
                         <td>{{ cart.email }}</td>
                         <td>{{ cart.status }}</td>
                         <td>{{ cart.modificationDate | date() }}</td>
-                        <td>{{ craft.snipcart.defaultCurrencySymbol }}{{ cart.total | number_format(2) }}</td>
+                        <td>{{ utils.formatCurrency(cart.total) }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -37,7 +39,7 @@
 
         {% if hasMoreResults and continuationToken %}
         <div class="text-center mt-8">
-            <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">Load More …</a>
+            <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">{{ "Load More"|t }} …</a>
         </div>
         {% endif %}
 

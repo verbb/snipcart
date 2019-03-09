@@ -71,7 +71,7 @@ class OverviewController extends \craft\web\Controller
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    private function _getOverviewStats($preformat = false)
+    private function _getOverviewStats($preformat = false): array
     {
         $startDate = $this->_getStartDate();
         $endDate   = $this->_getEndDate();
@@ -80,11 +80,21 @@ class OverviewController extends \craft\web\Controller
         if ($preformat)
         {
             $formatter = Craft::$app->getFormatter();
+            $defaultCurrency = Snipcart::$plugin->getSettings()->defaultCurrency;
 
             $stats->ordersCount = number_format($stats->ordersCount);
-            $stats->ordersSales = $formatter->asCurrency($stats->ordersSales);
-            $stats->averageOrdersValue = $formatter->asCurrency($stats->averageOrdersValue);
-            $stats->averageCustomerValue = $formatter->asCurrency($stats->averageCustomerValue);
+            $stats->ordersSales = $formatter->asCurrency(
+                $stats->ordersSales,
+                $defaultCurrency
+            );
+            $stats->averageOrdersValue = $formatter->asCurrency(
+                $stats->averageOrdersValue,
+                $defaultCurrency
+            );
+            $stats->averageCustomerValue = $formatter->asCurrency(
+                $stats->averageCustomerValue,
+                $defaultCurrency
+            );
         }
         
         return [ 'stats' => $stats ];

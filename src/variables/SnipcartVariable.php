@@ -34,6 +34,16 @@ class SnipcartVariable
     }
 
     /**
+     * Returns the default currency.
+     *
+     * @return string
+     */
+    public function defaultCurrency(): string
+    {
+        return Snipcart::$plugin->getSettings()->defaultCurrency;
+    }
+
+    /**
      * Returns the default currency symbol.
      *
      * @return string

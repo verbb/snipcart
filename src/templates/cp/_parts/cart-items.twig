@@ -8,6 +8,8 @@
 {% set hasRebate = not isAbandonedCart %}
 {% set hasFinalGrandTotal = not isAbandonedCart %}
 
+{% import "snipcart/_macros" as utils %}
+
 {#
 
 TODO: support plans
@@ -48,7 +50,7 @@ TODO: support plans
                     {% endif %}
                 </td>
                 <td style="text-align: right;">
-                    {{- item.price | currency(order.currency|upper) -}}
+                    {{- utils.formatCurrency(item.price, order.currency) -}}
                 </td>
             </tr>
         {% endfor %}
@@ -61,7 +63,7 @@ TODO: support plans
                     {{- "Subtotal"|t -}}
                 </td>
                 <td colspan="3" style="text-align: right;">
-                    {{ order.subtotal | currency(order.currency|upper) }}
+                    {{- utils.formatCurrency(order.subtotal, order.currency) -}}
                 </td>
             </tr>
         {% endif %}
@@ -77,7 +79,7 @@ TODO: support plans
                     </span>
                 </td>
                 <td style="text-align: right;">
-                    {{ order.shippingFees | currency(order.currency|upper) -}}
+                    {{- utils.formatCurrency(order.shippingFees, order.currency) -}}
                 </td>
             </tr>
         {% endif %}
@@ -93,7 +95,7 @@ TODO: support plans
                     </span>
                 </td>
                 <td style="text-align: right;">
-                    {{ order.shippingInformation.fees | currency(order.currency|upper) -}}
+                    {{- utils.formatCurrency(order.shippingInformation.fees, order.currency) -}}
                 </td>
             </tr>
         {% endif %}
@@ -103,7 +105,7 @@ TODO: support plans
                     {{- tax.taxName }} ({{ tax.taxRate }})
                 </td>
                 <td colspan="1" style="text-align: right;">
-                    {{ tax.amount | currency(order.currency|upper) }}
+                    {{- utils.formatCurrency(tax.amount, order.currency) -}}
                     {# {{ tax.numberForInvoice }} #}
                 </td>
             </tr>
@@ -123,7 +125,7 @@ TODO: support plans
                     {{- "Total Rebates"|t -}}
                 </td>
                 <td colspan="3" style="text-align: right;">
-                    {{ order.rebateAmount | currency(order.currency|upper) }}
+                    {{- utils.formatCurrency(order.rebateAmount, order.currency) -}}
                 </td>
             </tr>
         {% endif %}
@@ -133,7 +135,7 @@ TODO: support plans
                     <b>{{- "Grand Total"|t -}}</b>
                 </td>
                 <td colspan="3" style="text-align: right;">
-                    <b>{{ order.finalGrandTotal | currency(order.currency|upper) }}</b>
+                    <b>{{ utils.formatCurrency(order.finalGrandTotal, order.currency) }}</b>
                 </td>
             </tr>
         {% else %}
@@ -142,7 +144,7 @@ TODO: support plans
                     <b>{{- "Total"|t -}}</b>
                 </td>
                 <td colspan="3" style="text-align: right;">
-                    <b>{{ order.total | currency(order.currency|upper) }}</b>
+                    <b>{{ utils.formatCurrency(order.total, order.currency) }}</b>
                 </td>
             </tr>
         {% endif %}

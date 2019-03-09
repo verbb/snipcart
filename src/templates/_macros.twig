@@ -1,0 +1,15 @@
+{#
+
+Format a number as currency, adding the appropriate symbol if it's not
+already specified.
+
+#}
+{% macro formatCurrency(value, useCurrency = false) %}
+    {%- set includesSymbol = '$' in value or '€' in value -%}
+    {%- set currencyValue = useCurrency == false ? craft.snipcart.defaultCurrency : useCurrency -%}
+    {%- if not includesSymbol %}
+        {{- value | currency(currencyValue) -}}
+    {%- else -%}
+        {{ value }}
+    {%- endif -%}
+{% endmacro %}

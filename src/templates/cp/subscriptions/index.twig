@@ -6,6 +6,8 @@
 {% set title         = "Snipcart Subscriptions"|t %}
 {% set selectedTab   = "subscriptions" %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% block content %}
 
     <p id="noredirects"{% if subscriptions | length %} class="hidden"{% endif %}>
@@ -29,7 +31,7 @@
                             <a href="{{ subscription.cpUrl }}">{{ subscription.user.billingAddressName }}</a>
                         </td>
                         <td>{{ subscription.name }}</td>
-                        <td>{{ subscription.amount | currency }}</td>
+                        <td>{{ utils.formatCurrency(subscription.amount) }}</td>
                         <td>{{ subscription.quantity }}</td>
                         <td>{{ subscription.status }}</td>
                         <td>{{ subscription.recurringShipping ? "yes"|t : "no"|t }}</td>

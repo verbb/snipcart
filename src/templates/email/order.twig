@@ -1,6 +1,8 @@
 {# @var order \workingconcept\snipcart\models\Order #}
 {% extends 'snipcart/email/_layout' %}
 
+{% import "snipcart/_macros" as utils %}
+
 {% set heroImage = craft.app.assetManager.getPublishedUrl(
     '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png',
     true
@@ -60,17 +62,17 @@
                         {%- endfor %})
                         {%- endif -%}
                     </td>
-                    <td class="align-right normal-cell-padding nowrap"><nobr>{{ item.price | currency(order.currency|upper) }}</nobr></td>
-                    <td class="align-right last-cell-padding nowrap"><nobr>{{ (item.price * item.quantity) | currency(order.currency|upper) }}</nobr></td>
+                    <td class="align-right normal-cell-padding nowrap"><nobr>{{ utils.formatCurrency(item.price, order.currency) }}</nobr></td>
+                    <td class="align-right last-cell-padding nowrap"><nobr>{{ utils.formatCurrency(item.price * item.quantity, order.currency) }}</nobr></td>
                 </tr>
             {% endfor %}
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">{{ order.shippingMethod }}<br><span class="muted mono">{{ (shipStationOrder.weight.value ?? order.totalWeight) | number_format }} {{ "grams"|t }}</span></td>
-                <td class="align-right last-cell-padding nowrap"><nobr>{{ order.shippingFees | currency(order.currency|upper) }}</nobr></td>
+                <td class="align-right last-cell-padding nowrap"><nobr>{{ utils.formatCurrency(order.shippingFees, order.currency) }}</nobr></td>
             </tr>
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">Tax</td>
-                <td class="align-right last-cell-padding nowrap"><nobr>{{ order.taxesTotal | currency(order.currency|upper) }}</nobr></td>
+                <td class="align-right last-cell-padding nowrap"><nobr>{{ utils.formatCurrency(order.taxesTotal, order.currency) }}</nobr></td>
             </tr>
             <tr>
                 <td class="subtotal align-right first-cell-padding" colspan="3">
@@ -80,7 +82,7 @@
                     </span>
                 </td>
                 <td class="align-right last-cell-padding nowrap">
-                    <nobr><b>{{ order.finalGrandTotal | currency(order.currency|upper) -}}</b></nobr>
+                    <nobr><b>{{ utils.formatCurrency(order.finalGrandTotal, order.currency) }}</b></nobr>
                 </td>
             </tr>
         </tbody>

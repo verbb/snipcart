@@ -12,6 +12,8 @@
     { label: "Subscriptions"|t('snipcart'), url: url('snipcart/subscriptions') }
 ] %}
 
+{% import "snipcart/_macros" as utils %}
+
 {#
 TODO:
 - support pause
@@ -114,7 +116,7 @@ TODO:
                         <tbody>
                             <tr>
                                 <th class="light">{{ "Amount"|t }}</th>
-                                <td>{{ subscription.amount | currency }}</td>
+                                <td>{{ utils.formatCurrency(subscription.amount) }}</td>
                             </tr>
                             <tr>
                                 <th class="light">{{ "Quantity"|t }}</th>
@@ -122,7 +124,7 @@ TODO:
                             </tr>
                             <tr>
                                 <th class="light">{{ "Total Spent"|t }}</th>
-                                <td>{{ subscription.totalSpent | currency }}</td>
+                                <td>{{ utils.formatCurrency(subscription.totalSpent) }}</td>
                             </tr>
                             {% if subscription.firstInvoiceReceivedOn %}
                                 <tr>
@@ -148,14 +150,14 @@ TODO:
                             <tbody>
                                 {% for payment in subscription.upcomingPayments %}
                                 <tr>
-                                    <td>{{ payment.subtotal | currency }}</td>
-                                    <td>{{ payment.taxableTotal | currency }}</td>
-                                    <td>{{ payment.total | currency }}</td>
+                                    <td>{{ utils.formatCurrency(payment.subtotal) }}</td>
+                                    <td>{{ utils.formatCurrency(payment.taxableTotal) }}</td>
+                                    <td>{{ utils.formatCurrency(payment.total) }}</td>
                                     <td>{{ payment.paymentMethod }}</td>
                                     <td>
                                         {{ payment.taxes | join("\n") | nl2br }}
                                     </td>
-                                    <td>{{ payment.shipping ? (payment.shipping | currency) : '' }}</td>
+                                    <td>{{ payment.shipping ? utils.formatCurrency(payment.shipping) : '' }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
