@@ -31,7 +31,7 @@ return [
     'notificationEmails' => [],
 
     // optional path to a custom template to be used for admin order notification emails
-    'notificationEmailTemplate' => ''
+    'notificationEmailTemplate' => '',
 
     // `true` if you'd like Craft to send completed order notifications to customers
     'sendCustomerOrderNotificationEmail' => false,
