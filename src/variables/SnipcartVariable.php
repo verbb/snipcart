@@ -104,18 +104,22 @@ class SnipcartVariable
     /**
      * Gets a cart anchor with a count.
      *
-     * @param string $text
+     * @param string $text      Button's inner text. Defaults to `Shopping Cart`.
+     * @param bool   $showCount `false` to remove dynamic item count.
      *
      * @return \Twig_Markup
      *
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function cartLink($text = null): \Twig_Markup
+    public function cartLink($text = null, $showCount = true): \Twig_Markup
     {
         return $this->_renderTemplate(
             'snipcart/front-end/cart-link',
-            [ 'text' => $text ]
+            [
+                'text' => $text,
+                'showCount' => $showCount
+            ]
         );
     }
 

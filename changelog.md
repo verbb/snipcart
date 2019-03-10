@@ -3,6 +3,7 @@
 ## 1.0.5 - 2019-03-10
 ### Added
 - `getBuyNowButton()` can now take an `image` parameter.
+- `cartLink()` supports a `showCount` setting for optionally removing the cart button's dynamic item count.
 
 ## 1.0.4 - 2019-03-09
 ### Added
