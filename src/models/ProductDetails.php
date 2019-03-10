@@ -432,9 +432,9 @@ class ProductDetails extends \craft\base\Model
             'target'         => null,
             'rel'            => null,
             'title'          => null,
-            'class'          => 'btn snipcart-add-item',
             'text'           => 'Buy Now',
             'quantity'       => 1,
+            'classes'        => ['btn'],
             'customOptions'  => [],
         ];
 
