@@ -432,6 +432,7 @@ class ProductDetails extends \craft\base\Model
             'target'         => null,
             'rel'            => null,
             'title'          => null,
+            'image'          => null,
             'text'           => 'Buy Now',
             'quantity'       => 1,
             'classes'        => ['btn'],
