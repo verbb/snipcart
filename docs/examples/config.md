@@ -23,6 +23,9 @@ return [
 
     // Snipcart secret API key
     'secretApiKey' => '',
+    
+    // default currency
+    'defaultCurrency' => 'USD',    
 
     // send order notifications to designated store admins
     'sendOrderNotificationEmail' => false,
