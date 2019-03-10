@@ -135,7 +135,7 @@ class SnipcartVariable
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = false): \Twig_Markup
+    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): \Twig_Markup
     {
         $settings = Snipcart::$plugin->getSettings();
         $publicApiKey = $settings->publicApiKey;
