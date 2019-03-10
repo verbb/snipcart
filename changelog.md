@@ -4,6 +4,7 @@
 ### Added
 - Added Twig template methods: `craft.snipcart.getCustomer()`, `craft.snipcart.getOrder()` and `craft.snipcart.getSubscription()`.
 - Added ability to override Twig `getBuyNowButton()` price with support for multiple currencies.
+- `getBuyNowButton()` can now include custom options with negative price adjustments.
 ### Fixed
 - Currency setting is now saved properly.
 - Improved consistency of currency values displayed in the control panel and email templates.

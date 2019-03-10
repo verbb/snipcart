@@ -42,8 +42,8 @@ https://docs.snipcart.com/configuration/product-definition
     data-item-custom{{ loop.index }}-name="{{ customOption.name }}"
     data-item-custom{{ loop.index }}-required="{{ customOption.required ? 'true' : 'false' }}"
     data-item-custom{{ loop.index }}-options="{% for option in customOption.options -%}
-        {{ option.name }}[+{{ option.price }}]
-        {%- if loop.last != true %}|{% endif %}{% endfor %}"
+        {{ option.name }}[{{ '+' not in option.price and option.price >= 0 ? '+' : '' }}{{ option.price }}]
+        {%- if not loop.last %}|{% endif %}{% endfor %}"
     {%- endfor -%}
     >
         {{- templateParams.text|t -}}
