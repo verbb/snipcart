@@ -86,11 +86,11 @@ Custom options that each adjust the base product price. Each amount can be posit
                      price: 25
                  },
                  {
-                     name: 'Diamond Studded'
+                     name: 'Diamond Studded',
                      price: 500
                  },
                  {
-                     name: 'Used, Bad Shape'
+                     name: 'Used, Bad Shape',
                      price: -50
                  }
             ]
