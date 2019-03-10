@@ -40,7 +40,7 @@ class SnipcartVariable
      */
     public function defaultCurrency(): string
     {
-        return Snipcart::$plugin->getSettings()->defaultCurrency;
+        return Snipcart::$plugin->getSettings()->getDefaultCurrency();
     }
 
     /**
