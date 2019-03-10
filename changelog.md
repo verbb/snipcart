@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.0.4 - 2019-03-07
+## 1.0.4 - 2019-03-09
 ### Added
 - Added Twig template methods: `craft.snipcart.getCustomer()`, `craft.snipcart.getOrder()` and `craft.snipcart.getSubscription()`.
 - Added ability to override Twig `getBuyNowButton()` price with support for multiple currencies.
