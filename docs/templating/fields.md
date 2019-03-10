@@ -68,7 +68,7 @@ While you can hardcode these values just like the examples, they could just as w
 
 ## Buy Button + Price-Variant Options
 
-Custom options that each add different amounts to the base product price.
+Custom options that each adjust the base product price. Each amount can be positive (increasing product price), negative (reducing product price), or zero (not affecting product price).
 
 ```twig
 {{ entry.productDetails.getBuyNowButton({
@@ -79,7 +79,7 @@ Custom options that each add different amounts to the base product price.
            options: [
                  {
                      name: 'Bedazzled',
-                     price: 5
+                     price: 0
                  },
                  {
                      name: 'Bronzed',
@@ -88,10 +88,32 @@ Custom options that each add different amounts to the base product price.
                  {
                      name: 'Diamond Studded'
                      price: 500
+                 },
+                 {
+                     name: 'Used, Bad Shape'
+                     price: -50
                  }
             ]
        }
    ]
+}) | raw }}
+```
+
+## Buy Button + Price Override
+
+If you have a specific need to override the item's price in your template, passing a `price` property will do exactly that:
+
+```twig
+{{ entry.productDetails.getBuyNowButton({
+    price: 100
+}) | raw }}
+```
+
+A key/value JSON array can also be used to define prices in different currencies, provided that you've [configured your store](https://docs.snipcart.com/configuration/multi-currency) to support multiple currencies.
+
+```twig
+{{ entry.productDetails.getBuyNowButton({
+    price: {"usd": 20, "cad": 25}
 }) | raw }}
 ```
 
