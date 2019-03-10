@@ -20,6 +20,7 @@ https://docs.snipcart.com/configuration/product-definition
     {% if templateParams.target %}target="{{ templateParams.target }}"{% endif %}
     {% if templateParams.title %}title="{{ templateParams.title|t }}"{% endif %}
     {% if templateParams.rel %}rel="{{ templateParams.rel }}"{% endif %}
+    {% if templateParams.image %}data-item-image="{{ templateParams.image }}"{% endif %}
     data-item-id="{{ fieldData.sku }}"
     data-item-name="{{ fieldData.element.title }}"
     data-item-price='{{ price | raw }}'
