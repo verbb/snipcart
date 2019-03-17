@@ -121,10 +121,6 @@ TODO:
         <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order …"|t }}</a>
     {%- endif %}
 
-    <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
-        {{- "View in Snipcart Dashboard"|t -}}
-    </a>
-
     <form id="refund-form" action="" method="post" class="hidden">
         <input type="hidden" name="action" value="snipcart/orders/refund">
         <input type="hidden" name="orderId" value="{{ order.token }}">
@@ -158,6 +154,12 @@ TODO:
         <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
         <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
     </form>
+
+    <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
+        {{- "View in Snipcart Dashboard"|t -}}
+    </a>
+
+    <br>
 
 {% endblock %}
 

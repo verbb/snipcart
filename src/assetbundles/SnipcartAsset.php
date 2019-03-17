@@ -28,7 +28,10 @@ class SnipcartAsset extends AssetBundle
     {
         $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
         $this->depends = [CpAsset::class];
-        $this->js = ['js/snipcart.js'];
+        $this->js = [
+            'js/vendors.js',
+            'js/snipcart.js'
+        ];
         $this->css = ['css/snipcart.css'];
 
         parent::init();

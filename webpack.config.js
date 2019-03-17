@@ -100,6 +100,7 @@ module.exports = {
         'overview': `${assetbundleSrc}/js/overview.js`,
         'OrdersWidget': `${assetbundleSrc}/js/OrdersWidget.js`,
         'snipcart': `${assetbundleSrc}/js/general.js`,
+        'charts': `${assetbundleSrc}/js/charts.js`,
     },
     module: {
         rules: [CSSLoader, JSLoader, ESLintLoader]
@@ -126,4 +127,16 @@ module.exports = {
         path: path.resolve(__dirname, assetbundleDist),
         filename: `js/[name].js`
     },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all'
+          }
+        }
+      }
+    }
+    
 };

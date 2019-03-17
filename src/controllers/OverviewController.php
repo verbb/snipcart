@@ -11,7 +11,9 @@ namespace workingconcept\snipcart\controllers;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\FormatHelper;
 use craft\helpers\DateTimeHelper;
+use DateTimeZone;
 use DateTime;
+use Craft;
 
 class OverviewController extends \craft\web\Controller
 {
@@ -157,7 +159,8 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
-        return (new DateTime())->modify('-1 month');
+        return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+            ->modify('-1 month');
     }
 
     /**
@@ -167,6 +170,6 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getEndDate(): DateTime
     {
-        return new DateTime();
+        return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
     }
 }

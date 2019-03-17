@@ -63,8 +63,13 @@ import ApexCharts from 'apexcharts'
                                 labels: {
                                     show: response.columns.length < 15,
                                     formatter: function (val) {
-                                        let date = new Date(val);
-                                        return date.getMonth() + '/' + date.getDate();
+                                        if (val === undefined) {
+                                            return val;
+                                        }
+                                        const datePieces = val.split('-'); // YYYY-MM-DD
+                                        const month = parseInt(datePieces[1]);
+                                        const day = parseInt(datePieces[2]);
+                                        return `${month}/${day}`;
                                     }
                                 },
                                 axisBorder: {

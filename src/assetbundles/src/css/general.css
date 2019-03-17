@@ -20,13 +20,9 @@
 
 /* purgecss start ignore */
 
-#overview-chart {
-    .apexcharts-menu-item {
-        @apply text-center;
-    }
-
-    .apexcharts-toolbar {
-        top: 15px;
-    }    
+.ui-datepicker-calendar .ui-state-disabled {
+    text-align: center;
+    opacity: 0.3;
 }
+
 /* purgecss end ignore */

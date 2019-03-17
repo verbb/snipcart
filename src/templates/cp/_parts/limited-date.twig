@@ -1,0 +1,33 @@
+{% set id = (id ?? 'date'~random())~'-date' -%}
+{% set name = name ?? null -%}
+{% set value = value ?? null -%}
+{% set minDate = minDate ?? null %}
+{% set maxDate = maxDate ?? null %}
+
+<div class="datewrapper"
+        {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
+    {%- include "_includes/forms/text" with {
+        name: (name ? name~'[date]'),
+        autocomplete: false,
+        size: 10,
+        placeholder: ' ',
+        value: (value ? value|date('short') : '')
+    } -%}
+    <div data-icon="date"></div>
+    {% if name -%}
+        <input type="hidden" name="{{ name }}[timezone]" value="{{ craft.app.getTimeZone() }}">
+    {%- endif -%}
+</div>
+
+{%- js %}
+    var options = Craft.datepickerOptions;
+    {% if minDate %}
+    options.minDate = new Date({{ minDate.format('Y') }}, {{ minDate.format('n')-1 }}, {{ minDate.format('j') }});
+    {% endif %}
+    {% if maxDate %}
+    options.maxDate = new Date({{ maxDate.format('Y') }}, {{ maxDate.format('n')-1 }}, {{ maxDate.format('j') }});
+    {% endif %}
+    $('#{{ id|namespaceInputId|e('js') }}').datepicker($.extend({
+        defaultDate: new Date({% if value %}{{ value.format('Y') }}, {{ value.format('n')-1 }}, {{ value.format('j') }}{% endif %})
+    }, options));
+{%- endjs %}

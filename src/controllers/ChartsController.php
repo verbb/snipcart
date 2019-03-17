@@ -8,10 +8,11 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use workingconcept\snipcart\helpers\FormatHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use yii\base\Response;
+use DateTimeZone;
+use DateTime;
 
 class ChartsController extends \craft\web\Controller
 {
@@ -20,9 +21,6 @@ class ChartsController extends \craft\web\Controller
 
     /**
      * Fetch order data JSON for the Dashboard widget's chart.
-     *
-     * @todo Use another chart renderer so we can support displaying currencies
-     *       that don't use a dollar sign.
      *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
@@ -79,24 +77,30 @@ class ChartsController extends \craft\web\Controller
         ]);
     }
 
+    /**
+     * Fetch order and sales stats in one response for the CP overview chart.
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     * @throws
+     */
     public function actionGetCombinedData(): Response
     {
-        $this->requirePostRequest();
-
-        $request = Craft::$app->getRequest();
-        $type    = $request->getRequiredParam('type');
-
-        $startDate = (new \DateTime('now'))->modify('-1 month');
-        $endDate = (new \DateTime('now'))->modify('-1 day');
         $formats = [];
 
-        $salesData = Snipcart::$plugin->data->getSales($startDate, $endDate);
+        $salesData = Snipcart::$plugin->data->getSales(
+            $this->_getStartDate(),
+            $this->_getEndDate()
+        );
         $salesChartData = $this->_getTotalSales($salesData);
-        //$salesChartData['series'][0]['type'] = 'line';
+        $salesChartData['series'][0]['type'] = 'area';
         $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
             ->getDefaultCurrencySymbol();
 
-        $orderData = Snipcart::$plugin->data->getOrderCount($startDate, $endDate);
+        $orderData = Snipcart::$plugin->data->getOrderCount(
+            $this->_getStartDate(),
+            $this->_getEndDate()
+        );
         $orderChartData = $this->_getNumberOfOrders($orderData);
         //$orderChartData['series'][0]['type'] = 'line';
 
@@ -108,7 +112,6 @@ class ChartsController extends \craft\web\Controller
             'columns' => $salesChartData['columns'],
             'formats' => $formats,
         ]);
-
     }
 
     // Private Methods
@@ -169,4 +172,26 @@ class ChartsController extends \craft\web\Controller
             'columns' => $columns
         ];
     }
+
+    /**
+     * Get the beginning of the range used for visualizing stats.
+     * @return DateTime
+     * @throws
+     */
+    private function _getStartDate(): DateTime
+    {
+        return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+            ->modify('-1 month');
+    }
+
+    /**
+     * Get the end of the range used for visualizing stats.
+     * @return DateTime
+     * @throws
+     */
+    private function _getEndDate(): DateTime
+    {
+        return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
+    }
+
 }

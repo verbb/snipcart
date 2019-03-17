@@ -3,12 +3,9 @@
 import ApexCharts from 'apexcharts'
 
 const statPanels = document.getElementById('stat-panels');
-//const ordersTableBody = document.querySelector('#stat-orders tbody');
-//const customersTableBody = document.querySelector('#stat-customers tbody');
 
 if (statPanels) {
     fetchStatPanels();
-    //fetchOrderAndCustomerSummary();
 }
 
 function fetchStatPanels() {
@@ -39,69 +36,7 @@ function fetchStatPanels() {
     );
 }
 
-/*
-function fetchOrderAndCustomerSummary() {
-    Craft.postActionRequest(
-        'snipcart/overview/get-orders-customers',
-        {},
-        function(response, textStatus) {
-            if (textStatus === 'success' && typeof (response.error) === 'undefined') {
-
-                response.orders.items.forEach(function(order){
-                    const row = document.createElement('tr');
-
-                    row.setAttribute('data-id', order.token);
-                    row.setAttribute('data-name', order.email);
-
-                    const invoiceColumn = document.createElement('td');
-                    invoiceColumn.innerHTML = `<a href="${order.cpUrl}">${order.invoiceNumber}</a>`;
-
-                    const dateColumn = document.createElement('td');
-                    dateColumn.innerHTML = order.creationDate;
-                    
-                    const nameColumn = document.createElement('td');
-                    nameColumn.innerHTML = order.billingAddressName;
-
-                    const totalColumn = document.createElement('td');
-                    totalColumn.innerHTML = order.finalGrandTotal;
-
-                    row.appendChild(invoiceColumn);
-                    row.appendChild(dateColumn);
-                    row.appendChild(nameColumn);
-                    row.appendChild(totalColumn);
-
-                    ordersTableBody.appendChild(row);
-                });
-
-                response.customers.items.forEach(function(customer){
-                    const row = document.createElement('tr');
-
-                    row.setAttribute('data-id', customer.token);
-                    row.setAttribute('data-name', customer.email);
-
-                    const nameColumn = document.createElement('td');
-                    nameColumn.innerHTML = `<a href="${customer.cpUrl}">${customer.billingAddressName}</a>`;
-
-                    const ordersColumn = document.createElement('td');
-                    ordersColumn.innerHTML = customer.statistics.ordersCount;
-                    
-                    const totalColumn = document.createElement('td');
-                    totalColumn.innerHTML = customer.statistics.ordersAmount;
-
-                    row.appendChild(nameColumn);
-                    row.appendChild(ordersColumn);
-                    row.appendChild(totalColumn);
-
-                    customersTableBody.appendChild(row);
-                });
-            }
-        }
-    );
-}
-*/
-
 const chartContainer = document.getElementById('overview-chart');
-
 
 initChart();
 
@@ -114,18 +49,14 @@ function initChart() {
 
     Craft.postActionRequest(
         'snipcart/charts/get-combined-data',
-        {
-            type: 'totalSales',
-            range: 'monthly',
-        },
+        {},
         function(response, textStatus) {
             // TODO: gracefully handle error
             chartContainer.classList.remove('spinner');
 
             if (textStatus === 'success' && typeof (response.error) === 'undefined') {
                 const maxOrders = response.series[0].data.max();
-                //const maxSales = response.series[1].data.max();
-                //console.log(response);
+                const maxSales = response.series[1].data.max();
 
                 const options = {
                     chart: {
@@ -147,8 +78,27 @@ function initChart() {
                     dataLabels: {
                         enabled: false
                     },
+                    markers: {
+                        size: 2,
+                        hover: {
+                            size: 4,
+                        },
+                        strokeWidth: 0,
+                        fillOpacity: 0.5,
+                    },
                     fill: {
-                        type: 'solid'
+                        type: ['solid', 'gradient'],
+                        colors: ['#8f98a3', '#0d78f2'],
+                        opacity: 1,
+                        gradient: {
+                            type: "vertical",
+                            shadeIntensity: 0.3,
+                            opacityFrom: 0.5,
+                            opacityTo: 0,
+                            stops: [0, 90],
+                            colorStops: []
+                        },
+                      
                     },
                     series: response.series,
                     xaxis: {
@@ -156,8 +106,13 @@ function initChart() {
                         labels: {
                             show: false,
                             formatter: function (val) {
-                                let date = new Date(val);
-                                return date.getMonth() + '/' + date.getDate();
+                                if (val === undefined) {
+                                    return val;
+                                }
+                                const datePieces = val.split('-'); // YYYY-MM-DD
+                                const month = parseInt(datePieces[1]);
+                                const day = parseInt(datePieces[2]);
+                                return `${month}/${day}`;
                             }
                         },
                         axisBorder: {
@@ -169,9 +124,9 @@ function initChart() {
                     },
                     yaxis: [
                         {
+                            seriesName: 'Orders',
                             min: 0,
                             max: maxOrders * 2,
-                            seriesName: 'Orders',
                             decimalsInFloat: 0,
                             axisBorder: {
                                 show: false
@@ -184,10 +139,9 @@ function initChart() {
                             }
                         },
                         {
-                            // min: 0,
-                            // max: Math.ceil(maxSales),
+                            min: 0,
+                            max: getRoundedMaxForChart(maxSales),
                             seriesName: 'Sales',
-                            forceNiceScale: true,
                             axisBorder: {
                                 show: false
                             },
@@ -196,13 +150,13 @@ function initChart() {
                             },
                             labels: {
                                 show: true,
-                                offsetX: -25,
+                                offsetX: -20,
                                 style: {
                                     color: '#8f98a3',
                                 },
                                 formatter: function(val) {
                                     if (response.formats.currencySymbol !== undefined) {
-                                        return response.formats.currencySymbol + val;
+                                        return formatCurrencyValue(response.formats.currencySymbol, val);
                                     }
 
                                     return val;
@@ -223,7 +177,8 @@ function initChart() {
                         borderColor: '#e3e5e8',
                         strokeDashArray: 1,
                         padding: {
-                            left: -15,
+                            top: 10,
+                            left: -10,
                         },
                     },
                     stroke: {
@@ -246,4 +201,34 @@ function initChart() {
             }
         }
     );
+}
+
+function formatCurrencyValue(symbol, value)
+{
+    let adjustedValue = symbol + (parseFloat(value).toFixed(2));
+
+    return String(adjustedValue).replace('.00', '');
+}
+
+function getRoundedMaxForChart(value)
+{
+    const roundTarget = getNumberOfDigits(value) - 1;
+    return Math.ceil(value / roundTarget) * roundTarget;
+}
+
+function getNumberOfDigits(n)
+{
+    if (n < 0) { return 0; }
+    if (n < 10) { return 1; }
+    if (n < 100) { return 2; }
+    if (n < 1000) { return 3; }
+    if (n < 10000) { return 4; }
+    if (n < 100000) { return 5; }
+    if (n < 1000000) { return 6; }
+    if (n < 10000000) { return 7; }
+    if (n < 100000000) { return 8; }
+    if (n < 1000000000) { return 9; }
+    /*      2147483647 is 2^31-1 - add more ifs as needed
+       and adjust this final return as well. */
+    return 10;
 }
