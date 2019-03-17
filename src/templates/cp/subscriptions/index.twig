@@ -7,43 +7,43 @@
 {% set selectedTab   = "subscriptions" %}
 
 {% block content %}
+    <div>
+        <p id="noredirects"{% if subscriptions | length %} class="hidden"{% endif %}>
+            {{ "There aren't any subscriptions yet." | t }}
+        </p>
 
-    <p id="noredirects"{% if subscriptions | length %} class="hidden"{% endif %}>
-        {{ "There aren't any subscriptions yet." | t }}
-    </p>
+        {% if subscriptions |length %}
+            <table id="carts" class="data w-full">
+                <thead>
+                    <th scope="col">{{ "Subscriber"|t }}</th>
+                    <th scope="col">{{ "Name"|t }}</th>
+                    <th scope="col">{{ "Amount"|t }}</th>
+                    <th scope="col">{{ "Quantity"|t }}</th>
+                    <th scope="col">{{ "Status"|t }}</th>
+                    <th scope="col">{{ "Recurring Shipping"|t }}</th>
+                </thead>
+                <tbody>
+                    {% for subscription in subscriptions %}
+                        <tr data-id="{{ subscription.id }}" data-name="{{ subscription.user.email }}">
+                            <td>
+                                <a href="{{ subscription.cpUrl }}">{{ subscription.user.billingAddressName }}</a>
+                            </td>
+                            <td>{{ subscription.name }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(subscription.amount) }}</td>
+                            <td>{{ subscription.quantity }}</td>
+                            <td>{{ subscription.status }}</td>
+                            <td>{{ subscription.recurringShipping ? "yes"|t : "no"|t }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    {% if subscriptions |length %}
-        <table id="carts" class="data w-full">
-            <thead>
-                <th scope="col">{{ "Subscriber"|t }}</th>
-                <th scope="col">{{ "Name"|t }}</th>
-                <th scope="col">{{ "Amount"|t }}</th>
-                <th scope="col">{{ "Quantity"|t }}</th>
-                <th scope="col">{{ "Status"|t }}</th>
-                <th scope="col">{{ "Recurring Shipping"|t }}</th>
-            </thead>
-            <tbody>
-                {% for subscription in subscriptions %}
-                    <tr data-id="{{ subscription.id }}" data-name="{{ subscription.user.email }}">
-                        <td>
-                            <a href="{{ subscription.cpUrl }}">{{ subscription.user.billingAddressName }}</a>
-                        </td>
-                        <td>{{ subscription.name }}</td>
-                        <td>{{ craft.snipcart.formatCurrency(subscription.amount) }}</td>
-                        <td>{{ subscription.quantity }}</td>
-                        <td>{{ subscription.status }}</td>
-                        <td>{{ subscription.recurringShipping ? "yes"|t : "no"|t }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% include "snipcart/cp/_parts/pagination" with {
+                currentPage: pageNumber,
+                totalPages: totalPages,
+                path: 'snipcart/orders/'
+            } %}
 
-        {% include "snipcart/cp/_parts/pagination" with {
-            currentPage: pageNumber,
-            totalPages: totalPages,
-            path: 'snipcart/orders/'
-        } %}
-
-    {% endif %}
-
+        {% endif %}
+    </div>
 {% endblock %}

@@ -8,67 +8,67 @@
 {% set selectedTab = "customers" %}
 
 {% block content %}
+    <div>
+        <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
+            {{ "There aren't any customers with accounts yet."|t }}
+        </p>
 
-    <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
-        {{ "There aren't any customers with accounts yet."|t }}
-    </p>
+        <div class="mb-6 p-2 bg-light-grey rounded{% if customers|length == 0%} hidden{% endif %}">
+            <form action="" method="post">
+                {{ csrfInput() }}
 
-    <div class="mb-6 p-2 bg-light-grey rounded">
-        <form action="" method="post">
-            {{ csrfInput() }}
+                {{ forms.text({
+                    first: true,
+                    label: 'Keywords'|t,
+                    id: 'searchKeywords',
+                    required: true,
+                    placeholder: 'customer name',
+                    name: 'searchKeywords',
+                    value: keywords,
+                    style: 'width: 200px;'
+                }) }}
 
-            {{ forms.text({
-                first: true,
-                label: 'Keywords'|t,
-                id: 'searchKeywords',
-                required: true,
-                placeholder: 'customer name',
-                name: 'searchKeywords',
-                value: keywords,
-                style: 'width: 200px;'
-            }) }}
+                <input type="submit" class="btn submit" name="submit" value="{{ 'Search'|t }}">
+                {% if keywords %}
+                    <input type="submit"
+                        class="btn"
+                        name="submit"
+                        onclick="document.getElementById('searchKeywords').value = '';"
+                        value="{{ 'Clear'|t }}"
+                    >
+                {% endif %}
+            </form>
+        </div>
 
-            <input type="submit" class="btn submit" name="submit" value="{{ 'Search'|t }}">
-            {% if keywords %}
-                <input type="submit"
-                    class="btn"
-                    name="submit"
-                    onclick="document.getElementById('searchKeywords').value = '';"
-                    value="{{ 'Clear'|t }}"
-                >
-            {% endif %}
-        </form>
+        {% if customers|length %}
+
+            <table id="customers" class="data w-full">
+                <thead>
+                    <th scope="col">{{ "Name"|t }}</th>
+                    <th scope="col">{{ "Email"|t }}</th>
+                    <th scope="col">{{ "Billing Address"|t }}</th>
+                    <th scope="col">{{ "Orders"|t }}</th>
+                    <th scope="col">{{ "Total Spent"|t }}</th>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                        <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
+                            <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.billingAddressAddress1 }}</td>
+                            <td>{{ customer.statistics.ordersCount }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% include "snipcart/cp/_parts/pagination" with {
+                currentPage: pageNumber,
+                totalPages: totalPages,
+                path: 'snipcart/customers/'
+            } %}
+
+        {% endif %}
     </div>
-
-    {% if customers|length %}
-
-        <table id="customers" class="data w-full">
-            <thead>
-                <th scope="col">{{ "Name"|t }}</th>
-                <th scope="col">{{ "Email"|t }}</th>
-                <th scope="col">{{ "Billing Address"|t }}</th>
-                <th scope="col">{{ "Orders"|t }}</th>
-                <th scope="col">{{ "Total Spent"|t }}</th>
-            </thead>
-            <tbody>
-                {% for customer in customers %}
-                    <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
-                        <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
-                        <td>{{ customer.email }}</td>
-                        <td>{{ customer.billingAddressAddress1 }}</td>
-                        <td>{{ customer.statistics.ordersCount }}</td>
-                        <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount) }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% include "snipcart/cp/_parts/pagination" with {
-            currentPage: pageNumber,
-            totalPages: totalPages,
-            path: 'snipcart/customers/'
-        } %}
-
-    {% endif %}
-
 {% endblock %}

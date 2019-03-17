@@ -22,145 +22,143 @@ TODO:
 ] %}
 
 {% block content %}
+    <div>
+        {% if orderRefunds %}
+            {% set totalRefunded = 0 %}
+            <div class="refunds">
+                <h2>{{ "Refunds"|t }}</h2>
 
-    {% if orderRefunds %}
-        {% set totalRefunded = 0 %}
-        <div class="refunds">
-            <h2>{{ "Refunds"|t }}</h2>
+                <table width="100%">
+                    <thead>
+                        <th>{{ "Date"|t }}</th>
+                        <th>{{ "Amount"|t }}</th>
+                        <th>{{ "Comment"|t }}</th>
+                        <th>{{ "Customer Notified"|t }}</th>
+                        <th>{{ "Refunded by Gateway"|t }}</th>
+                    </thead>
+                    <tbody>
+                    {% for refund in orderRefunds %}
+                        <tr>
+                            <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(refund.amount, order.currency) }}</td>
+                            <td>{{ refund.comment }}</td>
+                            <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
+                            <td>{{ refund.refundedByPaymentGateway ? "yes" : "no" }}</td>
+                        </tr>
+                        {% set totalRefunded = totalRefunded + refund.amount %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <br>
+            </div>
+        {% endif %}
 
-            <table width="100%">
-                <thead>
-                    <th>{{ "Date"|t }}</th>
-                    <th>{{ "Amount"|t }}</th>
-                    <th>{{ "Comment"|t }}</th>
-                    <th>{{ "Customer Notified"|t }}</th>
-                    <th>{{ "Refunded by Gateway"|t }}</th>
-                </thead>
-                <tbody>
-                {% for refund in orderRefunds %}
-                    <tr>
-                        <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
-                        <td>{{ craft.snipcart.formatCurrency(refund.amount, order.currency) }}</td>
-                        <td>{{ refund.comment }}</td>
-                        <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
-                        <td>{{ refund.refundedByPaymentGateway ? "yes" : "no" }}</td>
-                    </tr>
-                    {% set totalRefunded = totalRefunded + refund.amount %}
-                {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <br>
-        </div>
-    {% endif %}
+        <div class="detail-columns block px-3 mb-8">
+            <div class="flex-wrapper -mx-6">
+                <div class="w-1/2 mx-3">
+                    <div class="inner">
+                        <div class="flex-wrapper -mx-3">
+                            <div class="w-1/2 mx-3">
+                                <h2>{{ "Created"|t }} {{ order.creationDate | date('F j, Y') }}</h2>
+                                <p>
+                                    {{ "Updated"|t }} {{ order.modificationDate | date('n/j/Y g:ia') }}<br>
+                                    {{ "Status"|t }}: <b>{{ order.status }}</b><br>
+                                    {{ "Payment Method"|t }}: <b>{{ order.cardType }} (<code>{{ order.creditCardLast4Digits }}</code>)</b><br>
+                                    {{ order.paymentGatewayUsed }}: <code>{{ order.paymentTransactionId }}</code>
+                                </p>
 
-    <div class="detail-columns block px-3 mb-8">
-        <div class="flex-wrapper -mx-6">
-            <div class="w-1/2 mx-3">
-                <div class="inner">
-                    <div class="flex-wrapper -mx-3">
-                        <div class="w-1/2 mx-3">
-                            <h2>{{ "Created"|t }} {{ order.creationDate | date('F j, Y') }}</h2>
-                            <p>
-                                {{ "Updated"|t }} {{ order.modificationDate | date('n/j/Y g:ia') }}<br>
-                                {{ "Status"|t }}: <b>{{ order.status }}</b><br>
-                                {{ "Payment Method"|t }}: <b>{{ order.cardType }} (<code>{{ order.creditCardLast4Digits }}</code>)</b><br>
-                                {{ order.paymentGatewayUsed }}: <code>{{ order.paymentTransactionId }}</code>
-                            </p>
+                                {% if order.notes %}
+                                    <h3>{{ "Notes"|t }}</h3>
+                                    {{ order.notes }}
+                                {% endif %}
 
-                            {% if order.notes %}
-                                <h3>{{ "Notes"|t }}</h3>
-                                {{ order.notes }}
-                            {% endif %}
+                            </div>
+                            <div class="w-1/2 mx-3">
+                                <h2>{{ "Customer"|t }}</h2>
 
-                        </div>
-                        <div class="w-1/2 mx-3">
-                            <h2>{{ "Customer"|t }}</h2>
+                                {% include "snipcart/cp/_parts/customer-summary" with {
+                                    order: order,
+                                } %}
 
-                            {% include "snipcart/cp/_parts/customer-summary" with {
-                                order: order,
-                            } %}
-
-                            {% include "snipcart/cp/_parts/order-addresses" with {
-                                order: order,
-                                shippingSameAsBilling: order.shippingAddressSameAsBilling
-                            } %}
+                                {% include "snipcart/cp/_parts/order-addresses" with {
+                                    order: order,
+                                    shippingSameAsBilling: order.shippingAddressSameAsBilling
+                                } %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="w-1/2 mx-3">
-                <div class="inner">
-                    <h2>{{ "Items"|t }}</h2>
+                <div class="w-1/2 mx-3">
+                    <div class="inner">
+                        <h2>{{ "Items"|t }}</h2>
 
-                    {% include "snipcart/cp/_parts/cart-items" with {
-                        order: order
-                    } %}
+                        {% include "snipcart/cp/_parts/cart-items" with {
+                            order: order
+                        } %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-{#% if orderNotifications %}
-<div class="notifications">
-    <h2>Notifications</h2>
+        {#% if orderNotifications %}
+        <div class="notifications">
+            <h2>Notifications</h2>
 
-    
-    <div class="items">
-        {% for notification in orderNotifications.items %}
-            <div class="item">
-                {{ notification.type }} ({{ notification.deliveryMethod }}) from {{ notification.creationDate | date() }}:
-                <blockquote>{{ notification.message ?? "" }}</blockquote>
+
+            <div class="items">
+                {% for notification in orderNotifications.items %}
+                    <div class="item">
+                        {{ notification.type }} ({{ notification.deliveryMethod }}) from {{ notification.creationDate | date() }}:
+                        <blockquote>{{ notification.message ?? "" }}</blockquote>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        {% endif %#}
+
+        {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
+            <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order …"|t }}</a>
+        {%- endif %}
+
+        <form id="refund-form" action="" method="post" class="hidden">
+            <input type="hidden" name="action" value="snipcart/orders/refund">
+            <input type="hidden" name="orderId" value="{{ order.token }}">
+            {{ csrfInput() }}
+
+            {{ forms.textField({
+                first: true,
+                label: 'Refund Amount'|t,
+                id: 'amount',
+                required: true,
+                name: 'amount',
+                autofocus: true,
+            }) }}
+
+            {{ forms.textField({
+                label: 'Comment'|t,
+                id: 'comment',
+                required: false,
+                name: 'comment',
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: 'Notify Customer'|t,
+                id: 'notifyCustomer',
+                required: false,
+                name: 'notifyCustomer',
+                on: false,
+                value: true,
+            }) }}
+
+            <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
+            <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
+        </form>
+
+        <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
+            {{- "View in Snipcart Dashboard"|t -}}
+        </a>
     </div>
-</div>
-{% endif %#}
-
-    {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
-        <a href="#" class="btn" id="refund-order-btn">{{ "Refund Order …"|t }}</a>
-    {%- endif %}
-
-    <form id="refund-form" action="" method="post" class="hidden">
-        <input type="hidden" name="action" value="snipcart/orders/refund">
-        <input type="hidden" name="orderId" value="{{ order.token }}">
-        {{ csrfInput() }}
-
-        {{ forms.textField({
-            first: true,
-            label: 'Refund Amount'|t,
-            id: 'amount',
-            required: true,
-            name: 'amount',
-            autofocus: true,
-        }) }}
-
-        {{ forms.textField({
-            label: 'Comment'|t,
-            id: 'comment',
-            required: false,
-            name: 'comment',
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: 'Notify Customer'|t,
-            id: 'notifyCustomer',
-            required: false,
-            name: 'notifyCustomer',
-            on: false,
-            value: true,
-        }) }}
-
-        <a href="#" class="btn cancel">{{ "Cancel"|t }}</a>
-        <input type="submit" name="submit" class="btn submit" value="{{ "Process Refund"|t }}">
-    </form>
-
-    <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
-        {{- "View in Snipcart Dashboard"|t -}}
-    </a>
-
-    <br>
-
 {% endblock %}
 
 {% js %}
