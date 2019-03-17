@@ -9,8 +9,8 @@
 namespace workingconcept\snipcart\controllers;
 
 use workingconcept\snipcart\Snipcart;
+use workingconcept\snipcart\helpers\FormatHelper;
 use craft\helpers\DateTimeHelper;
-use Craft;
 use DateTime;
 
 class OverviewController extends \craft\web\Controller
@@ -79,19 +79,18 @@ class OverviewController extends \craft\web\Controller
 
         if ($preformat)
         {
-            $formatter = Craft::$app->getFormatter();
             $defaultCurrency = Snipcart::$plugin->getSettings()->defaultCurrency;
 
             $stats->ordersCount = number_format($stats->ordersCount);
-            $stats->ordersSales = $formatter->asCurrency(
+            $stats->ordersSales = FormatHelper::formatCurrency(
                 $stats->ordersSales,
                 $defaultCurrency
             );
-            $stats->averageOrdersValue = $formatter->asCurrency(
+            $stats->averageOrdersValue = FormatHelper::formatCurrency(
                 $stats->averageOrdersValue,
                 $defaultCurrency
             );
-            $stats->averageCustomerValue = $formatter->asCurrency(
+            $stats->averageCustomerValue = FormatHelper::formatCurrency(
                 $stats->averageCustomerValue,
                 $defaultCurrency
             );
@@ -118,8 +117,6 @@ class OverviewController extends \craft\web\Controller
 
         if ($preformat)
         {
-            $formatter = Craft::$app->getFormatter();
-
             foreach ($orders->items as &$item)
             {
                 // TODO: see if there's a better way to attach dynamic fields
@@ -129,7 +126,7 @@ class OverviewController extends \craft\web\Controller
                 );
 
                 $item['creationDate'] = DateTimeHelper::toDateTime($item['creationDate'])->format('n/j');
-                $item['finalGrandTotal'] = $formatter->asCurrency($item['finalGrandTotal']);
+                $item['finalGrandTotal'] = FormatHelper::formatCurrency($item['finalGrandTotal']);
             }
 
             foreach ($customers->items as &$item)
@@ -141,7 +138,7 @@ class OverviewController extends \craft\web\Controller
                 );
 
                 $item['statistics']['ordersCount'] = number_format($item['statistics']['ordersCount']);
-                $item['statistics']['ordersAmount'] = $formatter->asCurrency($item['statistics']['ordersAmount']);
+                $item['statistics']['ordersAmount'] = FormatHelper::formatCurrency($item['statistics']['ordersAmount']);
             }
         }
         

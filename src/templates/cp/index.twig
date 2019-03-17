@@ -2,12 +2,10 @@
 {# @var customer \workingconcept\snipcart\models\Customer #}
 {% extends "snipcart/cp/_layout" %}
 
-{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\OverviewAsset") %}
 
 {% set title = "Snipcart"|t %}
 {% set selectedTab = "overview" %}
-
-{% import "snipcart/_macros" as utils %}
 
 {% block content %}
 
@@ -91,9 +89,11 @@
         </div>
     </div>
 
-    <hr class="mt-10">
+    <div class="bg-light-grey border-grey rounded mt-4 px-4">
+        <div id="overview-chart" style="height: 220px; width: 100%;"></div>
+    </div>
 
-    <div class="detail-columns block mt-8 mb-8">
+    <div class="detail-columns block mt-12 mb-8">
         <div class="block md:flex md:-mx-3">
             <div class="w-full mb-8 md:mb-0 md:w-1/2 md:mx-3">
                 <div class="inner">
@@ -112,7 +112,7 @@
                                     <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
                                     <td>{{ order.creationDate | date('n/j') }}</td>
                                     <td>{{ order.billingAddress.name }}</td>
-                                    <td>{{ utils.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
+                                    <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -136,7 +136,7 @@
                             <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
                                 <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
                                 <td>{{ customer.statistics.ordersCount }}</td>
-                                <td>{{ utils.formatCurrency(customer.statistics.ordersAmount) }}</td>
+                                <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount) }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

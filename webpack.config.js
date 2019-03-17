@@ -97,6 +97,7 @@ module.exports = {
         'field-product-details': `${assetbundleSrc}/js/field-product-details.js`,
         'settings-discount': `${assetbundleSrc}/js/settings-discount.js`,
         'settings-plugin': `${assetbundleSrc}/js/settings-plugin.js`,
+        'overview': `${assetbundleSrc}/js/overview.js`,
         'OrdersWidget': `${assetbundleSrc}/js/OrdersWidget.js`,
         'snipcart': `${assetbundleSrc}/js/general.js`,
     },

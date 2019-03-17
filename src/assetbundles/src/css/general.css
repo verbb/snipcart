@@ -17,3 +17,16 @@
 .stat-panel .spinner {
     height: 20px;
 }
+
+/* purgecss start ignore */
+
+#overview-chart {
+    .apexcharts-menu-item {
+        @apply text-center;
+    }
+
+    .apexcharts-toolbar {
+        top: 15px;
+    }    
+}
+/* purgecss end ignore */

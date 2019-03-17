@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\variables;
 
 use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\helpers\FieldHelper;
+use workingconcept\snipcart\helpers\FormatHelper;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\models\Customer;
 use workingconcept\snipcart\models\Order;
@@ -17,6 +18,7 @@ use workingconcept\snipcart\models\Subscription;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
+use yii\base\InvalidConfigException;
 
 class SnipcartVariable
 {
@@ -51,6 +53,21 @@ class SnipcartVariable
     public function defaultCurrencySymbol(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+    }
+
+    /**
+     * Returns formatted currency string.
+     *
+     * @param mixed  $value        The value to be formatted.
+     * @param string $currencyType Optional string representing desired currency
+     *                             to be explicitly set.
+     *
+     * @return string
+     * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
+     */
+    public function formatCurrency($value, $currencyType = null): string
+    {
+        return FormatHelper::formatCurrency($value, $currencyType);
     }
 
     /**

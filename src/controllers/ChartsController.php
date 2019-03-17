@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
+use workingconcept\snipcart\helpers\FormatHelper;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use yii\base\Response;
@@ -49,12 +50,15 @@ class ChartsController extends \craft\web\Controller
             return $this->asJson($problem);
         }
 
-        $endDate = new \DateTime('now');
+        $endDate = (new \DateTime('now'))->modify('-1 day');
+        $formats = [];
 
         if ($type === 'totalSales')
         {
             $data = Snipcart::$plugin->data->getSales($startDate, $endDate);
             $chartData = $this->_getTotalSales($data);
+            $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
+                ->getDefaultCurrencySymbol();
         }
         elseif ($type === 'numberOfOrders')
         {
@@ -68,32 +72,43 @@ class ChartsController extends \craft\web\Controller
             return $this->asJson($problem);
         }
 
-        $rows    = $chartData['rows'];
-        $columns = $chartData['columns'];
+        return $this->asJson([
+            'series'  => $chartData['series'],
+            'columns' => $chartData['columns'],
+            'formats' => $formats,
+        ]);
+    }
 
-        $defaultFormats = [
-            'numberFormat' => ',.0f',
-            'percentFormat' => ',.2%',
-            'currencyFormat' => '$,.2f',
-            'shortDateFormats' => [
-                'day'   => '%-m/%-d',
-                'month' => '%-m/%y',
-                'year'  => '%Y'
-            ]
-        ];
+    public function actionGetCombinedData(): Response
+    {
+        $this->requirePostRequest();
+
+        $request = Craft::$app->getRequest();
+        $type    = $request->getRequiredParam('type');
+
+        $startDate = (new \DateTime('now'))->modify('-1 month');
+        $endDate = (new \DateTime('now'))->modify('-1 day');
+        $formats = [];
+
+        $salesData = Snipcart::$plugin->data->getSales($startDate, $endDate);
+        $salesChartData = $this->_getTotalSales($salesData);
+        //$salesChartData['series'][0]['type'] = 'line';
+        $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
+            ->getDefaultCurrencySymbol();
+
+        $orderData = Snipcart::$plugin->data->getOrderCount($startDate, $endDate);
+        $orderChartData = $this->_getNumberOfOrders($orderData);
+        //$orderChartData['series'][0]['type'] = 'line';
 
         return $this->asJson([
-            'dataTable'        => [
-                'columns' => $columns,
-                'rows'    => $rows,
+            'series' => [
+                $orderChartData['series'][0],
+                $salesChartData['series'][0],
             ],
-            'total'            => count($chartData['rows']),
-            'totalHtml'        => count($chartData['rows']),
-            'formats'          => $defaultFormats,
-            'orientation'      => Craft::$app->locale->getOrientation(),
-            'scale'            => 'day',
-            'localeDefinition' => [],
+            'columns' => $salesChartData['columns'],
+            'formats' => $formats,
         ]);
+
     }
 
     // Private Methods
@@ -108,27 +123,22 @@ class ChartsController extends \craft\web\Controller
     private function _getTotalSales($data): array
     {
         $rows = [];
+        $columns = [];
 
         foreach ($data->data as $row)
         {
-            $rows[] = [
-                $row->name,
-                $row->value
-            ];
+            $rows[] = $row->value;
+            $columns[] = $row->name;
         }
 
         return [
-            'rows' => $rows,
-            'columns' => [
+            'series' => [
                 [
-                    'type'  => 'date',
-                    'label' => 'Day'
-                ],
-                [
-                    'type'  => 'currency',
-                    'label' => 'Sales'
+                    'name' => 'Sales',
+                    'data' => $rows,
                 ]
             ],
+            'columns' => $columns
         ];
     }
 
@@ -141,27 +151,22 @@ class ChartsController extends \craft\web\Controller
     private function _getNumberOfOrders($data): array
     {
         $rows = [];
+        $columns = [];
 
         foreach ($data->data as $row)
         {
-            $rows[] = [
-                $row->name,
-                $row->value
-            ];
+            $rows[] = $row->value;
+            $columns[] = $row->name;
         }
 
         return [
-            'rows' => $rows,
-            'columns' => [
+            'series' => [
                 [
-                    'type'  => 'date',
-                    'label' => 'Day'
-                ],
-                [
-                    'type'  => 'number',
-                    'label' => 'Orders'
+                    'name' => 'Orders',
+                    'data' => $rows,
                 ]
             ],
+            'columns' => $columns
         ];
     }
 }
