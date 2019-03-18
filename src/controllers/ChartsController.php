@@ -86,6 +86,8 @@ class ChartsController extends \craft\web\Controller
      */
     public function actionGetCombinedData(): Response
     {
+        $this->requirePostRequest();
+
         $formats = [];
 
         $salesData = Snipcart::$plugin->data->getSales(
@@ -180,6 +182,13 @@ class ChartsController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
+        $request = Craft::$app->getRequest();
+
+        if ($request->getParam('startDate'))
+        {
+            return (new DateTime($request->getParam('startDate')));
+        }
+        
         return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
             ->modify('-1 month');
     }
@@ -191,6 +200,13 @@ class ChartsController extends \craft\web\Controller
      */
     private function _getEndDate(): DateTime
     {
+        $request = Craft::$app->getRequest();
+
+        if ($request->getParam('endDate'))
+        {
+            return (new DateTime($request->getParam('endDate')));
+        }
+
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
     }
 

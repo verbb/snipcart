@@ -159,6 +159,13 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
+        $request = Craft::$app->getRequest();
+
+        if ($request->getParam('startDate'))
+        {
+            return (new DateTime($request->getParam('startDate')));
+        }
+
         return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
             ->modify('-1 month');
     }
@@ -170,6 +177,13 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getEndDate(): DateTime
     {
+        $request = Craft::$app->getRequest();
+
+        if ($request->getParam('endDate'))
+        {
+            return (new DateTime($request->getParam('endDate')));
+        }
+
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
     }
 }

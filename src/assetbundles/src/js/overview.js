@@ -3,53 +3,76 @@
 import ApexCharts from 'apexcharts'
 
 const statPanels = document.getElementById('stat-panels');
+const updateStatsBtn = document.getElementById('update-stats-button');
+const startDateField = document.querySelector('input[name="startDate[date]"]');
+const endDateField = document.querySelector('input[name="endDate[date]"]');
+const chartContainer = document.getElementById('overview-chart');
+
+var chart;
 
 if (statPanels) {
+
     fetchStatPanels();
+    updateChart();
+
+    updateStatsBtn.onclick = function(e) {
+        e.preventDefault();
+        fetchStatPanels();
+        updateChart();
+    }
 }
 
 function fetchStatPanels() {
+    const ordersCount = document.getElementById('stat-ordersCount');
+    const ordersSales = document.getElementById('stat-ordersSales');
+    const averageOrdersValue = document.getElementById('stat-averageOrdersValue');
+    const newCustomers = document.getElementById('stat-newCustomers');
+    const returningCustomers = document.getElementById('stat-returningCustomers');
+    const averageCustomerValue = document.getElementById('stat-averageCustomerValue');
+
+    const spinnerMarkup = '<div class="spinner"></div>';
+
+    ordersCount.innerHTML = spinnerMarkup;
+    ordersSales.innerHTML = spinnerMarkup;
+    averageOrdersValue.innerHTML = spinnerMarkup;
+    newCustomers.innerHTML = spinnerMarkup;
+    returningCustomers.innerHTML = spinnerMarkup;
+    averageCustomerValue.innerHTML = spinnerMarkup;
+
     Craft.postActionRequest(
         'snipcart/overview/get-stats',
-        {},
+        {
+            startDate: startDateField.value,
+            endDate: endDateField.value,
+        },
         function(response, textStatus) {
             if (textStatus === 'success' && typeof (response.error) === 'undefined') {
-                const ordersCount = document.getElementById('stat-ordersCount');
                 ordersCount.innerHTML = response.stats.ordersCount;
-
-                const ordersSales = document.getElementById('stat-ordersSales');
                 ordersSales.innerHTML = response.stats.ordersSales;
-
-                const averageOrdersValue = document.getElementById('stat-averageOrdersValue');
                 averageOrdersValue.innerHTML = response.stats.averageOrdersValue;
-
-                const newCustomers = document.getElementById('stat-newCustomers');
                 newCustomers.innerHTML = response.stats.customers.newCustomers;
-
-                const returningCustomers = document.getElementById('stat-returningCustomers');
                 returningCustomers.innerHTML = response.stats.customers.returningCustomers;
-
-                const averageCustomerValue = document.getElementById('stat-averageCustomerValue');
                 averageCustomerValue.innerHTML = response.stats.averageCustomerValue;
             }
         }
     );
 }
 
-const chartContainer = document.getElementById('overview-chart');
 
-initChart();
 
 Array.prototype.max = function() {
     return Math.max.apply(null, this);
 };
 
-function initChart() {
+function updateChart() {
     chartContainer.classList.add('spinner');
 
     Craft.postActionRequest(
         'snipcart/charts/get-combined-data',
-        {},
+        {
+            startDate: startDateField.value,
+            endDate: endDateField.value,
+        },
         function(response, textStatus) {
             // TODO: gracefully handle error
             chartContainer.classList.remove('spinner');
@@ -110,8 +133,14 @@ function initChart() {
                                     return val;
                                 }
                                 const datePieces = val.split('-'); // YYYY-MM-DD
+                                const year = parseInt(datePieces[0]);
                                 const month = parseInt(datePieces[1]);
                                 const day = parseInt(datePieces[2]);
+
+                                if (year && month && ! day) {
+                                    return `${month}/${year}`;
+                                }
+
                                 return `${month}/${day}`;
                             }
                         },
@@ -184,7 +213,7 @@ function initChart() {
                     stroke: {
                         width: 2,
                         show: true,
-                        curve: 'smooth',
+                        curve: 'straight',
                         lineCap: 'round',
                     },
                     legend: {
@@ -192,12 +221,16 @@ function initChart() {
                     }
                 }
 
-                var chart = new ApexCharts(
-                    chartContainer,
-                    options
-                );
+                if (chart) {
+                    chart.updateOptions(options);
+                } else {
+                    chart = new ApexCharts(
+                        chartContainer,
+                        options
+                    );
 
-                chart.render();
+                    chart.render();
+                }
             }
         }
     );
@@ -205,15 +238,28 @@ function initChart() {
 
 function formatCurrencyValue(symbol, value)
 {
-    let adjustedValue = symbol + (parseFloat(value).toFixed(2));
+    const floatValue = parseFloat(value);
+    const formattedNumber = floatValue.toLocaleString(undefined, {maximumFractionDigits:2}).replace('.00', '');
 
-    return String(adjustedValue).replace('.00', '');
+    return symbol + formattedNumber;
 }
 
 function getRoundedMaxForChart(value)
 {
-    const roundTarget = getNumberOfDigits(value) - 1;
-    return Math.ceil(value / roundTarget) * roundTarget;
+    const intValue = parseInt(value);
+    let roundString = '1';
+
+    // round to the nearest second digit
+    const roundTarget = getNumberOfDigits(intValue) - 1;
+
+    while (roundString.length < roundTarget) {
+        roundString += '0';
+    }
+
+    const roundAdjuster = parseInt(roundString);
+    const rounded = Math.ceil(value / roundAdjuster) * roundAdjuster;
+
+    return rounded;
 }
 
 function getNumberOfDigits(n)

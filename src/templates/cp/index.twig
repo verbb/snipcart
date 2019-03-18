@@ -9,9 +9,42 @@
 
 {% block content %}
     <div>
-        <h2>
-            {{- startDate | date('F j, Y') }} – {{ endDate | date('F j, Y') -}}
-        </h2>
+        <div>
+            <div class="mb-4 p-2 bg-light-grey rounded flex-wrapper items-center">
+                <div class="w-1/3 flex-wrapper items-center">
+                    <h2 class="m-0 p-0">{{ "Store Performance"|t }}</h2>
+                </div>
+                <div class="w-2/3 text-right">
+                    <form action="" method="post">
+                        {{ csrfInput() }}
+
+                        {% include "snipcart/cp/_parts/limited-date" with {
+                            label: 'Start Date'|t,
+                            id: 'startDate',
+                            required: true,
+                            name: 'startDate',
+                            defaultDate: startDate,
+                            maxDate: now | date_modify("-1 day"),
+                            value: startDate
+                        } %}
+
+                        <em>to</em>
+
+                        {% include "snipcart/cp/_parts/limited-date" with {
+                            label: 'End Date'|t,
+                            id: 'endDate',
+                            required: true,
+                            name: 'endDate',
+                            defaultDate: endDate,
+                            maxDate: now,
+                            value: endDate
+                        } %}
+
+                        <input type="submit" id="update-stats-button" class="btn submit" name="submit" value="Update">
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div id="stat-panels" class="snipcart-stat-panels px-2">
             <div class="-mx-4 flex-wrap md:flex-no-wrap md:flex-row flex-wrapper justify-center h-full">
