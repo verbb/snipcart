@@ -1,5 +1,16 @@
 # Snipcart Changelog
 
+## 1.0.6 - 2019-03-18
+### Added
+- Added store performance chart to the CP section and made date range editable.
+- Improved dashboard widget charts.
+- Added `FormatHelper::formatCurrency()` and `craft.snipcart.formatCurrency` for consistent currency display that honors default store currency setting.
+### Changed
+- Optimized AssetBundles.
+- Consolidated
+### Fixed
+- Fixed minor padding issues for the very last elements in some control panel views.
+
 ## 1.0.5 - 2019-03-10
 ### Added
 - `getBuyNowButton()` can now take an `image` parameter.
