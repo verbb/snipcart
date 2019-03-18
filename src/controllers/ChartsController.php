@@ -94,8 +94,10 @@ class ChartsController extends \craft\web\Controller
             $this->_getStartDate(),
             $this->_getEndDate()
         );
+
         $salesChartData = $this->_getTotalSales($salesData);
         $salesChartData['series'][0]['type'] = 'area';
+
         $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
             ->getDefaultCurrencySymbol();
 
@@ -104,7 +106,6 @@ class ChartsController extends \craft\web\Controller
             $this->_getEndDate()
         );
         $orderChartData = $this->_getNumberOfOrders($orderData);
-        //$orderChartData['series'][0]['type'] = 'line';
 
         return $this->asJson([
             'series' => [
@@ -182,11 +183,11 @@ class ChartsController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
-        $request = Craft::$app->getRequest();
+        $startDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($request->getParam('startDate'))
+        if ($startDateParam && is_string($startDateParam))
         {
-            return (new DateTime($request->getParam('startDate')));
+            return new DateTime($startDateParam);
         }
         
         return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
@@ -200,11 +201,11 @@ class ChartsController extends \craft\web\Controller
      */
     private function _getEndDate(): DateTime
     {
-        $request = Craft::$app->getRequest();
+        $endDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($request->getParam('endDate'))
+        if ($endDateParam && is_string($endDateParam))
         {
-            return (new DateTime($request->getParam('endDate')));
+            return new DateTime($endDateParam);
         }
 
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));

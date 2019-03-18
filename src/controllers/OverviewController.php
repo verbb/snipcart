@@ -159,11 +159,11 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
-        $request = Craft::$app->getRequest();
+        $startDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($request->getParam('startDate'))
+        if ($startDateParam && is_string($startDateParam))
         {
-            return (new DateTime($request->getParam('startDate')));
+            return new DateTime($startDateParam);
         }
 
         return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
@@ -177,11 +177,11 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getEndDate(): DateTime
     {
-        $request = Craft::$app->getRequest();
+        $endDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($request->getParam('endDate'))
+        if ($endDateParam && is_string($endDateParam))
         {
-            return (new DateTime($request->getParam('endDate')));
+            return new DateTime($endDateParam);
         }
 
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
