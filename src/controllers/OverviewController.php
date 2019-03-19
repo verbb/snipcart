@@ -159,7 +159,7 @@ class OverviewController extends \craft\web\Controller
      */
     private function _getStartDate(): DateTime
     {
-        $startDateParam = Craft::$app->getRequest()->getParam('endDate');
+        $startDateParam = Craft::$app->getRequest()->getParam('startDate');
 
         if ($startDateParam && is_string($startDateParam))
         {

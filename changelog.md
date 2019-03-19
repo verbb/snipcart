@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.0.6.1 - 2019-03-18
+### Fixed
+- Fixed a bug that affected chart's date range display.
+
 ## 1.0.6 - 2019-03-18
 ### Added
 - Added store performance chart to the CP section and made date range editable.
