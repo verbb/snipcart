@@ -9,8 +9,10 @@
 - Added store performance chart to the CP section and made date range editable.
 - Improved dashboard widget charts.
 - Added `FormatHelper::formatCurrency()` and `craft.snipcart.formatCurrency()` for consistent currency display that honors default store currency setting.
+
 ### Changed
 - Optimized AssetBundles.
+
 ### Fixed
 - Fixed minor padding issues for the very last elements in some control panel views.
 
@@ -18,6 +20,7 @@
 ### Added
 - `getBuyNowButton()` can now take an `image` parameter.
 - `cartLink()` supports a `showCount` setting for optionally removing the cart button's dynamic item count.
+
 ### Changed
 - `cartSnippet()` now includes Snipcart's base theme stylesheet by default.
 - `getBuyNowButton()` now adds `.btn` as a default that can be removed.
@@ -27,6 +30,7 @@
 - Added Twig template methods: `craft.snipcart.getCustomer()`, `craft.snipcart.getOrder()` and `craft.snipcart.getSubscription()`.
 - Added ability to override Twig `getBuyNowButton()` price with support for multiple currencies.
 - `getBuyNowButton()` can now include custom options with negative price adjustments.
+
 ### Fixed
 - Currency setting is now saved properly.
 - Improved consistency of currency values displayed in the control panel and email templates.
@@ -43,6 +47,7 @@
 ## 1.0.1 - 2019-03-03
 ### Added
 - Added support for pre-3.1 versions of Craft CMS.
+
 ### Fixed
 - Fixed an issue that would cause a Section re-save task to fail after a Product Details field is added to an existing Section.
 - Product defaults are honored correctly per field setting on new and existing entries.
@@ -59,12 +64,14 @@
 ## 1.0.0-beta.26 - 2019-02-27
 ### Fixed
 - Fixed Install migration to prevent blocking re-install.
+
 ### Changed
 - Added a nicer configured+empty landing state graphic.
 
 ## 1.0.0-beta.25 - 2019-02-26
 ### Fixed
 - Cleaned up docblocks and variable names for consistency.
+
 ### Changed
 - Required endpoint parameter for `get()` , `post()`, `put()`, and `delete()` API service methods.
 
@@ -76,9 +83,11 @@
 ### Added
 - Added pagination support to Abandoned Carts.
 - Added a friendlier CP section empty state before plugin is configured.
+
 ### Changed
 - Ajaxified CP landing stat panels to speed up page load.
 - Spiffed up the Craft Commerce comparison table in the readme.
+
 ### Fixed
 - Fixed template error when `shipFrom` settings are empty.
 - Fixed incorrect reference that interfered with subscription invoice creation webhook.
@@ -87,6 +96,7 @@
 ## 1.0.0-beta.22 - 2019-02-18
 ### Added
 - Added Notifications service.
+
 ### Fixed
 - Fixed bug in console Snipcart → ShipStation verification utility.
 
@@ -94,9 +104,11 @@
 ### Added
 - Added CraftQL support for field data.
 - Improved support for [Webhooks plugin](https://github.com/craftcms/webhooks).
+
 ### Changed
 - Isolated API caches with TagDependency.
 - Refactored webhooks into component.
+
 ### Fixed
 - Stopped inventory event from firing for products that don't store inventory.
 
@@ -107,6 +119,7 @@
 ## 1.0.0-beta.19 - 2019-02-16
 ### Added
 - Added Fields service.
+
 ### Fixed
 - Improved webhook resilience in some cases when incoming payloads contain unexpected attributes.
 
@@ -124,12 +137,14 @@
 - Added Event hook for registering shipping providers.
 - Some settings now offer env and template suggestions.
 - Added environment variable support for Snipcart + ShipStation API keys.
+
 ### Changed
 - Flattened migrations into single Install.
 - Improved several control panel views.
 - Optimized control panel assets.
 - Vastly improved speed and flexibility of Dashboard widget.
 - Refactored control panel views.
+
 ### Removed
 - Deleted many SnipcartVariable methods after refactor.
 - Cleaned up Orders interface, removing several methods.
@@ -141,6 +156,7 @@
 - Added Product Details field type for quick setup.
 - Added control panel views for Discounts, Abandoned Carts, and Subscriptions.
 - Added ability to create a Discount via control panel.
+
 ### Changed
 - Improved plugin settings control panel layout.
 - Refactored and expanded Events.
@@ -150,6 +166,7 @@
 ### Changed
 - Refactored ShippingProvider to expose REST API methods.
 - Various code quality improvements.
+
 ### Fixed
 - Fixed incorrect item weights when converting a Snipcart order into a ShipStation order.
 
@@ -183,8 +200,10 @@
 ## 1.0.0-beta.9 - 2018-12-17
 ### Added
 - Spiffed up and added re-feed attempt status to order failure notifications.
+
 ### Changed
 - Added explicit type coercion in a few places.
+
 ### Fixed
 - Fixed type error that impacted VerifyController.
 - Reverted ShipStationOrderItem `fields()`.
@@ -206,11 +225,13 @@
 ## 1.0.0-beta.7 - 2018-12-15
 ### Added
 - Added package detail to Snipcart rate response.
+
 ### Changed
 - Use billingAddressName instead of cardholderName in order notification emails.
 - Return JSON for all webhook requests.
 - Keep ShipStation service from failing if Snipcart order has `null` value for custom fields.
 - Rename webhook controller's `badResponse()` to `badRequestResponse()`.
+
 ### Fixed
 - Fix type issues with SnipcartOrder model.
 - Return magic variables when SnipcartOrder is treated as an array.
@@ -220,8 +241,10 @@
 ### Added
 - Added weight property to SnipcartItem model.
 - Added hasPhysicalDimensions() for both Snipcart and ShipStation item models.
+
 ### Changed
 - Changed ShipStation service method names to better reflect what they do.
+
 ### Fixed
 - Fixed incorrect docblock details.
 
@@ -232,6 +255,7 @@
 ## 1.0.0-beta.4 - 2018-12-13
 ### Changed
 - Improved code quality throughout models.
+
 ### Fixed
 - Fixed SnipStation gift setting detection.
 
@@ -239,6 +263,7 @@
 ### Changed
 - Made cosmetic fixes to console order verification tool.
 - ShipStation order model no longer limits string length; longer customer and gift messages won't cause webhook failure.
+
 ### Fixed
 - Fixed webhook and service bugs.
 
@@ -247,6 +272,7 @@
 - Improved class documentation.
 - Improved console verification tool.
 - Improved code quality with optimizations and type hints.
+
 ### Fixed
 - Fixed several incorrect references.
 
