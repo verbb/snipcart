@@ -171,7 +171,7 @@ TODO:
         </a>
 
         {% if not isCancelled %}
-            <form action="" method="post">
+            <form action="" method="post" class="inline-block ml-1">
                 <input type="hidden" name="action" value="snipcart/subscriptions/cancel">
                 <input type="hidden" name="subscriptionId" value="{{ subscription.id }}">
                 {{ csrfInput() }}
