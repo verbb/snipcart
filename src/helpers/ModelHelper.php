@@ -59,6 +59,12 @@ class ModelHelper
         // keep a reference of removed properties
         $removed = [];
 
+        if ( ! is_iterable($data))
+        {
+            // don't attempt to loop the unloopable
+            return $data;
+        }
+
         foreach ($data as $key => $value)
         {
             if (is_string($key))
