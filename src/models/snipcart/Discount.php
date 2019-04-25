@@ -216,6 +216,11 @@ class Discount extends \craft\base\Model
     /**
      * @var
      */
+    public $currency;
+
+    /**
+     * @var
+     */
     public $creationDate;
 
     /**
