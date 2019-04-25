@@ -151,6 +151,11 @@ class Discount extends \craft\base\Model
     /**
      * @var
      */
+    public $maxDiscountsPerItem;
+
+    /**
+     * @var
+     */
     public $appliesOnAllRecurringOrders;
 
     /**
