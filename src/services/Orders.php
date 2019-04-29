@@ -67,7 +67,10 @@ class Orders extends \craft\base\Component
             $orderId
         )))
         {
-            return new Order((array)$orderData);
+            return ModelHelper::safePopulateModel(
+                (array)$orderData,
+                Order::class
+            );
         }
 
         return null;
@@ -85,7 +88,7 @@ class Orders extends \craft\base\Component
      */
     public function getOrders($params = []): array
     {
-        return ModelHelper::populateArrayWithModels(
+        return ModelHelper::safePopulateArrayWithModels(
             (array)$this->_fetchOrders($params)->items,
             Order::class
         );
@@ -134,7 +137,7 @@ class Orders extends \craft\base\Component
 
         $items = array_merge(...$collection);
 
-        return ModelHelper::populateArrayWithModels(
+        return ModelHelper::safePopulateArrayWithModels(
             $items,
             Order::class
         );
@@ -150,7 +153,7 @@ class Orders extends \craft\base\Component
      */
     public function getOrderNotifications($orderId): array
     {
-        return ModelHelper::populateArrayWithModels(
+        return ModelHelper::safePopulateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'orders/%s/notifications',
                 $orderId
@@ -169,7 +172,7 @@ class Orders extends \craft\base\Component
      */
     public function getOrderRefunds($orderId): array
     {
-        return ModelHelper::populateArrayWithModels(
+        return ModelHelper::safePopulateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'orders/%s/refunds',
                 $orderId
@@ -203,7 +206,7 @@ class Orders extends \craft\base\Component
         $response = $this->_fetchOrders($params);
 
         return (object) [
-            'items' => ModelHelper::populateArrayWithModels(
+            'items' => ModelHelper::safePopulateArrayWithModels(
                 $response->items,
                 Order::class
             ),

@@ -96,8 +96,6 @@
                 required: false,
                 name: 'settings[reduceQuantitiesOnOrder]',
                 on: settings.reduceQuantitiesOnOrder,
-                value: true,
-                placeholder: 'id',
                 errors: settings.getErrors('reduceQuantitiesOnOrder'),
                 instructions: "Switch on if you've configured webhooks and want your Product Details to adjust Quantity as orders come in."
             }) }}
@@ -132,7 +130,6 @@
                 required: false,
                 name: 'settings[sendOrderNotificationEmail]',
                 on: settings.sendOrderNotificationEmail,
-                value: true,
                 errors: settings.getErrors('sendOrderNotificationEmail'),
                 instructions: "Switch on if you'd like to send *store admins* custom order email notifications from Craft."
             }) }}
@@ -174,7 +171,6 @@
                 required: false,
                 name: 'settings[sendCustomerOrderNotificationEmail]',
                 on: settings.sendCustomerOrderNotificationEmail,
-                value: true,
                 errors: settings.getErrors('sendCustomerOrderNotificationEmail'),
                 instructions: "Switch on if you'd like to send customers custom order email notifications from Craft. Be sure to disable Snipcart's so you don't inundate customers with multiple order confirmations!"
             }) }}
@@ -217,8 +213,6 @@
                 required: false,
                 name: 'settings[cacheResponses]',
                 on: settings.cacheResponses,
-                value: true,
-                placeholder: 'id',
                 errors: settings.getErrors('cacheResponses'),
                 instructions: "Switch on to have some REST API requests cached, which will make things zippier in the control panel."
             }) }}
@@ -238,8 +232,6 @@
                 required: false,
                 name: 'settings[logCustomRates]',
                 on: settings.logCustomRates,
-                value: true,
-                placeholder: 'id',
                 errors: settings.getErrors('logCustomRates'),
                 instructions: "Switch on to log webhook rate responses to the database for troubleshooting and order shipping rate validation."
             }) }}
@@ -250,8 +242,6 @@
                 required: false,
                 name: 'settings[logWebhookRequests]',
                 on: settings.logWebhookRequests,
-                value: true,
-                placeholder: 'id',
                 errors: settings.getErrors('logWebhookRequests'),
                 instructions: "Switch on to look valid webhook posts to the database for troubleshooting."
             }) }}
@@ -416,7 +406,6 @@
                                         required: false,
                                         name: 'settings[providerSettings][shipStation][enableShippingRates]',
                                         on: providerSettings.enableShippingRates,
-                                        value: true,
                                         errors: providerSettings.getErrors('enableShippingRates'),
                                         instructions: "Fetch custom shipping rates from the ShipStation API?"
                                     }) }}
@@ -427,7 +416,6 @@
                                         required: false,
                                         name: 'settings[providerSettings][shipStation][sendCompletedOrders]',
                                         on: providerSettings.sendCompletedOrders,
-                                        value: true,
                                         errors: providerSettings.getErrors('sendCompletedOrders'),
                                         instructions: "Send completed Snipcart orders to ShipStation?"
                                     }) }}

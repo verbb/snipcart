@@ -188,18 +188,12 @@ class Settings extends Model
      */
     public function rules(): array
     {
-        return [
+        return array_merge(parent::rules(), [
             [['publicApiKey', 'secretApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
             [['publicApiKey', 'secretApiKey'], 'required'],
-            [['reduceQuantitiesOnOrder', 'cacheResponses', 'logCustomRates', 'logWebhookRequests'], 'boolean'],
             [['cacheDurationLimit'], 'number', 'integerOnly' => true],
-            [['cacheDurationLimit'], 'default', 'value' => 300],
-            [['reduceQuantitiesOnOrder'], 'default', 'value' => false],
-            [['cacheResponses'], 'default', 'value' => true],
-            [['logCustomRates'], 'default', 'value' => false],
-            [['logWebhookRequests'], 'default', 'value' => false],
             ['notificationEmails', 'each', 'rule' => ['email']],
-        ];
+        ]);
     }
 
     /**

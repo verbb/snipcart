@@ -524,12 +524,10 @@ class Webhooks extends \craft\base\Component
      */
     private function _getCleanOrder(): Order
     {
-        $payload = ModelHelper::stripUnknownProperties(
+        return ModelHelper::safePopulateModel(
             $this->getData()->content,
             Order::class
         );
-
-        return new Order($payload);
     }
 
     /**
@@ -543,12 +541,10 @@ class Webhooks extends \craft\base\Component
      */
     private function _getCleanSubscription(): Subscription
     {
-        $payload = ModelHelper::stripUnknownProperties(
+        return ModelHelper::safePopulateModel(
             $this->getData()->content,
             Subscription::class
         );
-
-        return new Subscription($payload);
     }
 
     /**
@@ -562,12 +558,10 @@ class Webhooks extends \craft\base\Component
      */
     private function _getCleanCustomer(): Customer
     {
-        $payload = ModelHelper::stripUnknownProperties(
+        return ModelHelper::safePopulateModel(
             $this->getData()->content,
             Customer::class
         );
-
-        return new Customer($payload);
     }
 
     /**

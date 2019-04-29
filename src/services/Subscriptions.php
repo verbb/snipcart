@@ -52,7 +52,7 @@ class Subscriptions extends \craft\base\Component
         );
 
         return (object) [
-            'items' => ModelHelper::populateArrayWithModels(
+            'items' => ModelHelper::safePopulateArrayWithModels(
                 $response->items,
                 Subscription::class
             ),
@@ -77,7 +77,10 @@ class Subscriptions extends \craft\base\Component
             $subscriptionId
         )))
         {
-            return new Subscription((array)$subscriptionData);
+            return ModelHelper::safePopulateModel(
+                (array)$subscriptionData,
+                Subscription::class
+            );
         }
 
         return null;

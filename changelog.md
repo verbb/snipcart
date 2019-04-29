@@ -1,5 +1,18 @@
 # Snipcart Changelog
 
+## 1.0.7 - 2019-04-28
+### Added
+- Added code to prevent Snipcart API changes from resulting in control panel errors.
+
+### Fixed
+- Fixed minor control panel view inconsistencies.
+- Fixed an error that could occur if ModelHelper::stripUnknownProperties() received non-iterable data.
+- Fixed a bug that prevented API response cache from being disabled.
+- Added a new Discount property that might have thrown errors in the control panel.
+
+### Changed
+- Updated charting library and made minor stylistic and readability improvements.
+
 ## 1.0.6.1 - 2019-03-18
 ### Fixed
 - Fixed a bug that affected chart's date range display.

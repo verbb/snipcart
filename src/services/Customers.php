@@ -46,7 +46,7 @@ class Customers extends \craft\base\Component
 
         $customerData = Snipcart::$plugin->api->get('customers', $params);
 
-        $customerData->items = ModelHelper::populateArrayWithModels(
+        $customerData->items = ModelHelper::safePopulateArrayWithModels(
             (array)$customerData->items,
             Customer::class
         );
@@ -69,7 +69,10 @@ class Customers extends \craft\base\Component
             $customerId
         )))
         {
-            return new Customer((array)$customerData);
+            return ModelHelper::safePopulateModel(
+                (array)$customerData,
+                Customer::class
+            );
         }
 
         return null;
@@ -85,7 +88,7 @@ class Customers extends \craft\base\Component
      */
     public function getCustomerOrders($customerId): array
     {
-        $orders = ModelHelper::populateArrayWithModels(
+        $orders = ModelHelper::safePopulateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'customers/%s/orders',
                 $customerId

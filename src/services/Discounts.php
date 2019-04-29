@@ -34,7 +34,7 @@ class Discounts extends \craft\base\Component
     {
         $response = Snipcart::$plugin->api->get('discounts');
 
-        return ModelHelper::populateArrayWithModels(
+        return ModelHelper::safePopulateArrayWithModels(
             (array)$response,
             Discount::class
         );
@@ -73,7 +73,10 @@ class Discounts extends \craft\base\Component
             $discountId
         )))
         {
-            return new Discount((array)$discountData);
+            return ModelHelper::safePopulateModel(
+                (array)$discountData,
+                Discount::class
+            );
         }
 
         return null;

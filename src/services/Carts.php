@@ -59,7 +59,7 @@ class Carts extends \craft\base\Component
         );
 
         return (object) [
-            'items' => ModelHelper::populateArrayWithModels(
+            'items' => ModelHelper::safePopulateArrayWithModels(
                 $response->items,
                 AbandonedCart::class
             ),
@@ -86,7 +86,10 @@ class Carts extends \craft\base\Component
             $cartId
         )))
         {
-            return new AbandonedCart((array)$abandonedCartData);
+            return ModelHelper::safePopulateModel(
+                (array)$abandonedCartData,
+                AbandonedCart::class
+            );
         }
 
         return null;

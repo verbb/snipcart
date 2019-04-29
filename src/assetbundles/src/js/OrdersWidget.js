@@ -17,6 +17,24 @@ import ApexCharts from 'apexcharts'
             this.updateChart();
         },
 
+        getYMax: function(series) {
+            let max = 0;
+
+            series.forEach(function(row) {
+                const data = row.data;
+                const rowMax = Math.max(...data)
+                if (rowMax > max) {
+                    max = rowMax;
+                }
+            });
+
+            // round up to nearest 5
+            const resolution = 5;
+            max = Math.round((max+resolution/2)/resolution) * resolution;
+
+            return max;
+        },
+
         updateChart: function() {
             this.$chartContainer.addClass('spinner');
             const self = this;
@@ -37,12 +55,8 @@ import ApexCharts from 'apexcharts'
                                 fontFamily: "system-ui, BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
                                 height: 200,
                                 type: 'bar',
-                                toolbar: {
-                                    show: false
-                                },
-                                animations: {
-                                    speed: 350
-                                }
+                                toolbar: { show: false },
+                                animations: { speed: 350 }
                             },
                             colors: ['#0d78f2'],
                             series: response.series,
@@ -52,15 +66,15 @@ import ApexCharts from 'apexcharts'
                             },
                             plotOptions: {
                                 bar: {
-                                    dataLabels: {
-                                        position: 'top'
-                                    }
+                                    dataLabels: { position: 'top' }
                                 }
                             },
                             xaxis: {
                                 categories: response.columns,
                                 position: 'bottom',
                                 labels: {
+                                    rotate: 0,
+                                    offsetY: 1,
                                     show: response.columns.length < 15,
                                     formatter: function (val) {
                                         if (val === undefined) {
@@ -72,23 +86,20 @@ import ApexCharts from 'apexcharts'
                                         return `${month}/${day}`;
                                     }
                                 },
-                                axisBorder: {
-                                    show: false
-                                },
+                                axisBorder: { show: false },
                                 axisTicks: {
-                                    show: false
+                                    show: true,
+                                    height: 3,
+                                    color: '#e3e5e8',
                                 },
                             },
                             yaxis: {
                                 min: 0,
+                                max: self.getYMax(response.series),
                                 tickAmount: 5,
                                 forceNiceScale: true,
-                                axisBorder: {
-                                    show: false
-                                },
-                                axisTicks: {
-                                    show: false,
-                                },
+                                axisBorder: { show: false },
+                                axisTicks: { show: false },
                                 labels: {
                                     show: true,
                                     offsetX: -22,
@@ -106,12 +117,8 @@ import ApexCharts from 'apexcharts'
                             },
                             tooltip: {
                                 enabled: true,
-                                x: {
-                                    show: true
-                                },
-                                y: {
-                                    show: false,
-                                },
+                                x: { show: true },
+                                y: { show: false, },
                             },
                             grid: {
                                 borderColor: '#e3e5e8',
@@ -128,9 +135,7 @@ import ApexCharts from 'apexcharts'
                                 curve: 'straight',
                                 lineCap: 'round',
                             },
-                            legend: {
-                                show: false
-                            }
+                            legend: { show: false }
                         }
                     
                         var chart = new ApexCharts(

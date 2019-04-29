@@ -33,19 +33,55 @@ class ModelHelper
     }
 
     /**
+     * Cleans the provided data removing any attributes not found on a given
+     * class, then uses that clean data to populate an instance of the class.
+     *
+     * @param mixed   $data   Data to be used to populate the model.
+     * @param string  $class  Model to be populated.
+     *
+     * @return mixed
+     */
+    public static function safePopulateModel($data, $class)
+    {
+        $cleanData = self::stripUnknownProperties($data, $class);
+
+        return new $class($cleanData);
+    }
+
+    /**
+     * Cleans each object in an array and uses the clean data to populate
+     * the provided class.
+     *
+     * @param array  $array  Array in which each item contains data for
+     *                       populating a model.
+     * @param string $class  Model to be populated.
+     *
+     * @return array
+     */
+    public static function safePopulateArrayWithModels(array $array, $class): array
+    {
+        foreach ($array as &$item)
+        {
+            $item = self::safePopulateModel($item, $class);
+        }
+
+        return $array;
+    }
+
+    /**
      * Strips root-level properties from an object if they aren't attributes on
      * the designated model.
      *
-     * @param object $data       Object with data, like a webhook payload.
-     * @param string $modelClass Base class to be populated, which can't receive any
-     *                           unknown attributes.
+     * @param object $data   Object with data, like a webhook payload.
+     * @param string $class  Model to be populated, which can't receive any
+     *                       unknown attributes.
      * @return object
      * @throws
      */
-    public static function stripUnknownProperties($data, $modelClass)
+    public static function stripUnknownProperties($data, $class)
     {
         // instantiate the model so we can poke at it
-        $model = new $modelClass;
+        $model = new $class;
 
         // get normal model attributes
         $fields = array_keys($model->fields());
@@ -59,7 +95,7 @@ class ModelHelper
         // keep a reference of removed properties
         $removed = [];
 
-        if ( ! is_iterable($data))
+        if ( ! is_array($data) && ! is_object($data))
         {
             // don't attempt to loop the unloopable
             return $data;
@@ -67,12 +103,17 @@ class ModelHelper
 
         foreach ($data as $key => $value)
         {
-            if (is_string($key))
+            if (is_string($key) && ! in_array($key, $modelAttributes, false))
             {
-                if ( ! in_array($key, $modelAttributes, false))
+                $removed[] = $key;
+
+                if (is_object($data))
                 {
-                    $removed[] = $key;
                     unset($data->{$key});
+                }
+                elseif (is_array($data))
+                {
+                    unset($data[$key]);
                 }
             }
         }
@@ -81,7 +122,7 @@ class ModelHelper
         {
             \Craft::warning(sprintf(
                 'Removed unknown %s attributes: %s',
-                $modelClass,
+                $class,
                 implode(', ', $removed)
             ), 'snipcart');
         }
