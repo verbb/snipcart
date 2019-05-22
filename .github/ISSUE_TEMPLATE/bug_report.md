@@ -23,7 +23,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Sofware**
  - Craft version: [e.g. Pro 3.1.14]
  - Snipcart plugin version: [e.g. 1.0.0]
  - PHP version: [e.g. 7.2.15] 
