@@ -25,6 +25,12 @@ class FieldHelper
      */
     public static function getProductInfo($element)
     {
+        // if we don't have an Element, there's nothing to get
+        if ( ! isset($element))
+        {
+            return null;
+        }
+
         if ($fieldLayout = $element->getFieldLayout())
         {
             if ($fields = $fieldLayout->getFields())
@@ -52,6 +58,12 @@ class FieldHelper
      */
     public static function getProductInfoFieldHandle($element)
     {
+        // if we don't have an Element, there's nothing to get
+        if ( ! isset($element))
+        {
+            return null;
+        }
+
         if ($fieldLayout = $element->getFieldLayout())
         {
             $fields = $fieldLayout->getFields();

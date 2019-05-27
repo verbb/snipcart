@@ -1,5 +1,18 @@
 # Snipcart Changelog
 
+## 1.1.0 - 2019-05-26
+### Added
+- Added Matrix support for Product Details field.
+- Added ability to override item name in `getBuyNowButton()`.
+
+### Changed
+- InventoryEvent's `entry` property is now `element`.
+- `Products::reduceProductInventory()` has been simplified to `Products::reduceInventory()`, and it takes only one argument containing a Snipcart Item.
+- `Orders::updateElementsFromOrder` is now `Orders::updateProductsFromOrder()`.
+
+### Fixed
+- Product Details SKU is now properly validated to be unique.
+
 ## 1.0.7 - 2019-04-28
 ### Added
 - Added code to prevent Snipcart API changes from resulting in control panel errors.

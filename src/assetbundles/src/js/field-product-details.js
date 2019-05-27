@@ -1,19 +1,21 @@
 import '../css/field-product-details.css';
 
-var shippableSwitch = document.getElementById('fields-shippable');
-var weightField = document.getElementById('fields-snipcart-weight-field');
-var dimensionsField = document.getElementById('fields-snipcart-dimensions-field');
+var shippableSwitches = document.querySelectorAll(`[id*='fields-shippable']`);
 
-if (shippableSwitch) {
-    shippableSwitch.onchange = togglePhysicalFields;
-}
+if (shippableSwitches.length) {
+    shippableSwitches.forEach(function(element) {
+        element.onchange = function() {
+            const parent = this.closest('.snipcart-product-details');
+            const weightField = parent.querySelector('[id*=snipcart-weight-field]');
+            const dimensionsField = parent.querySelector('[id*=snipcart-dimensions-field]');
 
-function togglePhysicalFields() {
-    if (shippableSwitch.classList.contains('on')) {
-        weightField.classList.remove('hidden');
-        dimensionsField.classList.remove('hidden');
-    } else {
-        weightField.classList.add('hidden');
-        dimensionsField.classList.add('hidden');
-    }
+            if (this.classList.contains('on')) {
+                weightField.classList.remove('hidden');
+                dimensionsField.classList.remove('hidden');
+            } else {
+                weightField.classList.add('hidden');
+                dimensionsField.classList.add('hidden');
+            }
+        };
+    });
 }

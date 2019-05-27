@@ -209,11 +209,11 @@ class Webhooks extends \craft\base\Component
             $responseData['errors'][] = $providerOrders->errors;
         }
 
-        if ( ! $entryUpdateResult = Snipcart::$plugin->orders->updateElementsFromOrder($order))
+        if ( ! Snipcart::$plugin->orders->updateProductsFromOrder($order))
         {
             $responseData['success']  = false;
             $responseData['errors'][] = [
-                'elements' => $entryUpdateResult
+                'elements' => 'Failed to update product Elements.'
             ];
         }
 

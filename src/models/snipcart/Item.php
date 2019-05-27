@@ -8,8 +8,10 @@
 
 namespace workingconcept\snipcart\models;
 
+use craft\base\ElementInterface;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
-use craft\elements\Entry;
+use craft\base\Element;
+use craft\elements\MatrixBlock;
 
 class Item extends \craft\base\Model
 {
@@ -236,18 +238,34 @@ class Item extends \craft\base\Model
     /**
      * Get a Craft Element that's uniquely related to this Item, if possible.
      *
-     * @return Entry|null
+     * @param bool $entryOnly Whether to return the immediately-associated
+     *                        Element, like a Matrix block, or the closest Entry.
+     *
+     * @return ElementInterface|null
      */
-    public function getRelatedElement()
+    public function getRelatedElement($entryOnly = false)
     {
-        if ($record = ProductDetailsRecord::findOne([ 'sku' => $this->id ]))
+        // get related record by SKU
+        if ( ! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ]))
         {
-            if ($element = Entry::findOne([ 'id' => $record->elementId ]))
-            {
-                return $element;
-            }
+            // bail without a Record, which can happen if the product's details
+            // aren't stored in our Product Details field type
+            return null;
         }
 
+        if ($element = \Craft::$app->getElements()->getElementById($record->elementId))
+        {
+            $isMatrix = $element && get_class($element) === MatrixBlock::class;
+
+            if ($isMatrix && $entryOnly)
+            {
+                return $element->getOwner();
+            }
+
+            return $element;
+        }
+
+        // Record without an Element
         return null;
     }
 

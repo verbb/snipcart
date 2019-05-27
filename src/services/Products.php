@@ -10,7 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\events\InventoryEvent;
 use workingconcept\snipcart\helpers\FieldHelper;
-use craft\elements\Entry;
+use workingconcept\snipcart\models\Item;
 use Craft;
 
 /**
@@ -46,18 +46,24 @@ class Products extends \craft\base\Component
      * so an Event hook can modifies the quantity property
      * prior to the adjustment.
      *
-     * @param Entry $entry     Entry that's used as a product definition
-     * @param int   $quantity  Whole number representing the quantity change
+     * @param Item $orderItem   Snipcart Item that was part of a completed order
      *
      * @throws
      */
-    public function reduceProductInventory($entry, $quantity)
+    public function reduceInventory($orderItem)
     {
         // subtract the order quantity
-        $quantityToAdjust = - $quantity;
-        $fieldHandle = FieldHelper::getProductInfoFieldHandle($entry);
+        $quantityToAdjust = - $orderItem->quantity;
+
+        // get the Entry or Matrix block owning the Product Details field
+        $element = $orderItem->getRelatedElement();
+
+        // get the Product Details field handle
+        $fieldHandle = FieldHelper::getProductInfoFieldHandle($element);
+
+        // does that field handle exist and have a value?
         $usesInventory = isset($fieldHandle) &&
-            $entry->{$fieldHandle}->inventory !== null;
+            $element->{$fieldHandle}->inventory !== null;
 
         if (! $usesInventory)
         {
@@ -67,7 +73,7 @@ class Products extends \craft\base\Component
         if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE))
         {
             $event = new InventoryEvent([
-                'entry'    => $entry,
+                'element'  => $element,
                 'quantity' => $quantityToAdjust,
             ]);
 
@@ -82,13 +88,13 @@ class Products extends \craft\base\Component
 
         if ($fieldHandle)
         {
-            $originalQuantity = $entry->{$fieldHandle}->inventory;
+            $originalQuantity = $element->{$fieldHandle}->inventory;
             $newQuantity      = $originalQuantity + $quantityToAdjust;
 
             if ($originalQuantity > 0 && $originalQuantity !== $newQuantity)
             {
-                $entry->{$fieldHandle}->inventory = $originalQuantity + $quantityToAdjust;
-                Craft::$app->getElements()->saveElement($entry);
+                $element->{$fieldHandle}->inventory = $originalQuantity + $quantityToAdjust;
+                Craft::$app->getElements()->saveElement($element);
             }
         }
     }

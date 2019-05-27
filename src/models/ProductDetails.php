@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
+use craft\elements\MatrixBlock;
 use workingconcept\snipcart\helpers\MeasurementHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
@@ -139,11 +140,22 @@ class ProductDetails extends \craft\base\Model
     /**
      * Get the parent Element that's using the field.
      *
+     * @param bool $entryOnly Whether to return the immediately-associated
+     *                        Element, like a Matrix block, or the closest Entry.
+     *
      * @return \craft\base\ElementInterface|null
      */
-    public function getElement()
+    public function getElement($entryOnly = false)
     {
-        return Craft::$app->elements->getElementById($this->elementId);
+        $element  = Craft::$app->elements->getElementById($this->elementId);
+        $isMatrix = isset($element) && get_class($element) === MatrixBlock::class;
+
+        if ($isMatrix && $entryOnly)
+        {
+            return $element->getOwner();
+        }
+
+        return $element;
     }
 
     /**
@@ -197,17 +209,17 @@ class ProductDetails extends \craft\base\Model
      */
     public function validateSku($attribute): bool
     {
-        $existingRecord = ProductDetailsRecord::find()
+        $duplicateCount = ProductDetailsRecord::find()
             ->where([$attribute => $this->{$attribute}])
             ->andWhere(['!=', 'elementId', $this->elementId])
-            ->one();
+            ->count();
 
-        if ($existingRecord !== null)
+        if ($duplicateCount > 0)
         {
             $this->addError($attribute, Craft::t('snipcart', 'SKU must be unique.'));
         }
 
-        return $existingRecord === null;
+        return $duplicateCount === 0;
     }
 
     /**

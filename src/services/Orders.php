@@ -217,28 +217,21 @@ class Orders extends \craft\base\Component
     }
 
     /**
-     * Gets Craft Elements that relate to order items, updating quantities
-     * and sending a notification if relevant.
+     * Reduce product inventory for each item in a completed order.
      *
      * @param Order $order
      *
-     * @return bool|array true if successful, or an array of notification errors
+     * @return bool true if successful
      * @throws
      */
-    public function updateElementsFromOrder(Order $order)
+    public function updateProductsFromOrder(Order $order): bool
     {
         if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder)
         {
-            foreach ($order->items as $item)
+            foreach ($order->items as $orderItem)
             {
-                if ($item->getRelatedElement())
-                {
-                    Snipcart::$plugin->products->reduceProductInventory(
-                        $item->getRelatedElement(),
-                        $item->quantity
-                    );
-                    // TODO: reduce product inventory in ShipStation if necessary
-                }
+                Snipcart::$plugin->products->reduceInventory($orderItem);
+                // TODO: reduce product inventory in ShipStation if necessary
             }
         }
 
