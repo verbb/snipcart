@@ -8,7 +8,7 @@
 ### Changed
 - InventoryEvent's `entry` property is now `element`.
 - `Products::reduceProductInventory()` has been simplified to `Products::reduceInventory()`, and it takes only one argument containing a Snipcart Item.
-- `Orders::updateElementsFromOrder` is now `Orders::updateProductsFromOrder()`.
+- `Orders::updateElementsFromOrder()` is now `Orders::updateProductsFromOrder()`.
 
 ### Fixed
 - Product Details SKU is now properly validated to be unique.
