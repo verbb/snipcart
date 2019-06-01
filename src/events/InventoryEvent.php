@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\events;
 
 use craft\base\Element;
 use yii\base\Event;
+use craft\elements\Entry;
 
 /**
  * Inventory event class.
@@ -26,6 +27,12 @@ class InventoryEvent extends Event
      * @var Element The Craft Element containing Snipcart product details.
      */
     public $element;
+
+    /**
+     * @var Entry The Craft Entry containing Snipcart product details.
+     * @deprecated in 1.1. Use $element instead.
+     */
+    public $entry;
 
     /**
      * @var int The value (+/-) that should be added to the existing inventory.

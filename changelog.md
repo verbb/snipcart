@@ -1,14 +1,14 @@
 # Snipcart Changelog
 
-## 1.1.0 - 2019-05-26
+## 1.1.0 - 2019-05-31
+### Deprecated
+- `InventoryEvent::$entry` is now deprecated. Use `InventoryEvent::$element` instead.
+- `Products::reduceProductInventory()` is now deprecated. Use `Products::reduceInventory()` instead, which takes a single Snipcart Item as an argument.
+- `Orders::updateElementsFromOrder()` is now deprecated. Use `Orders::updateProductsFromOrder()` instead.
+
 ### Added
 - Added Matrix support for Product Details field.
-- Added ability to override item name in `getBuyNowButton()`.
-
-### Changed
-- InventoryEvent's `entry` property is now `element`.
-- `Products::reduceProductInventory()` has been simplified to `Products::reduceInventory()`, and it takes only one argument containing a Snipcart Item.
-- `Orders::updateElementsFromOrder()` is now `Orders::updateProductsFromOrder()`.
+- Added ability to provide a custom `name` and `url` in `getBuyNowButton()`, which defaults to Entry or parent Entry's Title and URL.
 
 ### Fixed
 - Product Details SKU is now properly validated to be unique.
