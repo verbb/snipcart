@@ -239,6 +239,21 @@ class Orders extends \craft\base\Component
     }
 
     /**
+     * Gets Craft Elements that relate to order items, updating quantities
+     * and sending a notification if relevant.
+     *
+     * @param Order $order
+     *
+     * @return bool|array true if successful, or an array of notification errors
+     * @throws
+     * @deprecated in 1.1. Use updateProductsFromOrder() instead.
+     */
+    public function updateElementsFromOrder(Order $order): bool
+    {
+        return $this->updateProductsFromOrder($order);
+    }
+
+    /**
      * Triggers an Event that will allow another plugin or module to provide
      * packaging details and/or modify an order before shipping rates
      * are requested for that order.
