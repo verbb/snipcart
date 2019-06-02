@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.1.1 - 2019-06-01
+## Fixed
+- Fixed a template bug that caused the Customers search field to disappear when there were no results.
+
 ## 1.1.0 - 2019-05-31
 ### Deprecated
 - `InventoryEvent::$entry` is now deprecated. Use `InventoryEvent::$element` instead.

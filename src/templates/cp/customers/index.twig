@@ -6,14 +6,12 @@
 
 {% set title = "Snipcart Customers"|t %}
 {% set selectedTab = "customers" %}
+{% set showingSearchResult = keywords is not empty %}
+{% set hasResults = customers|length > 0 %}
 
 {% block content %}
     <div>
-        <p id="noredirects"{% if customers|length %} class="hidden"{% endif %}>
-            {{ "There aren't any customers with accounts yet."|t }}
-        </p>
-
-        <div class="mb-6 p-2 bg-light-grey rounded{% if customers|length == 0%} hidden{% endif %}">
+        <div class="mb-6 p-2 bg-light-grey rounded{% if not showingSearchResult and not hasResults %} hidden{% endif %}">
             <form action="" method="post">
                 {{ csrfInput() }}
 
@@ -40,7 +38,13 @@
             </form>
         </div>
 
-        {% if customers|length %}
+        {% if not hasResults %}
+
+            <p id="noredirects">
+                {{ showingSearchResult ? 'No records found.'|t : "There aren't any customers with accounts yet."|t }}
+            </p>
+            
+        {% else %}
 
             <table id="customers" class="data w-full">
                 <thead>
