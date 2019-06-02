@@ -1,6 +1,6 @@
 {
   "name": "snipcart-craft-plugin",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "![Snipcart](resources/hero.svg)",
   "directories": {
     "doc": "docs",
@@ -38,12 +38,8 @@
     "build": "webpack -p --display-error-details",
     "watch": "webpack -d --watch --display-error-details"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://mattstein@github.com/workingconcept/snipcart-craft-plugin.git"
-  },
   "author": "Working Concept",
-  "license": "see license in license.md",
+  "license": "proprietary",
   "bugs": {
     "url": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
   },
