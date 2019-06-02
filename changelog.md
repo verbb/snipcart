@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.1.1 - 2019-06-01
+## 1.1.1 - 2019-06-02
 ## Fixed
 - Fixed a template bug that caused the Customers search field to disappear when there were no results.
 
