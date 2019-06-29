@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.1.2 - 2019-06-28
+### Fixed
+- Added support for Craft 3.2.0-RC2.
+
 ## 1.1.1 - 2019-06-02
 ### Fixed
 - Fixed a template bug that caused the Customers search field to disappear when there were no results.

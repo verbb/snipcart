@@ -8,6 +8,8 @@
 
 namespace workingconcept\snipcart\models;
 
+use craft\base\Element;
+use craft\elements\Entry;
 use craft\elements\MatrixBlock;
 use workingconcept\snipcart\helpers\MeasurementHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
@@ -147,6 +149,12 @@ class ProductDetails extends \craft\base\Model
      */
     public function getElement($entryOnly = false)
     {
+        // Probably a new Entry.
+        if ( ! $this->elementId)
+        {
+            return null;
+        }
+
         $element  = Craft::$app->elements->getElementById($this->elementId);
         $isMatrix = isset($element) && get_class($element) === MatrixBlock::class;
 
@@ -203,23 +211,90 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Make sure that the given SKU isn't used on any record other than this one.
+     * Returns true if the given SKU is not used by another published Element.
      * @param $attribute
      * @return bool
      */
     public function validateSku($attribute): bool
     {
-        $duplicateCount = ProductDetailsRecord::find()
-            ->where([$attribute => $this->{$attribute}])
-            ->andWhere(['!=', 'elementId', $this->elementId])
-            ->count();
+        $hasConflict = false;
 
-        if ($duplicateCount > 0)
+        /**
+         * Get product details with matching SKUs on published Elements.
+         */
+        $potentialDuplicates = ProductDetailsRecord::find()
+            ->leftJoin('{{%elements}} elements', '[[elements.id]] = snipcart_product_details.elementId')
+            ->where([$attribute => $this->{$attribute}])
+            ->andWhere(['!=', 'elements.id', $this->elementId])
+            ->andWhere([
+                'elements.enabled' => true,
+                'elements.archived' => false,
+                'elements.draftId' => null,
+                'elements.dateDeleted' => null,
+            ])
+            ->all();
+
+        /**
+         * Check each published Element to see if it's a variation of the current
+         * one or a totally separate one with a clashing SKU.
+         */
+        $currentElement = $this->getElement();
+
+        foreach ($potentialDuplicates as $record)
+        {
+            $recordElement = Craft::$app->elements->getElementById($record->elementId);
+
+            if ($currentElement === null || get_class($recordElement) !== get_class($currentElement))
+            {
+                // Different element types with the same SKU are a conflict, as
+                // are new and existing.
+                $hasConflict = true;
+                break;
+            }
+
+            if (is_a($recordElement, Entry::class))
+            {
+                // Don't worry about Elements that aren't published.
+                if ($recordElement->revisionId === null)
+                {
+                    continue;
+                }
+
+                // If a different Entry is using the SKU, that's a conflict.
+                if ($recordElement->sourceId !== $currentElement->sourceId)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+
+            if (is_a($recordElement, MatrixBlock::class))
+            {
+                // A duplicate in a different field is a conflict.
+                if ($recordElement->fieldId !== $currentElement->fieldId)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+                
+                // Duplicate within same Matrix field on the same Entry.
+                $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
+                $sameOwner = $recordElement->ownerId === $currentElement->ownerId;
+
+                if ($sameSource and $sameOwner)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+        }
+
+        if ($hasConflict)
         {
             $this->addError($attribute, Craft::t('snipcart', 'SKU must be unique.'));
         }
 
-        return $duplicateCount === 0;
+        return ! $hasConflict;
     }
 
     /**
