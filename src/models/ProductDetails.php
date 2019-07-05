@@ -12,6 +12,7 @@ use craft\base\Element;
 use craft\elements\Entry;
 use craft\elements\MatrixBlock;
 use workingconcept\snipcart\helpers\MeasurementHelper;
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
@@ -217,84 +218,21 @@ class ProductDetails extends \craft\base\Model
      */
     public function validateSku($attribute): bool
     {
-        $hasConflict = false;
-
-        /**
-         * Get product details with matching SKUs on published Elements.
-         */
-        $potentialDuplicates = ProductDetailsRecord::find()
-            ->leftJoin('{{%elements}} elements', '[[elements.id]] = snipcart_product_details.elementId')
-            ->where([$attribute => $this->{$attribute}])
-            ->andWhere(['!=', 'elements.id', $this->elementId])
-            ->andWhere([
-                'elements.enabled' => true,
-                'elements.archived' => false,
-                'elements.draftId' => null,
-                'elements.dateDeleted' => null,
-            ])
-            ->all();
-
-        /**
-         * Check each published Element to see if it's a variation of the current
-         * one or a totally separate one with a clashing SKU.
-         */
-        $currentElement = $this->getElement();
-
-        foreach ($potentialDuplicates as $record)
+        if (VersionHelper::isCraft32())
         {
-            $recordElement = Craft::$app->elements->getElementById($record->elementId);
-
-            if ($currentElement === null || get_class($recordElement) !== get_class($currentElement))
-            {
-                // Different element types with the same SKU are a conflict, as
-                // are new and existing.
-                $hasConflict = true;
-                break;
-            }
-
-            if (is_a($recordElement, Entry::class))
-            {
-                // Don't worry about Elements that aren't published.
-                if ($recordElement->revisionId === null)
-                {
-                    continue;
-                }
-
-                // If a different Entry is using the SKU, that's a conflict.
-                if ($recordElement->sourceId !== $currentElement->sourceId)
-                {
-                    $hasConflict = true;
-                    break;
-                }
-            }
-
-            if (is_a($recordElement, MatrixBlock::class))
-            {
-                // A duplicate in a different field is a conflict.
-                if ($recordElement->fieldId !== $currentElement->fieldId)
-                {
-                    $hasConflict = true;
-                    break;
-                }
-                
-                // Duplicate within same Matrix field on the same Entry.
-                $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
-                $sameOwner = $recordElement->ownerId === $currentElement->ownerId;
-
-                if ($sameSource and $sameOwner)
-                {
-                    $hasConflict = true;
-                    break;
-                }
-            }
+            $isUnique = $this->_skuIsUniqueElementAttribute($attribute);
+        }
+        else
+        {
+            $isUnique = $this->_skuIsUniqueRecordAttribute($attribute);
         }
 
-        if ($hasConflict)
+        if ( ! $isUnique)
         {
             $this->addError($attribute, Craft::t('snipcart', 'SKU must be unique.'));
         }
 
-        return ! $hasConflict;
+        return $isUnique;
     }
 
     /**
@@ -562,6 +500,112 @@ class ProductDetails extends \craft\base\Model
         }
 
         return $params;
+    }
+
+    /**
+     * Returns true if the given attribute's value is unique among
+     * ProductDetailsRecord rows.
+     *
+     * This tests uniqueness of a SKU in Craft<=3.1.
+     *
+     * @param $attribute
+     * @return bool
+     */
+    private function _skuIsUniqueRecordAttribute($attribute): bool
+    {
+        $duplicateCount = ProductDetailsRecord::find()
+            ->where([$attribute => $this->{$attribute}])
+            ->andWhere(['!=', 'elementId', $this->elementId])
+            ->count();
+
+        return $duplicateCount === 0;
+    }
+
+    /**
+     * Returns true if the given attribute's value is unique among published
+     * Elements.
+     *
+     * This tests uniqueness of a SKU in Craft>=3.2, where drafts become
+     * individual Elements and therefore save far more ProductDetailsRecords.
+     *
+     * @param $attribute
+     * @return bool
+     */
+    private function _skuIsUniqueElementAttribute($attribute): bool
+    {
+        $hasConflict = false;
+
+        /**
+         * Get product details with matching SKUs on published Elements.
+         */
+        $potentialDuplicates = ProductDetailsRecord::find()
+            ->leftJoin('{{%elements}} elements', '[[elements.id]] = snipcart_product_details.elementId')
+            ->where([$attribute => $this->{$attribute}])
+            ->andWhere(['!=', 'elements.id', $this->elementId])
+            ->andWhere([
+                'elements.enabled' => true,
+                'elements.archived' => false,
+                'elements.draftId' => null,
+                'elements.dateDeleted' => null,
+            ])
+            ->all();
+
+        /**
+         * Check each published Element to see if it's a variation of the current
+         * one or a totally separate one with a clashing SKU.
+         */
+        $currentElement = $this->getElement();
+
+        foreach ($potentialDuplicates as $record)
+        {
+            $recordElement = Craft::$app->elements->getElementById($record->elementId);
+
+            if ($currentElement === null || get_class($recordElement) !== get_class($currentElement))
+            {
+                // Different element types with the same SKU are a conflict, as
+                // are new and existing.
+                $hasConflict = true;
+                break;
+            }
+
+            if (is_a($recordElement, Entry::class))
+            {
+                // Don't worry about Elements that aren't published.
+                if ($recordElement->revisionId === null)
+                {
+                    continue;
+                }
+
+                // If a different Entry is using the SKU, that's a conflict.
+                if ($recordElement->sourceId !== $currentElement->sourceId)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+
+            if (is_a($recordElement, MatrixBlock::class))
+            {
+                // A duplicate in a different field is a conflict.
+                if ($recordElement->fieldId !== $currentElement->fieldId)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+
+                // Duplicate within same Matrix field on the same Entry.
+                $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
+                $sameOwner = $recordElement->ownerId === $currentElement->ownerId;
+
+                if ($sameSource and $sameOwner)
+                {
+                    $hasConflict = true;
+                    break;
+                }
+            }
+        }
+
+        return ! $hasConflict;
     }
 
     /**
