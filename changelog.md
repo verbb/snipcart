@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.1.2 - 2019-06-28
+## 1.1.2 - 2019-07-05
 ### Fixed
 - Added support for Craft 3.2.0-RC2.
 
