@@ -518,7 +518,7 @@ class ProductDetails extends \craft\base\Model
             ->andWhere(['!=', 'elementId', $this->elementId])
             ->count();
 
-        return $duplicateCount === 0;
+        return (int)$duplicateCount === 0;
     }
 
     /**
