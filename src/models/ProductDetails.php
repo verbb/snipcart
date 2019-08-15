@@ -539,7 +539,7 @@ class ProductDetails extends \craft\base\Model
          * Get product details with matching SKUs on published Elements.
          */
         $potentialDuplicates = ProductDetailsRecord::find()
-            ->leftJoin('{{%elements}} elements', '[[elements.id]] = snipcart_product_details.elementId')
+            ->leftJoin('{{%elements}} elements', '[[elements.id]] = {{%snipcart_product_details.elementId}}')
             ->where([$attribute => $this->{$attribute}])
             ->andWhere(['!=', 'elements.id', $this->elementId])
             ->andWhere([
