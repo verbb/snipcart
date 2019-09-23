@@ -27,8 +27,7 @@ class Carts extends \craft\base\Component
     /**
      * Lists abandoned carts.
      *
-     * Note that Snipcart's API is weird here, and `totalItems`+`offset` don't
-     * behave like pagination anywhere else. Instead we have to use
+     * Note that Snipcart's API behaves differently here. We have to use
      * `hasMoreResults` and `continuationToken` provided in the response and
      * disregard `totalItems`+`offset`.
      *
@@ -40,9 +39,8 @@ class Carts extends \craft\base\Component
      *
      * @return \stdClass
      *              ->items (AbandonedCart[])
-     *              ->totalItems (int)
-     *              ->offset (int)
-     *              ->limit (int)
+     *              ->continuationToken (string/null)
+     *              ->hasMoreResults (boolean)
      * @throws \Exception if our API key is missing.
      */
     public function listAbandonedCarts($page = 1, $limit = 20, $params = []): \stdClass
@@ -63,8 +61,6 @@ class Carts extends \craft\base\Component
                 $response->items,
                 AbandonedCart::class
             ),
-            'totalItems'        => $response->totalItems,
-            'offset'            => $response->offset,
             'continuationToken' => $response->continuationToken ?? null,
             'hasMoreResults'    => $response->hasMoreResults ?? false,
             'limit'             => $limit

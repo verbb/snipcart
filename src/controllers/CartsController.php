@@ -25,14 +25,12 @@ class CartsController extends \craft\web\Controller
      */
     public function actionIndex(): \yii\web\Response
     {
-        $page       = Craft::$app->getRequest()->getPageNum();
-        $carts      = Snipcart::$plugin->carts->listAbandonedCarts($page);
-        $totalPages = ceil($carts->totalItems / $carts->limit);
+        $page  = Craft::$app->getRequest()->getPageNum();
+        $carts = Snipcart::$plugin->carts->listAbandonedCarts($page);
 
         return $this->renderTemplate('snipcart/cp/abandoned-carts/index',
             [
                 'pageNumber'        => $page,
-                'totalPages'        => $totalPages,
                 'carts'             => $carts->items,
                 'continuationToken' => $carts->continuationToken ?? null,
                 'hasMoreResults'    => $carts->hasMoreResults ?? false,
@@ -45,7 +43,7 @@ class CartsController extends \craft\web\Controller
      * @return \yii\web\Response
      * @throws
      */
-    public function actionGetNextCarts()
+    public function actionGetNextCarts(): \yii\web\Response
     {
         $this->requirePostRequest();
 

@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.1.4 - 2019-09-23
+### Fixed
+- Removed a changed API reference that caused an error in the Abandoned Cart list.
+
 ## 1.1.3 - 2019-08-15
 ### Fixed
 - Fixed a query error that could prevent Product Details fields from saving.
