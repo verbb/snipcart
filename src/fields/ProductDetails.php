@@ -13,6 +13,10 @@ use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
+use craft\gql\GqlEntityRegistry;
+use craft\gql\TypeLoader;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
 
 /**
  * ProductDetails
@@ -21,6 +25,27 @@ use craft\base\ElementInterface;
  */
 class ProductDetails extends \craft\base\Field
 {
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('snipcart', 'Snipcart Product Details');
+    }
+
+    /**
+     * @return bool
+     */
+    public static function hasContentColumn(): bool
+    {
+        return false;
+    }
+
+
     // Public Properties
     // =========================================================================
 
@@ -88,26 +113,6 @@ class ProductDetails extends \craft\base\Field
     public $skuDefault = '';
 
 
-    // Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public static function displayName(): string
-    {
-        return Craft::t('snipcart', 'Snipcart Product Details');
-    }
-
-    /**
-     * @return bool
-     */
-    public static function hasContentColumn(): bool
-    {
-        return false;
-    }
-
-
     // Public Methods
     // =========================================================================
 
@@ -119,7 +124,7 @@ class ProductDetails extends \craft\base\Field
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
         return Snipcart::$plugin->fields->saveProductDetailsField(
-            $this, 
+            $this,
             $element
         );
     }
@@ -132,17 +137,49 @@ class ProductDetails extends \craft\base\Field
     public function normalizeValue($value, ElementInterface $element = null)
     {
         return Snipcart::$plugin->fields->getProductDetailsField(
-            $this, 
-            $element,
+            $this, $element,
             $value
         );
     }
 
     /**
      * @inheritdoc
+     * @since 3.3.0
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getContentGqlType()
     {
+        $typeName = $this->handle.'_SnipcartField';
+
+        $productDetailsType = GqlEntityRegistry::getEntity($typeName)
+            ?: GqlEntityRegistry::createEntity($typeName, new ObjectType([
+                'name'   => $typeName,
+                'fields' => [
+                    'sku'            => Type::string(),
+                    'price'          => Type::float(),
+                    'shippable'      => Type::boolean(),
+                    'taxable'        => Type::boolean(),
+                    'weight'         => Type::float(),
+                    'weightUnit'     => Type::string(),
+                    'length'         => Type::float(),
+                    'width'          => Type::float(),
+                    'height'         => Type::float(),
+                    'inventory'      => Type::int(),
+                    'dimensionsUnit' => Type::string(),
+                ],
+            ]));
+
+        TypeLoader::registerType($typeName, static function () use ($productDetailsType) { return $productDetailsType ;});
+
+        return $productDetailsType;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml(
+        $value,
+        ElementInterface $element = null
+    ): string {
         Craft::$app->getView()->registerAssetBundle(
             ProductDetailsFieldAsset::class
         );
@@ -150,12 +187,12 @@ class ProductDetails extends \craft\base\Field
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/field',
             [
-                'name'     => $this->handle,
-                'field'    => $this,
-                'element'  => $element,
-                'value'    => $value,
-                'settings' => $this->getSettings(),
-                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+                'name'                  => $this->handle,
+                'field'                 => $this,
+                'element'               => $element,
+                'value'                 => $value,
+                'settings'              => $this->getSettings(),
+                'weightUnitOptions'     => ProductDetailsModel::getWeightUnitOptions(),
                 'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
             ]
         );
@@ -173,8 +210,8 @@ class ProductDetails extends \craft\base\Field
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/settings',
             [
-                'field' => $this,
-                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+                'field'                 => $this,
+                'weightUnitOptions'     => ProductDetailsModel::getWeightUnitOptions(),
                 'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
             ]
         );
@@ -189,14 +226,14 @@ class ProductDetails extends \craft\base\Field
     public function getElementValidationRules(): array
     {
         return [
-            'validateProductDetails'
+            'validateProductDetails',
         ];
     }
 
     /**
      * Validate the ProductDetails model, adding any errors to the Element.
      *
-     * @param ElementInterface $element
+     * @param  ElementInterface  $element
      */
     public function validateProductDetails(ElementInterface $element)
     {
@@ -205,13 +242,11 @@ class ProductDetails extends \craft\base\Field
 
         $errors = $productDetails->getErrors();
 
-        if (count($errors) > 0)
-        {
-            foreach($errors as $subfield => $errors)
-            {
-                foreach($errors as $message)
-                {
-                    $element->addError($this->handle . '['.$subfield.']', $message);
+        if (count($errors) > 0) {
+            foreach ($errors as $subfield => $errors) {
+                foreach ($errors as $message) {
+                    $element->addError($this->handle.'['.$subfield.']',
+                        $message);
                 }
             }
         }

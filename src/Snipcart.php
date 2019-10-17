@@ -122,7 +122,7 @@ class Snipcart extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function(Event $event)
+            static function(Event $event)
             {
                 $variable = $event->sender;
                 $variable->set('snipcart', SnipcartVariable::class);
@@ -132,7 +132,7 @@ class Snipcart extends Plugin
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event)
+            static function (RegisterComponentTypesEvent $event)
             {
                 $event->types[] = OrdersWidget::class;
             }
@@ -141,7 +141,7 @@ class Snipcart extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event)
+            static function (RegisterComponentTypesEvent $event)
             {
                 $event->types[] = ProductDetails::class;
             }
@@ -150,7 +150,7 @@ class Snipcart extends Plugin
         Event::on(
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
-            function (RegisterCacheOptionsEvent $event)
+            static function (RegisterCacheOptionsEvent $event)
             {
                 $event->options = array_merge(
                     $event->options,
@@ -173,7 +173,7 @@ class Snipcart extends Plugin
             Event::on(
                 ProductDetails::class,
                 'craftQlGetFieldSchema',
-                function($event)
+                static function($event)
                 {
                     $event->handled = true;
 
@@ -196,7 +196,7 @@ class Snipcart extends Plugin
             Event::on(
                 UrlManager::class,
                 UrlManager::EVENT_REGISTER_CP_URL_RULES,
-                function(RegisterUrlRulesEvent $event)
+                static function(RegisterUrlRulesEvent $event)
                 {
                     $event->rules = array_merge(
                         $event->rules,

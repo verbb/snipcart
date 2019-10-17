@@ -9,6 +9,7 @@ namespace workingconcept\snipcart\console\controllers;
 
 use craft\helpers\DateTimeHelper;
 use workingconcept\snipcart\Snipcart;
+use workingconcept\snipcart\models\Order;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -18,8 +19,8 @@ class VerifyController extends Controller
     // =========================================================================
 
     /**
-     * Verify that the most recently-added orders exist in both Snipcart and ShipStation
-     * and that none quietly failed to make it to ShipStation.
+     * Verify that the most recently-added orders exist in both Snipcart and
+     * ShipStation and that none quietly failed to make it to ShipStation.
      * 
      * If there was a failure, send email notifications.
      *
@@ -81,21 +82,25 @@ class VerifyController extends Controller
     /**
      * Try re-feeding missing orders into ShipStation.
      *
-     * @param \workingconcept\snipcart\models\Order[] $orders
+     * @param Order[] $orders
      *
-     * @return array If attempts were made to try re-sending the orders to ShipStation,
-     *               they'll be in this array where the key is the invoice number
-     *               and the value is true if successful.
+     * @return array  If attempts were made to re-send the orders to
+     *                ShipStation, they'll be in this array where the key is the
+     *                invoice number and the value is true if successful.
      * @throws
      */
     private function _reFeedToShipStation($orders): array
     {
         $reFeedResult = [];
+        $minuteLimit = Snipcart::$plugin->getSettings()->reFeedAttemptWindow;
 
         foreach ($orders as $order)
         {
             // try again, but only briefly
-            if (DateTimeHelper::isWithinLast($order->creationDate, '10 minutes'))
+            if (DateTimeHelper::isWithinLast(
+                $order->creationDate,
+                $minuteLimit . ' minutes')
+            )
             {
                 $this->stdout('-------------------------------------' . PHP_EOL);
                 $this->stdout(sprintf(
@@ -105,6 +110,8 @@ class VerifyController extends Controller
 
                 $result = Snipcart::$plugin->shipments->shipStation->createOrder($order);
                 $succeeded = isset($result->orderId) && empty($result->getErrors());
+
+                // TODO: log failure for troubleshooting
 
                 $statusString = $succeeded ? '✓' : '✗';
                 $this->stdout($statusString . PHP_EOL);
@@ -119,8 +126,8 @@ class VerifyController extends Controller
     /**
      * Let somebody know that one or more orders didn't make it to ShipStation.
      *
-     * @param \workingconcept\snipcart\models\Order[] $snipcartOrders
-     * @param array $reFeedResults
+     * @param Order[] $snipcartOrders
+     * @param array   $reFeedResults
      *
      * @return int
      * @throws

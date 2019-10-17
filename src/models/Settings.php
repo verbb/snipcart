@@ -150,6 +150,13 @@ class Settings extends Model
      */
     public $providerSettings = [];
 
+    /**
+     * @var int Limit in minutes for re-sending order details to shipping
+     *          providers after failure. Once the order is X minutes old,
+     *          the plugin will stop trying to re-send the data.
+     */
+    public $reFeedAttemptWindow = 15;
+
 
     // Static Methods
     // =========================================================================

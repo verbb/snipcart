@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.2.0 - 2019-10-17
+### Added
+- Added GraphQL support to Product Details fields.
+- Exposed shipping data re-feed attempt window as a configurable setting.
+### Fixed
+- Minor code improvements.
+
 ## 1.1.4 - 2019-09-23
 ### Fixed
 - Removed a changed API reference that caused an error in the Abandoned Cart list.
