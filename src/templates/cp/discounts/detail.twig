@@ -13,7 +13,7 @@
 {% block content %}
 
     <div>
-        {% if discount.expires < now %}
+        {% if discount.expires and discount.expires < now %}
             <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
                 {{ "This discount expired"|t }} {{ discount.expires | date('F j, Y') }}.
             </div>
