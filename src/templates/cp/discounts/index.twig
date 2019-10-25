@@ -35,11 +35,11 @@
                     <tr data-id="{{ discount.id }}" data-name="{{ discount.id }}">
                         <td><a href="{{ discount.cpUrl }}">{{ discount.name }}</a></td>
                         <td>{{ discount.trigger }}</td>
-                        <td>{{ discount.code }}</td>
+                        <td><code>{{ discount.code }}</code></td>
                         <td>{{ discount.type }}</td>
                         <td>{{ discount.rate }}</td>
                         <td>{{ discount.amount }}</td>
-                        <td>{{ discount.numberOfUsages }} / {{ discount.maxNumberOfUsages }}</td>
+                        <td>{{ discount.numberOfUsages }} / {{ discount.maxNumberOfUsages ?? '∞' }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -76,9 +76,11 @@ TODO: support plans
                         {%- if order.totalWeight %} ({{ order.totalWeight }} grams){% endif -%}
                     </span>
                 </td>
-                <td style="text-align: right;">
-                    {{- craft.snipcart.formatCurrency(order.shippingFees, order.currency) -}}
-                </td>
+                {% if order.shippingFees %}
+                    <td style="text-align: right;">
+                        {{- craft.snipcart.formatCurrency(order.shippingFees, order.currency) -}}
+                    </td>
+                {% endif %}
             </tr>
         {% endif %}
         {% if hasShippingInformation and order.shippingInformation.fees is defined %}

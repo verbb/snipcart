@@ -87,7 +87,7 @@
                                 {% if 'code' in discount.triggerOptionFields() %}
                                     <tr>
                                         <th class="light">{{ "Code"|t }}</th>
-                                        <td>{{ discount.code }}</td>
+                                        <td><code>{{ discount.code }}</code></td>
                                     </tr>
                                 {% endif %}
                                 {% if 'totalToReach' in discount.triggerOptionFields() %}

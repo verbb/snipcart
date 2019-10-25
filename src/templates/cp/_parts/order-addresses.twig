@@ -17,7 +17,14 @@
 
 <p>{{ order.billingAddress.phone }}</p>
 
-{% if not shippingSameAsBilling %}
+{% set actuallyHasShippingAddress = order.shippingAddress.name and
+    order.shippingAddress.address1 and
+    order.shippingAddress.city and
+    order.shippingAddress.province and
+    order.shippingAddress.postalCode
+%}
+
+{% if not shippingSameAsBilling and actuallyHasShippingAddress %}
 
     <br>
 
