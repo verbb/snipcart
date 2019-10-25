@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use Craft;
 use craft\mail\Message;
+use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\VersionHelper;
 
 /**
