@@ -83,12 +83,34 @@ class Discounts extends \craft\base\Component
     }
 
     /**
+     * Updates an existing discount.
+     *
+     * @param Discount $discount
+     *
+     * @return array|\stdClass
+     * @throws \Exception
+     */
+    public function updateDiscount($discount)
+    {
+        $response = Snipcart::$plugin->api->put(sprintf(
+                'discounts/%s',
+                $discount->id
+            ),
+            $discount->getPayloadForPost(false)
+        );
+
+        return $response;
+    }
+
+    /**
      * Deletes a discount.
      *
      * @param string $discountId
      *
      * @return mixed
      * @throws \Exception when there isn't an API key to authenticate requests.
+     * @todo Handle un-deletable discounts that have been used in orders
+     *       https://docs.snipcart.com/v2/api-reference/discounts#delete-discountsid
      */
     public function deleteDiscountById($discountId)
     {
