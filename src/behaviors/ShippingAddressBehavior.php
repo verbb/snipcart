@@ -28,7 +28,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressName()
     {
@@ -37,7 +37,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $name
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressName($name)
     {
@@ -50,7 +50,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressFirstName()
     {
@@ -59,7 +59,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $firstName
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressFirstName($firstName)
     {
@@ -81,7 +81,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $companyName
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressCompanyName($companyName)
     {
@@ -94,7 +94,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressAddress1()
     {
@@ -103,7 +103,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $address1
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressAddress1($address1)
     {
@@ -125,7 +125,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $address2
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressAddress2($address2)
     {
@@ -138,16 +138,16 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getShippingAddressCity(): string
+    public function getShippingAddressCity()
     {
         return $this->getShippingAddress()->city;
     }
 
     /**
      * @param $city
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressCity($city)
     {
@@ -160,7 +160,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressCountry()
     {
@@ -169,7 +169,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $country
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressCountry($country)
     {
@@ -182,7 +182,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressProvince()
     {
@@ -191,7 +191,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $province
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressProvince($province)
     {
@@ -204,7 +204,7 @@ class ShippingAddressBehavior extends Behavior
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getShippingAddressPostalCode()
     {
@@ -235,7 +235,7 @@ class ShippingAddressBehavior extends Behavior
 
     /**
      * @param $phone
-     * @return string
+     * @return string|null
      */
     public function setShippingAddressPhone($phone)
     {
