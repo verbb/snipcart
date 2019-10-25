@@ -163,6 +163,11 @@ class Item extends \craft\base\Model
     public $totalPrice;
 
     /**
+     * @var float
+     */
+    public $totalPriceWithoutTaxes;
+
+    /**
      * @var
      */
     public $totalWeight;

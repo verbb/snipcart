@@ -51,6 +51,14 @@ class Order extends \craft\base\Model
     const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
     const PAYMENT_STATUS_PAID = 'Paid';
 
+    const STATUS_IN_PROGRESS = 'InProgress';
+    const STATUS_PROCESSED = 'Processed';
+    const STATUS_DISPUTED = 'Disputed';
+    const STATUS_SHIPPPED = 'Shipped';
+    const STATUS_DELIVERED = 'Delivered';
+    const STATUS_PENDING = 'Pending';
+    const STATUS_CANCELLED = 'Cancelled';
+
     // Properties
     // =========================================================================
 
@@ -298,6 +306,11 @@ class Order extends \craft\base\Model
      * @var float
      */
     public $adjustedAmount;
+
+    /**
+     * @var float
+     */
+    public $savedAmount;
 
     /**
      * @var int
@@ -669,6 +682,7 @@ class Order extends \craft\base\Model
             'shippingAddress',
             'user',
             'discounts',
+            'refunds',
             'plans',
             'items',
             'billingAddressName',

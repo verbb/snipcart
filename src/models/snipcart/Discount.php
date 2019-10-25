@@ -37,6 +37,11 @@ class Discount extends \craft\base\Model
     public $id;
 
     /**
+     * @var string References the discount ID when applied in the context of an Order.
+     */
+    public $discountId;
+
+    /**
      * @var string The discount friendly name. (required)
      */
     public $name;
@@ -80,6 +85,11 @@ class Discount extends \craft\base\Model
      * @var float The amount that will be deducted from order total. Required when type is `FixedAmount`.
      */
     public $amount;
+
+    /**
+     * @var float The amount that was saved if/when this instance was applied to an Order.
+     */
+    public $amountSaved;
 
     /**
      * @var string  A comma separated list of unique ID of your products defined with data-item-id.
@@ -228,6 +238,26 @@ class Discount extends \craft\base\Model
      */
     public $modificationDate;
 
+    /**
+     * @var
+     */
+    public $categories;
+
+    /**
+     * @var
+     */
+    public $categoryNames;
+
+    /**
+     * @var
+     */
+    public $refunds;
+
+    /**
+     * @var
+     */
+    public $savedAmount;
+
 
     // Private Properties
     // =========================================================================
@@ -285,7 +315,7 @@ class Discount extends \craft\base\Model
             [['name', 'trigger', 'code', 'itemId', 'type', 'productIds', 'shippingDescription'], 'string'],
             [['name', 'trigger', 'type'], 'required'],
             [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'], 'number', 'integerOnly' => true],
-            [['totalToReach', 'amount', 'rate', 'alternatePrice', 'shippingCost'], 'number', 'integerOnly' => false],
+            [['totalToReach', 'amount', 'amountSaved', 'rate', 'alternatePrice', 'shippingCost'], 'number', 'integerOnly' => false],
         ];
     }
 
@@ -293,11 +323,19 @@ class Discount extends \craft\base\Model
      * Remove cruft for posting to the REST API. This should be in a scenario
      * once it's clear how to get them working.
      *
+     * @param bool $isNew  true if this is a new Discount record
+     *
      * @return array
      */
-    public function getPayloadForPost(): array
+    public function getPayloadForPost($isNew = true): array
     {
-        $remove = ['id'];
+        $remove = [];
+
+        if ($isNew)
+        {
+            $remove[] = 'id';
+        }
+
         $payload = $this->toArray();
 
         // don't send `false` value as expiration (API rejects it)
