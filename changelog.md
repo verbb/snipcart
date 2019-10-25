@@ -1,5 +1,15 @@
 # Snipcart Changelog
 
+## 1.2.1 - Unreleased
+### Added
+- Added support for test mode!
+- Added `Discounts::updateDiscount()`.
+- Added status options to Snipcart Order model.
+### Fixed
+- Fixed a template bug that could have wrongly indicated an expired discount.
+- Fixed an error when clearing the Snicpart API cache from the Clear Caches utility.
+- Fixed a few template template display bugs where some details may not be present.
+
 ## 1.2.0 - 2019-10-17
 ### Added
 - Added GraphQL support to Product Details fields.
