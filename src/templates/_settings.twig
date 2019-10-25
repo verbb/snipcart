@@ -69,7 +69,7 @@
                 id: 'publicTestApiKey',
                 required: false,
                 name: 'settings[publicTestApiKey]',
-                value: settings.publicApiKey,
+                value: settings.publicTestApiKey,
                 errors: settings.getErrors('publicTestApiKey'),
                 instructions: "Add your public Snipcart Test API key. You can find this on your account page in Snipcart.",
             } %}
@@ -80,7 +80,7 @@
                 class: 'code',
                 required: false,
                 name: 'settings[secretTestApiKey]',
-                value: settings.secretApiKey,
+                value: settings.secretTestApiKey,
                 autocomplete: false,
                 errors: settings.getErrors('secretTestApiKey'),
                 instructions: "Add your secret Snipcart Test API key. You can find this on your account page in Snipcart.",
