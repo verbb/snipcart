@@ -131,9 +131,19 @@ class Shipments extends \craft\base\Component
             'errors' => []
         ];
 
-        // is ShipStation an enabled provider?
-        $sendToShipStation = $this->getShipStation()->isConfigured() &&
-            $this->getShipStation()->getSettings()->sendCompletedOrders;
+        // is the plugin in test mode?
+        $isTestMode = Snipcart::$plugin->getSettings()->testMode;
+
+        // has ShipStation integration been configured?
+        $shipStationConfigured = $this->getShipStation()->isConfigured();
+
+        // does ShipStation's settings say we should send completed Snipcart orders?
+        $shipStationShouldSend = $this->getShipStation()->getSettings()->sendCompletedOrders;
+
+        // should we seriously do it?
+        $sendToShipStation = ! $isTestMode &&
+            $shipStationConfigured &&
+            $shipStationShouldSend;
 
         // send order to ShipStation if we need to
         if ($sendToShipStation)

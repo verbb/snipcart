@@ -41,7 +41,7 @@
         <div id="account" class="">
 
             {% set publicKeyFieldOptions = {
-                label: 'Snipcart Public API Key'|t,
+                label: 'Public API Key'|t,
                 class: 'code',
                 id: 'publicApiKey',
                 required: true,
@@ -52,7 +52,7 @@
             } %}
 
             {% set secretKeyFieldOptions = {
-                label: 'Snipcart Secret API Key'|t,
+                label: 'Secret API Key'|t,
                 id: 'secretApiKey',
                 class: 'code',
                 required: true,
@@ -63,6 +63,29 @@
                 instructions: "Add your secret Snipcart API key. You can find this on your account page in Snipcart.",
             } %}
 
+            {% set testPublicKeyFieldOptions = {
+                label: 'Test Public API Key'|t,
+                class: 'code',
+                id: 'publicTestApiKey',
+                required: false,
+                name: 'settings[publicTestApiKey]',
+                value: settings.publicApiKey,
+                errors: settings.getErrors('publicTestApiKey'),
+                instructions: "Add your public Snipcart Test API key. You can find this on your account page in Snipcart.",
+            } %}
+
+            {% set testSecretKeyFieldOptions = {
+                label: 'Test Secret API Key'|t,
+                id: 'secretTestApiKey',
+                class: 'code',
+                required: false,
+                name: 'settings[secretTestApiKey]',
+                value: settings.secretApiKey,
+                autocomplete: false,
+                errors: settings.getErrors('secretTestApiKey'),
+                instructions: "Add your secret Snipcart Test API key. You can find this on your account page in Snipcart.",
+            } %}
+
             {% if isCraft31 %}
                 {% set publicKeyFieldOptions = publicKeyFieldOptions
                     | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
@@ -71,10 +94,45 @@
                 {% set secretKeyFieldOptions = secretKeyFieldOptions
                     | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
                 {{ forms.autosuggestField(secretKeyFieldOptions) }}
+
+                <br>
+
+                {% set testPublicKeyFieldOptions = testPublicKeyFieldOptions
+                    | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                {{ forms.autosuggestField(testPublicKeyFieldOptions) }}
+
+                {% set testSecretKeyFieldOptions = testSecretKeyFieldOptions
+                    | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                {{ forms.autosuggestField(testSecretKeyFieldOptions) }}
+
+                <br>
+
             {% else %}
                 {{ forms.passwordField(publicKeyFieldOptions) }}
                 {{ forms.passwordField(secretKeyFieldOptions) }}
+                {{ forms.passwordField(testPublicKeyFieldOptions) }}
+                {{ forms.passwordField(testSecretKeyFieldOptions) }}
             {% endif %}
+
+            {{ forms.lightswitchField({
+                label: 'Test Mode'|t,
+                id: 'testMode',
+                required: false,
+                name: 'settings[testMode]',
+                on: settings.testMode,
+                errors: settings.getErrors('testMode'),
+                instructions: "Switch on if you've added your test keys and want all Snipcart API interaction to be in test mode. Orders will not be sent to ShipStation."
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: 'Send email notifications in test mode?'|t,
+                id: 'sendTestModeEmail',
+                required: false,
+                name: 'settings[sendTestModeEmail]',
+                on: settings.sendTestModeEmail,
+                errors: settings.getErrors('sendTestModeEmail'),
+                instructions: "Switch on to send email notifications from Snipcart when test mode is enabled."
+            }) }}
 
             {{ forms.selectField({
                 label: 'Currency'|t,

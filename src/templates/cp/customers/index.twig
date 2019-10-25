@@ -4,7 +4,8 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
-{% set title = "Snipcart Customers"|t %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = "Snipcart Customers" ~ (isTestMode ? " 🚧") %}
 {% set selectedTab = "customers" %}
 {% set showingSearchResult = keywords is not empty %}
 {% set hasResults = customers|length > 0 %}

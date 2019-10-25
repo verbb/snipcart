@@ -5,7 +5,8 @@
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set centered = true %}
-{% set title = "Subscription for " ~ subscription.user.billingAddress.fullName %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = "Subscription for " ~ subscription.user.billingAddress.fullName ~ (isTestMode ? " 🚧") %}
 
 {% set crumbs = [
     { label: "Snipcart"|t('snipcart'), url: url('snipcart') },

@@ -234,7 +234,7 @@ class Api extends Component
 
     private function _getSecretApiKey()
     {
-        $keyValue = Snipcart::$plugin->getSettings()->secretApiKey;
+        $keyValue = Snipcart::$plugin->getSettings()->secretKey();
 
         return VersionHelper::isCraft31() ?
             Craft::parseEnv($keyValue) :

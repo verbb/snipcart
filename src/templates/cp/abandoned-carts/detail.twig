@@ -8,7 +8,8 @@
     { label: "Abandoned Carts"|t('snipcart'), url: url('snipcart/abandoned') }
 ] %}
 
-{% set title = abandonedCart.billingAddress.name %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = abandonedCart.billingAddress.name ~ (isTestMode ? " 🚧") %}
 
 {#
 

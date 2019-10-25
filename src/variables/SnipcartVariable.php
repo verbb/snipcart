@@ -32,7 +32,7 @@ class SnipcartVariable
      */
     public function publicApiKey(): string
     {
-        return Snipcart::$plugin->getSettings()->publicApiKey;
+        return Snipcart::$plugin->getSettings()->publicKey();
     }
 
     /**
@@ -155,7 +155,7 @@ class SnipcartVariable
     public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): \Twig_Markup
     {
         $settings = Snipcart::$plugin->getSettings();
-        $publicApiKey = $settings->publicApiKey;
+        $publicApiKey = $settings->publicKey();
 
         if (VersionHelper::isCraft31())
         {

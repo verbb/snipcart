@@ -182,10 +182,10 @@ class ShipStation extends ShippingProvider
 
         if ($order->validate())
         {
-            if (Craft::$app->getConfig()->general->devMode)
+            if (Craft::$app->getConfig()->general->devMode || Snipcart::$plugin->getSettings()->testMode)
             {
                 /**
-                 * Don't transmit orders in devMode, just set a fake order ID.
+                 * Don't transmit orders in devMode or testMode, just set a fake order ID.
                  */
                 $order->orderId = 99999999;
                 return $order;

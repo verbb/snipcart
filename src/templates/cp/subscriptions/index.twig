@@ -3,7 +3,8 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
-{% set title         = "Snipcart Subscriptions"|t %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title         = "Snipcart Subscriptions" ~ (isTestMode ? " 🚧") %}
 {% set selectedTab   = "subscriptions" %}
 
 {% block content %}

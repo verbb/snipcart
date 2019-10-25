@@ -157,6 +157,17 @@ class Settings extends Model
      */
     public $reFeedAttemptWindow = 15;
 
+    /**
+     * @var boolean Whether to use `publicApiKey` and `secretApiKey` or
+     *              `publicTestApiKey` and `secretTestApiKey` for API
+     *              interactions with Snipcart.
+     */
+    public $testMode = false;
+
+    /**
+     * @var boolean Whether to send email notifications when `testMode` = true.
+     */
+    public $sendTestModeEmail = false;
 
     // Static Methods
     // =========================================================================
@@ -170,8 +181,8 @@ class Settings extends Model
     {
         return [
             self::CURRENCY_USD => Craft::t('snipcart', 'U.S. Dollar'),
-            self::CURRENCY_CAD => Craft::t('snipcart','Canadian Dollar'),
-            self::CURRENCY_EUR => Craft::t('snipcart','Euro'),
+            self::CURRENCY_CAD => Craft::t('snipcart', 'Canadian Dollar'),
+            self::CURRENCY_EUR => Craft::t('snipcart', 'Euro'),
         ];
     }
 
@@ -180,12 +191,39 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Is the plugin ready to attempt Snipcart REST API requests?
+     * Returns the stored public API key value depending on testMode.
+     *
+     * @return string
+     */
+    public function publicKey(): string
+    {
+        return $this->testMode ? $this->publicTestApiKey : $this->publicApiKey;
+    }
+
+    /**
+     * Returns the stored secret API key value depending on testMode.
+     *
+     * @return string
+     */
+    public function secretKey(): string
+    {
+        return $this->testMode ? $this->secretTestApiKey : $this->secretApiKey;
+    }
+
+    /**
+     * Is the plugin ready to attempt Snipcart REST API requests with
+     * honoring our `testMode` setting?
      *
      * @return bool
      */
     public function isConfigured(): bool
     {
+        if ($this->testMode)
+        {
+            return $this->_hasNonEmptyEnvValue('publicTestApiKey') &&
+                $this->_hasNonEmptyEnvValue('secretTestApiKey');
+        }
+
         return $this->_hasNonEmptyEnvValue('publicApiKey') &&
             $this->_hasNonEmptyEnvValue('secretApiKey');
     }
@@ -196,7 +234,7 @@ class Settings extends Model
     public function rules(): array
     {
         return array_merge(parent::rules(), [
-            [['publicApiKey', 'secretApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
+            [['publicApiKey', 'secretApiKey', 'publicTestApiKey', 'secretTestApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
             [['publicApiKey', 'secretApiKey'], 'required'],
             [['cacheDurationLimit'], 'number', 'integerOnly' => true],
             ['notificationEmails', 'each', 'rule' => ['email']],

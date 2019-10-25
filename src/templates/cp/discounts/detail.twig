@@ -8,7 +8,8 @@
     { label: "Discounts"|t('snipcart'), url: url('snipcart/discounts') }
 ] %}
 
-{% set title = discount.name %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = discount.name ~ (isTestMode ? " 🚧") %}
 
 {% block content %}
 

@@ -129,6 +129,15 @@ class Notifications extends \craft\base\Component
      */
     public function sendEmail($to, $subject): bool
     {
+        $pluginSettings = Snipcart::$plugin->getSettings();
+
+        // bail if we're in test mode and don't want to send emails
+        if ($pluginSettings->testMode && ! $pluginSettings->sendTestModeEmail)
+        {
+            // pretend it went well
+            return true;
+        }
+
         $errors = [];
         $view = Craft::$app->getView();
 

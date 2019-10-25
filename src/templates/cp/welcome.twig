@@ -1,7 +1,8 @@
 {% extends "_layouts/cp" %}
 
 {% set centered = true %}
-{% set title = "Snipcart"|t %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = "Snipcart" ~ (isTestMode ? " 🚧") %}
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 

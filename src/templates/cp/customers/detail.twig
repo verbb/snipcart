@@ -8,7 +8,8 @@
     { label: "Customers"|t('snipcart'), url: url('snipcart/customers') }
 ] %}
 
-{% set title = customer.billingAddress.name %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = customer.billingAddress.name ~ (isTestMode ? " 🚧") %}
 
 {% block content %}
     <div>

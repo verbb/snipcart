@@ -8,7 +8,9 @@
 
 {% set fullPageForm = true %}
 
-{% set title = 'New Discount'|t %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = "New Discount" ~ (isTestMode ? " 🚧") %}
+
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\DiscountFieldAsset") %}
 
 {% block actionButton %}

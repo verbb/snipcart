@@ -4,7 +4,8 @@
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
-{% set title = "Snipcart Orders"|t %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = "Snipcart Orders" ~ (isTestMode ? " 🚧") %}
 {% set selectedTab = "orders" %}
 
 {% block content %}
