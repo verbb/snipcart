@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 /**
- * https://docs.snipcart.com/api-reference/notifications
+ * https://docs.snipcart.com/v2/api-reference/notifications
  */
 
 class Notification extends \craft\base\Model

@@ -10,7 +10,7 @@ namespace workingconcept\snipcart\models;
 
 /**
  * Class Tax
- * https://docs.snipcart.com/webhooks/taxes
+ * https://docs.snipcart.com/v2/webhooks/taxes
  *
  * @package workingconcept\snipcart\models
  */

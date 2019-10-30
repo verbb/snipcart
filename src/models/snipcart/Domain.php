@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 /**
- * https://docs.snipcart.com/api-reference/domains
+ * https://docs.snipcart.com/v2/api-reference/domains
  */
 
 class Domain extends \craft\base\Model

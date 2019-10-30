@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 /**
- * https://docs.snipcart.com/api-reference/discounts
+ * https://docs.snipcart.com/v2/api-reference/discounts
  */
 
 class Discount extends \craft\base\Model

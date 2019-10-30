@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 /**
- * https://docs.snipcart.com/api-reference/custom-shipping-methods
+ * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods
  */
 
 class ShippingMethod extends \craft\base\Model

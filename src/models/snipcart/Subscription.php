@@ -10,7 +10,7 @@ namespace workingconcept\snipcart\models;
 
 /**
  * Class Subscription
- * https://docs.snipcart.com/api-reference/subscriptions
+ * https://docs.snipcart.com/v2/api-reference/subscriptions
  * @package workingconcept\snipcart\models
  */
 class Subscription extends \craft\base\Model

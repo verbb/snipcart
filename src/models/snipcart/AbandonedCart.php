@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\models;
 
 /**
- * https://docs.snipcart.com/api-reference/abandoned-carts
+ * https://docs.snipcart.com/v2/api-reference/abandoned-carts
  */
 
 class AbandonedCart extends \craft\base\Model

@@ -10,7 +10,7 @@ namespace workingconcept\snipcart\models;
 
 /**
  * Snipcart Customer model
- * https://docs.snipcart.com/api-reference/customers
+ * https://docs.snipcart.com/v2/api-reference/customers
  */
 class Customer extends \craft\base\Model
 {
