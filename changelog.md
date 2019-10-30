@@ -5,6 +5,7 @@
 - Added support for test mode!
 - Added `Discounts::updateDiscount()`.
 - Added status options to Snipcart Order model.
+
 ### Fixed
 - Fixed a template bug that could have wrongly indicated an expired discount.
 - Fixed an error when clearing the Snicpart API cache from the Clear Caches utility.
@@ -14,6 +15,7 @@
 ### Added
 - Added GraphQL support to Product Details fields.
 - Exposed shipping data re-feed attempt window as a configurable setting.
+
 ### Fixed
 - Minor code improvements.
 
@@ -270,6 +272,7 @@
 ## 1.0.0-beta.8 - 2018-12-17
 ### Added
 - Separated parts of SnipcartService into new ApiService.
+
 ### Changed
 - Changed the way API exceptions are handled to reduce disruption and log failures.
 - Refactored SnipcartService to be cleaner.
@@ -278,6 +281,7 @@
 - Improved ShipStation order verifier accuracy.
 - Updated webhook controller's `handleOrderCompletedEvent()` to continue through problems and report errors by model. Any errors at all will result in `success: false`.
 - Renamed `listAbandoned` template variable to `listAbandonedCarts`.
+
 ### Fixed
 - Minor fix for mobile order email price wrapping.
 
