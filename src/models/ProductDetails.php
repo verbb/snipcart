@@ -480,22 +480,25 @@ class ProductDetails extends \craft\base\Model
             {
                 $customOptionOptions = [];
 
-                foreach ($customOption['options'] as $option)
+                if (isset($customOption['options']))
                 {
-                    if ( ! isset($option['name']) && ! isset($option['price']))
+                    foreach ($customOption['options'] as $option)
                     {
-                        $customOptionOptions[] = [
-                            'name' => $option,
-                            'price' => 0
-                        ];
+                        if ( ! isset($option['name']) && ! isset($option['price']))
+                        {
+                            $customOptionOptions[] = [
+                                'name' => $option,
+                                'price' => 0
+                            ];
+                        }
+                        else
+                        {
+                            $customOptionOptions[] = $option;
+                        }
                     }
-                    else
-                    {
-                        $customOptionOptions[] = $option;
-                    }
+                    
+                    $customOption['options'] = $customOptionOptions;
                 }
-
-                $customOption['options'] = $customOptionOptions;
             }
         }
 

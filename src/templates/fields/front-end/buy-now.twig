@@ -42,10 +42,10 @@ https://docs.snipcart.com/configuration/product-definition
     {%- for customOption in templateParams.customOptions -%}
     data-item-custom{{ loop.index }}-name="{{ customOption.name }}"
     data-item-custom{{ loop.index }}-required="{{ customOption.required ? 'true' : 'false' }}"
-    data-item-custom{{ loop.index }}-options="{% for option in customOption.options -%}
+    {% if customOption.options is defined and customOption.options | length %}data-item-custom{{ loop.index }}-options="{% for option in customOption.options -%}
         {{ option.name }}[{{ '+' not in option.price and option.price >= 0 ? '+' : '' }}{{ option.price }}]
         {%- if not loop.last %}|{% endif %}{% endfor %}"
-    {%- endfor -%}
+    {%- endif -%}{%- endfor -%}
     >
         {{- templateParams.text|t -}}
 </a>
