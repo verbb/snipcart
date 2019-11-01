@@ -1,14 +1,14 @@
 # Snipcart Changelog
 
-## 1.2.1 - Unreleased
+## 1.2.1 - 2019-11-01
 ### Added
 - Added support for test mode!
 - Added `Discounts::updateDiscount()`.
-- Added status options to Snipcart Order model.
+- Added status constants to Snipcart Order model.
 
 ### Fixed
 - Fixed a template bug that could have wrongly indicated an expired discount.
-- Fixed an error when clearing the Snicpart API cache from the Clear Caches utility.
+- Fixed an error when clearing the Snipcart API cache from the Clear Caches utility.
 - Fixed a few template template display bugs where some details may not be present.
 - Custom product options can now be plain text inputs. (No array of choices required.)
 
