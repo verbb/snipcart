@@ -22,10 +22,8 @@ class VerifyController extends Controller
     // =========================================================================
 
     /**
-     * Verify that the most recently-added orders exist in both Snipcart and
-     * ShipStation and that none quietly failed to make it to ShipStation.
-     * 
-     * If there was a failure, send email notifications.
+     * Checks that most recent orders exist in Snipcart and ShipStation.
+     * Sends notifications if any are missing.
      *
      * @param bool $forceFeed  forcefully re-send missing orders
      *
@@ -42,6 +40,7 @@ class VerifyController extends Controller
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
+        // TODO: only get *shippable* orders!
         $orders = Snipcart::$plugin->orders->getOrders([
             'limit' => $limit, 
             'cache' => false 
