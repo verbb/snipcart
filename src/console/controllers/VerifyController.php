@@ -7,6 +7,9 @@
  */
 namespace workingconcept\snipcart\console\controllers;
 
+use workingconcept\snipcart\providers\ShipStation;
+
+use Craft;
 use craft\helpers\DateTimeHelper;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\Order;
@@ -24,10 +27,12 @@ class VerifyController extends Controller
      * 
      * If there was a failure, send email notifications.
      *
+     * @param bool $forceFeed  forcefully re-send missing orders
+     *
      * @return int
      * @throws
      */
-    public function actionCheckOrders(): int
+    public function actionCheckOrders($forceFeed = false): int
     {
         $startTime    = microtime(true);
         $limit        = 3;
@@ -61,7 +66,11 @@ class VerifyController extends Controller
 
         if (count($failedOrders) > 0)
         {
-            $reFeedResults = $this->_reFeedToShipStation($failedOrders);
+            $reFeedResults = $this->_reFeedToShipStation(
+                $failedOrders,
+                $forceFeed
+            );
+
             $this->_sendAdminNotification($failedOrders, $reFeedResults);
         }
 
@@ -83,42 +92,56 @@ class VerifyController extends Controller
      * Try re-feeding missing orders into ShipStation.
      *
      * @param Order[] $orders
+     * @param bool    $force
      *
      * @return array  If attempts were made to re-send the orders to
      *                ShipStation, they'll be in this array where the key is the
      *                invoice number and the value is true if successful.
      * @throws
      */
-    private function _reFeedToShipStation($orders): array
+    private function _reFeedToShipStation($orders, $force): array
     {
         $reFeedResult = [];
         $minuteLimit = Snipcart::$plugin->getSettings()->reFeedAttemptWindow;
 
         foreach ($orders as $order)
         {
-            // try again, but only briefly
-            if (DateTimeHelper::isWithinLast(
+            // try again, but only briefly or if forced
+            if ($force || DateTimeHelper::isWithinLast(
                 $order->creationDate,
                 $minuteLimit . ' minutes')
             )
             {
                 $this->stdout('-------------------------------------' . PHP_EOL);
                 $this->stdout(sprintf(
-                    'Attempting to re-send order %s to ShipStation … ',
+                    'Re-sending order %s to ShipStation … ',
                     $order->invoiceNumber
                 ));
 
                 $result = Snipcart::$plugin->shipments->shipStation->createOrder($order);
                 $succeeded = isset($result->orderId) && empty($result->getErrors());
+                $wasTest = $succeeded && $result->orderId === ShipStation::TEST_ORDER_ID;
 
-                // TODO: log failure for troubleshooting
+                // log failure for troubleshooting
+                Craft::error(sprintf(
+                    'ShipStation re-feed failed: %s',
+                    implode(', ', $result->getErrors())
+                ), 'snipcart');
 
                 $statusString = $succeeded ? '✓' : '✗';
+
+                if ($wasTest)
+                {
+                    $statusString .= ' (test)';
+                }
+
                 $this->stdout($statusString . PHP_EOL);
 
                 $reFeedResult[$order->invoiceNumber] = $succeeded;
             }
         }
+
+        // TODO: re-verify and report result
 
         return $reFeedResult;
     }

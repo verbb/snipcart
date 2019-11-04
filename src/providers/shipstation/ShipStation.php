@@ -31,6 +31,14 @@ use workingconcept\snipcart\providers\shipstation\Settings as ShipStationSetting
  */
 class ShipStation extends ShippingProvider
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @var int  fake ID returned to simulate success in test mode
+     */
+    const TEST_ORDER_ID = 99999999;
+
     // Properties
     // =========================================================================
 
@@ -182,12 +190,15 @@ class ShipStation extends ShippingProvider
 
         if ($order->validate())
         {
-            if (Craft::$app->getConfig()->general->devMode || Snipcart::$plugin->getSettings()->testMode)
+            $isDevMode = Craft::$app->getConfig()->general->devMode;
+            $isTestMode = Snipcart::$plugin->getSettings()->testMode;
+
+            if ($isDevMode || $isTestMode)
             {
                 /**
                  * Don't transmit orders in devMode or testMode, just set a fake order ID.
                  */
-                $order->orderId = 99999999;
+                $order->orderId = self::TEST_ORDER_ID;
                 return $order;
             }
 

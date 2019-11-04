@@ -1,5 +1,10 @@
 # Snipcart Changelog
 
+## 1.2.2 - Unreleased
+### Added
+- Added ability to force ShipStation re-feed attempts from the command line.
+- Improved logging for ShipStation re-feed attempts.
+
 ## 1.2.1 - 2019-11-01
 ### Added
 - Added support for test mode!
