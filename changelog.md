@@ -5,6 +5,9 @@
 - Added ability to force ShipStation re-feed attempts from the command line.
 - Improved logging for ShipStation re-feed attempts.
 
+### Changed
+- Console ShipStation verifier skips checking orders without shippable items.
+
 ## 1.2.1 - 2019-11-01
 ### Added
 - Added support for test mode!

@@ -16,6 +16,12 @@ use workingconcept\snipcart\models\Order;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
+/**
+ * Console utility for making sure Snipcart orders made it to ShipStation,
+ * and attempting to re-feed any order that got lost in the tubes.
+ *
+ * @package workingconcept\snipcart\console\controllers
+ */
 class VerifyController extends Controller
 {
     // Public Methods
@@ -23,24 +29,23 @@ class VerifyController extends Controller
 
     /**
      * Checks that most recent orders exist in Snipcart and ShipStation.
-     * Sends notifications if any are missing.
+     * Sends notifications and tries again if any are missing.
      *
      * @param bool $forceFeed  forcefully re-send missing orders
+     * @param int  $limit      number of recent orders to check
      *
      * @return int
      * @throws
      */
-    public function actionCheckOrders($forceFeed = false): int
+    public function actionCheckOrders($forceFeed = false, $limit = 3): int
     {
         $startTime    = microtime(true);
-        $limit        = 3;
         $failedOrders = [];
         
         $this->stdout('-------------------------------------' . PHP_EOL);
         $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        // TODO: only get *shippable* orders!
         $orders = Snipcart::$plugin->orders->getOrders([
             'limit' => $limit, 
             'cache' => false 
@@ -49,18 +54,27 @@ class VerifyController extends Controller
         foreach ($orders as $order)
         {
             $this->stdout("Snipcart $order->invoiceNumber … ");
-            $shipStationStatusString = '✓';
 
-            if ( ! Snipcart::$plugin->shipments->
-                        shipStation->
-                        getOrderBySnipcartInvoice($order->invoiceNumber)
-            )
+            if ($order->hasShippableItems())
             {
-                $shipStationStatusString = '✗';
-                $failedOrders[] = $order;
-            }
+                $shipStationStatusString = '✓';
 
-            $this->stdout("ShipStation [$shipStationStatusString]" . PHP_EOL);
+                if ( ! Snipcart::$plugin->shipments->
+                    shipStation->
+                    getOrderBySnipcartInvoice($order->invoiceNumber)
+                )
+                {
+                    $shipStationStatusString = '✗';
+                    $failedOrders[] = $order;
+                }
+
+                $this->stdout("ShipStation [$shipStationStatusString]" . PHP_EOL);
+            }
+            else
+            {
+                // no shippable items, may not need to be in ShipStation
+                $this->stdout('[skipped]' . PHP_EOL);
+            }
         }
 
         if (count($failedOrders) > 0)
