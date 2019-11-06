@@ -4,6 +4,7 @@
 ### Added
 - Added ability to force ShipStation re-feed attempts from the command line.
 - Improved logging for ShipStation re-feed attempts.
+- Console ShipStation verifier now has an optional `limit` argument.
 
 ### Changed
 - Console ShipStation verifier skips checking orders without shippable items.
