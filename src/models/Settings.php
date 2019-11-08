@@ -26,6 +26,7 @@ class Settings extends Model
     const CURRENCY_USD = 'usd';
     const CURRENCY_CAD = 'cad';
     const CURRENCY_EUR = 'eur';
+    const CURRENCY_GBP = 'gbp';
 
 
     // Properties
@@ -183,6 +184,7 @@ class Settings extends Model
             self::CURRENCY_USD => Craft::t('snipcart', 'U.S. Dollar'),
             self::CURRENCY_CAD => Craft::t('snipcart', 'Canadian Dollar'),
             self::CURRENCY_EUR => Craft::t('snipcart', 'Euro'),
+            self::CURRENCY_GBP => Craft::t('snipcart', 'Pound Sterling'),
         ];
     }
 

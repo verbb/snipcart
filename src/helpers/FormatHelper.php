@@ -27,8 +27,10 @@ class FormatHelper
     {
         if (is_string($value))
         {
-            // do we have a US/Canadian dollar or a Euro sign?
-            $includesSymbol = strpos($value, '$') !== false || strpos($value, '€') !== false;
+            // do we have a currency symbol?
+            $includesSymbol = strpos($value, '$') !== false
+                || strpos($value, '€') !== false
+                || strpos($value, '£') !== false;
 
             if ($includesSymbol)
             {

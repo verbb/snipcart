@@ -1,10 +1,11 @@
 # Snipcart Changelog
 
-## 1.2.2 - Unreleased
+## 1.2.2 - 2019-11-08
 ### Added
 - Added ability to force ShipStation re-feed attempts from the command line.
 - Improved logging for ShipStation re-feed attempts.
 - Console ShipStation verifier now has an optional `limit` argument.
+- Added support for GBP `£`.
 
 ### Changed
 - Console ShipStation verifier skips checking orders without shippable items.
