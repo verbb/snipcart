@@ -205,6 +205,7 @@ class ProductDetails extends \craft\base\Field
                 'settings'              => $this->getSettings(),
                 'weightUnitOptions'     => ProductDetailsModel::getWeightUnitOptions(),
                 'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
+                'isCraft34'             => VersionHelper::isCraft34()
             ]
         );
     }
