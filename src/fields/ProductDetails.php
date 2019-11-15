@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\fields;
 
+use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
@@ -123,10 +124,20 @@ class ProductDetails extends \craft\base\Field
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        return Snipcart::$plugin->fields->saveProductDetailsField(
-            $this,
-            $element
-        );
+        // If we're using Craft 3.4+, first see if it's worth saving.
+        $shouldSave = VersionHelper::isCraft34() ?
+            $element->isFieldDirty($this->handle) :
+            true;
+
+        if ($shouldSave)
+        {
+            Snipcart::$plugin->fields->saveProductDetailsField(
+                $this,
+                $element
+            );
+        }
+
+        parent::afterElementSave($element, $isNew);
     }
 
     /**
