@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.2.3 - 2019-11-21
+### Added
+- Added support for Product Details delta saving in Craft 3.4+.
+
+### Fixed
+- Fixed missing `£` in some templates.
+
 ## 1.2.2 - 2019-11-08
 ### Added
 - Added ability to force ShipStation re-feed attempts from the command line.
