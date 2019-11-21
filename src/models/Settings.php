@@ -417,6 +417,11 @@ class Settings extends Model
             return '€';
         }
 
+        if ($this->getDefaultCurrency() === self::CURRENCY_GBP)
+        {
+            return '£';
+        }
+
         return '';
     }
 
