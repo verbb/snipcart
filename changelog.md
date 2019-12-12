@@ -2,7 +2,7 @@
 
 ## 1.2.4 - 2019-12-12
 ### Fixed
-- Fixed a type error that could prevent automatic quantity deprecation for non-shippable products. (#13)[https://github.com/workingconcept/snipcart-craft-plugin/issues/13]
+- Fixed a type error that could prevent automatic quantity deprecation for non-shippable products. ([#13](https://github.com/workingconcept/snipcart-craft-plugin/issues/13))
 
 ## 1.2.3 - 2019-11-21
 ### Added
