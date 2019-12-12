@@ -358,7 +358,7 @@ class ProductDetails extends \craft\base\Model
      */
     public function isShippable($model = null): bool
     {
-        return ($model ?? $this)->shippable;
+        return ($model ?? $this)->shippable === true;
     }
 
     /**
