@@ -1,5 +1,14 @@
 # Snipcart Changelog
 
+## 1.2.5 - Unreleased
+### Fixed
+- Email notifications display with item `unitPrice` and `totalPrice`.
+- ShipStation orders are built with each item's adjusted unit price.
+- Fixed error that kept Product Details field from being used in Quick Post Dashboard widget.
+
+### Changed
+- Improved display of product options in email notification.
+
 ## 1.2.4 - 2019-12-12
 ### Fixed
 - Fixed a type error that could prevent automatic quantity deprecation for non-shippable products. (#13)[https://github.com/workingconcept/snipcart-craft-plugin/issues/13]

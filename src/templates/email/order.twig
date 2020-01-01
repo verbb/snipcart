@@ -55,13 +55,15 @@
                     <td class="align-left normal-cell-padding" width="50%">
                         {{ item.name }}
                         {% if item.customFields | length -%}
-                            ({% for field in item.customFields -%}
-                            {{ field.name }}: {{ field.value }}{% if loop.last != true %}, {% endif %}
-                        {%- endfor %})
+                            <ul class="no-padding reset-list" style="margin: 4px 0 0 0;">
+                                {%- for field in item.customFields -%}
+                                    <li class="muted small">{{ field.name }}: {{ field.value }}</li>
+                                {%- endfor -%}
+                            </ul>
                         {%- endif -%}
                     </td>
-                    <td class="align-right normal-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.price, order.currency) }}</nobr></td>
-                    <td class="align-right last-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.price * item.quantity, order.currency) }}</nobr></td>
+                    <td class="align-right normal-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.unitPrice, order.currency) }}</nobr></td>
+                    <td class="align-right last-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.totalPrice, order.currency) }}</nobr></td>
                 </tr>
             {% endfor %}
             <tr>
