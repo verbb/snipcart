@@ -287,7 +287,7 @@ class Snipcart extends Plugin
         {
             $instance = new $shippingProviderClass();
 
-            $pluginSettings->providers[$instance->refHandle()] = $instance;
+            $pluginSettings->addProvider($instance->refHandle(), $instance);
         }
     }
 
