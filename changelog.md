@@ -1,6 +1,9 @@
 # Snipcart Changelog
 
-## 1.2.5 - Unreleased
+## 1.3.0 - Unreleased
+### Added
+- Added multi-site support for the Product Details field.
+
 ### Fixed
 - Email notifications display with item `unitPrice` and `totalPrice`.
 - ShipStation orders are built with each item's adjusted unit price.
@@ -8,6 +11,7 @@
 
 ### Changed
 - Improved display of product options in email notification.
+- Removed field delta saving to avoid bugs.
 
 ## 1.2.4 - 2019-12-12
 ### Fixed

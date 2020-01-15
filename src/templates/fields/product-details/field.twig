@@ -1,10 +1,5 @@
 {% import "_includes/forms" as forms %}
 
-{% if isCraft34 %}
-    {# If we can, use Craft's delta save feature. #}
-    {% do view.setIsDeltaRegistrationActive(true) %}
-{% endif %}
-
 {% macro errorList(errors) %}
     {% if errors %}
         <ul class="errors">
@@ -19,9 +14,6 @@
     {% import "_includes/forms" as forms %}
     {% from _self import errorList %}
     {% set subfieldName = name ~ '[' ~ fieldName ~ ']' %}
-    {% if isCraft34 %}
-        {% do view.registerDeltaName(subfieldName) %}
-    {% endif %}
     {% set errors = element is not empty ? element.getErrors(subfieldName) : [] %}
     {% set fieldClasses = options['classes'] ?? [] %}
     {% if errors | length %}
@@ -103,9 +95,6 @@
                 on: value.taxable ?? false,
                 value: true
             }) }}
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
             {% if element is not empty %}
                 {{ errorList(element.getErrors(fieldHandle)) }}
             {% endif %}
@@ -125,9 +114,6 @@
                 on: value.shippable ?? false,
                 value: true,
             }) }}
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
             {% if element is not empty %}
                 {{ errorList(element.getErrors(fieldHandle)) }}
             {% endif %}
@@ -147,9 +133,6 @@
                 value: value.weight ?? '',
                 size: 5,
             }) }}
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
 
             <div class="select">
                 {% set fieldHandle = name ~ '[weightUnit]' %}
@@ -160,9 +143,6 @@
                     value: value.weightUnit ?? '',
                     errors: field.getErrors('weightUnit'),
                 }) }}
-                {% if isCraft34 %}
-                    {% do view.registerDeltaName(fieldHandle) %}
-                {% endif %}
             </div>
             {% if element is not empty %}
                 {{ errorList(element.getErrors(name ~ '[weight]')) }}
@@ -187,9 +167,6 @@
                 value: value.length ?? '',
                 errors: field.getErrors('length'),
             }) }} <span class="muted">×</span>
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
 
             {% set fieldHandle = name ~ '[width]' %}
             {{ forms.text({
@@ -201,9 +178,6 @@
                 value: value.width ?? '',
                 errors: field.getErrors('width'),
             }) }} <span class="muted">×</span>
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
 
             {% set fieldHandle = name ~ '[height]' %}
             {{ forms.text({
@@ -215,9 +189,6 @@
                 value: value.height ?? '',
                 errors: field.getErrors('height'),
             }) }}
-            {% if isCraft34 %}
-                {% do view.registerDeltaName(fieldHandle) %}
-            {% endif %}
 
             <div class="select mt-2 sm:mt-0">
                 {% set fieldHandle = name ~ '[dimensionsUnit]' %}
@@ -228,9 +199,6 @@
                     value: value.dimensionsUnit ?? '',
                     errors: field.getErrors('dimensionsUnit'),
                 }) }}
-                {% if isCraft34 %}
-                    {% do view.registerDeltaName(fieldHandle) %}
-                {% endif %}
             </div>
 
             {% if element is not empty %}
