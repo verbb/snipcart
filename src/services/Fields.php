@@ -41,9 +41,11 @@ class Fields extends \craft\base\Component
             return null;
         }
 
+        $currentSiteId = Craft::$app->getSites()->getCurrentSite()->id;
+
         return $this->_saveRecord(
             $data,
-            $element->siteId,
+            $element->siteId ?? $currentSiteId,
             $element->getId(),
             $field->id
         );
@@ -54,7 +56,7 @@ class Fields extends \craft\base\Component
      *
      * @param ProductDetails        $field   Related Field
      * @param ElementInterface|null $element Related Element
-     * @param array                 $value   Data that should be used
+     * @param mixed                 $value   Data that should be used
      *                                       to populate the model
      *
      * @return ProductDetailsModel|null
@@ -85,7 +87,7 @@ class Fields extends \craft\base\Component
             $model->fieldId = $field->id;
             $model->siteId  = $currentSiteId;
 
-            if ($elementId)
+            if ($elementId !== null)
             {
                 $model->elementId = $elementId;
             }
@@ -106,7 +108,7 @@ class Fields extends \craft\base\Component
          * Populate a ProductDetailsModel on an existing Element.
          */
         if (
-            $elementId &&
+            $elementId !== null &&
             $record = $this->_getRecord(
                 $currentSiteId,
                 $elementId,
@@ -137,9 +139,9 @@ class Fields extends \craft\base\Component
         $model->fieldId = $field->id;
         $model->siteId  = $currentSiteId;
 
-        if ($element !== null)
+        if ($elementId !== null)
         {
-            $model->elementId = $element->getId();
+            $model->elementId = $elementId;
         }
 
         $model->populateDefaults();
