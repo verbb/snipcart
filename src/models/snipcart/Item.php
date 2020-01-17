@@ -228,6 +228,16 @@ class Item extends \craft\base\Model
      */
     public $totalPriceWithoutDiscountsAndTaxes;
 
+    /**
+     * @var
+     */
+    public $pausingAction;
+
+    /**
+     * @var
+     */
+    public $cancellationAction;
+
 
     // Public Methods
     // =========================================================================
