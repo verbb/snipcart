@@ -1,8 +1,9 @@
 # Snipcart Changelog
 
-## 1.3.0 - Unreleased
+## 1.3.0 - 2020-01-17
 ### Added
 - Added multi-site support for the Product Details field.
+- Added support for Item `pausingAction` and `cancellationAction` properties.
 
 ### Fixed
 - Email notifications display with item `unitPrice` and `totalPrice`.
@@ -12,6 +13,7 @@
 ### Changed
 - Improved display of product options in email notification.
 - Removed field delta saving to avoid bugs.
+- Tidied up order notification email templates.
 
 ## 1.2.4 - 2019-12-12
 ### Fixed
