@@ -46,7 +46,6 @@ class ProductDetails extends \craft\base\Field
         return false;
     }
 
-
     // Public Properties
     // =========================================================================
 
@@ -124,20 +123,27 @@ class ProductDetails extends \craft\base\Field
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        // If we're using Craft 3.4+, first see if it's worth saving.
-        $shouldSave = VersionHelper::isCraft34() ?
-            $element->isFieldDirty($this->handle) :
-            true;
-
-        if ($shouldSave)
-        {
-            Snipcart::$plugin->fields->saveProductDetailsField(
-                $this,
-                $element
-            );
-        }
+        Snipcart::$plugin->fields->saveProductDetailsField(
+            $this,
+            $element
+        );
 
         parent::afterElementSave($element, $isNew);
+    }
+
+    /**
+     * After the Element is saved, save the Product Details to their table.
+     *
+     * @inheritdoc
+     */
+    public function afterElementPropagate(ElementInterface $element, bool $isNew)
+    {
+        Snipcart::$plugin->fields->saveProductDetailsField(
+            $this,
+            $element
+        );
+
+        parent::afterElementPropagate($element, $isNew);
     }
 
     /**
@@ -148,7 +154,8 @@ class ProductDetails extends \craft\base\Field
     public function normalizeValue($value, ElementInterface $element = null)
     {
         return Snipcart::$plugin->fields->getProductDetailsField(
-            $this, $element,
+            $this,
+            $element,
             $value
         );
     }

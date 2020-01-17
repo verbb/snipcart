@@ -197,7 +197,7 @@ class OrderItem extends \craft\base\Model
             'lineItemKey' => $item->id,
             'name' => $item->name,
             'quantity' => $item->quantity,
-            'unitPrice' => $item->price,
+            'unitPrice' => $item->unitPrice,
             'weight' => Weight::populateFromSnipcartItem($item),
             'options' => $itemOptions ?? null
         ]);

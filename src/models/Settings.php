@@ -29,7 +29,7 @@ class Settings extends Model
     const CURRENCY_GBP = 'gbp';
 
 
-    // Properties
+    // Public Properties
     // =========================================================================
 
     /**
@@ -131,11 +131,6 @@ class Settings extends Model
     public $logWebhookRequests = false;
 
     /**
-     * @var Address Origin shipping address
-     */
-    private $_shipFrom;
-
-    /**
      * @var array Used for storage of $_shipFrom
      */
     public $shipFromAddress = [];
@@ -169,6 +164,22 @@ class Settings extends Model
      * @var boolean Whether to send email notifications when `testMode` = true.
      */
     public $sendTestModeEmail = false;
+
+
+    // Private Properties
+    // =========================================================================
+
+    /**
+     * @var Address Origin shipping address
+     */
+    private $_shipFrom;
+
+    /**
+     * @var array Key-value array of refHandle => instance of each
+     *            registered provider
+     */
+    private $_providers = [];
+
 
     // Static Methods
     // =========================================================================
@@ -297,7 +308,7 @@ class Settings extends Model
 
         if ($this->_hasEnabledProviders())
         {
-            foreach ($this->providers as $provider)
+            foreach ($this->getProviders() as $provider)
             {
                 if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled'])
                 {
@@ -437,6 +448,20 @@ class Settings extends Model
         return $this->enabledCurrencies = [ $value ];
     }
 
+    public function addProvider($handle, $instance)
+    {
+        $this->_providers[$handle] = $instance;
+    }
+
+    public function getProvider($handle)
+    {
+        return $this->_providers[$handle] ?? null;
+    }
+
+    public function getProviders(): array
+    {
+        return $this->_providers;
+    }
 
     // Private Methods
     // =========================================================================

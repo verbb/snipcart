@@ -55,7 +55,8 @@ class Shipments extends \craft\base\Component
     {
         if ($this->_shipStation === null)
         {
-            return $this->_shipStation = Snipcart::$plugin->getSettings()->providers['shipStation'];
+            $settings = Snipcart::$plugin->getSettings();
+            return $this->_shipStation = $settings->getProvider('shipStation');
         }
 
         return $this->_shipStation;

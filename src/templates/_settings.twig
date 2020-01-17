@@ -321,9 +321,9 @@
             {% endif %}
 
             <div id="shipping-provider-fields" class="matrix matrix-field">
-                {% if settings.providers | length %}
+                {% if settings.getProviders() | length %}
                     <div class="blocks">
-                        {% for providerName, provider in settings.providers %}
+                        {% for providerName, provider in settings.getProviders() %}
                             {% if providerName == 'shipStation' %}
                                 {% set providerSettings = provider.getSettings() %}
                                 {% set hasErrors = providerSettings.getErrors() | length %}

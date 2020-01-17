@@ -1,0 +1,72 @@
+{# @var order \workingconcept\snipcart\models\Order #}
+{# @var craft \Craft #}
+{#
+
+Relevant order billing and shipping addresses, consolidated if they're the same.
+
+@param  Order  order  Snipcart Order model
+
+#}
+{% set shipFromCountryCode = craft.app.getPlugins().getPlugin('snipcart').getSettings().shipFrom.country ?? 'US' %}
+
+{% if order.shippingAddressSameAsBilling %}
+
+    <h3>
+        {{- "Billing + Shipping Address"|t -}}
+    </h3>
+
+    <p class="no-top-margin">
+        {{- order.billingAddressName }}<br>
+        {{ order.billingAddressAddress1 }}<br>
+        {% if order.billingAddressAddress2 %}
+            {{ order.billingAddressAddress2 }}<br>
+        {% endif %}
+        {{ order.billingAddressCity }}, {{ order.billingAddressProvince }} {{ order.billingAddressPostalCode }}
+        {% if order.billingAddressCountry != "US" %}
+            <br>{{- order.billingAddressCountry -}}
+        {% endif -%}
+    </p>
+
+    <p class="no-top-margin">
+        {{- order.billingAddress.formattedPhone -}}
+    </p>
+
+{% else %}
+
+    <h3>
+        {{- "Billing Address"|t -}}
+    </h3>
+
+    <p class="no-top-margin">
+        {{- order.billingAddressName }}<br>
+        {{ order.billingAddressAddress1 }}<br>
+        {% if order.billingAddressAddress2 %}
+            {{ order.billingAddressAddress2 }}<br>
+        {% endif %}
+        {{ order.billingAddressCity }}, {{ order.billingAddressProvince }} {{ order.billingAddressPostalCode }}
+        {% if order.billingAddressCountry != shipFromCountryCode %}<br>{{ order.billingAddressCountry }}{% endif -%}
+    </p>
+
+    <p class="no-top-margin">
+        {{- order.billingAddress.formattedPhone -}}
+    </p>
+
+    <h3>
+        {{- "Shipping Address"|t -}}
+    </h3>
+
+    <p class="no-top-margin">
+        {{- order.shippingAddressName }}<br>
+        {{ order.shippingAddressAddress1 }}<br>
+        {% if order.shippingAddressAddress2 %}
+            {{ order.shippingAddressAddress2 }}<br>
+        {% endif %}
+        {{ order.shippingAddressCity }}, {{ order.shippingAddressProvince }} {{ order.shippingAddressPostalCode }}
+        {% if order.shippingAddressCountry != shipFromCountryCode %}<br>{{ order.shippingAddressCountry }}{% endif -%}
+    </p>
+
+    <p class="no-top-margin">
+        {{- order.shippingAddress.formattedPhone -}}
+    </p>
+
+{% endif %}

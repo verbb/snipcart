@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\services;
 
+use craft\elements\Entry;
 use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
@@ -40,9 +41,11 @@ class Fields extends \craft\base\Component
             return null;
         }
 
+        $currentSiteId = Craft::$app->getSites()->getCurrentSite()->id;
+
         return $this->_saveRecord(
             $data,
-            Craft::$app->sites->getCurrentSite()->id,
+            $element->siteId ?? $currentSiteId,
             $element->getId(),
             $field->id
         );
@@ -53,7 +56,7 @@ class Fields extends \craft\base\Component
      *
      * @param ProductDetails        $field   Related Field
      * @param ElementInterface|null $element Related Element
-     * @param array                 $value   Data that should be used
+     * @param mixed                 $value   Data that should be used
      *                                       to populate the model
      *
      * @return ProductDetailsModel|null
@@ -61,29 +64,54 @@ class Fields extends \craft\base\Component
      */
     public function getProductDetailsField($field, ElementInterface $element = null, $value = null)
     {
+        // if we've already got a model, just give it back
+        if ($value instanceof ProductDetailsModel)
+        {
+            return $value;
+        }
+
+        // if we don't have an element, we don't have much to do
+        if ( ! $element instanceof ElementInterface)
+        {
+            return null;
+        }
+
+        $sitesService = Craft::$app->getSites();
+        $currentSiteId = $sitesService->getCurrentSite()->id;
+        $elementId = $element->getId();
+
         if (is_array($value))
         {
             $model = new ProductDetailsModel($value);
 
             $model->fieldId = $field->id;
-            $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
+            $model->siteId  = $currentSiteId;
 
-            if ($element !== null)
+            if ($elementId !== null)
             {
-                $model->elementId = $element->getId();
+                $model->elementId = $elementId;
             }
 
             return $model;
+        }
+
+        // if we have an Entry, we're working with a source ID and need the corresponding Element ID
+        if (
+            is_a($element, Entry::class)
+            && $currentRevision = $element->getCurrentRevision()
+        )
+        {
+            $elementId = $currentRevision->getId();
         }
 
         /**
          * Populate a ProductDetailsModel on an existing Element.
          */
         if (
-            $element !== null &&
+            $elementId !== null &&
             $record = $this->_getRecord(
-                Craft::$app->sites->getCurrentSite()->id,
-                $element->getId(),
+                $currentSiteId,
+                $elementId,
                 $field->id
             )
         )
@@ -109,11 +137,11 @@ class Fields extends \craft\base\Component
         $model = new ProductDetailsModel();
 
         $model->fieldId = $field->id;
-        $model->siteId  = Craft::$app->sites->getCurrentSite()->id;
+        $model->siteId  = $currentSiteId;
 
-        if ($element !== null)
+        if ($elementId !== null)
         {
-            $model->elementId = $element->getId();
+            $model->elementId = $elementId;
         }
 
         $model->populateDefaults();
