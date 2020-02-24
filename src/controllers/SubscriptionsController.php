@@ -31,6 +31,7 @@ class SubscriptionsController extends \craft\web\Controller
             [
                 'pageNumber'    => $page,
                 'totalPages'    => $totalPages,
+                'totalItems'    => $subscriptions->totalItems,
                 'subscriptions' => $subscriptions->items,
             ]
         );

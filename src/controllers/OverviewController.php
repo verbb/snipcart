@@ -163,7 +163,7 @@ class OverviewController extends \craft\web\Controller
 
         if ($startDateParam && is_string($startDateParam))
         {
-            return new DateTime($startDateParam);
+            return DateTimeHelper::toDateTime([ 'date' => $startDateParam ]);
         }
 
         return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
@@ -181,7 +181,7 @@ class OverviewController extends \craft\web\Controller
 
         if ($endDateParam && is_string($endDateParam))
         {
-            return new DateTime($endDateParam);
+            return DateTimeHelper::toDateTime([ 'date' => $endDateParam ]);
         }
 
         return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));

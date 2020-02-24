@@ -26,7 +26,7 @@ TODO:
     <div>
         {% if isCancelled %}
             <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
-                {{ "This subscription was cancelled"|t }} {{ subscription.cancelledOn | date('F j, Y') }}.
+                {{ "This subscription was cancelled"|t }} {{ subscription.cancelledOn | date('long') }}.
             </div>
         {% endif %}
 
@@ -37,7 +37,7 @@ TODO:
                         <h3>{{ "Subscription Details"|t }}</h3>
 
                         <p class="text-muted">
-                            {{ "Created"|t }} {{ subscription.creationDate | date('F j, Y') }}, {{ "last updated"|t }} {{ subscription.modificationDate | date('n/j/Y g:ia') }}
+                            {{ "Created"|t }} {{ subscription.creationDate | date('long') }}, {{ "last updated"|t }} {{ subscription.modificationDate | datetime('short') }}
                         </p>
 
                         <table class="data fullwidth fixed-layout">
@@ -54,7 +54,7 @@ TODO:
                                     {% set schedule = subscription.schedule %}
                                     <th class="light">{{ "Schedule"|t }}</th>
                                     <td>
-                                        {{ "Starts"|t }} {{ schedule.startsOn | date('F j, Y') }} and
+                                        {{ "Starts"|t }} {{ schedule.startsOn | date('long') }} and
                                         {{ "renews every "|t }} {{ schedule.intervalCount > 1 ? schedule.intervalCount : '' }} {{ schedule.interval | lower }}{{ schedule.intervalCount > 1 ? 's' : '' -}}
                                         {% if schedule.trialPeriodInDays %} {{ "after"|t }} {{ schedule.trialPeriodInDays }} {{ "day trial"|t }}{% endif %}.
                                     </td>
@@ -91,7 +91,7 @@ TODO:
                                 {% if subscription.cancelledOn %}
                                     <tr>
                                         <th class="light">{{ "Cancelled On"|t }}</th>
-                                        <td>{{ subscription.cancelledOn | date('F j, Y') }}</td>
+                                        <td>{{ subscription.cancelledOn | date('long') }}</td>
                                     </tr>
                                 {% endif %}
                             </tbody>
@@ -105,7 +105,7 @@ TODO:
                         <p class="text-muted">
                             {{ "Next billing"|t }}
                             {% if subscription.nextBillingDate %}
-                                {{ subscription.nextBillingDate | date('F j, Y') }}
+                                {{ subscription.nextBillingDate | date('long') }}
                             {% else %}
                                 {{ "n/a"|t }}
                             {% endif %}
@@ -128,7 +128,7 @@ TODO:
                                 {% if subscription.firstInvoiceReceivedOn %}
                                     <tr>
                                         <th class="light">{{ "First Invoice Received"|t }}</th>
-                                        <td>{{ subscription.firstInvoiceReceivedOn | date('F j, Y') }}</td>
+                                        <td>{{ subscription.firstInvoiceReceivedOn | date('long') }}</td>
                                     </tr>
                                 {% endif %}
                             </tbody>

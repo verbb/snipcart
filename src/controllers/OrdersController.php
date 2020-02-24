@@ -50,6 +50,7 @@ class OrdersController extends \craft\web\Controller
                 'endDate'    => $endDate,
                 'pageNumber' => $page,
                 'totalPages' => $totalPages,
+                'totalItems' => $orders->totalItems,
                 'orders'     => $orders->items,
             ]
         );

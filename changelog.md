@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## Unreleased
+### Fixed
+- Fixed various date format issues in the control panel. (User’s preferred format is now honored.)
+- Fixed Customer list search field display in Craft 3.4.
+- Updated pagination style in control panel listings.
+
 ## 1.3.0 - 2020-01-17
 ### Added
 - Added multi-site support for the Product Details field.

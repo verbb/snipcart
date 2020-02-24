@@ -10,7 +10,7 @@
 {% block content %}
     <div>
         <p id="noredirects"{% if carts | length %} class="hidden"{% endif %}>
-            {{ "There aren't any abandoned carts yet."|t }}
+            {{ "There aren’t any abandoned carts yet."|t }}
         </p>
 
         {% if carts | length %}
@@ -29,7 +29,7 @@
                             <td><a href="{{ cart.cpUrl }}">{{ cart.billingAddress.name }}</a></td>
                             <td>{{ cart.email }}</td>
                             <td>{{ cart.status }}</td>
-                            <td>{{ cart.modificationDate | date() }}</td>
+                            <td>{{ cart.modificationDate | date('short') }}</td>
                             <td>{{ craft.snipcart.formatCurrency(cart.total) }}</td>
                         </tr>
                     {% endfor %}
@@ -37,9 +37,11 @@
             </table>
 
             {% if hasMoreResults and continuationToken %}
-            <div class="text-center mt-8">
-                <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">{{ "Load More"|t }} …</a>
-            </div>
+                <div class="text-center mt-8">
+                    <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">
+                        {{- "Load More"|t }} {{ "…" -}}
+                    </a>
+                </div>
             {% endif %}
 
         {% endif %}

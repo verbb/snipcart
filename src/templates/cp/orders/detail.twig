@@ -40,7 +40,7 @@ TODO:
                     <tbody>
                     {% for refund in orderRefunds %}
                         <tr>
-                            <td>{{ refund.creationDate | date('n/j/Y h:ia') }}</td>
+                            <td>{{ refund.creationDate | datetime('short') }}</td>
                             <td>{{ craft.snipcart.formatCurrency(refund.amount, order.currency) }}</td>
                             <td>{{ refund.comment }}</td>
                             <td>{{ refund.notifyCustomer ? "yes" : "no" }}</td>
@@ -61,9 +61,9 @@ TODO:
                     <div class="inner">
                         <div class="flex-wrapper -mx-3">
                             <div class="w-1/2 mx-3">
-                                <h2>{{ "Created"|t }} {{ order.creationDate | date('F j, Y') }}</h2>
+                                <h2>{{ "Created"|t }} {{ order.creationDate | date('long') }}</h2>
                                 <p>
-                                    {{ "Updated"|t }} {{ order.modificationDate | date('n/j/Y g:ia') }}<br>
+                                    {{ "Updated"|t }} {{ order.modificationDate | datetime('short') }}<br>
                                     {{ "Status"|t }}: <b>{{ order.status }}</b><br>
                                     {% if order.cardType %}
                                         {{ "Payment Method"|t }}: <b>{{ order.cardType }} {% if order.creditCardLast4Digits %}(<code>{{ order.creditCardLast4Digits }}</code>){% endif %}</b><br>
