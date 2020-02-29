@@ -4,7 +4,7 @@ php:
 services:
   - mysql
 env:
-  - ENVIRONMENT="test" SECURITY_KEY="12345" DB_DRIVER="mysql" DB_SERVER="localhost" DB_USER="root" DB_PASSWORD="" DB_DATABASE="test"
+  - ENVIRONMENT="test" SECURITY_KEY="12345" DB_DSN="mysql:host=localhost;port=3306;dbname=test;" DB_USER="root" DB_PASSWORD=""
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
   - composer create-project craftcms/craft /home/travis/build/craftcms/craft
