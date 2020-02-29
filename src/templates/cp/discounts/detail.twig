@@ -16,7 +16,7 @@
     <div>
         {% if discount.expires and discount.expires < now %}
             <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
-                {{ "This discount expired"|t }} {{ discount.expires | date('F j, Y') }}.
+                {{ "This discount expired"|t }} {{ discount.expires | date('long') }}.
             </div>
         {% endif %}
 
@@ -28,8 +28,8 @@
                         <h2>{{ "Details"|t }}</h2>
 
                         <p class="text-muted">
-                            {{ "Created"|t }} {{ discount.creationDate | date('F j, Y') }}
-                            {%- if discount.expires %}, {{ "expires"|t }} {{ discount.expires | date('F j, Y') }}{% endif %}
+                            {{ "Created"|t }} {{ discount.creationDate | date('long') }}
+                            {%- if discount.expires %}, {{ "expires"|t }} {{ discount.expires | date('long') }}{% endif %}
                         </p>
 
                         <table class="data fullwidth fixed-layout">

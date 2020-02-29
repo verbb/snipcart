@@ -66,13 +66,15 @@
                             {% for order in orders %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url('snipcart/order/'~order.token) }}">{{ order.invoiceNumber }}</a>
+                                        <a href="{{ url('snipcart/order/'~order.token) }}">
+                                            {{- order.invoiceNumber -}}
+                                        </a>
                                     </td>
                                     <td>
-                                        {{ order.creationDate | date('n/j/Y') }}
+                                        {{- order.creationDate | date('short') -}}
                                     </td>
                                     <td>
-                                        {{ order.finalGrandTotal | currency(order.currency|upper) }}
+                                        {{- order.finalGrandTotal | currency(order.currency|upper) -}}
                                     </td>
                                 </tr>
                             {% endfor %}

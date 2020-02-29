@@ -51,6 +51,7 @@ class CustomersController extends \craft\web\Controller
             [
                 'pageNumber' => $page,
                 'totalPages' => $totalPages,
+                'totalItems' => $customers->totalItems,
                 'customers'  => $customers->items,
                 'keywords'   => $searchKeywords,
             ]

@@ -16,16 +16,17 @@
             <form action="" method="post">
                 {{ csrfInput() }}
 
-                {{ forms.text({
-                    first: true,
-                    label: 'Keywords'|t,
-                    id: 'searchKeywords',
-                    required: true,
-                    placeholder: 'customer name',
-                    name: 'searchKeywords',
-                    value: keywords,
-                    style: 'width: 200px;'
-                }) }}
+                <div class="inline-block" style="width: 200px;">
+                    {{ forms.text({
+                        first: true,
+                        label: 'Keywords'|t,
+                        id: 'searchKeywords',
+                        required: true,
+                        placeholder: 'customer name',
+                        name: 'searchKeywords',
+                        value: keywords
+                    }) }}
+                </div>
 
                 <input type="submit" class="btn submit" name="submit" value="{{ 'Search'|t }}">
                 {% if keywords %}
@@ -42,7 +43,7 @@
         {% if not hasResults %}
 
             <p id="noredirects">
-                {{ showingSearchResult ? 'No records found.'|t : "There aren't any customers with accounts yet."|t }}
+                {{ showingSearchResult ? 'No records found.'|t : "There aren’t any customers with accounts yet."|t }}
             </p>
             
         {% else %}
@@ -69,8 +70,13 @@
             </table>
 
             {% include "snipcart/cp/_parts/pagination" with {
+                perPage: 20,
+                pageItems: customers | length,
                 currentPage: pageNumber,
                 totalPages: totalPages,
+                totalItems: totalItems,
+                itemLabel: 'customer',
+                itemsLabel: 'customers',
                 path: 'snipcart/customers/'
             } %}
 

@@ -1,39 +1,15 @@
-{% set nearbyLimit = 4 %}
-{% set ellipsisElement = '<span class="sep-dots">...</span>' %}
+{% set pagingTrigger = 'p' %}
+{% set firstItem = ((currentPage - 1) * perPage) + 1 %}
+{% set lastItem = firstItem + pageItems - 1 %}
 
-{% macro pagingLink(pageNumber, label, path) -%}
-    {%- set pagingTrigger = 'p' -%}
-    <a class="btn" href="{{ url(path ~ pagingTrigger ~ pageNumber) }}">
-        {{- label -}}
-    </a>
-{%- endmacro %}
-
-{% import _self as util %}
-
-{% if totalPages > 1 %}
-    <div class="pagination mt-8">
-        {% if currentPage != 1 %}
-            {{ util.pagingLink(1, 'First'|t, path) }}
-        {% endif %}
-        {% for i in 1..totalPages %}
-            {% if 0 == (currentPage - nearbyLimit) - loop.index %} {# dot before #}
-                {{ ellipsisElement | raw }}
-            {% elseif 0 == (currentPage + nearbyLimit) - loop.index %} {# dot after #}
-                {{ ellipsisElement | raw }}
-            {% elseif 0 < (currentPage - nearbyLimit) - loop.index %} {# hide all before #}
-            {% elseif 0 > (currentPage + nearbyLimit) - loop.index %} {# hide all after #}
-            {% else %}
-                {% if currentPage == loop.index  %}
-                    <a class="btn active">
-                        {{- currentPage -}}
-                    </a>
-                {% else %}
-                    {{ util.pagingLink(i, i, path) }}
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-        {% if currentPage != totalPages %}
-            {{ util.pagingLink(totalPages, 'Last'|t, path) }}
-        {% endif %}
-    </div>
-{% endif %}
+{% include "_includes/pagination" with {
+    pageInfo: {
+        first: firstItem,
+        last: lastItem,
+        total: totalItems,
+        itemLabel: itemLabel ?? null,
+        itemsLabel: itemsLabel ?? null,
+        prevUrl: firstItem > 1 ? url(path ~ pagingTrigger ~ (currentPage - 1)) : null,
+        nextUrl: lastItem < totalItems ? url(path ~ pagingTrigger ~ (currentPage + 1)) : null,
+    }
+} %}

@@ -1,6 +1,5 @@
 {# @var order \workingconcept\snipcart\models\Order #}
 {% extends "snipcart/cp/_layout" %}
-{% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
 
@@ -11,7 +10,7 @@
 {% block content %}
     <div>
         <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
-            {{- "There aren't any orders to show. Time to sell some things!"|t -}}
+            {{- "There aren’t any orders to show. Time to sell some things!"|t -}}
         </p>
 
         {% if orders|length %}
@@ -58,7 +57,7 @@
                     {% for order in orders %}
                         <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
                             <td><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
-                            <td>{{ order.creationDate | date('n/j/Y') }}</td>
+                            <td>{{ order.creationDate | date('short') }}</td>
                             <td>{{ order.billingAddress.name }}</td>
                             <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
                             <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
@@ -76,8 +75,13 @@
             </table>
 
             {% include "snipcart/cp/_parts/pagination" with {
+                perPage: 20,
+                pageItems: orders | length,
                 currentPage: pageNumber,
                 totalPages: totalPages,
+                totalItems: totalItems,
+                itemLabel: 'order',
+                itemsLabel: 'orders',
                 path: 'snipcart/orders/'
             } %}
 

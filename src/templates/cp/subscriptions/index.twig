@@ -10,7 +10,7 @@
 {% block content %}
     <div>
         <p id="noredirects"{% if subscriptions | length %} class="hidden"{% endif %}>
-            {{ "There aren't any subscriptions yet." | t }}
+            {{ "There aren’t any subscriptions yet." | t }}
         </p>
 
         {% if subscriptions |length %}
@@ -40,9 +40,14 @@
             </table>
 
             {% include "snipcart/cp/_parts/pagination" with {
+                perPage: 20,
+                pageItems: subscriptions | length,
                 currentPage: pageNumber,
                 totalPages: totalPages,
-                path: 'snipcart/orders/'
+                totalItems: totalItems,
+                itemLabel: 'subscription',
+                itemsLabel: 'subscriptions',
+                path: 'snipcart/subscriptions/'
             } %}
 
         {% endif %}
