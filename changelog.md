@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.3.1 - 2020-02-29
 ### Fixed
 - Fixed various date format issues in the control panel. (User’s preferred format is now honored.)
 - Fixed Customer list search field display in Craft 3.4.
@@ -23,7 +23,7 @@
 
 ## 1.2.4 - 2019-12-12
 ### Fixed
-- Fixed a type error that could prevent automatic quantity deprecation for non-shippable products. (#13)[https://github.com/workingconcept/snipcart-craft-plugin/issues/13]
+- Fixed a type error that could prevent automatic quantity deprecation for non-shippable products. ([#13](https://github.com/workingconcept/snipcart-craft-plugin/issues/13))
 
 ## 1.2.3 - 2019-11-21
 ### Added
