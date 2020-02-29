@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.3.1 - 2020-02-29
 ### Fixed
 - Fixed various date format issues in the control panel. (User’s preferred format is now honored.)
 - Fixed Customer list search field display in Craft 3.4.
