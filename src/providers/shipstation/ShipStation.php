@@ -204,6 +204,17 @@ class ShipStation extends ShippingProvider
             $isDevMode = Craft::$app->getConfig()->general->devMode;
             $isTestMode = Snipcart::$plugin->getSettings()->testMode;
 
+            if ($this->hasEventHandlers(self::EVENT_BEFORE_SEND_ORDER))
+            {
+                $event = new OrderEvent([
+                    'order' => $order,
+                ]);
+
+                $this->trigger(self::EVENT_BEFORE_SEND_ORDER, $event);
+
+                $order = $event->order;
+            }
+
             if ($isDevMode || $isTestMode)
             {
                 /**
@@ -351,17 +362,6 @@ class ShipStation extends ShippingProvider
      */
     private function _sendOrder(Order $order)
     {
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_SEND_ORDER))
-        {
-            $event = new OrderEvent([
-                'order' => $order,
-            ]);
-
-            $this->trigger(self::EVENT_BEFORE_SEND_ORDER, $event);
-
-            $order = $event->order;
-        }
-
         $responseData = $this->post(
             'orders/createorder',
             $order->getPayloadForPost()
@@ -529,7 +529,7 @@ class ShipStation extends ShippingProvider
             {
                 return new Rate([
                     'serviceName'  => $quotedRate->description,
-                    'serviceCode'  => $quotedRate->code,
+                    'serviceCode'  => $quotedRate->code ?? null,
                     'shipmentCost' => $quotedRate->cost,
                     'otherCost'    => 0,
                 ]);
