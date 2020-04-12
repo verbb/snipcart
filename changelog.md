@@ -1,5 +1,13 @@
 # Snipcart Changelog
 
+## 1.3.2 - 2020-04-12
+### Added
+- Added support for Swiss Franc (CHF).
+- Added `ShipStation::EVENT_BEFORE_SEND_ORDER` event for modifying the ShipStation order before it’s sent to their REST API.
+
+### Changed
+- ShipStation orders now include `carrierCode` only if a `serviceCode` is provided for the shipping method. This makes it possible to request custom shipping methods not provided by any carrier.
+
 ## 1.3.1 - 2020-02-29
 ### Fixed
 - Fixed various date format issues in the control panel. (User’s preferred format is now honored.)

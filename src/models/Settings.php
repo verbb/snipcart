@@ -27,6 +27,7 @@ class Settings extends Model
     const CURRENCY_CAD = 'cad';
     const CURRENCY_EUR = 'eur';
     const CURRENCY_GBP = 'gbp';
+    const CURRENCY_CHF = 'chf';
 
 
     // Public Properties
@@ -196,6 +197,7 @@ class Settings extends Model
             self::CURRENCY_CAD => Craft::t('snipcart', 'Canadian Dollar'),
             self::CURRENCY_EUR => Craft::t('snipcart', 'Euro'),
             self::CURRENCY_GBP => Craft::t('snipcart', 'Pound Sterling'),
+            self::CURRENCY_CHF => Craft::t('snipcart', 'Swiss Franc'),
         ];
     }
 
@@ -431,6 +433,11 @@ class Settings extends Model
         if ($this->getDefaultCurrency() === self::CURRENCY_GBP)
         {
             return '£';
+        }
+
+        if ($this->getDefaultCurrency() === self::CURRENCY_CHF)
+        {
+            return 'CHF';
         }
 
         return '';

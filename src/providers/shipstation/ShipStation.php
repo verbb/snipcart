@@ -22,6 +22,7 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\base\ShippingProvider;
 use workingconcept\snipcart\providers\shipstation\Settings as ShipStationSettings;
+use workingconcept\snipcart\providers\shipstation\events\OrderEvent;
 
 /**
  * Class ShipStation
@@ -35,9 +36,15 @@ class ShipStation extends ShippingProvider
     // =========================================================================
 
     /**
+     * @event WebhookEvent Triggered before an order is sent to ShipStation.
+     */
+    const EVENT_BEFORE_SEND_ORDER = 'beforeSendOrder';
+
+    /**
      * @var int  fake ID returned to simulate success in test mode
      */
     const TEST_ORDER_ID = 99999999;
+
 
     // Properties
     // =========================================================================
@@ -155,6 +162,7 @@ class ShipStation extends ShippingProvider
     }
 
     /**
+     * https://www.shipstation.com/docs/api/orders/create-update-order/
      * @inheritdoc
      */
     public function createOrder(SnipcartOrder $snipcartOrder)
@@ -165,7 +173,6 @@ class ShipStation extends ShippingProvider
         $order->orderStatus   = Order::STATUS_AWAITING_SHIPMENT;
         $order->customerNotes = $this->_getOrderNotes($snipcartOrder->customFields);
         $order->giftMessage   = $this->_getGiftNote($snipcartOrder->customFields);
-        $order->carrierCode   = $this->getSettings()->defaultCarrierCode;
         $order->weight        = $this->_getOrderWeight($snipcartOrder, $package);
 
         // it's a gift order if it has a gift message
@@ -183,8 +190,12 @@ class ShipStation extends ShippingProvider
             $order->dimensions->validate();
         }
 
-        if ($shippingMethod = $this->_getShippingMethodFromOrder($snipcartOrder))
+        if (
+            ($shippingMethod = $this->_getShippingMethodFromOrder($snipcartOrder)) &&
+            ! empty($shippingMethod->serviceCode)
+        )
         {
+            $order->carrierCode = $this->getSettings()->defaultCarrierCode;
             $order->serviceCode = $shippingMethod->serviceCode;
         }
 
@@ -192,6 +203,17 @@ class ShipStation extends ShippingProvider
         {
             $isDevMode = Craft::$app->getConfig()->general->devMode;
             $isTestMode = Snipcart::$plugin->getSettings()->testMode;
+
+            if ($this->hasEventHandlers(self::EVENT_BEFORE_SEND_ORDER))
+            {
+                $event = new OrderEvent([
+                    'order' => $order,
+                ]);
+
+                $this->trigger(self::EVENT_BEFORE_SEND_ORDER, $event);
+
+                $order = $event->order;
+            }
 
             if ($isDevMode || $isTestMode)
             {
@@ -507,7 +529,7 @@ class ShipStation extends ShippingProvider
             {
                 return new Rate([
                     'serviceName'  => $quotedRate->description,
-                    'serviceCode'  => $quotedRate->code,
+                    'serviceCode'  => $quotedRate->code ?? null,
                     'shipmentCost' => $quotedRate->cost,
                     'otherCost'    => 0,
                 ]);

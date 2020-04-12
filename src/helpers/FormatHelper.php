@@ -30,7 +30,8 @@ class FormatHelper
             // do we have a currency symbol?
             $includesSymbol = strpos($value, '$') !== false
                 || strpos($value, '€') !== false
-                || strpos($value, '£') !== false;
+                || strpos($value, '£') !== false
+                || strpos($value, 'CHF') !== false;
 
             if ($includesSymbol)
             {
