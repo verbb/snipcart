@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.3.2 - 2020-04-12
 ### Added
 - Added support for Swiss Franc (CHF).
 - Added `ShipStation::EVENT_BEFORE_SEND_ORDER` event for modifying the ShipStation order before it’s sent to their REST API.
