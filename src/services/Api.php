@@ -367,16 +367,22 @@ class Api extends Component
         string $endpoint
     )
     {
-        /**
-         * Get the status code, which should be 200 or 201 if things went well.
-         */
-        $statusCode = $exception->getResponse()->getStatusCode() ?? null;
+        $statusCode = null;
+        $reason = null;
 
-        /**
-         * If there's a response we'll use its body, otherwise default
-         * to the request URI.
-         */
-        $reason = $exception->getResponse()->getBody() ?? null;
+        if ($response = $exception->getResponse())
+        {
+            /**
+             * Get the status code, which should be 200 or 201 if things went well.
+             */
+            $statusCode = $response->getStatusCode();
+
+            /**
+             * If there's a response we'll use its body, otherwise default
+             * to the request URI.
+             */
+            $reason = $response->getBody();
+        }
 
         if ($statusCode !== null && $reason !== null)
         {
