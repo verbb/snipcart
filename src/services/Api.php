@@ -386,18 +386,24 @@ class Api extends Component
 
         if ($statusCode !== null && $reason !== null)
         {
-            if ($statusCode === 401)
-            {
-                // unauthorized, meaning invalid API credentials
-                throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
-            }
-
             // return code and message
             Craft::warning(sprintf(
                 'Snipcart API responded with %d: %s',
                 $statusCode,
                 $reason
             ), 'snipcart');
+
+            if ($statusCode === 401)
+            {
+                // unauthorized, meaning invalid API credentials
+                throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
+            }
+
+            if ($statusCode === 500)
+            {
+                // unauthorized, meaning invalid API credentials
+                throw new Exception('Snipcart API responded with 500 error.');
+            }
         }
         else
         {
