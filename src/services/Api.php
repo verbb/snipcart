@@ -367,31 +367,43 @@ class Api extends Component
         string $endpoint
     )
     {
-        /**
-         * Get the status code, which should be 200 or 201 if things went well.
-         */
-        $statusCode = $exception->getResponse()->getStatusCode() ?? null;
+        $statusCode = null;
+        $reason = null;
 
-        /**
-         * If there's a response we'll use its body, otherwise default
-         * to the request URI.
-         */
-        $reason = $exception->getResponse()->getBody() ?? null;
+        if ($response = $exception->getResponse())
+        {
+            /**
+             * Get the status code, which should be 200 or 201 if things went well.
+             */
+            $statusCode = $response->getStatusCode();
+
+            /**
+             * If there's a response we'll use its body, otherwise default
+             * to the request URI.
+             */
+            $reason = $response->getBody();
+        }
 
         if ($statusCode !== null && $reason !== null)
         {
-            if ($statusCode === 401)
-            {
-                // unauthorized, meaning invalid API credentials
-                throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
-            }
-
             // return code and message
             Craft::warning(sprintf(
                 'Snipcart API responded with %d: %s',
                 $statusCode,
                 $reason
             ), 'snipcart');
+
+            if ($statusCode === 401)
+            {
+                // unauthorized, meaning invalid API credentials
+                throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
+            }
+
+            if ($statusCode === 500)
+            {
+                // unauthorized, meaning invalid API credentials
+                throw new Exception('Snipcart API responded with 500 error.');
+            }
         }
         else
         {
