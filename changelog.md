@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.3.3 - 2020-05-18
 ### Changed
 - Exceptions will be thrown if Snipcart’s API is erroring or unresponsive.
 
