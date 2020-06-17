@@ -1,7 +1,7 @@
 .snipcart-product-details {
-    @apply rounded-sm;
+    border-radius: 3px;
     background-image: linear-gradient(-180deg, #FEFEFE 0%, #FAFAFA 100%);
-    border: 1px solid #D8DEE2;
+    border: 1px solid rgba(96, 125, 159, 0.15);
 
     .field-group {
         @apply flex overflow-hidden relative items-center;
@@ -27,13 +27,15 @@
         }
 
         .currency-symbol {
-            @apply inline-block rounded-sm text-sm;
-            border: 1px solid #e3e5e8;
+            @apply inline-block text-sm;
+            border: 1px solid rgba(96, 125, 159, 0.15);
             border-right: 0;
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
             background: #f4f5f6;
-            padding: 5px 10px;
+            padding: 6px 10px;
             color: #8f98a3;
         }
     }
