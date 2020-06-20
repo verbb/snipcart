@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * Class Tax
@@ -16,8 +16,6 @@ namespace workingconcept\snipcart\models;
  */
 class Tax extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
 
     /**
      * @var string

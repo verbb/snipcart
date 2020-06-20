@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\AbandonedCart;
+use workingconcept\snipcart\models\snipcart\AbandonedCart;
 use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
@@ -21,9 +21,6 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Carts extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists abandoned carts.
      *
@@ -69,7 +66,7 @@ class Carts extends \craft\base\Component
 
     /**
      * Gets an abandoned cart.
-     * 
+     *
      * @param string $cartId
      *
      * @return AbandonedCart|null
@@ -80,8 +77,7 @@ class Carts extends \craft\base\Component
         if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
             'carts/abandoned/%s',
             $cartId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$abandonedCartData,
                 AbandonedCart::class

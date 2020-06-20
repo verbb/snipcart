@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods
@@ -14,13 +14,6 @@ namespace workingconcept\snipcart\models;
 
 class ShippingMethod extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var
      */
@@ -83,9 +76,6 @@ class ShippingMethod extends \craft\base\Model
         //     "from": 3000
         //   }
         // }
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

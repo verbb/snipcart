@@ -25,22 +25,17 @@ class FieldHelper
      */
     public static function getProductInfo($element)
     {
-        // if we don't have an Element, there's nothing to get
-        if ( ! isset($element))
-        {
+        // if we don't have an Element, there’s nothing to get
+        if (! isset($element)) {
             return null;
         }
 
-        if ($fieldLayout = $element->getFieldLayout())
-        {
-            if ($fields = $fieldLayout->getFields())
-            {
-                foreach ($fields as $field)
-                {
-                    if ($field instanceof ProductDetails)
-                    {
-                        return $element->getFieldValue($field->handle);
-                    }
+        if (($fieldLayout = $element->getFieldLayout())
+            && $fields = $fieldLayout->getFields()
+        ) {
+            foreach ($fields as $field) {
+                if ($field instanceof ProductDetails) {
+                    return $element->getFieldValue($field->handle);
                 }
             }
         }
@@ -49,7 +44,7 @@ class FieldHelper
     }
 
     /**
-     * Returns the field handle for the Element's Product Details field,
+     * Returns the field handle for the Element’s Product Details field,
      * if it exists.
      *
      * @param \craft\base\Element $element
@@ -59,19 +54,15 @@ class FieldHelper
     public static function getProductInfoFieldHandle($element)
     {
         // if we don't have an Element, there's nothing to get
-        if ( ! isset($element))
-        {
+        if (! isset($element)) {
             return null;
         }
 
-        if ($fieldLayout = $element->getFieldLayout())
-        {
+        if ($fieldLayout = $element->getFieldLayout()) {
             $fields = $fieldLayout->getFields();
 
-            foreach ($fields as $field)
-            {
-                if ($field instanceof ProductDetails)
-                {
+            foreach ($fields as $field) {
+                if ($field instanceof ProductDetails) {
                     return $field->handle;
                 }
             }

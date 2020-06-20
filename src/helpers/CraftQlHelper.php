@@ -26,57 +26,57 @@ class CraftQlHelper
         $outputSchema = $schema->createObjectType(ucfirst($handle).'FieldData');
 
         $outputSchema->addFloatField('price')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (float)$root->price;
             });
 
         $outputSchema->addStringField('sku')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (string)$root->sku;
             });
 
         $outputSchema->addBooleanField('shippable')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (boolean)$root->shippable;
             });
 
         $outputSchema->addBooleanField('taxable')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (boolean)$root->taxable;
             });
 
         $outputSchema->addFloatField('weight')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (float)$root->weight;
             });
 
         $outputSchema->addStringField('weightUnit')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (string)$root->weightUnit;
             });
 
         $outputSchema->addFloatField('length')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (float)$root->length;
             });
 
         $outputSchema->addFloatField('width')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (float)$root->width;
             });
 
         $outputSchema->addFloatField('height')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (float)$root->height;
             });
 
         $outputSchema->addStringField('dimensionsUnit')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (string)$root->dimensionsUnit;
             });
 
         $outputSchema->addIntField('inventory')
-            ->resolve(function($root) {
+            ->resolve(static function ($root) {
                 return (int)$root->inventory;
             });
 

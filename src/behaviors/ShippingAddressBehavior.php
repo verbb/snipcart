@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\behaviors;
 
-use workingconcept\snipcart\models\Address;
+use workingconcept\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
 /**
@@ -20,11 +20,11 @@ use yii\base\Behavior;
  */
 class ShippingAddressBehavior extends Behavior
 {
-    private $_shippingAddress;
+    private $shippingAddress;
 
     public function getShippingAddress()
     {
-        return $this->_shippingAddress;
+        return $this->shippingAddress;
     }
 
     /**
@@ -41,12 +41,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressName($name)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->name = $name;
+        return $this->shippingAddress->name = $name;
     }
 
     /**
@@ -63,12 +62,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressFirstName($firstName)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->firstName = $firstName;
+        return $this->shippingAddress->firstName = $firstName;
     }
 
     /**
@@ -85,12 +83,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCompanyName($companyName)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->companyName = $companyName;
+        return $this->shippingAddress->companyName = $companyName;
     }
 
     /**
@@ -107,12 +104,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressAddress1($address1)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->address1 = $address1;
+        return $this->shippingAddress->address1 = $address1;
     }
 
     /**
@@ -129,12 +125,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressAddress2($address2)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->address2 = $address2;
+        return $this->shippingAddress->address2 = $address2;
     }
 
     /**
@@ -151,12 +146,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCity($city)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->city = $city;
+        return $this->shippingAddress->city = $city;
     }
 
     /**
@@ -173,12 +167,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCountry($country)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->country = $country;
+        return $this->shippingAddress->country = $country;
     }
 
     /**
@@ -195,12 +188,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressProvince($province)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->province = $province;
+        return $this->shippingAddress->province = $province;
     }
 
     /**
@@ -217,12 +209,11 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressPostalCode($postalCode)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->postalCode = $postalCode;
+        return $this->shippingAddress->postalCode = $postalCode;
     }
 
     /**
@@ -239,11 +230,10 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressPhone($phone)
     {
-        if ($this->_shippingAddress === null)
-        {
-            $this->_shippingAddress = new Address();
+        if ($this->shippingAddress === null) {
+            $this->shippingAddress = new Address();
         }
 
-        return $this->_shippingAddress->phone = $phone;
+        return $this->shippingAddress->phone = $phone;
     }
 }

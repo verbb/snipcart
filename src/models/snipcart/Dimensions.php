@@ -6,17 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class Dimensions extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var
      */
@@ -36,9 +29,5 @@ class Dimensions extends \craft\base\Model
      * @var
      */
     public $weight;
-
-
-    // Public Methods
-    // =========================================================================
 
 }

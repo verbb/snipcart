@@ -17,70 +17,64 @@ use Craft;
 
 class OverviewController extends \craft\web\Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Display store overview.
+     * Displays store overview.
+     *
      * @return \yii\web\Response
      * @throws
      */
     public function actionIndex(): \yii\web\Response
     {
-        if ( ! Snipcart::$plugin->getSettings()->isConfigured())
-        {
+        if (! Snipcart::$plugin->getSettings()->isConfigured()) {
             return $this->renderTemplate('snipcart/cp/welcome');
         }
 
         return $this->renderTemplate(
             'snipcart/cp/index',
-            $this->_getOrderAndCustomerSummary()
+            $this->getOrderAndCustomerSummary()
         );
     }
 
     /**
-     * Get the stats for the top panels.
+     * Gets the stats for the top panels.
+     *
      * @return \yii\web\Response
      * @throws
      */
     public function actionGetStats(): \yii\web\Response
     {
         return $this->asJson(
-            $this->_getOverviewStats(true)
+            $this->getOverviewStats(true)
         );
     }
 
     /**
-     * Get the data for the recent order and top customer summary tables.
+     * Gets the data for the recent order and top customer summary tables.
+     *
      * @return \yii\web\Response
      * @throws \yii\base\InvalidConfigException
      */
     public function actionGetOrdersCustomers(): \yii\web\Response
     {
         return $this->asJson(
-            $this->_getOrderAndCustomerSummary(true)
+            $this->getOrderAndCustomerSummary(true)
         );
     }
 
-
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Get store statistics for the Snipcart landing/overview.
+     * Gets store statistics for the Snipcart landing/overview.
      *
-     * @param bool $preformat
+     * @param bool $preFormat
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    private function _getOverviewStats($preformat = false): array
+    private function getOverviewStats($preFormat = false): array
     {
-        $startDate = $this->_getStartDate();
-        $endDate   = $this->_getEndDate();
+        $startDate = $this->getStartDate();
+        $endDate   = $this->getEndDate();
         $stats     = Snipcart::$plugin->data->getPerformance($startDate, $endDate);
 
-        if ($preformat)
-        {
+        if ($preFormat) {
             $defaultCurrency = Snipcart::$plugin->getSettings()->defaultCurrency;
 
             $stats->ordersCount = number_format($stats->ordersCount);
@@ -102,25 +96,23 @@ class OverviewController extends \craft\web\Controller
     }
 
     /**
-     * Get recent order and top customer statistics.
+     * Gets recent order and top customer statistics.
      *
-     * @param bool $preformat
+     * @param bool $preFormat
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
-    private function _getOrderAndCustomerSummary($preformat = false): array
+    private function getOrderAndCustomerSummary($preFormat = false): array
     {
-        $startDate = $this->_getStartDate();
-        $endDate   = $this->_getEndDate();
+        $startDate = $this->getStartDate();
+        $endDate   = $this->getEndDate();
         $orders    = Snipcart::$plugin->orders->listOrders(1, 10);
         $customers = Snipcart::$plugin->customers->listCustomers(1, 10, [
             'orderBy' => 'ordersValue'
         ]);
 
-        if ($preformat)
-        {
-            foreach ($orders->items as &$item)
-            {
+        if ($preFormat) {
+            foreach ($orders->items as &$item) {
                 // TODO: see if there's a better way to attach dynamic fields
                 $item = $item->toArray(
                     ['id', 'invoiceNumber', 'creationDate', 'finalGrandTotal'],
@@ -131,8 +123,7 @@ class OverviewController extends \craft\web\Controller
                 $item['finalGrandTotal'] = FormatHelper::formatCurrency($item['finalGrandTotal']);
             }
 
-            foreach ($customers->items as &$item)
-            {
+            foreach ($customers->items as &$item) {
                 // TODO: see if there's a better way to attach dynamic fields
                 $item = $item->toArray(
                     ['id', 'billingAddressName', 'statistics'],
@@ -153,16 +144,16 @@ class OverviewController extends \craft\web\Controller
     }
 
     /**
-     * Get the beginning of the range used for visualizing stats.
+     * Gets the beginning of the range used for visualizing stats.
+     *
      * @return DateTime
      * @throws
      */
-    private function _getStartDate(): DateTime
+    private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
 
-        if ($startDateParam && is_string($startDateParam))
-        {
+        if ($startDateParam && is_string($startDateParam)) {
             return DateTimeHelper::toDateTime([ 'date' => $startDateParam ]);
         }
 
@@ -171,16 +162,16 @@ class OverviewController extends \craft\web\Controller
     }
 
     /**
-     * Get the end of the range used for visualizing stats.
+     * Gets the end of the range used for visualizing stats.
+     *
      * @return DateTime
      * @throws
      */
-    private function _getEndDate(): DateTime
+    private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($endDateParam && is_string($endDateParam))
-        {
+        if ($endDateParam && is_string($endDateParam)) {
             return DateTimeHelper::toDateTime([ 'date' => $endDateParam ]);
         }
 

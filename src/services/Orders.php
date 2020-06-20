@@ -10,10 +10,10 @@ namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\events\ShippingRateEvent;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\Order;
-use workingconcept\snipcart\models\Notification;
-use workingconcept\snipcart\models\Refund;
-use workingconcept\snipcart\models\Package;
+use workingconcept\snipcart\models\snipcart\Order;
+use workingconcept\snipcart\models\snipcart\Notification;
+use workingconcept\snipcart\models\snipcart\Refund;
+use workingconcept\snipcart\models\snipcart\Package;
 use workingconcept\snipcart\helpers\ModelHelper;
 use Craft;
 
@@ -29,9 +29,6 @@ use Craft;
  */
 class Orders extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event ShippingRateEvent Triggered before shipping rates are requested
      *                          from any third parties.
@@ -48,10 +45,6 @@ class Orders extends \craft\base\Component
      */
     const NOTIFICATION_TYPE_CUSTOMER = 'notifyCustomer';
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Gets a Snipcart order.
      *
@@ -65,8 +58,7 @@ class Orders extends \craft\base\Component
         if ($orderData = Snipcart::$plugin->api->get(sprintf(
             'orders/%s',
             $orderId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$orderData,
                 Order::class
@@ -89,7 +81,7 @@ class Orders extends \craft\base\Component
     public function getOrders($params = []): array
     {
         return ModelHelper::safePopulateArrayWithModels(
-            (array)$this->_fetchOrders($params)->items,
+            (array)$this->fetchOrders($params)->items,
             Order::class
         );
     }
@@ -110,27 +102,20 @@ class Orders extends \craft\base\Component
         $offset = 0;
         $finished = false;
 
-        while ($finished === false)
-        {
+        while ($finished === false) {
             $params['offset'] = $offset;
 
-            if ($result = $this->_fetchOrders($params))
-            {
+            if ($result = $this->fetchOrders($params)) {
                 $currentItems = (array)$result->items;
                 $collected += count($currentItems);
                 $collection[] = $currentItems;
 
-                if ($result->totalItems > $collected)
-                {
+                if ($result->totalItems > $collected) {
                     $offset++;
-                }
-                else
-                {
+                } else {
                     $finished = true;
                 }
-            }
-            else
-            {
+            } else {
                 $finished = true;
             }
         }
@@ -203,7 +188,7 @@ class Orders extends \craft\base\Component
         $params['offset'] = ($page - 1) * $limit;
         $params['limit']  = $limit;
 
-        $response = $this->_fetchOrders($params);
+        $response = $this->fetchOrders($params);
 
         return (object) [
             'items' => ModelHelper::safePopulateArrayWithModels(
@@ -226,10 +211,8 @@ class Orders extends \craft\base\Component
      */
     public function updateProductsFromOrder(Order $order): bool
     {
-        if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder)
-        {
-            foreach ($order->items as $orderItem)
-            {
+        if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder) {
+            foreach ($order->items as $orderItem) {
                 Snipcart::$plugin->products->reduceInventory($orderItem);
                 // TODO: reduce product inventory in ShipStation if necessary
             }
@@ -266,8 +249,7 @@ class Orders extends \craft\base\Component
     {
         $package = new Package();
 
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES))
-        {
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES)) {
             $event = new ShippingRateEvent([
                 'order'   => $order,
                 'package' => $package
@@ -291,7 +273,7 @@ class Orders extends \craft\base\Component
      */
     public function sendOrderEmailNotification($order, $extra = [], $type = self::NOTIFICATION_TYPE_ADMIN)
     {
-        $templateSettings = $this->_selectNotificationTemplate($type);
+        $templateSettings = $this->selectNotificationTemplate($type);
         $emailVars = array_merge([
             'order'    => $order,
             'settings' => Snipcart::$plugin->getSettings()
@@ -303,21 +285,18 @@ class Orders extends \craft\base\Component
         $toEmails = [];
         $subject = $order->billingAddressName . ' just placed an order';
 
-        if ($type === self::NOTIFICATION_TYPE_ADMIN)
-        {
+        if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
-        }
-        elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER)
-        {
+        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $toEmails = [ $order->email ];
-            $subject = sprintf('%s Order #%s',
+            $subject = sprintf(
+                '%s Order #%s',
                 Craft::$app->getSites()->getCurrentSite()->name,
                 $order->invoiceNumber
             );
         }
 
-        if ( ! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject))
-        {
+        if (! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject)) {
             return Snipcart::$plugin->notifications->getErrors();
         }
 
@@ -345,16 +324,11 @@ class Orders extends \craft\base\Component
             'notifyCustomer' => $notifyCustomer,
         ]);
 
-        $response = Snipcart::$plugin->api->post(
+        return Snipcart::$plugin->api->post(
             sprintf('orders/%s/refunds', $orderId),
             $refund->getPayloadForPost()
         );
-
-        return $response;
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Queries the API for orders with the provided parameters.
@@ -365,7 +339,7 @@ class Orders extends \craft\base\Component
      * @return \stdClass|array API response object or array of objects.
      * @throws \Exception if our API key is missing.
      */
-    private function _fetchOrders($params = [])
+    private function fetchOrders($params = [])
     {
         $validParams = [
             'offset',
@@ -382,20 +356,16 @@ class Orders extends \craft\base\Component
         $cacheSetting   = $hasCacheParam ? $params['cache'] : true;
         $dateTimeFormat = 'Y-m-d\TH:i:sP';
 
-        if (isset($params['from']) && $params['from'] instanceof \DateTime)
-        {
+        if (isset($params['from']) && $params['from'] instanceof \DateTime) {
             $params['from'] = $params['from']->format($dateTimeFormat);
         }
 
-        if (isset($params['to']) && $params['to'] instanceof \DateTime)
-        {
+        if (isset($params['to']) && $params['to'] instanceof \DateTime) {
             $params['to'] = $params['to']->format($dateTimeFormat);
         }
 
-        foreach ($params as $key => $value)
-        {
-            if (in_array($key, $validParams, true))
-            {
+        foreach ($params as $key => $value) {
+            if (in_array($key, $validParams, true)) {
                 $apiParams[$key] = $value;
             }
         }
@@ -409,7 +379,7 @@ class Orders extends \craft\base\Component
 
     /**
      * Selects whatever Twig template should be used for an order notification,
-     * and if it's a custom template make sure it exists before relying on it.
+     * and if it’s a custom template make sure it exists before relying on it.
      *
      * @param string $type `admin` or `customer`
      *
@@ -417,19 +387,16 @@ class Orders extends \craft\base\Component
      *                     and `user` bool which is true if the template exists
      *                     on the front end—false if it's scoped to the plugin
      */
-    private function _selectNotificationTemplate($type): array
+    private function selectNotificationTemplate($type): array
     {
         $settings = Snipcart::$plugin->getSettings();
         $defaultTemplatePath = '';
         $customTemplatePath = '';
 
-        if ($type === self::NOTIFICATION_TYPE_ADMIN)
-        {
+        if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $defaultTemplatePath = 'snipcart/email/order';
             $customTemplatePath  = $settings->notificationEmailTemplate;
-        }
-        elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER)
-        {
+        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $defaultTemplatePath = 'snipcart/email/customer-order';
             $customTemplatePath  = $settings->notificationEmailTemplate;
         }

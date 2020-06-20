@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/products
@@ -14,9 +14,6 @@ namespace workingconcept\snipcart\models;
 
 class Product extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var
      */
@@ -159,9 +156,6 @@ class Product extends \craft\base\Model
       }
     ]
       */
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

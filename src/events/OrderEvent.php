@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\snipcart\Order;
 use yii\base\Event;
 
 /**
@@ -19,9 +19,6 @@ use yii\base\Event;
  */
 class OrderEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Order
      */

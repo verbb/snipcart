@@ -6,13 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class Refund extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string The refund's unique identifier.
      */
@@ -52,10 +49,6 @@ class Refund extends \craft\base\Model
      * @var
      */
     public $modificationDate;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

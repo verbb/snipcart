@@ -6,17 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class Category extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-    // Properties
-    // =========================================================================
-
-    // Public Methods
-    // =========================================================================
 
 }

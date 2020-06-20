@@ -20,9 +20,6 @@ use craft\elements\Entry;
  */
 class InventoryEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Element The Craft Element containing Snipcart product details.
      */

@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\Customer;
+use workingconcept\snipcart\models\snipcart\Customer;
 use yii\base\Event;
 
 /**
@@ -19,9 +19,6 @@ use yii\base\Event;
  */
 class CustomerEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Customer
      */

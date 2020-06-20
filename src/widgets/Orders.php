@@ -18,10 +18,6 @@ use craft\base\Widget;
  */
 class Orders extends Widget
 {
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Type of order data to be displayed.
      */
@@ -31,10 +27,6 @@ class Orders extends Widget
      * @var string Range of time for which data should be summarized.
      */
     public $chartRange = 'weekly';
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -68,7 +60,8 @@ class Orders extends Widget
         $rangeName = $this->getChartRangeOptions()[$this->chartRange];
         $typeName  = $this->getChartTypeOptions()[$this->chartType];
 
-        return Craft::t('snipcart', sprintf('Snipcart %s %s',
+        return Craft::t('snipcart', sprintf(
+            'Snipcart %s %s',
             $rangeName,
             $typeName
         ));
@@ -77,32 +70,43 @@ class Orders extends Widget
    /**
     * @inheritdoc
     */
-   public function rules(): array
-   {
-       $rules = parent::rules();
+    public function rules(): array
+    {
+        $rules = parent::rules();
 
-       $rules[] = [['chartType', 'chartRange'], 'required'];
-       $rules[] = [['chartType', 'chartRange'], 'string'];
-       $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
-       $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
+        $rules[] = [['chartType', 'chartRange'], 'required'];
+        $rules[] = [['chartType', 'chartRange'], 'string'];
+        $rules[] = [
+            ['chartType'],
+            'in',
+            'range' => array_keys($this->getChartTypeOptions()),
+        ];
+        $rules[] = [
+            ['chartRange'],
+            'in',
+            'range' => array_keys($this->getChartRangeOptions()),
+        ];
 
-       return $rules;
-   }
+        return $rules;
+    }
 
     /**
      * Returns the widget body HTML.
      *
      * @return false|string
-     * @throws \RuntimeException
-     * @throws \Twig_Error_Loader
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public function getBodyHtml()
     {
         $view = Craft::$app->getView();
 
         $view->registerAssetBundle(OrdersWidgetAsset::class);
-        $view->registerJs(sprintf('new Craft.OrdersWidget(%d);',
+        $view->registerJs(sprintf(
+            'new Craft.OrdersWidget(%d);',
             $this->id
         ));
 
@@ -120,7 +124,8 @@ class Orders extends Widget
      */
     public function getSettingsHtml()
     {
-        return Craft::$app->getView()->renderTemplate('snipcart/widgets/orders/settings',
+        return Craft::$app->getView()->renderTemplate(
+            'snipcart/widgets/orders/settings',
             [
                 'widget' => $this
             ]

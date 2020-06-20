@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/discounts
@@ -14,9 +14,6 @@ namespace workingconcept\snipcart\models;
 
 class Discount extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const TRIGGER_CODE = 'Code';
     const TRIGGER_TOTAL = 'Total';
     const TRIGGER_PRODUCT = 'Product';
@@ -26,10 +23,6 @@ class Discount extends \craft\base\Model
     const TYPE_RATE = 'Rate';
     const TYPE_ALTERNATE_PRICE = 'AlternatePrice';
     const TYPE_ALTERNATE_SHIPPING = 'Shipping';
-
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var string "2223490d-84c1-480c-b713-50cb0b819313"
@@ -47,12 +40,14 @@ class Discount extends \craft\base\Model
     public $name;
 
     /**
-     * @var \DateTime|null The date when this discount should expire, if null, the discount will never expires.
+     * @var \DateTime|null The date when this discount should expire, if null,
+     *                     the discount will never expires.
      */
     public $expires;
 
     /**
-     * @var int|null The maximum number of usages for the discount, if null, customers will be able to use this discount indefinitely.
+     * @var int|null The maximum number of usages for the discount, if null,
+     *               customers will be able to use this discount indefinitely.
      */
     public $maxNumberOfUsages;
 
@@ -77,29 +72,35 @@ class Discount extends \craft\base\Model
     public $totalToReach;
 
     /**
-     * @var string The type of action that the discount will apply. (required) Possible values: `FixedAmount`, `FixedAmountOnItems`, `Rate`, `AlternatePrice`, `Shipping`
+     * @var string The type of action that the discount will apply. (required)
+     *             Possible values: `FixedAmount`, `FixedAmountOnItems`,
+     *             `Rate`, `AlternatePrice`, `Shipping`
      */
     public $type;
 
     /**
-     * @var float The amount that will be deducted from order total. Required when type is `FixedAmount`.
+     * @var float The amount that will be deducted from order total.
+     *            Required when type is `FixedAmount`.
      */
     public $amount;
 
     /**
-     * @var float The amount that was saved if/when this instance was applied to an Order.
+     * @var float The amount that was saved if/when this instance was applied
+     *            to an Order.
      */
     public $amountSaved;
 
     /**
-     * @var string  A comma separated list of unique ID of your products defined with data-item-id.
-     *              The fixed amount will be deducted from each product that matches.
+     * @var string  A comma separated list of unique ID of your products defined
+     *              with data-item-id. The fixed amount will be deducted from
+     *              each product that matches.
      *              Required when type is `FixedAmountOnItems`.
      */
     public $productIds;
 
     /**
-     * @var float The rate in percentage that will be deducted from order total. Required when type is `Rate`.
+     * @var float The rate in percentage that will be deducted from order total.
+     *            Required when type is `Rate`.
      */
     public $rate;
 
@@ -109,22 +110,26 @@ class Discount extends \craft\base\Model
     public $normalizedRate;
 
     /**
-     * @var string|null The name of the alternate price list to use. Required when type is `AlternatePrice`.
+     * @var string|null The name of the alternate price list to use.
+     *                  Required when type is `AlternatePrice`.
      */
     public $alternatePrice;
 
     /**
-     * @var string The shipping method name that will be displayed to your customers. Required when type is `Shipping`.
+     * @var string The shipping method name that will be displayed to
+     *             your customers. Required when type is `Shipping`.
      */
     public $shippingDescription;
 
     /**
-     * @var float The shipping amount that will be available to your customers. Required when type is `Shipping`.
+     * @var float The shipping amount that will be available to your customers.
+     *            Required when type is `Shipping`.
      */
     public $shippingCost;
 
     /**
-     * @var int The number of days it will take for shipping, you can leave it to null.
+     * @var int The number of days it will take for shipping, you can leave it
+     *          to null.
      */
     public $shippingGuaranteedDaysToDelivery;
 
@@ -258,10 +263,6 @@ class Discount extends \craft\base\Model
      */
     public $savedAmount;
 
-
-    // Private Properties
-    // =========================================================================
-
     private $_triggerOptionFieldMap = [
         self::TRIGGER_CODE => [
             'code'
@@ -293,10 +294,6 @@ class Discount extends \craft\base\Model
             'shippingGuaranteedDaysToDelivery',
         ],
     ];
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -331,28 +328,23 @@ class Discount extends \craft\base\Model
     {
         $remove = [];
 
-        if ($isNew)
-        {
+        if ($isNew) {
             $remove[] = 'id';
         }
 
         $payload = $this->toArray();
 
-        // don't send `false` value as expiration (API rejects it)
-        if (isset($payload['expires']) && $payload['expires'] === false)
-        {
+        // don’t send `false` value as expiration (API rejects it)
+        if (isset($payload['expires']) && $payload['expires'] === false) {
             unset($payload['expires']);
         }
 
-        foreach ($remove as $removeKey)
-        {
+        foreach ($remove as $removeKey) {
             unset($payload[$removeKey]);
         }
 
-        foreach ($payload as $key => $value)
-        {
-            if ($value === null || $value === '')
-            {
+        foreach ($payload as $key => $value) {
+            if ($value === null || $value === '') {
                 unset($payload[$key]);
             }
         }
@@ -361,7 +353,7 @@ class Discount extends \craft\base\Model
     }
 
     /**
-     * Get a list of field options relevant to the selected trigger.
+     * Gets a list of field options relevant to the selected trigger.
      *
      * @return array
      */
@@ -371,7 +363,7 @@ class Discount extends \craft\base\Model
     }
 
     /**
-     * Get a list of discount field options relevant to the selected type.
+     * Gets a list of discount field options relevant to the selected type.
      *
      * @return array
      */
@@ -382,6 +374,7 @@ class Discount extends \craft\base\Model
 
     /**
      * Returns the Craft control panel URL for the detail page.
+     *
      * @return string
      */
     public function getCpUrl(): string
@@ -389,6 +382,11 @@ class Discount extends \craft\base\Model
         return \craft\helpers\UrlHelper::cpUrl('snipcart/discount/' . $this->id);
     }
 
+    /**
+     * Returns the Snipcart dashboard URL for the discount.
+     *
+     * @return string
+     */
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;

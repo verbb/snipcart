@@ -15,11 +15,9 @@ use Craft;
 
 class CartsController extends \craft\web\Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Display paginated list of abandoned carts.
+     * Displays paginated list of abandoned carts.
+     *
      * @return \yii\web\Response
      * @throws
      */
@@ -28,7 +26,8 @@ class CartsController extends \craft\web\Controller
         $page  = Craft::$app->getRequest()->getPageNum();
         $carts = Snipcart::$plugin->carts->listAbandonedCarts($page);
 
-        return $this->renderTemplate('snipcart/cp/abandoned-carts/index',
+        return $this->renderTemplate(
+            'snipcart/cp/abandoned-carts/index',
             [
                 'pageNumber'        => $page,
                 'carts'             => $carts->items,
@@ -39,7 +38,8 @@ class CartsController extends \craft\web\Controller
     }
 
     /**
-     * Get the next page/grouping of abandoned carts.
+     * Gets the next page/grouping of abandoned carts.
+     *
      * @return \yii\web\Response
      * @throws
      */
@@ -53,10 +53,8 @@ class CartsController extends \craft\web\Controller
             'continuationToken' => $token
         ]);
 
-        if (isset($response->items))
-        {
-            foreach ($response->items as &$item)
-            {
+        if (isset($response->items)) {
+            foreach ($response->items as &$item) {
                 $item->total = Craft::$app->getFormatter()->asCurrency($item->total);
                 $item->cpUrl = UrlHelper::cpUrl('snipcart/abandoned/' . $item->token);
 
@@ -70,7 +68,8 @@ class CartsController extends \craft\web\Controller
     }
 
     /**
-     * Display abandoned cart detail.
+     * Displays abandoned cart detail.
+     *
      * @param string $cartId
      * @return \yii\web\Response
      * @throws \Exception
@@ -79,7 +78,8 @@ class CartsController extends \craft\web\Controller
     {
         $abandonedCart = Snipcart::$plugin->carts->getAbandonedCart($cartId);
 
-        return $this->renderTemplate('snipcart/cp/abandoned-carts/detail',
+        return $this->renderTemplate(
+            'snipcart/cp/abandoned-carts/detail',
             [
                 'abandonedCart' => $abandonedCart,
             ]

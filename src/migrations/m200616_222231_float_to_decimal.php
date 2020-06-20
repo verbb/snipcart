@@ -2,17 +2,15 @@
 
 namespace workingconcept\snipcart\migrations;
 
-use Craft;
 use craft\db\Migration;
 
 /**
  * m200616_222231_float_to_decimal migration.
+ *
+ * Converts imprecise float storage to decimal format.
  */
 class m200616_222231_float_to_decimal extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     public $productDetailsTable = '{{%snipcart_product_details}}';
 
     /**
@@ -20,8 +18,7 @@ class m200616_222231_float_to_decimal extends Migration
      */
     public function safeUp()
     {
-        if ($this->getDb()->tableExists($this->productDetailsTable))
-        {
+        if ($this->getDb()->tableExists($this->productDetailsTable)) {
             $this->alterColumn(
                 $this->productDetailsTable,
                 'price',
@@ -57,7 +54,7 @@ class m200616_222231_float_to_decimal extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200616_222231_float_to_decimal cannot be reverted.\n";
         return false;

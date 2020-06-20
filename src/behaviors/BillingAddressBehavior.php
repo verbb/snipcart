@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\behaviors;
 
-use workingconcept\snipcart\models\Address;
+use workingconcept\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
 /**
@@ -20,11 +20,11 @@ use yii\base\Behavior;
  */
 class BillingAddressBehavior extends Behavior
 {
-    private $_billingAddress;
+    private $billingAddress;
 
     public function getBillingAddress()
     {
-        return $this->_billingAddress;
+        return $this->billingAddress;
     }
 
     /**
@@ -41,12 +41,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressName($name)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->name = $name;
+        return $this->billingAddress->name = $name;
     }
 
     /**
@@ -63,12 +62,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressFirstName($firstName)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->firstName = $firstName;
+        return $this->billingAddress->firstName = $firstName;
     }
 
     /**
@@ -85,12 +83,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCompanyName($companyName)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->companyName = $companyName;
+        return $this->billingAddress->companyName = $companyName;
     }
 
     /**
@@ -107,12 +104,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressAddress1($address1)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->address1 = $address1;
+        return $this->billingAddress->address1 = $address1;
     }
 
     /**
@@ -129,12 +125,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressAddress2($address2)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->address2 = $address2;
+        return $this->billingAddress->address2 = $address2;
     }
 
     /**
@@ -151,12 +146,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCity($city)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->city = $city;
+        return $this->billingAddress->city = $city;
     }
 
     /**
@@ -173,12 +167,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCountry($country)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->country = $country;
+        return $this->billingAddress->country = $country;
     }
 
     /**
@@ -195,12 +188,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressProvince($province)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->province = $province;
+        return $this->billingAddress->province = $province;
     }
 
     /**
@@ -217,12 +209,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressPostalCode($postalCode)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->postalCode = $postalCode;
+        return $this->billingAddress->postalCode = $postalCode;
     }
 
     /**
@@ -239,12 +230,11 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressPhone($phone)
     {
-        if ($this->_billingAddress === null)
-        {
-            $this->_billingAddress = new Address();
+        if ($this->billingAddress === null) {
+            $this->billingAddress = new Address();
         }
 
-        return $this->_billingAddress->phone = $phone;
+        return $this->billingAddress->phone = $phone;
     }
 
 }

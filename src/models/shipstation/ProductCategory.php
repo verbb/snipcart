@@ -15,9 +15,6 @@ namespace workingconcept\snipcart\models\shipstation;
 
 class ProductCategory extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var number The system generated identifier for the product category.
      */
@@ -27,10 +24,6 @@ class ProductCategory extends \craft\base\Model
      * @var string Name or description for the product category.
      */
     public $name;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

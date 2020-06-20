@@ -9,7 +9,6 @@
 namespace workingconcept\snipcart\assetbundles;
 
 use craft\web\AssetBundle;
-use craft\web\assets\cp\CpAsset;
 
 /**
  * @author    Working Concept
@@ -18,9 +17,6 @@ use craft\web\assets\cp\CpAsset;
  */
 class DiscountFieldAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

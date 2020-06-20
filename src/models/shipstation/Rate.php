@@ -14,9 +14,6 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class Rate extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Example: "FedEx First Overnight®"
      */
@@ -36,10 +33,6 @@ class Rate extends \craft\base\Model
      * @var float
      */
     public $otherCost;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

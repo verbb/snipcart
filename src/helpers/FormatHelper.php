@@ -13,9 +13,10 @@ use yii\base\InvalidConfigException;
 class FormatHelper
 {
     /**
-     * Returns Snipcart currency formatted with the appropriate symbol, if possible.
-     * If the supplied value already has a currency symbol, it will not be changed.
-     * 
+     * Returns Snipcart currency formatted with the appropriate symbol,
+     * if possible. If the supplied value already has a currency symbol,
+     * it will not be changed.
+     *
      * @param mixed  $value        The value to be formatted.
      * @param string $currencyType Optional string representing desired currency
      *                             to be explicitly set.
@@ -25,16 +26,14 @@ class FormatHelper
      */
     public static function formatCurrency($value, $currencyType = null): string
     {
-        if (is_string($value))
-        {
+        if (is_string($value)) {
             // do we have a currency symbol?
             $includesSymbol = strpos($value, '$') !== false
                 || strpos($value, '€') !== false
                 || strpos($value, '£') !== false
                 || strpos($value, 'CHF') !== false;
 
-            if ($includesSymbol)
-            {
+            if ($includesSymbol) {
                 return $value;
             }
         }

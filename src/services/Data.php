@@ -17,9 +17,6 @@ use workingconcept\snipcart\Snipcart;
  */
 class Data extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Gets number of orders, by date, between two dates.
      *
@@ -56,8 +53,8 @@ class Data extends \craft\base\Component
         return Snipcart::$plugin->api->get(
             'data/orders/count',
             [
-                'from' => $this->_prepDate($from),
-                'to'   => $this->_prepDate($to),
+                'from' => $this->prepDate($from),
+                'to'   => $this->prepDate($to),
             ]
         );
     }
@@ -95,8 +92,8 @@ class Data extends \craft\base\Component
         return Snipcart::$plugin->api->get(
             'data/performance',
             [
-                'from' => $this->_prepDate($from),
-                'to'   => $this->_prepDate($to),
+                'from' => $this->prepDate($from),
+                'to'   => $this->prepDate($to),
             ]
         );
     }
@@ -137,15 +134,11 @@ class Data extends \craft\base\Component
         return Snipcart::$plugin->api->get(
             'data/orders/sales',
             [
-                'from' => $this->_prepDate($from),
-                'to'   => $this->_prepDate($to),
+                'from' => $this->prepDate($from),
+                'to'   => $this->prepDate($to),
             ]
         );
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Takes a timestamp or DateTime instance and returns a Unix timestamp
@@ -154,10 +147,9 @@ class Data extends \craft\base\Component
      * @param int|\DateTime $date
      * @return string
      */
-    private function _prepDate($date): string
+    private function prepDate($date): string
     {
-        if ($date instanceof \DateTime)
-        {
+        if ($date instanceof \DateTime) {
             return $date->format('U');
         }
 

@@ -2,7 +2,6 @@
 
 namespace workingconcept\snipcart\migrations;
 
-use Craft;
 use craft\db\Migration;
 
 /**
@@ -24,8 +23,7 @@ class m190304_034411_allow_null_sku extends Migration
      */
     public function safeUp()
     {
-        if ($this->getDb()->tableExists($this->productDetailsTable))
-        {
+        if ($this->getDb()->tableExists($this->productDetailsTable)) {
             /**
              * Allow storing null in the column to keep from causing an Element
              * re-save failure after adding a new Product Details field

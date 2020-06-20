@@ -19,9 +19,6 @@ use craft\web\assets\cp\CpAsset;
  */
 class OverviewAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -29,9 +26,9 @@ class OverviewAsset extends AssetBundle
     {
         $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
         $this->depends = [
-            SnipcartAsset::class, 
-            ChartAsset::class, 
-            CpAsset::class, 
+            SnipcartAsset::class,
+            ChartAsset::class,
+            CpAsset::class,
             JqueryAsset::class
         ];
         $this->js = ['js/overview.js'];

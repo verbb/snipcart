@@ -6,22 +6,14 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
-use craft\base\Element;
 use craft\elements\MatrixBlock;
 
 class Item extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-    
-    // Properties
-    // =========================================================================
-
     /**
      * @var string Snipcart's own unique ID for the item.
      */
@@ -238,10 +230,6 @@ class Item extends \craft\base\Model
      */
     public $cancellationAction;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -261,19 +249,16 @@ class Item extends \craft\base\Model
     public function getRelatedElement($entryOnly = false)
     {
         // get related record by SKU
-        if ( ! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ]))
-        {
+        if (! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ])) {
             // bail without a Record, which can happen if the product's details
             // aren't stored in our Product Details field type
             return null;
         }
 
-        if ($element = \Craft::$app->getElements()->getElementById($record->elementId))
-        {
+        if ($element = \Craft::$app->getElements()->getElementById($record->elementId)) {
             $isMatrix = $element && get_class($element) === MatrixBlock::class;
 
-            if ($isMatrix && $entryOnly)
-            {
+            if ($isMatrix && $entryOnly) {
                 return $element->getOwner();
             }
 

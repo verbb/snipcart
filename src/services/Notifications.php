@@ -21,9 +21,6 @@ use workingconcept\snipcart\helpers\VersionHelper;
  */
 class Notifications extends \craft\base\Component
 {
-    // Private Variables
-    // =========================================================================
-
     /**
      * @var string Path to Twig template for HTML email.
      */
@@ -55,10 +52,6 @@ class Notifications extends \craft\base\Component
      * @var array Error strings accumulated during notification setup+attempt.
      */
     private $_errors = [];
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Sets template variables for the notification.
@@ -133,8 +126,7 @@ class Notifications extends \craft\base\Component
         $pluginSettings = Snipcart::$plugin->getSettings();
 
         // bail if we're in test mode and don't want to send emails
-        if ($pluginSettings->testMode && ! $pluginSettings->sendTestModeEmail)
-        {
+        if ($pluginSettings->testMode && ! $pluginSettings->sendTestModeEmail) {
             // pretend it went well
             return true;
         }
@@ -142,20 +134,16 @@ class Notifications extends \craft\base\Component
         $errors = [];
         $view = Craft::$app->getView();
 
-        if (VersionHelper::isCraft31())
-        {
+        if (VersionHelper::isCraft31()) {
             $emailSettings = Craft::$app->getProjectConfig()->get('email');
-        }
-        else
-        {
+        } else {
             $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
         }
 
         /**
          * Switch template mode only if we need to rely on our own template.
          */
-        if ($this->_emailTemplatesAreFrontEnd === false)
-        {
+        if ($this->_emailTemplatesAreFrontEnd === false) {
             /**
              * Remember what we started with.
              */
@@ -174,8 +162,7 @@ class Notifications extends \craft\base\Component
          * Make sure we've got valid templates now that we've
          * switched the view mode.
          */
-        if ( ! $this->_ensureTemplatesExist())
-        {
+        if (! $this->ensureTemplatesExist()) {
             $this->setErrors([ 'Email template(s) are missing.' ]);
             return false;
         }
@@ -192,16 +179,14 @@ class Notifications extends \craft\base\Component
 
         $messageText = '';
 
-        if ($this->_textEmailTemplate)
-        {
+        if ($this->_textEmailTemplate) {
             $messageText = $view->renderPageTemplate(
                 $this->_textEmailTemplate,
                 $this->getNotificationVars()
             );
         }
 
-        foreach ($to as $address)
-        {
+        foreach ($to as $address) {
             $message = new Message();
 
             $message->setFrom([
@@ -212,24 +197,20 @@ class Notifications extends \craft\base\Component
             $message->setSubject($subject);
             $message->setHtmlBody($mergedHtml);
 
-            if ($messageText)
-            {
+            if ($messageText) {
                 $message->setTextBody($messageText);
             }
 
-            if ( ! Craft::$app->getMailer()->send($message))
-            {
+            if (! Craft::$app->getMailer()->send($message)) {
                 $problem = "Notification failed to send to {$address}!";
                 Craft::warning($problem, 'snipcart');
                 $errors[] = $problem;
             }
         }
 
-        if (
-            $this->_emailTemplatesAreFrontEnd === false &&
+        if ($this->_emailTemplatesAreFrontEnd === false &&
             isset($originalTemplateMode)
-        )
-        {
+        ) {
             $view->setTemplateMode($originalTemplateMode);
         }
 
@@ -238,26 +219,21 @@ class Notifications extends \craft\base\Component
         return count($errors) === 0;
     }
 
-
-    // Private Methods
-    // =========================================================================
-
     /**
      * Makes sure that the HTML email template exists at the specified path,
      * and that the text template exists if it was provided.
      *
      * @return bool
+     * @throws \yii\base\Exception
      */
-    private function _ensureTemplatesExist(): bool
+    private function ensureTemplatesExist(): bool
     {
-        if ( ! $this->_ensureTemplateExists($this->_htmlEmailTemplate))
-        {
+        if (! $this->ensureTemplateExists($this->_htmlEmailTemplate)) {
             return false;
         }
 
-        if ($this->_textEmailTemplate)
-        {
-            $this->_ensureTemplateExists($this->_textEmailTemplate);
+        if ($this->_textEmailTemplate) {
+            $this->ensureTemplateExists($this->_textEmailTemplate);
 
             return false;
         }
@@ -269,17 +245,18 @@ class Notifications extends \craft\base\Component
      * Makes sure the template exists at the supplied path!
      *
      * @param $path
+     *
      * @return bool
+     * @throws \yii\base\Exception
      */
-    private function _ensureTemplateExists($path): bool
+    private function ensureTemplateExists($path): bool
     {
-        if ( ! Craft::$app->getView()->doesTemplateExist($path))
-        {
+        if (! Craft::$app->getView()->doesTemplateExist($path)) {
             Craft::error(sprintf(
                 'Specified email template `%s` does not exist.',
                 $path
-            ), 'snipcart');
 
+            ), 'snipcart');
             return false;
         }
 

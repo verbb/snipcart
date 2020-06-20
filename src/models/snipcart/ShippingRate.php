@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods
@@ -14,10 +14,6 @@ namespace workingconcept\snipcart\models;
 
 class ShippingRate extends \craft\base\Model
 {
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var float
      */
@@ -37,10 +33,6 @@ class ShippingRate extends \craft\base\Model
      * @var int
      */
     public $guaranteedDaysToDelivery;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -65,13 +57,11 @@ class ShippingRate extends \craft\base\Model
             'description',
         ];
 
-        if ( ! empty($this->code))
-        {
+        if (! empty($this->code)) {
             $return[] = 'code';
         }
 
-        if ( ! empty($this->guaranteedDaysToDelivery))
-        {
+        if (! empty($this->guaranteedDaysToDelivery)) {
             $return[] = 'guaranteedDaysToDelivery';
         }
 

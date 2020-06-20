@@ -14,17 +14,10 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class Webhook extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const TYPE_ORDER_NOTIFY      = 'ORDER_NOTIFY';
     const TYPE_ITEM_ORDER_NOTIFY = 'ITEM_ORDER_NOTIFY';
     const TYPE_SHIP_NOTIFY       = 'SHIP_NOTIFY';
     const TYPE_ITEM_SHIP_NOTIFY  = 'ITEM_SHIP_NOTIFY';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string This URL can be used to get the resource which triggered the webhook. 200 character limit.
@@ -37,10 +30,6 @@ class Webhook extends \craft\base\Model
      *             ORDER_NOTIFY, ITEM_ORDER_NOTIFY, SHIP_NOTIFY, ITEM_SHIP_NOTIFY
      */
     public $resource_type;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

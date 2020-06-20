@@ -6,17 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class CustomField extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var
      */
@@ -51,9 +44,5 @@ class CustomField extends \craft\base\Model
      * @var
      */
     public $optionsArray;
-
-
-    // Public Methods
-    // =========================================================================
 
 }

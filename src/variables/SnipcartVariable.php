@@ -12,9 +12,9 @@ use workingconcept\snipcart\fields\ProductDetails;
 use workingconcept\snipcart\helpers\FieldHelper;
 use workingconcept\snipcart\helpers\FormatHelper;
 use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\models\Customer;
-use workingconcept\snipcart\models\Order;
-use workingconcept\snipcart\models\Subscription;
+use workingconcept\snipcart\models\snipcart\Customer;
+use workingconcept\snipcart\models\snipcart\Order;
+use workingconcept\snipcart\models\snipcart\Subscription;
 use workingconcept\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
@@ -22,9 +22,6 @@ use yii\base\InvalidConfigException;
 
 class SnipcartVariable
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns Snipcart public API key.
      *
@@ -121,17 +118,18 @@ class SnipcartVariable
     /**
      * Gets a cart anchor with a count.
      *
-     * @param string $text      Button's inner text. Defaults to `Shopping Cart`.
-     * @param bool   $showCount `false` to remove dynamic item count.
+     * @param  string  $text       Button's inner text. Defaults to `Shopping Cart`.
+     * @param  bool    $showCount  `false` to remove dynamic item count.
      *
-     * @return \Twig_Markup
-     *
-     * @throws \Twig_Error_Loader
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    public function cartLink($text = null, $showCount = true): \Twig_Markup
+    public function cartLink($text = null, $showCount = true): \Twig\Markup
     {
-        return $this->_renderTemplate(
+        return $this->renderTemplate(
             'snipcart/front-end/cart-link',
             [
                 'text' => $text,
@@ -144,25 +142,26 @@ class SnipcartVariable
      * Get the main Snipcart JavaScript snippet, optionally including jQuery
      * and Snipcart's cart stylesheet.
      *
-     * @param bool   $includejQuery
-     * @param string $onload
-     * @param bool   $includeStyles
+     * @param  bool    $includejQuery
+     * @param  string  $onload
+     * @param  bool    $includeStyles
      *
-     * @return \Twig_Markup
-     * @throws \Twig_Error_Loader
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): \Twig_Markup
+    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): \Twig\Markup
     {
         $settings = Snipcart::$plugin->getSettings();
         $publicApiKey = $settings->publicKey();
 
-        if (VersionHelper::isCraft31())
-        {
+        if (VersionHelper::isCraft31()) {
             $publicApiKey = Craft::parseEnv($publicApiKey);
         }
 
-        return $this->_renderTemplate(
+        return $this->renderTemplate(
             'snipcart/front-end/cart-js',
             [
                 'settings'      => $settings,
@@ -175,20 +174,19 @@ class SnipcartVariable
     }
 
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Renders an internal (plugin) Twig template.
      *
-     * @param $template
-     * @param array $data
+     * @param         $template
+     * @param  array  $data
      *
-     * @return \Twig_Markup
-     * @throws \Twig_Error_Loader
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    private function _renderTemplate($template, $data = []): \Twig_Markup
+    private function renderTemplate($template, $data = []): \Twig\Markup
     {
         $view         = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();

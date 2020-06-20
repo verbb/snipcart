@@ -6,18 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class CustomerStatistics extends \craft\base\Model
 {
-
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var int
      */
@@ -27,10 +19,6 @@ class CustomerStatistics extends \craft\base\Model
      * @var float
      */
     public $ordersAmount;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
