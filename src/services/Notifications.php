@@ -10,6 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use Craft;
 use craft\mail\Message;
+use Pelago\Emogrifier\CssInliner;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\VersionHelper;
 
@@ -173,9 +174,8 @@ class Notifications extends \craft\base\Component
             $this->getNotificationVars()
         );
 
-        // inline the message's styles so they're more likely to be applied
-        $emogrifier = new \Pelago\Emogrifier($messageHtml);
-        $mergedHtml = $emogrifier->emogrify();
+        // inline the message’s styles so they're more likely to be applied
+        $mergedHtml = CssInliner::fromHtml($messageHtml)->inlineCss()->render();
 
         $messageText = '';
 

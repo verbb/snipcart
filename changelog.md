@@ -9,6 +9,7 @@
 
 ### Fixed
 - Fixed minor styling issues with price field in Craft 3.4.
+- Fixed CSS inliner call during email rendering.
 
 
 ## 1.3.3 - 2020-05-18
