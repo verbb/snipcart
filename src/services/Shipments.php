@@ -143,6 +143,7 @@ class Shipments extends \craft\base\Component
 
         // should we seriously do it?
         $sendToShipStation = ! $isTestMode &&
+            $order->hasShippableItems() &&
             $shipStationConfigured &&
             $shipStationShouldSend;
 

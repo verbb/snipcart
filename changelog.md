@@ -6,10 +6,10 @@
 
 ### Changed
 - Improved precision of price, weight, and dimensions by storing as decimals rather than floats.
+- Orders without any shippable items are not sent to ShipStation.
 
 ### Fixed
 - Fixed minor styling issues with price field in Craft 3.4.
-
 
 ## 1.3.3 - 2020-05-18
 ### Changed
