@@ -14,10 +14,14 @@ use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
 use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
+use craft\elements\db\ElementQuery;
+use craft\elements\db\ElementQueryInterface;
+use craft\helpers\Db;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
+use yii\base\UnknownPropertyException;
 
 /**
  * ProductDetails
@@ -162,6 +166,67 @@ class ProductDetails extends \craft\base\Field
 
     /**
      * @inheritdoc
+     */
+    public function modifyElementsQuery(ElementQueryInterface $query, $value)
+    {
+        $queryable = [
+            'sku',
+            'price',
+            'shippable',
+            'taxable',
+            'weight',
+            'length',
+            'width',
+            'height',
+            'inventory'
+        ];
+
+        $subQueries = [];
+        $tableName = 'snipcart_product_details';
+
+        if ($value !== null) {
+
+            if (! is_array($value))
+            {
+                return false;
+            }
+
+            foreach ($value as $key => $val)
+            {
+                if ( ! in_array($key, $queryable, false))
+                {
+                    throw new UnknownPropertyException(
+                        'Setting unknown property: ' . get_class($this) . '::' . $key
+                    );
+                }
+
+                $subQueries[$tableName . '.' . $key] = $value;
+            }
+
+            if (count($subQueries) > 0)
+            {
+                /** @var ElementQuery $query */
+                $query->subQuery->innerJoin(
+                    '{{%snipcart_product_details}} snipcart_product_details',
+                    '[[snipcart_product_details.elementId]] = [[elements.id]]'
+                );
+
+                $query->subQuery->andWhere(
+                    Db::parseParam($tableName . '.fieldId', $this->id)
+                );
+
+                foreach ($subQueries as $column => $val)
+                {
+                    $query->subQuery->andWhere(Db::parseParam($column, $val));
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
      * @since 3.3.0
      */
     public function getContentGqlType()
@@ -186,7 +251,10 @@ class ProductDetails extends \craft\base\Field
                 ],
             ]));
 
-        TypeLoader::registerType($typeName, static function () use ($productDetailsType) { return $productDetailsType ;});
+        TypeLoader::registerType(
+            $typeName,
+            static function () use ($productDetailsType) { return $productDetailsType; }
+        );
 
         return $productDetailsType;
     }

@@ -63,7 +63,7 @@
             </label>
         </div>
         <div class="field-input w-3/5 sm:w-4/5">
-            {{ customTextInput(element, name, 'inventory', value, { size: 20 }, isCraft34) }}
+            {{ customTextInput(element, name, 'inventory', value, { size: 9 }, isCraft34) }}
         </div>
     </div>
     <div id="snipcart-price-field" class="field-group border-t">
@@ -77,7 +77,7 @@
                 <div class="currency-symbol">
                     {{ craft.snipcart.defaultCurrencySymbol }}
                 </div>
-                {{- customTextInput(element, name, 'price', value, { size: 8, isCurrency: true }, isCraft34) -}}
+                {{- customTextInput(element, name, 'price', value, { size: 9, isCurrency: true }, isCraft34) -}}
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
                 id: 'weight',
                 name: fieldHandle,
                 value: value.weight ?? '',
-                size: 5,
+                size: 8,
             }) }}
 
             <div class="select">
