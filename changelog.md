@@ -1,8 +1,8 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.3.4 - 2020-06-23
 ### Added
-- Added support for Product Details fields in element queries.
+- Added support for using Product Details fields in element queries.
 
 ### Changed
 - Improved precision of price, weight, and dimensions by storing as decimals rather than floats.
