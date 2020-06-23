@@ -200,8 +200,11 @@ class ProductDetails extends \craft\base\Model
 
     /**
      * Returns true if the given SKU is not used by another published Element.
+     *
      * @param $attribute
+     *
      * @return bool
+     * @throws \yii\base\InvalidConfigException
      */
     public function validateSku($attribute): bool
     {
@@ -222,7 +225,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Gently strip out non-numeric values (commas, currency symbols, etc.)
+     * Gently strips out non-numeric values (commas, currency symbols, etc.)
      * before attempting to save as a decimal—then continue with the rest of the
      * validation process.
      *
@@ -251,7 +254,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Set default values according to what's configured on the field instance.
+     * Sets default values according to what’s configured on the field instance.
      */
     public function populateDefaults()
     {
@@ -271,7 +274,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Get weight unit options for menus.
+     * Gets weight unit options for menus.
      *
      * @return array
      */
@@ -285,7 +288,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Get dimension unit options for menus.
+     * Gets dimension unit options for menus.
      *
      * @return array
      */
@@ -385,15 +388,11 @@ class ProductDetails extends \craft\base\Model
         );
     }
 
-
-    // Private Methods
-    // =========================================================================
-    
     /**
      * Configure parameters for a front-end buy button.
-     * 
+     *
      * Simple options format:
-     * 
+     *
      * ```
      * {{ entry.productDetails.getBuyNowButton({
      *    'customOptions': [
@@ -407,14 +406,14 @@ class ProductDetails extends \craft\base\Model
      * ```
      *
      * Options with price variations:
-     * 
+     *
      * ```
      * {{ entry.productDetails.getBuyNowButton({
      *    'customOptions': [
      *        {
      *            'name': 'Color',
      *            'required': true,
-     *            'options': [ 
+     *            'options': [
      *                  {
      *                      'name': 'bronzed',
      *                      'price': 5

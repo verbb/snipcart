@@ -131,7 +131,7 @@ class ShipStation extends ShippingProvider
          * Convert response data into ShipStation Rates, then collect as
          * a Snipcart ShippingRate.
          */
-        foreach ($this->_getRatesForOrder($snipcartOrder, $package) as $responseItem) {
+        foreach ($this->getShipStationRatesForOrder($snipcartOrder, $package) as $responseItem) {
             $rate = new Rate($responseItem);
 
             $rates[] = new SnipcartRate([
@@ -405,10 +405,12 @@ class ShipStation extends ShippingProvider
      * @param Package $package
      * @return Rate[]
      */
-    private function _getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
-    {
-        $dimensions   = Dimensions::populateFromSnipcartPackage($package);
-        $weight       = $this->getOrderWeight($snipcartOrder, $package);
+    private function getShipStationRatesForOrder(
+        SnipcartOrder $snipcartOrder,
+        Package $package
+    ): array {
+        $dimensions = Dimensions::populateFromSnipcartPackage($package);
+        $weight = $this->getOrderWeight($snipcartOrder, $package);
         $shipmentInfo = $this->prepShipmentInfo(
             $snipcartOrder,
             $dimensions,
@@ -512,7 +514,7 @@ class ShipStation extends ShippingProvider
     {
         $closest = null;
         $package = Snipcart::$plugin->orders->getOrderPackaging($order);
-        $rates   = $this->_getRatesForOrder($order, $package);
+        $rates   = $this->getShipStationRatesForOrder($order, $package);
 
         // check rates for matching name and/or price, otherwise take closest
         foreach ($rates as $rate) {
