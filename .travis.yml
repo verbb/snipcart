@@ -18,4 +18,4 @@ install:
   - ./craft install/plugin snipcart
   - cp $TRAVIS_BUILD_DIR/codeception.yml ./ && cp -r $TRAVIS_BUILD_DIR/tests/ ./tests
 script:
-  - ./vendor/codeception/codeception/codecept run --xml --html
+  - ./vendor/codeception/codeception/codecept run
