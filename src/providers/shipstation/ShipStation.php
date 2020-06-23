@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\providers\shipstation;
 
 use Craft;
+use craft\helpers\Json;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
 use workingconcept\snipcart\models\snipcart\Package;
@@ -477,7 +478,7 @@ class ShipStation extends ShippingProvider
     private function getMatchingRateFromLog($rateQuoteLog, $order)
     {
         // get the rates that were already returned to Snipcart earlier
-        $quoteRecord = json_decode($rateQuoteLog->body, false);
+        $quoteRecord = Json::decode($rateQuoteLog->body, false);
 
         foreach ($quoteRecord->rates as $quotedRate) {
             /**

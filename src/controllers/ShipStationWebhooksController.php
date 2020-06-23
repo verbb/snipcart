@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use workingconcept\snipcart\Snipcart;
+use craft\helpers\Json;
 
 use Craft;
 use craft\web\Controller;
@@ -27,19 +27,12 @@ class ShipStationWebhooksController extends Controller
     protected $allowAnonymous = true;
 
     /**
-     * @var
-     */
-    protected $settings;
-
-    /**
      * Handles the $_POST data that ShipStation sent, which is a raw body of JSON.
      */
     public function actionHandle()
     {
         $this->requirePostRequest();
-        $this->settings = Snipcart::$plugin->getSettings();
-
-        $body = json_decode(Craft::$app->request->getRawBody(), false);
+        $body = Json::decode(Craft::$app->request->getRawBody(), false);
 
         if ($body === null || ! isset($body->resource_type)) {
             /**
@@ -69,7 +62,7 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Responds to an order notification. (Currently, we don't.)
+     * Responds to an order notification. (Currently, we don’t.)
      *
      * @param $body Object ShipStation webhook payload
      * @return Response
@@ -80,7 +73,7 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Responds to an *item* order notification. (Currently, we don't.)
+     * Responds to an *item* order notification. (Currently, we don’t.)
      *
      * @param $body Object ShipStation webhook payload
      * @return Response
@@ -91,7 +84,7 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Responds to a shipment notification. (Currently, we don't.)
+     * Responds to a shipment notification. (Currently, we don’t.)
      *
      * @param $body Object ShipStation webhook payload
      * @return Response
@@ -104,7 +97,7 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Responds to an *item* shipment notification. (Currently, we don't.)
+     * Responds to an *item* shipment notification. (Currently, we don’t.)
      *
      * @param $body Object ShipStation webhook payload
      * @return Response

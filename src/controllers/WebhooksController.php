@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
+use craft\helpers\Json;
 use workingconcept\snipcart\services\Webhooks;
 use workingconcept\snipcart\Snipcart;
 
@@ -96,8 +97,7 @@ class WebhooksController extends Controller
     {
         $this->requirePostRequest();
         $requestBody = Craft::$app->getRequest()->getRawBody();
-
-        $payload = json_decode($requestBody, false);
+        $payload = Json::decode($requestBody, false);
 
         if ($reason = $this->hasInvalidRequestData($payload)) {
             return $this->badRequestResponse(['reason' => $reason ]);

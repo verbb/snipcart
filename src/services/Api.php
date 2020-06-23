@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\services;
 
+use craft\helpers\Json;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 
@@ -322,7 +323,7 @@ class Api extends Component
         /**
          * Get the response data as an object, not an associative array.
          */
-        return json_decode($body, false);
+        return Json::decode($body, false);
     }
 
     /**

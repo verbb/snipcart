@@ -25,8 +25,7 @@
     "require": {
         "php": "^7.0.0",
         "craftcms/cms": "^3.3.0",
-        "pelago/emogrifier": "*",
-        "ext-json": "*"
+        "pelago/emogrifier": "*"
     },
     "autoload": {
         "psr-4": {

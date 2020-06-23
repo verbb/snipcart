@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\base;
 
+use craft\helpers\Json;
 use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
 use workingconcept\snipcart\models\snipcart\Package;
 use craft\base\Component;
@@ -208,7 +209,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function prepResponseData($body)
     {
-        return json_decode($body, false);
+        return Json::decode($body, false);
     }
 
     /**
