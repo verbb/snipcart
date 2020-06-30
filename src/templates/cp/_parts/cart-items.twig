@@ -22,10 +22,12 @@ TODO: support plans
         <th>
             {{- "Name"|t -}}
         </th>
-        <th></th>
         {# alignment has to be set with an inline style property :( #}
-        <th class="text-right" style="text-align: right;">
+        <th class="text-right">
             {{- "Price"|t -}}
+        </th>
+        <th class="text-right" style="text-align: right;">
+            {{- "Total Price"|t -}}
         </th>
     </thead>
     <tbody>
@@ -36,24 +38,29 @@ TODO: support plans
                 </td>
                 <td>
                     {{- item.name -}}
-                </td>
-                <td class="text-xs leading-tight">
                     {% if item.customFields | length %}
-                        {% for custom in item.customFields %}
-                            {{ custom.name }}: <b>{{ custom.value }}</b>
-                            {%- if loop.last != true -%}
-                                <br>
-                            {%- endif %}
-                        {% endfor %}
+                        <div class="text-xs leading-tight">
+                            {% for custom in item.customFields %}
+                                {{ custom.name }}: <b>{{ custom.value }}</b>
+                                {%- if loop.last != true -%}
+                                    <br>
+                                {%- endif %}
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </td>
-                <td style="text-align: right;">
+                <td>
                     {{- craft.snipcart.formatCurrency(item.price, order.currency) -}}
+                </td>
+                <td style="text-align: right;">
+                    {{- craft.snipcart.formatCurrency(item.totalPrice, order.currency) -}}
                 </td>
             </tr>
         {% endfor %}
         <tr>
-            <td colspan="4" style="border-bottom: 0;"></td>
+            <td colspan="4">
+                <hr style="margin: 0;">
+            </td>
         </tr>
         {% if hasSubtotal %}
             <tr>
