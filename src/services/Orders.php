@@ -409,5 +409,4 @@ class Orders extends \craft\base\Component
             'user' => $useCustom
         ];
     }
-
 }

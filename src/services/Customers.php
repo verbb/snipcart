@@ -22,9 +22,6 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Customers extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists Snipcart customers.
      *

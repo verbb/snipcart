@@ -19,7 +19,6 @@ use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\events\OrderEvent;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\models\snipcart\ShippingRate;
 use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\records\WebhookLog;
 use Craft;
@@ -556,5 +555,4 @@ class Webhooks extends \craft\base\Component
     {
         return [ 'success' => true ];
     }
-
 }

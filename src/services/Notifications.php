@@ -25,34 +25,34 @@ class Notifications extends \craft\base\Component
     /**
      * @var string Path to Twig template for HTML email.
      */
-    private $_htmlEmailTemplate;
+    private $htmlEmailTemplate;
 
     /**
      * @var string Path to Twig template for plain text email.
      */
-    private $_textEmailTemplate;
+    private $textEmailTemplate;
 
     /**
      * @var bool Whether supplied email template paths are provided by the site
      *           (frontend) or the control panel. Important for switching the
      *           view's template mode when rendering HTML.
      */
-    private $_emailTemplatesAreFrontEnd;
+    private $emailTemplatesAreFrontEnd;
 
     /**
      * @var string Slack webhook URL for notifications. (Not implemented.)
      */
-    private $_slackWebhook;
+    private $slackWebhook;
 
     /**
      * @var mixed Variables that should be fed to the Twig notification template.
      */
-    private $_notificationVars;
+    private $notificationVars;
 
     /**
      * @var array Error strings accumulated during notification setup+attempt.
      */
-    private $_errors = [];
+    private $errors = [];
 
     /**
      * Sets template variables for the notification.
@@ -62,7 +62,7 @@ class Notifications extends \craft\base\Component
      */
     public function setNotificationVars($data)
     {
-        $this->_notificationVars = $data;
+        $this->notificationVars = $data;
     }
 
     /**
@@ -72,7 +72,7 @@ class Notifications extends \craft\base\Component
      */
     public function getNotificationVars()
     {
-        return $this->_notificationVars;
+        return $this->notificationVars;
     }
 
     /**
@@ -82,7 +82,7 @@ class Notifications extends \craft\base\Component
      */
     public function setErrors($errors)
     {
-        $this->_errors = $errors;
+        $this->errors = $errors;
     }
 
     /**
@@ -98,9 +98,9 @@ class Notifications extends \craft\base\Component
      */
     public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false)
     {
-        $this->_htmlEmailTemplate = $htmlTemplate;
-        $this->_textEmailTemplate = $textTemplate;
-        $this->_emailTemplatesAreFrontEnd = $frontend;
+        $this->htmlEmailTemplate          = $htmlTemplate;
+        $this->textEmailTemplate          = $textTemplate;
+        $this->emailTemplatesAreFrontEnd = $frontend;
     }
 
     /**
@@ -110,7 +110,7 @@ class Notifications extends \craft\base\Component
      */
     public function setSlackWebhook($url)
     {
-        $this->_slackWebhook = $url;
+        $this->slackWebhook = $url;
     }
 
     /**
@@ -144,7 +144,7 @@ class Notifications extends \craft\base\Component
         /**
          * Switch template mode only if we need to rely on our own template.
          */
-        if ($this->_emailTemplatesAreFrontEnd === false) {
+        if ($this->emailTemplatesAreFrontEnd === false) {
             /**
              * Remember what we started with.
              */
@@ -170,7 +170,7 @@ class Notifications extends \craft\base\Component
 
         // render the HTML message
         $messageHtml = $view->renderPageTemplate(
-            $this->_htmlEmailTemplate,
+            $this->htmlEmailTemplate,
             $this->getNotificationVars()
         );
 
@@ -179,9 +179,9 @@ class Notifications extends \craft\base\Component
 
         $messageText = '';
 
-        if ($this->_textEmailTemplate) {
+        if ($this->textEmailTemplate) {
             $messageText = $view->renderPageTemplate(
-                $this->_textEmailTemplate,
+                $this->textEmailTemplate,
                 $this->getNotificationVars()
             );
         }
@@ -208,7 +208,7 @@ class Notifications extends \craft\base\Component
             }
         }
 
-        if ($this->_emailTemplatesAreFrontEnd === false &&
+        if ($this->emailTemplatesAreFrontEnd === false &&
             isset($originalTemplateMode)
         ) {
             $view->setTemplateMode($originalTemplateMode);
@@ -228,12 +228,12 @@ class Notifications extends \craft\base\Component
      */
     private function ensureTemplatesExist(): bool
     {
-        if (! $this->ensureTemplateExists($this->_htmlEmailTemplate)) {
+        if (! $this->ensureTemplateExists($this->htmlEmailTemplate)) {
             return false;
         }
 
-        if ($this->_textEmailTemplate) {
-            $this->ensureTemplateExists($this->_textEmailTemplate);
+        if ($this->textEmailTemplate) {
+            $this->ensureTemplateExists($this->textEmailTemplate);
 
             return false;
         }
@@ -262,5 +262,4 @@ class Notifications extends \craft\base\Component
 
         return true;
     }
-
 }

@@ -11,7 +11,6 @@ namespace workingconcept\snipcart\services;
 use workingconcept\snipcart\events\InventoryEvent;
 use workingconcept\snipcart\helpers\FieldHelper;
 use workingconcept\snipcart\models\snipcart\Item;
-
 use craft\elements\Entry;
 use craft\base\Component;
 use Craft;

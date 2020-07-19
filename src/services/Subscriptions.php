@@ -126,5 +126,4 @@ class Subscriptions extends \craft\base\Component
             sprintf('subscriptions/%s/resume', $subscriptionId)
         );
     }
-
 }

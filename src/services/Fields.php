@@ -217,5 +217,4 @@ class Fields extends \craft\base\Component
 
         return $record;
     }
-
 }

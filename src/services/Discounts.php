@@ -112,5 +112,4 @@ class Discounts extends \craft\base\Component
             $discountId
         ));
     }
-
 }

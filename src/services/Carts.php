@@ -24,7 +24,7 @@ class Carts extends \craft\base\Component
     /**
      * Lists abandoned carts.
      *
-     * Note that Snipcart's API behaves differently here. We have to use
+     * Note that Snipcart’s API behaves differently here. We have to use
      * `hasMoreResults` and `continuationToken` provided in the response and
      * disregard `totalItems`+`offset`.
      *
@@ -86,5 +86,4 @@ class Carts extends \craft\base\Component
 
         return null;
     }
-    
 }

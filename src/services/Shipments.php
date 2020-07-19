@@ -30,18 +30,10 @@ class Shipments extends \craft\base\Component
      */
     const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
-    
-    // Private Properties
-    // =========================================================================
-
     /**
      * @var ShipStation Local reference to instantiated ShipStation provider
      */
     private $_shipStation;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns an instance of the ShipStation provider.
@@ -166,5 +158,4 @@ class Shipments extends \craft\base\Component
             ->orderBy(['dateCreated' => SORT_DESC])
             ->one();
     }
-
 }
