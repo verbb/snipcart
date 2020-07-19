@@ -308,25 +308,3 @@ if (! \class_exists(Package::class)) {
     /** @deprecated use workingconcept\snipcart\models\snipcart\Package */
     class Package {} // @codingStandardsIgnoreLine
 }
-
-
-\class_alias(
-    snipcart\Package::class,
-    Package::class
-);
-
-if (! \class_exists(Package::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Package */
-    class Package {} // @codingStandardsIgnoreLine
-}
-
-
-\class_alias(
-    snipcart\Package::class,
-    Package::class
-);
-
-if (! \class_exists(Package::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Package */
-    class Package {} // @codingStandardsIgnoreLine
-}
