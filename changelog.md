@@ -4,6 +4,9 @@
 
 > {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
 
+### Fixed
+- Product Details price is displayed and saved properly when a user’s preferred language is German. ([#17](https://github.com/workingconcept/snipcart-craft-plugin/issues/17))
+
 ### Changed
 - Code quality improvements: cleanup, formatting, and minor refactoring.
 
