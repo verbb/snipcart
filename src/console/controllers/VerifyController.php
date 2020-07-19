@@ -59,14 +59,14 @@ class VerifyController extends Controller
                     ->shipStation
                     ->getOrderBySnipcartInvoice($order->invoiceNumber);
 
-                if ($shipStationOrder) {
+                if (! $shipStationOrder) {
                     $success = false;
                     $failedOrders[] = $order;
                 }
 
                 $this->stdout(
                     sprintf(
-                        'ShipStation[%s]' . PHP_EOL,
+                        'ShipStation [%s]' . PHP_EOL,
                         $success ? self::SUCCESS_CHAR : self::FAIL_CHAR
                     )
                 );
