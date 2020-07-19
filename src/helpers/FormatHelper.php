@@ -40,5 +40,4 @@ class FormatHelper
 
         return \Craft::$app->formatter->asCurrency($value, $currencyType);
     }
-
 }
