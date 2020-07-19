@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## Unreleased
+### Changed
+- Re-namespaced Snipcart models and ShipStation provider for PSR-4 compliance. **If you’ve written any custom code using `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*`, mind the deprecation notices and update your namespaces!**
+
 ## 1.3.4 - 2020-06-23
 ### Added
 - Added support for using Product Details fields in element queries.
