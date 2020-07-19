@@ -1,8 +1,42 @@
 # Snipcart Changelog
 
 ## Unreleased
+
+> {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
+
 ### Changed
-- Re-namespaced Snipcart models and ShipStation provider for PSR-4 compliance. **If you’ve written any custom code using `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*`, mind the deprecation notices and update your namespaces!**
+- Code quality improvements: cleanup, formatting, and minor refactoring.
+
+### Deprecated
+- `workingconcept\snipcart\models\Dimensions` is now `workingconcept\snipcart\models\snipcart\Dimensions`.
+- `workingconcept\snipcart\models\Item` is now `workingconcept\snipcart\models\snipcart\Item`.
+- `workingconcept\snipcart\models\Address` is now `workingconcept\snipcart\models\snipcart\Address`.
+- `workingconcept\snipcart\models\OrderEvent` is now `workingconcept\snipcart\models\snipcart\OrderEvent`.
+- `workingconcept\snipcart\models\DigitalGood` is now `workingconcept\snipcart\models\snipcart\DigitalGood`.
+- `workingconcept\snipcart\models\Category` is now `workingconcept\snipcart\models\snipcart\Category`.
+- `workingconcept\snipcart\models\Order` is now `workingconcept\snipcart\models\snipcart\Order`.
+- `workingconcept\snipcart\models\Notification` is now `workingconcept\snipcart\models\snipcart\Notification`.
+- `workingconcept\snipcart\models\Plan` is now `workingconcept\snipcart\models\snipcart\Plan`.
+- `workingconcept\snipcart\models\Product` is now `workingconcept\snipcart\models\snipcart\Product`.
+- `workingconcept\snipcart\models\Domain` is now `workingconcept\snipcart\models\snipcart\Domain`.
+- `workingconcept\snipcart\models\Discount` is now `workingconcept\snipcart\models\snipcart\Discount`.
+- `workingconcept\snipcart\models\Customer` is now `workingconcept\snipcart\models\snipcart\Customer`.
+- `workingconcept\snipcart\models\AbandonedCart` is now `workingconcept\snipcart\models\snipcart\AbandonedCart`.
+- `workingconcept\snipcart\models\SubscriptionEvent` is now `workingconcept\snipcart\models\snipcart\SubscriptionEvent`.
+- `workingconcept\snipcart\models\Tax` is now `workingconcept\snipcart\models\snipcart\Tax`.
+- `workingconcept\snipcart\models\ShippingEvent` is now `workingconcept\snipcart\models\snipcart\ShippingEvent`.
+- `workingconcept\snipcart\models\PaymentSchedule` is now `workingconcept\snipcart\models\snipcart\PaymentSchedule`.
+- `workingconcept\snipcart\models\CustomField` is now `workingconcept\snipcart\models\snipcart\CustomField`.
+- `workingconcept\snipcart\models\ShippingRate` is now `workingconcept\snipcart\models\snipcart\ShippingRate`.
+- `workingconcept\snipcart\models\ProductVariant` is now `workingconcept\snipcart\models\snipcart\ProductVariant`.
+- `workingconcept\snipcart\models\TaxesEvent` is now `workingconcept\snipcart\models\snipcart\TaxesEvent`.
+- `workingconcept\snipcart\models\UserSession` is now `workingconcept\snipcart\models\snipcart\UserSession`.
+- `workingconcept\snipcart\models\CustomerStatistics` is now `workingconcept\snipcart\models\snipcart\CustomerStatistics`.
+- `workingconcept\snipcart\models\Refund` is now `workingconcept\snipcart\models\snipcart\Refund`.
+- `workingconcept\snipcart\models\ShippingMethod` is now `workingconcept\snipcart\models\snipcart\ShippingMethod`.
+- `workingconcept\snipcart\models\Subscription` is now `workingconcept\snipcart\models\snipcart\Subscription`.
+- `workingconcept\snipcart\models\Package` is now `workingconcept\snipcart\models\snipcart\Package`.
+- `workingconcept\snipcart\providers\ShipStation` is now `workingconcept\snipcart\providers\shipstation\ShipStation`.
 
 ## 1.3.4 - 2020-06-23
 ### Added
