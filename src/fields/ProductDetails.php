@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\fields;
 
+use craft\helpers\Localization;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
@@ -309,6 +310,12 @@ class ProductDetails extends \craft\base\Field
     public function validateProductDetails(ElementInterface $element)
     {
         $productDetails = $element->getFieldValue($this->handle);
+
+        if ($element->isFieldDirty($this->handle)) {
+            // first normalize a new value that came from the control panel
+            $productDetails->price = Localization::normalizeNumber($productDetails->price);
+        }
+
         $productDetails->validate();
 
         $errors = $productDetails->getErrors();

@@ -128,7 +128,6 @@ class ProductDetails extends \craft\base\Model
      */
     public $fieldId;
 
-
     /**
      * Get the parent Element that's using the field.
      *
@@ -225,35 +224,6 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Gently strips out non-numeric values (commas, currency symbols, etc.)
-     * before attempting to save as a decimal—then continue with the rest of the
-     * validation process.
-     *
-     * @inheritdoc
-     */
-    public function beforeValidate(): bool
-    {
-        $this->price = $this->prepCurrencyValue($this->price);
-        return parent::beforeValidate();
-    }
-
-    /**
-     * @param $value
-     * @return int|mixed
-     */
-    public function prepCurrencyValue($value)
-    {
-        // remove all non-numeric characters
-        $data = preg_replace('/[^0-9.]/', '', $value);
-
-        if ($data === '') {
-            return null;
-        }
-
-        return Localization::normalizeNumber($data);
-    }
-
-    /**
      * Sets default values according to what’s configured on the field instance.
      */
     public function populateDefaults()
@@ -274,7 +244,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Gets weight unit options for menus.
+     * Returns weight unit options for menus.
      *
      * @return array
      */
