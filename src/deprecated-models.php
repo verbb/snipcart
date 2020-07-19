@@ -2,13 +2,20 @@
 
 namespace workingconcept\snipcart\models;
 
+/**
+ * This file provides class aliases to maintain backward compatibility for
+ * classes re-namespaced in 1.4.0.
+ *
+ * It also provides deprecation notices for IDEs.
+ */
+
 \class_alias(
     snipcart\Dimensions::class,
     Dimensions::class
 );
 
 if (! \class_exists(Dimensions::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Dimensions */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Dimensions instead. */
     class Dimensions {} // @codingStandardsIgnoreLine
 }
 
@@ -19,7 +26,7 @@ if (! \class_exists(Dimensions::class)) {
 );
 
 if (! \class_exists(Item::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Item */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Item instead. */
     class Item {} // @codingStandardsIgnoreLine
 }
 
@@ -30,7 +37,7 @@ if (! \class_exists(Item::class)) {
 );
 
 if (! \class_exists(Address::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Address */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Address instead. */
     class Address {} // @codingStandardsIgnoreLine
 }
 
@@ -41,7 +48,7 @@ if (! \class_exists(Address::class)) {
 );
 
 if (! \class_exists(OrderEvent::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\OrderEvent */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\OrderEvent instead. */
     class OrderEvent {} // @codingStandardsIgnoreLine
 }
 
@@ -52,7 +59,7 @@ if (! \class_exists(OrderEvent::class)) {
 );
 
 if (! \class_exists(DigitalGood::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\DigitalGood */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\DigitalGood instead. */
     class DigitalGood {} // @codingStandardsIgnoreLine
 }
 
@@ -63,7 +70,7 @@ if (! \class_exists(DigitalGood::class)) {
 );
 
 if (! \class_exists(Category::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Category */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Category instead. */
     class Category {} // @codingStandardsIgnoreLine
 }
 
@@ -74,7 +81,7 @@ if (! \class_exists(Category::class)) {
 );
 
 if (! \class_exists(Order::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Order */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Order instead. */
     class Order {} // @codingStandardsIgnoreLine
 }
 
@@ -85,7 +92,7 @@ if (! \class_exists(Order::class)) {
 );
 
 if (! \class_exists(Notification::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Notification */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Notification instead. */
     class Notification {} // @codingStandardsIgnoreLine
 }
 
@@ -96,7 +103,7 @@ if (! \class_exists(Notification::class)) {
 );
 
 if (! \class_exists(Plan::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Plan */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Plan instead. */
     class Plan {} // @codingStandardsIgnoreLine
 }
 
@@ -107,7 +114,7 @@ if (! \class_exists(Plan::class)) {
 );
 
 if (! \class_exists(Product::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Product */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Product instead. */
     class Product {} // @codingStandardsIgnoreLine
 }
 
@@ -118,7 +125,7 @@ if (! \class_exists(Product::class)) {
 );
 
 if (! \class_exists(Domain::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Domain */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Domain instead. */
     class Domain {} // @codingStandardsIgnoreLine
 }
 
@@ -129,7 +136,7 @@ if (! \class_exists(Domain::class)) {
 );
 
 if (! \class_exists(Discount::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Discount */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Discount instead. */
     class Discount {} // @codingStandardsIgnoreLine
 }
 
@@ -140,7 +147,7 @@ if (! \class_exists(Discount::class)) {
 );
 
 if (! \class_exists(Customer::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Customer */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Customer instead. */
     class Customer {} // @codingStandardsIgnoreLine
 }
 
@@ -151,7 +158,7 @@ if (! \class_exists(Customer::class)) {
 );
 
 if (! \class_exists(AbandonedCart::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\AbandonedCart */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\AbandonedCart instead. */
     class AbandonedCart {} // @codingStandardsIgnoreLine
 }
 
@@ -162,7 +169,7 @@ if (! \class_exists(AbandonedCart::class)) {
 );
 
 if (! \class_exists(SubscriptionEvent::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\SubscriptionEvent */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\SubscriptionEvent instead. */
     class SubscriptionEvent {} // @codingStandardsIgnoreLine
 }
 
@@ -173,7 +180,7 @@ if (! \class_exists(SubscriptionEvent::class)) {
 );
 
 if (! \class_exists(Tax::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Tax */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Tax instead. */
     class Tax {} // @codingStandardsIgnoreLine
 }
 
@@ -184,7 +191,7 @@ if (! \class_exists(Tax::class)) {
 );
 
 if (! \class_exists(ShippingEvent::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\ShippingEvent */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\ShippingEvent instead. */
     class ShippingEvent {} // @codingStandardsIgnoreLine
 }
 
@@ -195,7 +202,7 @@ if (! \class_exists(ShippingEvent::class)) {
 );
 
 if (! \class_exists(PaymentSchedule::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\PaymentSchedule */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\PaymentSchedule instead. */
     class PaymentSchedule {} // @codingStandardsIgnoreLine
 }
 
@@ -206,7 +213,7 @@ if (! \class_exists(PaymentSchedule::class)) {
 );
 
 if (! \class_exists(CustomField::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\CustomField */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\CustomField instead. */
     class CustomField {} // @codingStandardsIgnoreLine
 }
 
@@ -217,7 +224,7 @@ if (! \class_exists(CustomField::class)) {
 );
 
 if (! \class_exists(ShippingRate::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\ShippingRate */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\ShippingRate instead. */
     class ShippingRate {} // @codingStandardsIgnoreLine
 }
 
@@ -228,7 +235,7 @@ if (! \class_exists(ShippingRate::class)) {
 );
 
 if (! \class_exists(ProductVariant::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\ProductVariant */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\ProductVariant instead. */
     class ProductVariant {} // @codingStandardsIgnoreLine
 }
 
@@ -239,7 +246,7 @@ if (! \class_exists(ProductVariant::class)) {
 );
 
 if (! \class_exists(TaxesEvent::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\TaxesEvent */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\TaxesEvent instead. */
     class TaxesEvent {} // @codingStandardsIgnoreLine
 }
 
@@ -250,7 +257,7 @@ if (! \class_exists(TaxesEvent::class)) {
 );
 
 if (! \class_exists(UserSession::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\UserSession */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\UserSession instead. */
     class UserSession {} // @codingStandardsIgnoreLine
 }
 
@@ -261,7 +268,7 @@ if (! \class_exists(UserSession::class)) {
 );
 
 if (! \class_exists(CustomerStatistics::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\CustomerStatistics */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\CustomerStatistics instead. */
     class CustomerStatistics {} // @codingStandardsIgnoreLine
 }
 
@@ -272,7 +279,7 @@ if (! \class_exists(CustomerStatistics::class)) {
 );
 
 if (! \class_exists(Refund::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Refund */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Refund instead. */
     class Refund {} // @codingStandardsIgnoreLine
 }
 
@@ -283,7 +290,7 @@ if (! \class_exists(Refund::class)) {
 );
 
 if (! \class_exists(ShippingMethod::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\ShippingMethod */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\ShippingMethod instead. */
     class ShippingMethod {} // @codingStandardsIgnoreLine
 }
 
@@ -294,7 +301,7 @@ if (! \class_exists(ShippingMethod::class)) {
 );
 
 if (! \class_exists(Subscription::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Subscription */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Subscription instead. */
     class Subscription {} // @codingStandardsIgnoreLine
 }
 
@@ -305,6 +312,6 @@ if (! \class_exists(Subscription::class)) {
 );
 
 if (! \class_exists(Package::class)) {
-    /** @deprecated use workingconcept\snipcart\models\snipcart\Package */
+    /** @deprecated in 1.4.0. Use workingconcept\snipcart\models\snipcart\Package instead. */
     class Package {} // @codingStandardsIgnoreLine
 }
