@@ -38,9 +38,6 @@
     "build": "webpack -p --display-error-details",
     "watch": "webpack -d --watch --display-error-details"
   },
-  "autoload": {
-    "files": ["src/deprecated-models.php", "src/deprecated-providers.php"]
-  },
   "author": "Working Concept",
   "license": "proprietary",
   "bugs": {

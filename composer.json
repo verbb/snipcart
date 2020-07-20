@@ -30,7 +30,8 @@
     "autoload": {
         "psr-4": {
             "workingconcept\\snipcart\\": "src/"
-        }
+        },
+        "files": ["src/deprecated.php"]
     },
     "extra": {
         "name": "Snipcart",
