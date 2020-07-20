@@ -72,7 +72,7 @@ class VerifyController extends Controller
                 );
             } else {
                 // no shippable items, may not need to be in ShipStation
-                $this->stdout('[skipped]' . PHP_EOL);
+                $this->stdout(' [skipped]' . PHP_EOL);
             }
         }
 
