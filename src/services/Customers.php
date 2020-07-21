@@ -9,8 +9,8 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\Customer;
-use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\snipcart\Customer;
+use workingconcept\snipcart\models\snipcart\Order;
 use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
@@ -22,9 +22,6 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Customers extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists Snipcart customers.
      *
@@ -67,8 +64,7 @@ class Customers extends \craft\base\Component
         if ($customerData = Snipcart::$plugin->api->get(sprintf(
             'customers/%s',
             $customerId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$customerData,
                 Customer::class
@@ -100,10 +96,6 @@ class Customers extends \craft\base\Component
 
         return $orders;
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Descending sort method for Customer object `creationDate` property.

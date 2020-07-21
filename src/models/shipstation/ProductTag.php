@@ -15,9 +15,6 @@ namespace workingconcept\snipcart\models\shipstation;
 
 class ProductTag extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var number The system generated identifier for the product tag.
      */
@@ -27,10 +24,6 @@ class ProductTag extends \craft\base\Model
      * @var string Name or description for the product tag.
      */
     public $name;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

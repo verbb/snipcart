@@ -6,11 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class OrderEvent extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
 
 }

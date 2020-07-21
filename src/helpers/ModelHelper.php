@@ -24,8 +24,7 @@ class ModelHelper
      */
     public static function populateArrayWithModels(array $array, $class): array
     {
-        foreach ($array as &$item)
-        {
+        foreach ($array as &$item) {
             $item = new $class($item);
         }
 
@@ -60,8 +59,7 @@ class ModelHelper
      */
     public static function safePopulateArrayWithModels(array $array, $class): array
     {
-        foreach ($array as &$item)
-        {
+        foreach ($array as &$item) {
             $item = self::safePopulateModel($item, $class);
         }
 
@@ -69,7 +67,7 @@ class ModelHelper
     }
 
     /**
-     * Strips root-level properties from an object if they aren't attributes on
+     * Strips root-level properties from an object if they aren’t attributes on
      * the designated model.
      *
      * @param object $data   Object with data, like a webhook payload.
@@ -95,31 +93,24 @@ class ModelHelper
         // keep a reference of removed properties
         $removed = [];
 
-        if ( ! is_array($data) && ! is_object($data))
-        {
-            // don't attempt to loop the unloopable
+        if (! is_array($data) && ! is_object($data)) {
+            // don’t attempt to loop the un-loopable
             return $data;
         }
 
-        foreach ($data as $key => $value)
-        {
-            if (is_string($key) && ! in_array($key, $modelAttributes, false))
-            {
-                $removed[] = $key;
-
-                if (is_object($data))
-                {
+        foreach ($data as $key => $value) {
+            if (is_string($key) && ! in_array($key, $modelAttributes, false)) {
+                if (is_object($data)) {
                     unset($data->{$key});
-                }
-                elseif (is_array($data))
-                {
+                } elseif (is_array($data)) {
                     unset($data[$key]);
                 }
+
+                $removed[] = $key;
             }
         }
 
-        if (count($removed) > 0)
-        {
+        if (count($removed) > 0) {
             \Craft::warning(sprintf(
                 'Removed unknown %s attributes: %s',
                 $class,

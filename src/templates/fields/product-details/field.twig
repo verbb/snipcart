@@ -21,7 +21,7 @@
     {% endif %}
     {% set value = value[fieldName] ?? '' %}
     {% if options['isCurrency'] is defined and options['isCurrency'] %}
-        {% set value = value | number_format(2) %}
+        {% set value = value | number %}
     {% endif %}
     <div class="input{% if errors | length %} errors{% endif %}">
         {{- forms.text({

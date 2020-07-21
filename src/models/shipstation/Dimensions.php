@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\Package as SnipcartPackage;
+use workingconcept\snipcart\models\snipcart\Package as SnipcartPackage;
 
 /**
  * ShipStation Dimensions Model
@@ -16,15 +16,8 @@ use workingconcept\snipcart\models\Package as SnipcartPackage;
  */
 class Dimensions extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const UNIT_INCHES = 'inches';
     const UNIT_CENTIMETERS = 'centimeters';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var int|null Length of package.
@@ -45,10 +38,6 @@ class Dimensions extends \craft\base\Model
      * @var string|null Units of measurement. See class constants.
      */
     public $units;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

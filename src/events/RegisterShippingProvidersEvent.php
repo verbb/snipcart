@@ -12,16 +12,13 @@ use yii\base\Event;
 use workingconcept\snipcart\base\ShippingProvider;
 
 /**
- * Taxes event class.
+ * Register shipping provider event class.
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 class RegisterShippingProvidersEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var ShippingProvider[]
      */

@@ -1,5 +1,46 @@
 # Snipcart Changelog
 
+## 1.4.0 - 2020-07-21
+
+> {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
+
+### Fixed
+- Product Details price is displayed and saved properly when a user’s preferred language is German. ([#17](https://github.com/workingconcept/snipcart-craft-plugin/issues/17))
+
+### Changed
+- Code quality improvements: cleanup, formatting, and minor refactoring.
+
+### Deprecated
+- `workingconcept\snipcart\models\Dimensions` is now `workingconcept\snipcart\models\snipcart\Dimensions`.
+- `workingconcept\snipcart\models\Item` is now `workingconcept\snipcart\models\snipcart\Item`.
+- `workingconcept\snipcart\models\Address` is now `workingconcept\snipcart\models\snipcart\Address`.
+- `workingconcept\snipcart\models\OrderEvent` is now `workingconcept\snipcart\models\snipcart\OrderEvent`.
+- `workingconcept\snipcart\models\DigitalGood` is now `workingconcept\snipcart\models\snipcart\DigitalGood`.
+- `workingconcept\snipcart\models\Category` is now `workingconcept\snipcart\models\snipcart\Category`.
+- `workingconcept\snipcart\models\Order` is now `workingconcept\snipcart\models\snipcart\Order`.
+- `workingconcept\snipcart\models\Notification` is now `workingconcept\snipcart\models\snipcart\Notification`.
+- `workingconcept\snipcart\models\Plan` is now `workingconcept\snipcart\models\snipcart\Plan`.
+- `workingconcept\snipcart\models\Product` is now `workingconcept\snipcart\models\snipcart\Product`.
+- `workingconcept\snipcart\models\Domain` is now `workingconcept\snipcart\models\snipcart\Domain`.
+- `workingconcept\snipcart\models\Discount` is now `workingconcept\snipcart\models\snipcart\Discount`.
+- `workingconcept\snipcart\models\Customer` is now `workingconcept\snipcart\models\snipcart\Customer`.
+- `workingconcept\snipcart\models\AbandonedCart` is now `workingconcept\snipcart\models\snipcart\AbandonedCart`.
+- `workingconcept\snipcart\models\SubscriptionEvent` is now `workingconcept\snipcart\models\snipcart\SubscriptionEvent`.
+- `workingconcept\snipcart\models\Tax` is now `workingconcept\snipcart\models\snipcart\Tax`.
+- `workingconcept\snipcart\models\ShippingEvent` is now `workingconcept\snipcart\models\snipcart\ShippingEvent`.
+- `workingconcept\snipcart\models\PaymentSchedule` is now `workingconcept\snipcart\models\snipcart\PaymentSchedule`.
+- `workingconcept\snipcart\models\CustomField` is now `workingconcept\snipcart\models\snipcart\CustomField`.
+- `workingconcept\snipcart\models\ShippingRate` is now `workingconcept\snipcart\models\snipcart\ShippingRate`.
+- `workingconcept\snipcart\models\ProductVariant` is now `workingconcept\snipcart\models\snipcart\ProductVariant`.
+- `workingconcept\snipcart\models\TaxesEvent` is now `workingconcept\snipcart\models\snipcart\TaxesEvent`.
+- `workingconcept\snipcart\models\UserSession` is now `workingconcept\snipcart\models\snipcart\UserSession`.
+- `workingconcept\snipcart\models\CustomerStatistics` is now `workingconcept\snipcart\models\snipcart\CustomerStatistics`.
+- `workingconcept\snipcart\models\Refund` is now `workingconcept\snipcart\models\snipcart\Refund`.
+- `workingconcept\snipcart\models\ShippingMethod` is now `workingconcept\snipcart\models\snipcart\ShippingMethod`.
+- `workingconcept\snipcart\models\Subscription` is now `workingconcept\snipcart\models\snipcart\Subscription`.
+- `workingconcept\snipcart\models\Package` is now `workingconcept\snipcart\models\snipcart\Package`.
+- `workingconcept\snipcart\providers\ShipStation` is now `workingconcept\snipcart\providers\shipstation\ShipStation`.
+
 ## 1.3.4 - 2020-06-23
 ### Added
 - Added support for using Product Details fields in element queries.
@@ -10,6 +51,7 @@
 
 ### Fixed
 - Fixed minor styling issues with price field in Craft 3.4.
+- Fixed CSS inliner call during email rendering.
 
 ## 1.3.3 - 2020-05-18
 ### Changed
@@ -40,7 +82,7 @@
 
 ### Fixed
 - Email notifications display with item `unitPrice` and `totalPrice`.
-- ShipStation orders are built with each item's adjusted unit price.
+- ShipStation orders are built with each item’s adjusted unit price.
 - Fixed error that kept Product Details field from being used in Quick Post Dashboard widget.
 
 ### Changed
@@ -113,7 +155,7 @@
 
 ### Added
 - Added Matrix support for Product Details field.
-- Added ability to provide a custom `name` and `url` in `getBuyNowButton()`, which defaults to Entry or parent Entry's Title and URL.
+- Added ability to provide a custom `name` and `url` in `getBuyNowButton()`, which defaults to Entry or parent Entry’s Title and URL.
 
 ### Fixed
 - Product Details SKU is now properly validated to be unique.
@@ -133,7 +175,7 @@
 
 ## 1.0.6.1 - 2019-03-18
 ### Fixed
-- Fixed a bug that affected chart's date range display.
+- Fixed a bug that affected chart’s date range display.
 
 ## 1.0.6 - 2019-03-18
 ### Added
@@ -150,10 +192,10 @@
 ## 1.0.5 - 2019-03-10
 ### Added
 - `getBuyNowButton()` can now take an `image` parameter.
-- `cartLink()` supports a `showCount` setting for optionally removing the cart button's dynamic item count.
+- `cartLink()` supports a `showCount` setting for optionally removing the cart button’s dynamic item count.
 
 ### Changed
-- `cartSnippet()` now includes Snipcart's base theme stylesheet by default.
+- `cartSnippet()` now includes Snipcart’s base theme stylesheet by default.
 - `getBuyNowButton()` now adds `.btn` as a default that can be removed.
 
 ## 1.0.4 - 2019-03-09
@@ -173,7 +215,7 @@
 
 ## 1.0.2 - 2019-03-04
 ### Fixed
-- Fixed bug populating existing Element's product detail.
+- Fixed bug populating existing Element’s product detail.
 
 ## 1.0.1 - 2019-03-03
 ### Added
@@ -222,7 +264,7 @@
 ### Fixed
 - Fixed template error when `shipFrom` settings are empty.
 - Fixed incorrect reference that interfered with subscription invoice creation webhook.
-- Invalid/unparsed environment variables won't count as a "configured" state for the plugin.
+- Invalid/unparsed environment variables won’t count as a “configured” state for the plugin.
 
 ## 1.0.0-beta.22 - 2019-02-18
 ### Added
@@ -241,7 +283,7 @@
 - Refactored webhooks into component.
 
 ### Fixed
-- Stopped inventory event from firing for products that don't store inventory.
+- Stopped inventory event from firing for products that don’t store inventory.
 
 ## 1.0.0-beta.20 - 2019-02-17
 ### Added
@@ -303,16 +345,16 @@
 
 ## 1.0.0-beta.14 - 2018-12-20
 ### Changed
-- ShipStation's `_getOrderNotes()` and `_getGiftNote()` will no longer return empty values.
+- ShipStation’s `_getOrderNotes()` and `_getGiftNote()` will no longer return empty values.
 
 ## 1.0.0-beta.13 - 2018-12-20
 ### Changed
 - **Breaking changes for everyone!**
-- Massively refactored services and models, which will definitely break any services or models you're using directly.
+- Massively refactored services and models, which will definitely break any services or models you’re using directly.
 - Renamed all ShipStation models and moved them to their own namespace.
 - Renamed all Snipcart models.
-- `WebhookEvent`'s `packaging` property is now `package`.
-- Abstracted ShipStation service into Shipments, meaning it's now accessed via `Snipcart::$plugin->shipments->shipStation`. Note that the intent is for other services to interact directly with Shipments, to which `EVENT_BEFORE_RETURN_SHIPPING_RATES` has moved. Listeners should subscribe to `Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES`.
+- `WebhookEvent`’s `packaging` property is now `package`.
+- Abstracted ShipStation service into Shipments, meaning it’s now accessed via `Snipcart::$plugin->shipments->shipStation`. Note that the intent is for other services to interact directly with Shipments, to which `EVENT_BEFORE_RETURN_SHIPPING_RATES` has moved. Listeners should subscribe to `Shipments::EVENT_BEFORE_RETURN_SHIPPING_RATES`.
 - Listeners should now subscribe to `Orders::EVENT_BEFORE_REQUEST_SHIPPING_RATES` instead of `SnipcartService::EVENT_BEFORE_REQUEST_SHIPPING_RATES`.
 - Listeners should now subscribe to `Products::EVENT_PRODUCT_INVENTORY_CHANGE` instead of `SnipcartService::EVENT_PRODUCT_INVENTORY_CHANGE`.
 
@@ -346,10 +388,10 @@
 ### Changed
 - Changed the way API exceptions are handled to reduce disruption and log failures.
 - Refactored SnipcartService to be cleaner.
-- Renamed SnipcartService's `processShippingRates()` to `getShippingRatesForOrder()`.
+- Renamed SnipcartService’s `processShippingRates()` to `getShippingRatesForOrder()`.
 - Models now use proper DateTime values.
 - Improved ShipStation order verifier accuracy.
-- Updated webhook controller's `handleOrderCompletedEvent()` to continue through problems and report errors by model. Any errors at all will result in `success: false`.
+- Updated webhook controller’s `handleOrderCompletedEvent()` to continue through problems and report errors by model. Any errors at all will result in `success: false`.
 - Renamed `listAbandoned` template variable to `listAbandonedCarts`.
 
 ### Fixed
@@ -363,12 +405,12 @@
 - Use billingAddressName instead of cardholderName in order notification emails.
 - Return JSON for all webhook requests.
 - Keep ShipStation service from failing if Snipcart order has `null` value for custom fields.
-- Rename webhook controller's `badResponse()` to `badRequestResponse()`.
+- Rename webhook controller’s `badResponse()` to `badRequestResponse()`.
 
 ### Fixed
 - Fix type issues with SnipcartOrder model.
 - Return magic variables when SnipcartOrder is treated as an array.
-- Respond calmly to missing webhook event names or content and don't allow logging.
+- Respond calmly to missing webhook event names or content and don’t allow logging.
 
 ## 1.0.0-beta.6 - 2018-12-14
 ### Added
@@ -383,7 +425,7 @@
 
 ## 1.0.0-beta.5 - 2018-12-13
 ### Changed
-- ShipStationService's getWeightFromSnipcartData() is now getWeightFromSnipcartOrder().
+- ShipStationService’s getWeightFromSnipcartData() is now getWeightFromSnipcartOrder().
 
 ## 1.0.0-beta.4 - 2018-12-13
 ### Changed
@@ -395,7 +437,7 @@
 ## 1.0.0-beta.3 - 2018-12-13
 ### Changed
 - Made cosmetic fixes to console order verification tool.
-- ShipStation order model no longer limits string length; longer customer and gift messages won't cause webhook failure.
+- ShipStation order model no longer limits string length; longer customer and gift messages won’t cause webhook failure.
 
 ### Fixed
 - Fixed webhook and service bugs.

@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\AbandonedCart;
+use workingconcept\snipcart\models\snipcart\AbandonedCart;
 use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
@@ -21,13 +21,10 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Carts extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists abandoned carts.
      *
-     * Note that Snipcart's API behaves differently here. We have to use
+     * Note that Snipcart’s API behaves differently here. We have to use
      * `hasMoreResults` and `continuationToken` provided in the response and
      * disregard `totalItems`+`offset`.
      *
@@ -69,7 +66,7 @@ class Carts extends \craft\base\Component
 
     /**
      * Gets an abandoned cart.
-     * 
+     *
      * @param string $cartId
      *
      * @return AbandonedCart|null
@@ -80,8 +77,7 @@ class Carts extends \craft\base\Component
         if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
             'carts/abandoned/%s',
             $cartId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$abandonedCartData,
                 AbandonedCart::class
@@ -90,5 +86,4 @@ class Carts extends \craft\base\Component
 
         return null;
     }
-    
 }

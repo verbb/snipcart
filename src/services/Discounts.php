@@ -9,7 +9,7 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\Discount;
+use workingconcept\snipcart\models\snipcart\Discount;
 use workingconcept\snipcart\helpers\ModelHelper;
 
 /**
@@ -21,9 +21,6 @@ use workingconcept\snipcart\helpers\ModelHelper;
  */
 class Discounts extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists discounts.
      *
@@ -50,12 +47,10 @@ class Discounts extends \craft\base\Component
      */
     public function createDiscount($discount)
     {
-        $response = Snipcart::$plugin->api->post(
+        return Snipcart::$plugin->api->post(
             'discounts',
             $discount->getPayloadForPost()
         );
-
-        return $response;
     }
 
     /**
@@ -71,8 +66,7 @@ class Discounts extends \craft\base\Component
         if ($discountData = Snipcart::$plugin->api->get(sprintf(
             'discounts/%s',
             $discountId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$discountData,
                 Discount::class
@@ -92,14 +86,13 @@ class Discounts extends \craft\base\Component
      */
     public function updateDiscount($discount)
     {
-        $response = Snipcart::$plugin->api->put(sprintf(
+        return Snipcart::$plugin->api->put(
+            sprintf(
                 'discounts/%s',
                 $discount->id
             ),
             $discount->getPayloadForPost(false)
         );
-
-        return $response;
     }
 
     /**
@@ -119,5 +112,4 @@ class Discounts extends \craft\base\Component
             $discountId
         ));
     }
-
 }

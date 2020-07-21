@@ -14,9 +14,6 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class InternationalOptions extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const CONTENTS_MERCHANDISE = 'merchandise';
     const CONTENTS_DOCUMENTS = 'documents';
     const CONTENTS_GIFT = 'gift';
@@ -26,22 +23,34 @@ class InternationalOptions extends \craft\base\Model
     const NON_DELIVERY_RETURN_TO_SENDER = 'return_to_sender';
     const NON_DELIVERY_TREAT_AS_ABANDONED = 'treat_as_abandoned';
 
-
-    // Properties
-    // =========================================================================
-
     /**
-     * @var string|null Contents of international shipment. Available options are: "merchandise", "documents", "gift", "returned_goods", or "sample".
+     * @var string|null Contents of international shipment. Available options:
+     *                  "merchandise", "documents", "gift", "returned_goods",
+     *                  or "sample".
      */
     public $contents;
 
     /**
-     * @var CustomsItem[]|null An array of customs items. Please note: If you wish to supply customsItems in the CreateOrder call and have the values not be overwritten by ShipStation, you must have the International Settings > Customs Declarations set to "Leave blank (Enter Manually)" in the UI: https://ss.shipstation.com/#/settings/international
+     * @var CustomsItem[]|null An array of customs items. Please note: If you
+     *                         wish to supply customsItems in the CreateOrder
+     *                         call and have the values not be overwritten
+     *                         by ShipStation, you must have the
+     *                         International Settings > Customs Declarations set
+     *                         to "Leave blank (Enter Manually)" in the UI:
+     *                         https://ss.shipstation.com/#/settings/international
      */
-    private $_customsItems;
+    private $customsItems;
 
     /**
-     * @var string|null Non-Delivery option for international shipment. Available options are: "return_to_sender" or "treat_as_abandoned". Please note: If the shipment is created through the Orders/CreateLabelForOrder endpoint and the nonDelivery field is not specified then value defaults based on the International Setting in the UI. If the call is being made to the Shipments/CreateLabel endpoint and the nonDelivery field is not specified then the value will default to "return_to_sender".
+     * @var string|null Non-Delivery option for international shipment.
+     *                  Available options are: "return_to_sender" or
+     *                  "treat_as_abandoned". Please note: If the shipment is
+     *                  created through the Orders/CreateLabelForOrder endpoint
+     *                  and the nonDelivery field is not specified then value
+     *                  defaults based on the International Setting in the UI.
+     *                  If the call is being made to the Shipments/CreateLabel
+     *                  endpoint and the nonDelivery field is not specified then
+     *                  the value will default to "return_to_sender".
      */
     public $nonDelivery;
 
@@ -56,14 +65,13 @@ class InternationalOptions extends \craft\base\Model
      */
     public function getCustomsItems(): array
     {
-        if ($this->_customsItems !== null)
-        {
-            return $this->_customsItems;
+        if ($this->customsItems !== null) {
+            return $this->customsItems;
         }
 
-        $this->_customsItems = [];
+        $this->customsItems = [];
 
-        return $this->_customsItems;
+        return $this->customsItems;
     }
 
 
@@ -76,7 +84,7 @@ class InternationalOptions extends \craft\base\Model
      */
     public function setCustomsItems($customsItems)
     {
-        return $this->_customsItems = $customsItems;
+        return $this->customsItems = $customsItems;
     }
 
 

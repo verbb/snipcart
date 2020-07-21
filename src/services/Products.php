@@ -10,8 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\events\InventoryEvent;
 use workingconcept\snipcart\helpers\FieldHelper;
-use workingconcept\snipcart\models\Item;
-
+use workingconcept\snipcart\models\snipcart\Item;
 use craft\elements\Entry;
 use craft\base\Component;
 use Craft;
@@ -27,18 +26,11 @@ use Craft;
  */
 class Products extends Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event InventoryEvent Triggered when a product's inventory has changed
      *                       because an order was created or updated.
      */
     const EVENT_PRODUCT_INVENTORY_CHANGE = 'productInventoryChange';
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Adjusts the supplied Item's inventory value if...
@@ -67,13 +59,11 @@ class Products extends Component
         $usesInventory = isset($fieldHandle) &&
             $element->{$fieldHandle}->inventory !== null;
 
-        if (! $usesInventory)
-        {
+        if (! $usesInventory) {
             return;
         }
 
-        if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE))
-        {
+        if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE)) {
             $event = new InventoryEvent([
                 'element'  => $element,
                 'entry'    => $element,
@@ -89,13 +79,11 @@ class Products extends Component
             $quantityToAdjust = $event->quantity;
         }
 
-        if ($fieldHandle)
-        {
+        if ($fieldHandle) {
             $originalQuantity = $element->{$fieldHandle}->inventory;
             $newQuantity      = $originalQuantity + $quantityToAdjust;
 
-            if ($originalQuantity > 0 && $originalQuantity !== $newQuantity)
-            {
+            if ($originalQuantity > 0 && $originalQuantity !== $newQuantity) {
                 $element->{$fieldHandle}->inventory = $newQuantity;
                 Craft::$app->getElements()->saveElement($element);
             }
@@ -125,13 +113,11 @@ class Products extends Component
         $usesInventory = isset($fieldHandle) &&
             $entry->{$fieldHandle}->inventory !== null;
 
-        if (! $usesInventory)
-        {
+        if (! $usesInventory) {
             return;
         }
 
-        if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE))
-        {
+        if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE)) {
             $event = new InventoryEvent([
                 'entry'    => $entry,
                 'quantity' => $quantityToAdjust,
@@ -146,13 +132,11 @@ class Products extends Component
             $quantityToAdjust = $event->quantity;
         }
 
-        if ($fieldHandle)
-        {
+        if ($fieldHandle) {
             $originalQuantity = $entry->{$fieldHandle}->inventory;
             $newQuantity      = $originalQuantity + $quantityToAdjust;
 
-            if ($originalQuantity > 0 && $originalQuantity !== $newQuantity)
-            {
+            if ($originalQuantity > 0 && $originalQuantity !== $newQuantity) {
                 $entry->{$fieldHandle}->inventory = $newQuantity;
                 Craft::$app->getElements()->saveElement($entry);
             }

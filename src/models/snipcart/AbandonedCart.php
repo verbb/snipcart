@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/abandoned-carts
@@ -14,13 +14,7 @@ namespace workingconcept\snipcart\models;
 
 class AbandonedCart extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const STATUS_IN_PROGRESS = 'InProgress';
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var
@@ -309,10 +303,6 @@ class AbandonedCart extends \craft\base\Model
      * @var
      */
     public $totalPriceWithoutDiscountsAndTaxes;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

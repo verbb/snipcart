@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/domains
@@ -14,13 +14,6 @@ namespace workingconcept\snipcart\models;
 
 class Domain extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
      * @var
      */
@@ -30,9 +23,5 @@ class Domain extends \craft\base\Model
      * @var
      */
     public $protocol;
-
-
-    // Public Methods
-    // =========================================================================
 
 }

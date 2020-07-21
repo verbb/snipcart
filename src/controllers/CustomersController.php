@@ -13,41 +13,33 @@ use Craft;
 
 class CustomersController extends \craft\web\Controller
 {
-    // Constants
-    // =========================================================================
-
     const SEARCH_KEYWORD_PARAM = 'searchKeywords';
     const SEARCH_KEYWORD_SESSION_KEY = 'snipcartSearchKeywords';
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Display paginated list of customers.
+     * Displays paginated list of customers.
+     *
      * @return \yii\web\Response
      * @throws
      */
     public function actionIndex(): \yii\web\Response
     {
         $request        = Craft::$app->getRequest();
-        $searchKeywords = $this->_getSearchKeywords();
+        $searchKeywords = $this->getSearchKeywords();
         $page           = $request->getPageNum();
 
-        if ( ! empty($searchKeywords))
-        {
+        if (! empty($searchKeywords)) {
             $customers = Snipcart::$plugin->customers->listCustomers($page, 20, [
                 'name' => $searchKeywords
             ]);
-        }
-        else
-        {
+        } else {
             $customers = Snipcart::$plugin->customers->listCustomers($page);
         }
 
         $totalPages = ceil($customers->totalItems / $customers->limit);
 
-        return $this->renderTemplate('snipcart/cp/customers/index',
+        return $this->renderTemplate(
+            'snipcart/cp/customers/index',
             [
                 'pageNumber' => $page,
                 'totalPages' => $totalPages,
@@ -59,7 +51,8 @@ class CustomersController extends \craft\web\Controller
     }
 
     /**
-     * Display customer detail.
+     * Displays customer detail.
+     *
      * @param string $customerId
      * @return \yii\web\Response
      * @throws
@@ -69,7 +62,8 @@ class CustomersController extends \craft\web\Controller
         $customer = Snipcart::$plugin->customers->getCustomer($customerId);
         $customerOrders = Snipcart::$plugin->customers->getCustomerOrders($customerId);
 
-        return $this->renderTemplate('snipcart/cp/customers/detail',
+        return $this->renderTemplate(
+            'snipcart/cp/customers/detail',
             [
                 'customer' => $customer,
                 'orders'   => $customerOrders,
@@ -77,11 +71,14 @@ class CustomersController extends \craft\web\Controller
         );
     }
 
-
-    // Private Methods
-    // =========================================================================
-
-    private function _getSearchKeywords()
+    /**
+     * Finds search keywords in request or session, storing them in the
+     * session in the process. Returns empty string if no keywords are present.
+     *
+     * @return array|mixed|string
+     * @throws \craft\errors\MissingComponentException
+     */
+    private function getSearchKeywords()
     {
         $request = Craft::$app->getRequest();
         $session = Craft::$app->getSession();
@@ -91,8 +88,7 @@ class CustomersController extends \craft\web\Controller
 
         $keywords = $requestParam ?? $sessionParam ?? '';
 
-        if ($session)
-        {
+        if ($session) {
             $session->set(self::SEARCH_KEYWORD_SESSION_KEY, $keywords);
         }
 

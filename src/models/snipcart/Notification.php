@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/notifications
@@ -14,16 +14,10 @@ namespace workingconcept\snipcart\models;
 
 class Notification extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const TYPE_COMMENT          = 'Comment';
     const TYPE_INVOICE          = 'Invoice';
     const DELIVERY_METHOD_EMAIL = 'Email';
     const DELIVERY_METHOD_NONE  = 'None';
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string "0c3ac0bb-a94a-45c5-a4d8-a7934a7f180a"
@@ -64,10 +58,6 @@ class Notification extends \craft\base\Model
      * @var string "2017-06-07T19:09:31.933Z"
      */
     public $sentOn;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

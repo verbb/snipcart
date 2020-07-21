@@ -6,24 +6,16 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 class Package extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const WEIGHT_UNIT_GRAM = 'gram';
     const WEIGHT_UNIT_POUND = 'pound';
     const WEIGHT_UNIT_OUNCE = 'ounce';
 
     const DIMENSION_UNIT_INCH = 'inch';
     const DIMENSION_UNIT_CENTIMETER = 'centimeter';
-
-    // Properties
-    // =========================================================================
-
-    // TODO: should dimensions be whole numbers only?
 
     /**
      * @var string Friendly slug for this packaging type.
@@ -45,8 +37,6 @@ class Package extends \craft\base\Model
      */
     public $height;
 
-    // TODO: should weight be whole number only?
-
     /**
      * @var int Package weight in grams.
      */
@@ -61,9 +51,6 @@ class Package extends \craft\base\Model
      * @var string Unit of dimension measurements.
      */
     public $dimensionUnit = self::DIMENSION_UNIT_INCH;
-
-    // Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

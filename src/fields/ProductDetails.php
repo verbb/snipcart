@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\fields;
 
+use craft\helpers\Localization;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
@@ -30,10 +31,6 @@ use yii\base\UnknownPropertyException;
  */
 class ProductDetails extends \craft\base\Field
 {
-
-    // Static Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -49,9 +46,6 @@ class ProductDetails extends \craft\base\Field
     {
         return false;
     }
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var bool Whether to display "shippable" option for this field instance
@@ -116,12 +110,8 @@ class ProductDetails extends \craft\base\Field
      */
     public $skuDefault = '';
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
-     * After the Element is saved, save the Product Details to their table.
+     * Saves the Product Details data to table after element save.
      *
      * @inheritdoc
      */
@@ -136,7 +126,7 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
-     * After the Element is saved, save the Product Details to their table.
+     * Saves the Product Details data to table after element propagation.
      *
      * @inheritdoc
      */
@@ -151,7 +141,7 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
-     * Pull details out of the database for use like any other field.
+     * Standardizes field values from several potential formats.
      *
      * @inheritdoc
      */
@@ -182,29 +172,23 @@ class ProductDetails extends \craft\base\Field
         ];
 
         $subQueries = [];
-        $tableName = 'snipcart_product_details';
 
         if ($value !== null) {
-
-            if (! is_array($value))
-            {
+            if (! is_array($value)) {
                 return false;
             }
 
-            foreach ($value as $key => $val)
-            {
-                if ( ! in_array($key, $queryable, false))
-                {
+            foreach ($value as $key => $val) {
+                if (! in_array($key, $queryable, false)) {
                     throw new UnknownPropertyException(
                         'Setting unknown property: ' . get_class($this) . '::' . $key
                     );
                 }
 
-                $subQueries[$tableName . '.' . $key] = $value;
+                $subQueries['snipcart_product_details.' . $key] = $value;
             }
 
-            if (count($subQueries) > 0)
-            {
+            if (count($subQueries) > 0) {
                 /** @var ElementQuery $query */
                 $query->subQuery->innerJoin(
                     '{{%snipcart_product_details}} snipcart_product_details',
@@ -212,11 +196,10 @@ class ProductDetails extends \craft\base\Field
                 );
 
                 $query->subQuery->andWhere(
-                    Db::parseParam($tableName . '.fieldId', $this->id)
+                    Db::parseParam('snipcart_product_details.fieldId', $this->id)
                 );
 
-                foreach ($subQueries as $column => $val)
-                {
+                foreach ($subQueries as $column => $val) {
                     $query->subQuery->andWhere(Db::parseParam($column, $val));
                 }
             }
@@ -253,7 +236,9 @@ class ProductDetails extends \craft\base\Field
 
         TypeLoader::registerType(
             $typeName,
-            static function () use ($productDetailsType) { return $productDetailsType; }
+            static function () use ($productDetailsType) {
+                return $productDetailsType;
+            }
         );
 
         return $productDetailsType;
@@ -305,8 +290,8 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
-     * Add one custom validation rule that the Element will call. This will make
-     * it possible to validate each of the "sub-fields" we're working with.
+     * Adds a validation rule for the element for validating each of the
+     * "sub-fields" we’re working with.
      *
      * @inheritdoc
      */
@@ -318,22 +303,30 @@ class ProductDetails extends \craft\base\Field
     }
 
     /**
-     * Validate the ProductDetails model, adding any errors to the Element.
+     * Validates the ProductDetails model, adding errors to the Element.
      *
      * @param  ElementInterface  $element
      */
     public function validateProductDetails(ElementInterface $element)
     {
         $productDetails = $element->getFieldValue($this->handle);
+
+        if ($element->isFieldDirty($this->handle)) {
+            // first normalize a new value that came from the control panel
+            $productDetails->price = Localization::normalizeNumber($productDetails->price);
+        }
+
         $productDetails->validate();
 
         $errors = $productDetails->getErrors();
 
         if (count($errors) > 0) {
-            foreach ($errors as $subfield => $errors) {
-                foreach ($errors as $message) {
-                    $element->addError($this->handle.'['.$subfield.']',
-                        $message);
+            foreach ($errors as $subfield => $subErrors) {
+                foreach ($subErrors as $message) {
+                    $element->addError(
+                        $this->handle.'['.$subfield.']',
+                        $message
+                    );
                 }
             }
         }

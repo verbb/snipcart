@@ -57,10 +57,6 @@ class Settings extends \craft\base\Model
      */
     public $sendCompletedOrders = false;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

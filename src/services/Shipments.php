@@ -9,9 +9,9 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\events\ShippingRateEvent;
-use workingconcept\snipcart\models\Order;
+use workingconcept\snipcart\models\snipcart\Order;
 use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\providers\ShipStation;
+use workingconcept\snipcart\providers\shipstation\ShipStation;
 use workingconcept\snipcart\records\ShippingQuoteLog;
 use Craft;
 
@@ -25,26 +25,15 @@ use Craft;
  */
 class Shipments extends \craft\base\Component
 {
-    // Constants
-    // =========================================================================
-
     /**
      * @event WebhookEvent Triggered before shipping rates are returned to Snipcart.
      */
     const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
-    
-    // Private Properties
-    // =========================================================================
-
     /**
      * @var ShipStation Local reference to instantiated ShipStation provider
      */
     private $_shipStation;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns an instance of the ShipStation provider.
@@ -53,8 +42,7 @@ class Shipments extends \craft\base\Component
      */
     public function getShipStation(): ShipStation
     {
-        if ($this->_shipStation === null)
-        {
+        if ($this->_shipStation === null) {
             $settings = Snipcart::$plugin->getSettings();
             return $this->_shipStation = $settings->getProvider('shipStation');
         }
@@ -71,8 +59,7 @@ class Shipments extends \craft\base\Component
      */
     public function collectRatesForOrder(Order $order): array
     {
-        if ($order->hasShippableItems() === false)
-        {
+        if ($order->hasShippableItems() === false) {
             Craft::warning(sprintf(
                 'Snipcart order %s did not contain any shippable items.',
                 $order->invoiceNumber ?? $order->token
@@ -87,15 +74,13 @@ class Shipments extends \craft\base\Component
         $includeShipStationRates = $this->getShipStation()->isConfigured() &&
             $this->getShipStation()->getSettings()->enableShippingRates;
 
-        if (
-            $includeShipStationRates &&
+        if ($includeShipStationRates &&
             $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)
         ) {
             $rates = array_merge($rates, $shipStationRates);
         }
 
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES))
-        {
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES)) {
             $event = new ShippingRateEvent([
                 'rates'   => $rates,
                 'order'   => $order,
@@ -119,7 +104,7 @@ class Shipments extends \craft\base\Component
     }
 
     /**
-     * Handles an order that's been completed, normally sent after
+     * Handles an order that’s been completed, normally sent after
      * receiving a webhook post from Snipcart.
      *
      * @param Order $order
@@ -148,13 +133,11 @@ class Shipments extends \craft\base\Component
             $shipStationShouldSend;
 
         // send order to ShipStation if we need to
-        if ($sendToShipStation)
-        {
+        if ($sendToShipStation) {
             $shipStationOrder = $this->getShipStation()->createOrder($order);
             $response->orders['shipStation'] = $shipStationOrder;
 
-            if (count($shipStationOrder->getErrors()) > 0)
-            {
+            if (count($shipStationOrder->getErrors()) > 0) {
                 $response->errors['shipStation'] = $shipStationOrder->getErrors();
             }
         }
@@ -175,5 +158,4 @@ class Shipments extends \craft\base\Component
             ->orderBy(['dateCreated' => SORT_DESC])
             ->one();
     }
-
 }

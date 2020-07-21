@@ -14,18 +14,12 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class InsuranceOptions extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const PROVIDER_CARRIER = 'carrier';
     const PROVIDER_SHIPSURANCE = 'shipsurance';
 
-
-    // Properties
-    // =========================================================================
-
     /**
-     * @var string|null Preferred Insurance provider. Available options: "shipsurance" or "carrier"
+     * @var string|null Preferred Insurance provider.
+     *                  Available options: "shipsurance" or "carrier"
      */
     public $provider;
 
@@ -38,10 +32,6 @@ class InsuranceOptions extends \craft\base\Model
      * @var int|null Value to insure.
      */
     public $insuredValue;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

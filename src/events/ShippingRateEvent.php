@@ -8,9 +8,9 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\Order;
-use workingconcept\snipcart\models\ShippingRate;
-use workingconcept\snipcart\models\Package;
+use workingconcept\snipcart\models\snipcart\Order;
+use workingconcept\snipcart\models\snipcart\ShippingRate;
+use workingconcept\snipcart\models\snipcart\Package;
 use yii\base\Event;
 
 /**
@@ -21,9 +21,6 @@ use yii\base\Event;
  */
 class ShippingRateEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Order
      */

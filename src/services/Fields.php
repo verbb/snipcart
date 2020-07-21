@@ -20,9 +20,6 @@ use craft\base\ElementInterface;
  */
 class Fields extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Saves data for a Product Details field.
      *
@@ -36,14 +33,13 @@ class Fields extends \craft\base\Component
     {
         $data = $element->getFieldValue($field->handle);
 
-        if (empty($data))
-        {
+        if (empty($data)) {
             return null;
         }
 
         $currentSiteId = Craft::$app->getSites()->getCurrentSite()->id;
 
-        return $this->_saveRecord(
+        return $this->saveRecord(
             $data,
             $element->siteId ?? $currentSiteId,
             $element->getId(),
@@ -64,15 +60,13 @@ class Fields extends \craft\base\Component
      */
     public function getProductDetailsField($field, ElementInterface $element = null, $value = null)
     {
-        // if we've already got a model, just give it back
-        if ($value instanceof ProductDetailsModel)
-        {
+        // if we’ve already got a model, just give it back
+        if ($value instanceof ProductDetailsModel) {
             return $value;
         }
 
-        // if we don't have an element, we don't have much to do
-        if ( ! $element instanceof ElementInterface)
-        {
+        // if we don’t have an element, we don't have much to do
+        if (! $element instanceof ElementInterface) {
             return null;
         }
 
@@ -80,44 +74,37 @@ class Fields extends \craft\base\Component
         $currentSiteId = $sitesService->getCurrentSite()->id;
         $elementId = $element->getId();
 
-        if (is_array($value))
-        {
+        if (is_array($value)) {
             $model = new ProductDetailsModel($value);
 
             $model->fieldId = $field->id;
             $model->siteId  = $currentSiteId;
 
-            if ($elementId !== null)
-            {
+            if ($elementId !== null) {
                 $model->elementId = $elementId;
             }
 
             return $model;
         }
 
-        // if we have an Entry, we're working with a source ID and need the corresponding Element ID
-        if (
-            is_a($element, Entry::class)
-            && $currentRevision = $element->getCurrentRevision()
-        )
-        {
+        // if we have an Entry, we’re working with a source ID and need the corresponding Element ID
+        if (is_a($element, Entry::class) &&
+            $currentRevision = $element->getCurrentRevision()
+        ) {
             $elementId = $currentRevision->getId();
         }
 
         /**
          * Populate a ProductDetailsModel on an existing Element.
          */
-        if (
-            $elementId !== null &&
-            $record = $this->_getRecord(
+        if ($elementId !== null &&
+            $record = $this->getRecord(
                 $currentSiteId,
                 $elementId,
                 $field->id
             )
-        )
-        {
-            if ( ! $this->_isUnsavedRecord($record))
-            {
+        ) {
+            if (! $this->isUnsavedRecord($record)) {
                 // populate with stored values
                 return new ProductDetailsModel($record->getAttributes());
             }
@@ -139,8 +126,7 @@ class Fields extends \craft\base\Component
         $model->fieldId = $field->id;
         $model->siteId  = $currentSiteId;
 
-        if ($elementId !== null)
-        {
+        if ($elementId !== null) {
             $model->elementId = $elementId;
         }
 
@@ -148,10 +134,6 @@ class Fields extends \craft\base\Component
 
         return $model;
     }
-
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns true if the record has not yet been saved to the database, or
@@ -161,10 +143,9 @@ class Fields extends \craft\base\Component
      * @param ProductDetailsRecord $record
      * @return bool
      */
-    private function _isUnsavedRecord($record): bool
+    private function isUnsavedRecord($record): bool
     {
-        if ($record->isNew)
-        {
+        if ($record->isNew) {
             return true;
         }
 
@@ -172,12 +153,7 @@ class Fields extends \craft\base\Component
          * A record can only have a `null` sku and price if saved during a
          * bulk operation.
          */
-        if ($record->sku === null && $record->price === null)
-        {
-            return true;
-        }
-
-        return false;
+        return $record->sku === null && $record->price === null;
     }
 
     /**
@@ -190,9 +166,9 @@ class Fields extends \craft\base\Component
      *
      * @return bool
      */
-    private function _saveRecord($data, $siteId, $elementId, $fieldId): bool
+    private function saveRecord($data, $siteId, $elementId, $fieldId): bool
     {
-        $record = $this->_getRecord($siteId, $elementId, $fieldId);
+        $record = $this->getRecord($siteId, $elementId, $fieldId);
 
         $record->setAttributes([
             'sku'            => $data->sku,
@@ -222,7 +198,7 @@ class Fields extends \craft\base\Component
      *
      * @return ProductDetailsRecord
      */
-    private function _getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
+    private function getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
     {
         $record = ProductDetailsRecord::findOne([
             'siteId'    => $siteId,
@@ -230,8 +206,7 @@ class Fields extends \craft\base\Component
             'fieldId'   => $fieldId
         ]);
 
-        if ($record === null)
-        {
+        if ($record === null) {
             $record = new ProductDetailsRecord();
 
             $record->isNew     = true;
@@ -242,5 +217,4 @@ class Fields extends \craft\base\Component
 
         return $record;
     }
-
 }

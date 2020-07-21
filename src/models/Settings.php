@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\models;
 
+use workingconcept\snipcart\models\snipcart\Address;
 use Craft;
 use craft\base\Model;
 use workingconcept\snipcart\helpers\VersionHelper;
@@ -20,18 +21,11 @@ use workingconcept\snipcart\helpers\VersionHelper;
  */
 class Settings extends Model
 {
-    // Constants
-    // =========================================================================
-
     const CURRENCY_USD = 'usd';
     const CURRENCY_CAD = 'cad';
     const CURRENCY_EUR = 'eur';
     const CURRENCY_GBP = 'gbp';
     const CURRENCY_CHF = 'chf';
-
-
-    // Public Properties
-    // =========================================================================
 
     /**
      * @var string Snipcart public API key
@@ -166,10 +160,6 @@ class Settings extends Model
      */
     public $sendTestModeEmail = false;
 
-
-    // Private Properties
-    // =========================================================================
-
     /**
      * @var Address Origin shipping address
      */
@@ -180,10 +170,6 @@ class Settings extends Model
      *            registered provider
      */
     private $_providers = [];
-
-
-    // Static Methods
-    // =========================================================================
 
     /**
      * Returns an indexed array of store currency options.
@@ -200,10 +186,6 @@ class Settings extends Model
             self::CURRENCY_CHF => Craft::t('snipcart', 'Swiss Franc'),
         ];
     }
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns the stored public API key value depending on testMode.
@@ -233,14 +215,13 @@ class Settings extends Model
      */
     public function isConfigured(): bool
     {
-        if ($this->testMode)
-        {
-            return $this->_hasNonEmptyEnvValue('publicTestApiKey') &&
-                $this->_hasNonEmptyEnvValue('secretTestApiKey');
+        if ($this->testMode) {
+            return $this->hasNonEmptyEnvValue('publicTestApiKey') &&
+                $this->hasNonEmptyEnvValue('secretTestApiKey');
         }
 
-        return $this->_hasNonEmptyEnvValue('publicApiKey') &&
-            $this->_hasNonEmptyEnvValue('secretApiKey');
+        return $this->hasNonEmptyEnvValue('publicApiKey') &&
+            $this->hasNonEmptyEnvValue('secretApiKey');
     }
 
     /**
@@ -266,15 +247,12 @@ class Settings extends Model
     {
         $validates = parent::validate($attributeNames, $clearErrors);
 
-        if ($this->_hasEnabledProviders())
-        {
-            if ( ! $this->validateProviderSettings())
-            {
+        if ($this->hasEnabledProviders()) {
+            if (! $this->validateProviderSettings()) {
                 $validates = false;
             }
 
-            if ( ! $this->validateShipFrom())
-            {
+            if (! $this->validateShipFrom()) {
                 $validates = false;
             }
         }
@@ -289,8 +267,7 @@ class Settings extends Model
      */
     public function validateShipFrom(): bool
     {
-        if ($this->_hasEnabledProviders() && ! $this->getShipFrom()->validate())
-        {
+        if ($this->hasEnabledProviders() && ! $this->getShipFrom()->validate()) {
             $this->addError('shipFrom', 'Please enter required Ship From details.');
             return false;
         }
@@ -308,14 +285,10 @@ class Settings extends Model
     {
         $request = Craft::$app->getRequest();
 
-        if ($this->_hasEnabledProviders())
-        {
-            foreach ($this->getProviders() as $provider)
-            {
-                if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled'])
-                {
-                    if (! $provider->getSettings()->validate())
-                    {
+        if ($this->hasEnabledProviders()) {
+            foreach ($this->getProviders() as $provider) {
+                if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled']) {
+                    if (! $provider->getSettings()->validate()) {
                         $this->addError(
                             'providerSettings',
                             'Provider settings are missing.'
@@ -338,7 +311,7 @@ class Settings extends Model
      */
     public function beforeValidate(): bool
     {
-        $this->_getNotificationEmailsFromTable();
+        $this->getNotificationEmailsFromTable();
         return parent::beforeValidate();
     }
 
@@ -353,13 +326,11 @@ class Settings extends Model
     {
         $rows = [];
 
-        if (empty($this->notificationEmails))
-        {
+        if (empty($this->notificationEmails)) {
             return $rows;
         }
 
-        foreach ($this->notificationEmails as $email)
-        {
+        foreach ($this->notificationEmails as $email) {
             $rows[] = [
                 0 => $email,
             ];
@@ -375,8 +346,7 @@ class Settings extends Model
      */
     public function getShipFrom()
     {
-        if ( ! empty($this->shipFromAddress))
-        {
+        if (! empty($this->shipFromAddress)) {
             $this->setShipFrom($this->shipFromAddress);
         }
 
@@ -402,8 +372,7 @@ class Settings extends Model
      */
     public function getDefaultCurrency(): string
     {
-        if ( ! empty($this->defaultCurrency))
-        {
+        if (! empty($this->defaultCurrency)) {
             return $this->defaultCurrency;
         }
 
@@ -417,35 +386,24 @@ class Settings extends Model
      */
     public function getDefaultCurrencySymbol(): string
     {
-        if (
-            $this->getDefaultCurrency() === self::CURRENCY_USD ||
-            $this->getDefaultCurrency() === self::CURRENCY_CAD
-        )
-        {
-            return '$';
+        switch ($this->getDefaultCurrency()) {
+            case self::CURRENCY_USD:
+            case self::CURRENCY_CAD:
+                return '$';
+            case self::CURRENCY_EUR:
+                return '€';
+            case self::CURRENCY_GBP:
+                return '£';
+            case self::CURRENCY_CHF:
+                return 'CHF';
+            default:
+                return '';
         }
-
-        if ($this->getDefaultCurrency() === self::CURRENCY_EUR)
-        {
-            return '€';
-        }
-
-        if ($this->getDefaultCurrency() === self::CURRENCY_GBP)
-        {
-            return '£';
-        }
-
-        if ($this->getDefaultCurrency() === self::CURRENCY_CHF)
-        {
-            return 'CHF';
-        }
-
-        return '';
     }
 
     /**
      * Sets the array of enabled currencies to the supplied value, since we
-     * don't yet support setting multiple currencies.
+     * don’t yet support setting multiple currencies.
      *
      * @param $value
      * @return array
@@ -480,13 +438,12 @@ class Settings extends Model
      * @param $property
      * @return bool
      */
-    private function _hasNonEmptyEnvValue($property): bool
+    private function hasNonEmptyEnvValue($property): bool
     {
         // value stored on the model
         $settingValue = $this->{$property};
 
-        if (empty($settingValue))
-        {
+        if (empty($settingValue)) {
             // null or false or empty string
             return false;
         }
@@ -497,8 +454,7 @@ class Settings extends Model
         // first character is `$`
         $isEnvVar = $settingValue[0] === '$';
 
-        if ($isAlias || $isEnvVar)
-        {
+        if ($isAlias || $isEnvVar) {
             // have Craft parse aliases and environment variables
             $parsedSettingValue = VersionHelper::isCraft31() ?
                 Craft::parseEnv($settingValue) :
@@ -507,8 +463,7 @@ class Settings extends Model
             // does the stored setting get expanded?
             $parses = $settingValue !== $parsedSettingValue;
 
-            if ( ! $parses || empty($parsedSettingValue))
-            {
+            if (! $parses || empty($parsedSettingValue)) {
                 /**
                  * If it parsed to an empty value or is just
                  * an unparsed variable, don't consider that
@@ -525,18 +480,15 @@ class Settings extends Model
      * Takes email addresses posted from a table input and formats them into a
      * clean, one-dimensional array.
      */
-    private function _getNotificationEmailsFromTable()
+    private function getNotificationEmailsFromTable()
     {
-        if (
-            is_array($this->notificationEmails) &&
+        if (is_array($this->notificationEmails) &&
             count($this->notificationEmails) &&
             is_array($this->notificationEmails[0])
-        )
-        {
+        ) {
             $arrayFromTableData = [];
 
-            foreach ($this->notificationEmails as $row)
-            {
+            foreach ($this->notificationEmails as $row) {
                 $arrayFromTableData[] = trim($row[0]);
             }
 
@@ -549,16 +501,13 @@ class Settings extends Model
      *
      * @return bool
      */
-    private function _hasEnabledProviders(): bool
+    private function hasEnabledProviders(): bool
     {
         $request = Craft::$app->getRequest();
 
-        if ($providers = $request->getBodyParam('providers'))
-        {
-            foreach ($providers as $handle => $settings)
-            {
-                if ($settings['enabled'])
-                {
+        if ($providers = $request->getBodyParam('providers')) {
+            foreach ($providers as $handle => $settings) {
+                if ($settings['enabled']) {
                     return true;
                 }
             }

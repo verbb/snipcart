@@ -10,7 +10,7 @@ namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\models\Subscription;
+use workingconcept\snipcart\models\snipcart\Subscription;
 
 /**
  * Class Subscriptions
@@ -21,9 +21,6 @@ use workingconcept\snipcart\models\Subscription;
  */
 class Subscriptions extends \craft\base\Component
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * Lists subscriptions.
      *
@@ -75,8 +72,7 @@ class Subscriptions extends \craft\base\Component
         if ($subscriptionData = Snipcart::$plugin->api->get(sprintf(
             'subscriptions/%s',
             $subscriptionId
-        )))
-        {
+        ))) {
             return ModelHelper::safePopulateModel(
                 (array)$subscriptionData,
                 Subscription::class
@@ -130,5 +126,4 @@ class Subscriptions extends \craft\base\Component
             sprintf('subscriptions/%s/resume', $subscriptionId)
         );
     }
-
 }

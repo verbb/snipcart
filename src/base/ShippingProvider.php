@@ -8,8 +8,9 @@
 
 namespace workingconcept\snipcart\base;
 
-use workingconcept\snipcart\models\Order as SnipcartOrder;
-use workingconcept\snipcart\models\Package;
+use craft\helpers\Json;
+use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
+use workingconcept\snipcart\models\snipcart\Package;
 use craft\base\Component;
 use workingconcept\snipcart\Snipcart;
 use GuzzleHttp\Client;
@@ -23,16 +24,12 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      * @var Model|bool|null Settings specifically for this provider.
      * @see getSettings()
      */
-    private $_settingsModel;
+    private $settingsModel;
 
     /**
      * @var Client Guzzle client instance.
      */
     protected $client;
-
-
-    // Static Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -50,29 +47,24 @@ class ShippingProvider extends Component implements ShippingProviderInterface
         return '';
     }
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public function getSettings()
     {
-        if ($this->_settingsModel === null && $this->createSettingsModel())
-        {
+        if ($this->settingsModel === null && $this->createSettingsModel()) {
             /**
              * Initialize settings model.
              */
-            $this->_settingsModel = $this->createSettingsModel();
+            $this->settingsModel = $this->createSettingsModel();
 
             $pluginSettings   = Snipcart::$plugin->getSettings();
             $providerSettings = $pluginSettings->providerSettings[static::refHandle()] ?? [];
 
-            $this->_settingsModel->setAttributes($providerSettings);
+            $this->settingsModel->setAttributes($providerSettings);
         }
 
-        return $this->_settingsModel;
+        return $this->settingsModel;
     }
 
     /**
@@ -80,8 +72,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function setSettings(array $settings)
     {
-        if ($this->getSettings())
-        {
+        if ($this->getSettings()) {
             $this->getSettings()->setAttributes($settings, false);
         }
     }
@@ -115,7 +106,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function getClient(): Client
     {
-        return new Client();
+        return Craft::createGuzzleClient();
     }
 
     /**
@@ -147,20 +138,16 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function get(string $endpoint, array $params = [])
     {
-        if (count($params) > 0)
-        {
+        if (count($params) > 0) {
             $endpoint .= '?' . http_build_query($params);
         }
 
-        try
-        {
+        try {
             $response = $this->getClient()->get($endpoint);
             return $this->prepResponseData(
                 $response->getBody()
             );
-        }
-        catch(RequestException $exception)
-        {
+        } catch (RequestException $exception) {
             $this->handleRequestException($exception, $endpoint);
             return null;
         }
@@ -171,23 +158,20 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function post(string $endpoint, array $data = [])
     {
-        try
-        {
+        try {
             $response = $this->getClient()->post($endpoint, [
                 \GuzzleHttp\RequestOptions::JSON => $data
             ]);
 
             return $this->prepResponseData($response->getBody());
-        }
-        catch (RequestException $exception)
-        {
+        } catch (RequestException $exception) {
             $this->handleRequestException($exception, $endpoint);
             return null;
         }
     }
 
     /**
-     * Extract the value from a specific custom field, if it exists.
+     * Extracts the value from a specific custom field, if it exists.
      *
      * @param array|null $customFields Custom fields data from Snipcart,
      *                                 an array of objects
@@ -199,17 +183,13 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function getValueFromCustomFields($customFields, $fieldName, $emptyAsNull = false)
     {
-        if ( ! is_array($customFields))
-        {
+        if (! is_array($customFields)) {
             return null;
         }
 
-        foreach ($customFields as $customField)
-        {
-            if ($customField->name === $fieldName)
-            {
-                if ($emptyAsNull && empty($customField->value))
-                {
+        foreach ($customFields as $customField) {
+            if ($customField->name === $fieldName) {
+                if ($emptyAsNull && empty($customField->value)) {
                     return null;
                 }
 
@@ -221,7 +201,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     }
 
     /**
-     * Take the raw response body and give it back as data that's ready to use.
+     * Takes the raw response body and give it back as data that's ready to use.
      *
      * @param mixed  $body The raw response from the REST API.
      * @return mixed Appropriate PHP type, or null if json cannot be decoded
@@ -229,11 +209,11 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     public function prepResponseData($body)
     {
-        return json_decode($body, false);
+        return Json::decode($body, false);
     }
 
     /**
-     * Handle a failed request.
+     * Handles a failed request.
      *
      * @param RequestException  $exception  the exception that was thrown
      * @param string            $endpoint   the endpoint that was queried
@@ -243,8 +223,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
     public function handleRequestException(
         $exception,
         string $endpoint
-    )
-    {
+    ) {
         /**
          * Get the status code, which should be 200 or 201 if things went well.
          */
@@ -256,8 +235,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
          */
         $reason = $exception->getResponse()->getBody() ?? null;
 
-        if ($statusCode !== null && $reason !== null)
-        {
+        if ($statusCode !== null && $reason !== null) {
             // return code and message
             Craft::warning(sprintf(
                 '%s API responded with %d: %s',
@@ -265,9 +243,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
                 $statusCode,
                 $reason
             ), 'snipcart');
-        }
-        else
-        {
+        } else {
             // report mystery
             Craft::warning(sprintf(
                 '%s API request to %s failed.',
@@ -278,10 +254,6 @@ class ShippingProvider extends Component implements ShippingProviderInterface
 
         return null;
     }
-
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * Creates and returns the model used to store the plugin’s settings.

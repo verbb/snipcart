@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\Subscription;
+use workingconcept\snipcart\models\snipcart\Subscription;
 use yii\base\Event;
 
 /**
@@ -19,9 +19,6 @@ use yii\base\Event;
  */
 class SubscriptionEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Subscription
      */

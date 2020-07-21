@@ -14,16 +14,16 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class Product extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
-     * @var int|null The system generated identifier for the product. This is a read-only field.
+     * @var int|null The system generated identifier for the product.
+     *               This is a read-only field.
      */
     public $productId;
 
     /**
-     * @var string|null Stock keeping Unit. A user-defined value for a product to help identify the product. It is suggested that each product should contain a unique SKU.
+     * @var string|null Stock keeping Unit. A user-defined value for a product
+     *                  to help identify the product. It is suggested that each
+     *                  product should contain a unique SKU.
      */
     public $sku;
 
@@ -43,17 +43,23 @@ class Product extends \craft\base\Model
     public $defaultCost;
 
     /**
-     * @var int|null The length of the product. Unit of measurement is UI dependent. No conversions will be made from one UOM to another. See knowledge base for more details.
+     * @var int|null The length of the product. Unit of measurement is UI
+     *               dependent. No conversions will be made from one UOM
+     *               to another. See knowledge base for more details.
      */
     public $length;
 
     /**
-     * @var int|null The width of the product. Unit of measurement is UI dependent. No conversions will be made from one UOM to another. See knowledge base for more details.
+     * @var int|null The width of the product. Unit of measurement is UI
+     *               dependent. No conversions will be made from one UOM
+     *               to another. See knowledge base for more details.
      */
     public $width;
 
     /**
-     * @var int|null The height of the product. Unit of measurement is UI dependent. No conversions will be made from one UOM to another. See knowledge base for more details.
+     * @var int|null The height of the product. Unit of measurement is UI
+     *               dependent. No conversions will be made from one UOM
+     *               to another. See knowledge base for more details.
      */
     public $height;
 
@@ -68,17 +74,20 @@ class Product extends \craft\base\Model
     public $internalNotes;
 
     /**
-     * @var string|null Stock keeping Unit for the fulfillment of that product by a 3rd party.
+     * @var string|null Stock keeping Unit for the fulfillment of that product
+     *                  by a 3rd party.
      */
     public $fulfillmentSku;
 
     /**
-     * @var \DateTime|null The timestamp the product record was created in ShipStation's database. Read-Only.
+     * @var \DateTime|null The timestamp the product record was created in
+     *                     ShipStation's database. Read-Only.
      */
     public $createDate;
 
     /**
-     * @var \DateTime|null The timestamp the product record was modified in ShipStation. Read-Only.
+     * @var \DateTime|null The timestamp the product record was modified
+     *                     in ShipStation. Read-Only.
      */
     public $modifyDate;
 
@@ -88,17 +97,21 @@ class Product extends \craft\base\Model
     public $active;
 
     /**
-     * @var ProductCategory|null The Product Category used to organize and report on similar products. See knowledge base for more information on Product Categories.
+     * @var ProductCategory|null The Product Category used to organize and
+     *                           report on similar products. See knowledge base
+     *                           for more information on Product Categories.
      */
     public $productCategory;
 
     /**
-     * @var string|null Specifies the product type. See knowledge base for more information on Product Types.
+     * @var string|null Specifies the product type. See knowledge base for more
+     *                  information on Product Types.
      */
     public $productType;
 
     /**
-     * @var string|null The warehouse location associated with the product record.
+     * @var string|null The warehouse location associated with the
+     *                  product record.
      */
     public $warehouseLocation;
 
@@ -118,12 +131,14 @@ class Product extends \craft\base\Model
     public $defaultPackageCode;
 
     /**
-     * @var string|null The default international shipping carrier for this product.
+     * @var string|null The default international shipping carrier for
+     *                  this product.
      */
     public $defaultIntlCarrierCode;
 
     /**
-     * @var string|null The default international shipping service for this product.
+     * @var string|null The default international shipping service for
+     *                  this product.
      */
     public $defaultIntlServiceCode;
 
@@ -138,7 +153,8 @@ class Product extends \craft\base\Model
     public $defaultConfirmation;
 
     /**
-     * @var string|null The default international Confirmation type for this Product.
+     * @var string|null The default international Confirmation type for
+     *                  this Product.
      */
     public $defaultIntlConfirmation;
 
@@ -163,12 +179,15 @@ class Product extends \craft\base\Model
     public $customsCountryCode;
 
     /**
-     * @var bool|null If true, this product will not be included on international customs forms.
+     * @var bool|null If true, this product will not be included on
+     *                international customs forms.
      */
     public $noCustoms;
 
     /**
-     * @var ProductTag|null The Product Tag used to organize and visually identify products. See knowledge base for more information on Product Defaults and tags.
+     * @var ProductTag|null The Product Tag used to organize and visually
+     *                      identify products. See knowledge base for more
+     *                      information on Product Defaults and tags.
      */
     public $tags;
 

@@ -8,8 +8,8 @@
 
 namespace workingconcept\snipcart\events;
 
-use workingconcept\snipcart\models\Order;
-use workingconcept\snipcart\models\Tax;
+use workingconcept\snipcart\models\snipcart\Order;
+use workingconcept\snipcart\models\snipcart\Tax;
 use yii\base\Event;
 
 /**
@@ -20,9 +20,6 @@ use yii\base\Event;
  */
 class TaxesEvent extends Event
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var Order
      */

@@ -18,9 +18,6 @@ use craft\web\assets\cp\CpAsset;
  */
 class ChartAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */

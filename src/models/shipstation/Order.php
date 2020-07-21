@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\Order as SnipcartOrder;
+use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
 
 /**
  * ShipStation Order Model
@@ -25,9 +25,6 @@ use workingconcept\snipcart\models\Order as SnipcartOrder;
  */
 class Order extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     /**
      * Used for creating a new Order with the ShipStation API.
      */
@@ -37,10 +34,6 @@ class Order extends \craft\base\Model
     const STATUS_AWAITING_SHIPMENT = 'awaiting_shipment';
     const STATUS_ON_HOLD = 'on_hold';
     const STATUS_CANCELLED = 'cancelled';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var int|null Order ID (read-only)
@@ -247,10 +240,6 @@ class Order extends \craft\base\Model
      */
     public $labelMessages;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Gets the order’s billing address.
      *
@@ -270,8 +259,7 @@ class Order extends \craft\base\Model
      */
     public function setBillTo($address): Address
     {
-        if ( ! $address instanceof Address)
-        {
+        if (! $address instanceof Address) {
             $address = new Address($address);
         }
 
@@ -297,8 +285,7 @@ class Order extends \craft\base\Model
      */
     public function setShipTo($address): Address
     {
-        if ( ! $address instanceof Address)
-        {
+        if (! $address instanceof Address) {
             $address = new Address($address);
         }
 
@@ -312,8 +299,7 @@ class Order extends \craft\base\Model
      */
     public function getItems(): array
     {
-        if ($this->_items !== null)
-        {
+        if ($this->_items !== null) {
             return $this->_items;
         }
 
@@ -353,8 +339,7 @@ class Order extends \craft\base\Model
      */
     public function setWeight($weight)
     {
-        if ( ! $weight instanceof Weight)
-        {
+        if (! $weight instanceof Weight) {
             $weight = new Weight($weight);
         }
 
@@ -380,8 +365,7 @@ class Order extends \craft\base\Model
      */
     public function setDimensions($dimensions)
     {
-        if ( ! $dimensions instanceof Dimensions)
-        {
+        if (! $dimensions instanceof Dimensions) {
             $dimensions = new Dimensions($dimensions);
         }
 
@@ -407,8 +391,7 @@ class Order extends \craft\base\Model
      */
     public function setInsuranceOptions($insuranceOptions)
     {
-        if ( ! $insuranceOptions instanceof InsuranceOptions)
-        {
+        if (! $insuranceOptions instanceof InsuranceOptions) {
             $insuranceOptions = new InsuranceOptions($insuranceOptions);
         }
 
@@ -434,8 +417,7 @@ class Order extends \craft\base\Model
      */
     public function setInternationalOptions($internationalOptions)
     {
-        if ( ! $internationalOptions instanceof InternationalOptions)
-        {
+        if (! $internationalOptions instanceof InternationalOptions) {
             $internationalOptions = new InternationalOptions($internationalOptions);
         }
 
@@ -461,8 +443,7 @@ class Order extends \craft\base\Model
      */
     public function setAdvancedOptions($advancedOptions)
     {
-        if ( ! $advancedOptions instanceof AdvancedOptions)
-        {
+        if (! $advancedOptions instanceof AdvancedOptions) {
             $advancedOptions = new AdvancedOptions($advancedOptions);
         }
 
@@ -479,8 +460,7 @@ class Order extends \craft\base\Model
     {
         $items = [];
 
-        foreach ($order->items as $item)
-        {
+        foreach ($order->items as $item) {
             $items[] = OrderItem::populateFromSnipcartItem($item);
         }
 
@@ -543,9 +523,12 @@ class Order extends \craft\base\Model
     public function rules(): array
     {
         /**
-         * ShipStation uses the ISO 8601 combined format for dateTime stamps being submitted to and returned from the API.
+         * ShipStation uses the ISO 8601 combined format for dateTime stamps
+         * being submitted to and returned from the API.
          * `2016-11-29 23:59:59`
-         * The time zone represented in all API responses is PST/PDT. Similarly, ShipStation asks that you make all time zone conversions and submit any dateTime requests in PST/PDT.
+         * The time zone represented in all API responses is PST/PDT.
+         * Similarly, ShipStation asks that you make all time zone conversions
+         * and submit any dateTime requests in PST/PDT.
          */
         return [
             [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true],
@@ -563,7 +546,7 @@ class Order extends \craft\base\Model
     /**
      * @inheritdoc
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_NEW] = ['username'];
@@ -603,10 +586,8 @@ class Order extends \craft\base\Model
             'advancedOptions',
         ];
 
-        foreach ($removeIfNull as $removeKey)
-        {
-            if ($payload[$removeKey] === null)
-            {
+        foreach ($removeIfNull as $removeKey) {
+            if ($payload[$removeKey] === null) {
                 unset($payload[$removeKey]);
             }
         }
@@ -619,8 +600,7 @@ class Order extends \craft\base\Model
             'orderTotal', // read-only field
         ];
 
-        foreach ($remove as $removeKey)
-        {
+        foreach ($remove as $removeKey) {
             unset($payload[$removeKey]);
         }
 
@@ -631,10 +611,8 @@ class Order extends \craft\base\Model
             'modifyDate'
         ];
 
-        foreach ($payload['items'] as &$item)
-        {
-            foreach ($removeFromItems as $removeKey)
-            {
+        foreach ($payload['items'] as &$item) {
+            foreach ($removeFromItems as $removeKey) {
                 unset($item[$removeKey]);
             }
 

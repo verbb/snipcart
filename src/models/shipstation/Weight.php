@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\Item as SnipcartItem;
+use workingconcept\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
  * ShipStation Weight Model
@@ -17,16 +17,9 @@ use workingconcept\snipcart\models\Item as SnipcartItem;
 
 class Weight extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const UNIT_POUNDS = 'pounds';
     const UNIT_OUNCES = 'ounces';
     const UNIT_GRAMS  = 'grams';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var int Weight value.
@@ -42,10 +35,6 @@ class Weight extends \craft\base\Model
      * @var int|null (read only) A numeric value that is equivalent to the above units field.
      */
     public $WeightUnits;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @param SnipcartItem|\stdClass $item

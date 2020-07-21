@@ -14,15 +14,12 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class CustomsItem extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
-     * @var string Read Only field. When this field is not submitted in the Order/CreateOrder call, it will create a new customs line. If this field is included when submitting an order through Order/CreateOrder, then it will look for the corresponding customs line and update any values.
+     * @var string Read Only field. When this field is not submitted in the
+     *             Order/CreateOrder call, it will create a new customs line.
+     *             If this field is included when submitting an order through
+     *             Order/CreateOrder, then it will look for the corresponding
+     *             customs line and update any values.
      */
     public $customsItemId;
 
@@ -50,10 +47,6 @@ class CustomsItem extends \craft\base\Model
      * @var string The 2-character ISO country code where the item originated
      */
     public $countryOfOrigin;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

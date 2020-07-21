@@ -14,15 +14,11 @@ namespace workingconcept\snipcart\models\shipstation;
  */
 class AdvancedOptions extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
-
-    // Properties
-    // =========================================================================
-
     /**
-     * @var int|null Specifies the warehouse where to the order is to ship from. If the order was fulfilled using a fill provider, no warehouse is attached to these orders and will result in a null value being returned. *Please see note below
+     * @var int|null Specifies the warehouse where to the order is to ship from.
+     *               If the order was fulfilled using a fill provider,
+     *               no warehouse is attached to these orders and will result
+     *               in a null value being returned.
      */
     public $warehouseId;
 
@@ -32,7 +28,8 @@ class AdvancedOptions extends \craft\base\Model
     public $nonMachinable;
 
     /**
-     * @var bool|null Specifies whether the order is to be delivered on a Saturday.
+     * @var bool|null Specifies whether the order is to be delivered on
+     *                a Saturday.
      */
     public $saturdayDelivery;
 
@@ -42,47 +39,59 @@ class AdvancedOptions extends \craft\base\Model
     public $containsAlcohol;
 
     /**
-     * @var int|null ID of store that is associated with the order. If not specified in the CreateOrder call either to create or update an order, ShipStation will default to the first manual store on the account.
+     * @var int|null ID of store that is associated with the order. If not
+     *               specified in the CreateOrder call either to create
+     *               or update an order, ShipStation will default to the first
+     *               manual store on the account.
      */
     public $storeId;
 
     /**
-     * @var string|null Field that allows for custom data to be associated with an order. *Please see note below
+     * @var string|null Field that allows for custom data
+     *                  to be associated with an order.
      */
     public $customField1;
 
     /**
-     * @var string|null Field that allows for custom data to be associated with an order. *Please see note below
+     * @var string|null Field that allows for custom data
+     *                  to be associated with an order.
      */
     public $customField2;
 
     /**
-     * @var string|null Field that allows for custom data to be associated with an order. *Please see note below
+     * @var string|null Field that allows for custom data
+     *                  to be associated with an order.
      */
     public $customField3;
 
     /**
-     * @var string|null Identifies the original source/marketplace of the order. *Please see note below
+     * @var string|null Identifies the original source/marketplace of the order.
      */
     public $source;
 
     /**
-     * @var bool Read-Only: Returns whether or not an order has been merged or split with another order. Read Only
+     * @var bool Read-Only: Returns whether or not an order has been merged or
+     *           split with another order.
      */
     public $mergedOrSplit;
 
     /**
-     * @var int[] Read-Only: Array of orderIds. Each orderId identifies an order that was merged with the associated order. Read Only
+     * @var int[] Read-Only: Array of orderIds. Each orderId identifies an order
+     *            that was merged with the associated order.
      */
     public $mergedIds;
 
     /**
-     * @var int Read-Only: If an order has been split, it will return the Parent ID of the order with which it has been split. If the order has not been split, this field will return null. Read Only
+     * @var int Read-Only: If an order has been split, it will return the
+     *          Parent ID of the order with which it has been split.
+     *          If the order has not been split, this field will return null.
      */
     public $parentId;
 
     /**
-     * @var string|null Identifies which party to bill. Possible values: "my_account", **"my_other_account", "recipient", "third_party".
+     * @var string|null Identifies which party to bill. Possible values:
+     *                  "my_account", **"my_other_account", "recipient",
+     *                  "third_party".
      */
     public $billToParty;
 
@@ -102,19 +111,11 @@ class AdvancedOptions extends \craft\base\Model
     public $billToCountryCode;
 
     /**
-     * @var string|null When using my_other_account billToParty value, the shippingProviderId value associated with the desired account.***
+     * @var string|null When using my_other_account billToParty value,
+     *                  the shippingProviderId value associated with
+     *                  the desired account.
      */
     public $billToMyOtherAccount;
-
-    /**
-     * *Can only be modified via the CreateOrder call. CreateLabelForOrder calls will default these fields to the values set prior to the call.
-     * **Used when wanting to charge a secondary account for the same carrier.
-     * ***Make List Carriers call to obtain shippingProviderId values.
-     */
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc

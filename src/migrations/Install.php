@@ -8,7 +8,6 @@
 
 namespace workingconcept\snipcart\migrations;
 
-use Craft;
 use craft\db\Migration;
 use workingconcept\snipcart\models\ProductDetails;
 use workingconcept\snipcart\controllers\WebhooksController;
@@ -18,41 +17,30 @@ use workingconcept\snipcart\controllers\WebhooksController;
  */
 class Install extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
     public $webhookLogTable     = '{{%snipcart_webhook_log}}';
     public $shippingQuotesTable = '{{%snipcart_shipping_quotes}}';
     public $productDetailsTable = '{{%snipcart_product_details}}';
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
      */
     public function safeUp()
     {
-        $this->_createTables();
+        $this->createTables();
     }
 
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
-
+        echo "Install cannot be reverted.\n";
+        return false;
     }
 
-
-    // Private Methods
-    // =========================================================================
-
-    private function _createTables()
+    private function createTables()
     {
-        if ( ! $this->getDb()->tableExists($this->webhookLogTable))
-        {
+        if (! $this->getDb()->tableExists($this->webhookLogTable)) {
             $typeValues = array_keys(WebhooksController::WEBHOOK_EVENT_MAP);
 
             $this->createTable($this->webhookLogTable, [
@@ -70,8 +58,7 @@ class Install extends Migration
             $this->addForeignKey(null, $this->webhookLogTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
-        if ( ! $this->getDb()->tableExists($this->shippingQuotesTable))
-        {
+        if (! $this->getDb()->tableExists($this->shippingQuotesTable)) {
             $this->createTable($this->shippingQuotesTable, [
                 'id'          => $this->primaryKey(),
                 'siteId'      => $this->integer(),
@@ -86,8 +73,7 @@ class Install extends Migration
             $this->addForeignKey(null, $this->shippingQuotesTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
-        if ( ! $this->getDb()->tableExists($this->productDetailsTable))
-        {
+        if (! $this->getDb()->tableExists($this->productDetailsTable)) {
             $weightUnitOptions = array_keys(
                 ProductDetails::getWeightUnitOptions()
             );

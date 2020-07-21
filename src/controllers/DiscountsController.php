@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use workingconcept\snipcart\models\Discount;
+use workingconcept\snipcart\models\snipcart\Discount;
 use workingconcept\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
 use Craft;
@@ -16,13 +16,15 @@ use Craft;
 class DiscountsController extends \craft\web\Controller
 {
     /**
-     * Display discounts, which don't seem to be paginated.
+     * Displays discounts, which don’t come paginated.
+     *
      * @return \yii\web\Response
      * @throws
      */
     public function actionIndex(): \yii\web\Response
     {
-        return $this->renderTemplate('snipcart/cp/discounts/index',
+        return $this->renderTemplate(
+            'snipcart/cp/discounts/index',
             [
                 'discounts'  => Snipcart::$plugin->discounts->listDiscounts()
             ]
@@ -30,14 +32,16 @@ class DiscountsController extends \craft\web\Controller
     }
 
     /**
-     * Display discount detail.
+     * Displays discount detail.
+     *
      * @param string $discountId
      * @return \yii\web\Response
      * @throws
      */
     public function actionDiscountDetail(string $discountId): \yii\web\Response
     {
-        return $this->renderTemplate('snipcart/cp/discounts/detail',
+        return $this->renderTemplate(
+            'snipcart/cp/discounts/detail',
             [
                 'discount' => Snipcart::$plugin->discounts->getDiscount($discountId)
             ]
@@ -45,7 +49,8 @@ class DiscountsController extends \craft\web\Controller
     }
 
     /**
-     * Display new discount form.
+     * Displays new discount form.
+     *
      * @return \yii\web\Response
      */
     public function actionNew(): \yii\web\Response
@@ -54,7 +59,8 @@ class DiscountsController extends \craft\web\Controller
     }
 
     /**
-     * Save a new discount with the Snipcart API.
+     * Saves a new discount.
+     *
      * @return \yii\web\Response
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
@@ -67,33 +73,20 @@ class DiscountsController extends \craft\web\Controller
 
         unset($params['CRAFT_CSRF_TOKEN'], $params['action']);
 
-        if ( ! $discount = new Discount($params))
-        {
+        if (! $discount = new Discount($params)) {
             Craft::$app->getUrlManager()->setRouteParams([
                 'variables' => ['discount' => $discount]
             ]);
-        }
-        else
-        {
-            if ( ! $discount->validate())
-            {
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'variables' => ['discount' => $discount]
-                ]);
+        } elseif (! $discount->validate()) {
+            Craft::$app->getUrlManager()->setRouteParams([
+                'variables' => ['discount' => $discount]
+            ]);
 
-                Craft::$app->getSession()->setError('Invalid Discount details.');
-            }
-            else
-            {
-                if (Snipcart::$plugin->discounts->createDiscount($discount))
-                {
-                    Craft::$app->getSession()->setNotice('Discount saved.');
-                }
-                else
-                {
-                    Craft::$app->getSession()->setError('Failed to save Discount.');
-                }
-            }
+            Craft::$app->getSession()->setError('Invalid Discount details.');
+        } elseif (Snipcart::$plugin->discounts->createDiscount($discount)) {
+            Craft::$app->getSession()->setNotice('Discount saved.');
+        } else {
+            Craft::$app->getSession()->setError('Failed to save Discount.');
         }
 
         return $this->redirect(UrlHelper::cpUrl('snipcart/discounts'));
@@ -108,6 +101,8 @@ class DiscountsController extends \craft\web\Controller
     }
 
     /**
+     * Deletes a discount.
+     *
      * @throws \yii\web\BadRequestHttpException
      * @throws \craft\errors\MissingComponentException
      */

@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 use workingconcept\snipcart\behaviors\BillingAddressBehavior;
 use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
@@ -58,9 +58,6 @@ class Order extends \craft\base\Model
     const STATUS_DELIVERED = 'Delivered';
     const STATUS_PENDING = 'Pending';
     const STATUS_CANCELLED = 'Cancelled';
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string
@@ -412,10 +409,6 @@ class Order extends \craft\base\Model
      */
     public $totalPriceWithoutDiscountsAndTaxes;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @return array
      */
@@ -447,10 +440,8 @@ class Order extends \craft\base\Model
      */
     public function setItems($items)
     {
-        foreach ($items as &$item)
-        {
-            if (! $item instanceof Item)
-            {
+        foreach ($items as &$item) {
+            if (! $item instanceof Item) {
                 $itemData = ModelHelper::stripUnknownProperties(
                     $item,
                     Item::class
@@ -521,8 +512,7 @@ class Order extends \craft\base\Model
      */
     public function setBillingAddress($address): Address
     {
-        if ( ! $address instanceof Address)
-        {
+        if (! $address instanceof Address) {
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
@@ -540,8 +530,7 @@ class Order extends \craft\base\Model
      */
     public function setShippingAddress($address): Address
     {
-        if ( ! $address instanceof Address)
-        {
+        if (! $address instanceof Address) {
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
@@ -555,6 +544,7 @@ class Order extends \craft\base\Model
 
     /**
      * Returns the Craft control panel URL for the detail page.
+     *
      * @return string
      */
     public function getCpUrl(): string
@@ -569,8 +559,7 @@ class Order extends \craft\base\Model
      */
     public function getDashboardUrl()
     {
-        if (! isset($this->token))
-        {
+        if (! isset($this->token)) {
             return null;
         }
 
@@ -585,10 +574,8 @@ class Order extends \craft\base\Model
      */
     public function hasShippableItems(): bool
     {
-        foreach ($this->items as $item)
-        {
-            if ($item->shippable)
-            {
+        foreach ($this->items as $item) {
+            if ($item->shippable) {
                 return true;
             }
         }

@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\Address as SnipcartAddress;
+use workingconcept\snipcart\models\snipcart\Address as SnipcartAddress;
 
 /**
  * ShipStation Address Model
@@ -16,17 +16,10 @@ use workingconcept\snipcart\models\Address as SnipcartAddress;
  */
 class Address extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const ADDRESS_NOT_VALIDATED = 'Address not yet validated';
     const ADDRESS_VALIDATED = 'Address validated successfully';
     const ADDRESS_VALIDATION_WARNING = 'Address validation warning';
     const ADDRESS_VALIDATION_FAILED = 'Address validation failed';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string|null Name of person.
@@ -84,13 +77,10 @@ class Address extends \craft\base\Model
     public $residential;
 
     /**
-     * @var string|null Identifies whether the address has been verified by ShipStation (read only). See class constants.
+     * @var string|null Identifies whether the address has been verified
+     *                  by ShipStation (read only). See class constants.
      */
     public $addressVerified;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @param SnipcartAddress $address

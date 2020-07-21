@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\Item as SnipcartItem;
+use workingconcept\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
  * ShipStation Order Item Model
@@ -21,9 +21,6 @@ use workingconcept\snipcart\models\Item as SnipcartItem;
  */
 class OrderItem extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var int|null The system generated identifier for the OrderItem. This is a read-only field.
      */
@@ -117,10 +114,6 @@ class OrderItem extends \craft\base\Model
      */
     public $modifyDate;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * Returns the item’s weight.
      *
@@ -139,8 +132,7 @@ class OrderItem extends \craft\base\Model
      */
     public function setWeight($weight)
     {
-        if (is_array($weight))
-        {
+        if (is_array($weight)) {
             $weight = new Weight($weight);
         }
 
@@ -154,8 +146,7 @@ class OrderItem extends \craft\base\Model
      */
     public function getOptions(): array
     {
-        if ($this->_options !== null)
-        {
+        if ($this->_options !== null) {
             return $this->_options;
         }
 
@@ -183,12 +174,10 @@ class OrderItem extends \craft\base\Model
      */
     public static function populateFromSnipcartItem($item): OrderItem
     {
-        if ( ! empty($item->customFields))
-        {
+        if (! empty($item->customFields)) {
             $itemOptions = [];
 
-            foreach ($item->customFields as $customField)
-            {
+            foreach ($item->customFields as $customField) {
                 $itemOptions[] = ItemOption::populateFromSnipcartCustomField($customField);
             }
         }
@@ -214,7 +203,7 @@ class OrderItem extends \craft\base\Model
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         $fields = array_keys(\Yii::getObjectVars($this));
         $fields = array_merge($fields, ['weight', 'options']);

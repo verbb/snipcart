@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace workingconcept\snipcart\models\snipcart;
 
 /**
  * Snipcart Customer model
@@ -14,15 +14,8 @@ namespace workingconcept\snipcart\models;
  */
 class Customer extends \craft\base\Model
 {
-    // Constants
-    // =========================================================================
-
     const STATUS_CONFIRMED = 'Confirmed';
     const STATUS_UNCONFIRMED = 'Unconfirmed';
-
-
-    // Properties
-    // =========================================================================
 
     /**
      * @var string
@@ -147,7 +140,9 @@ class Customer extends \craft\base\Model
     public $sessionToken;
 
     /**
-     * @var string The status of your customers, Confirmed means that the customers have created an account and Unconfirmed are those who checked out as guests.
+     * @var string The status of your customers, Confirmed means that the
+     *             customers have created an account and Unconfirmed are those
+     *             who checked out as guests.
      */
     public $status;
 
@@ -185,10 +180,6 @@ class Customer extends \craft\base\Model
      * @var
      */
     public $shippingAddress;
-    
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Returns the Craft control panel URL for the detail page.
@@ -206,8 +197,7 @@ class Customer extends \craft\base\Model
      */
     public function getDashboardUrl()
     {
-        if (! isset($this->id))
-        {
+        if (! isset($this->id)) {
             return null;
         }
 

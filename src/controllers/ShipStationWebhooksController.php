@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
-use workingconcept\snipcart\Snipcart;
+use craft\helpers\Json;
 
 use Craft;
 use craft\web\Controller;
@@ -16,9 +16,6 @@ use yii\web\Response;
 
 class ShipStationWebhooksController extends Controller
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var bool Disable CSRF here since we're expecting and validating outside posts.
      */
@@ -30,30 +27,18 @@ class ShipStationWebhooksController extends Controller
     protected $allowAnonymous = true;
 
     /**
-     * @var
-     */
-    protected $settings;
-
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Handle the $_POST data that ShipStation sent, which is a raw body of JSON.
+     * Handles the $_POST data that ShipStation sent, which is a raw body of JSON.
      */
     public function actionHandle()
     {
         $this->requirePostRequest();
-        $this->settings = Snipcart::$plugin->getSettings();
+        $body = Json::decode(Craft::$app->request->getRawBody(), false);
 
-        $body = json_decode(Craft::$app->request->getRawBody());
-
-        if ($body === null || ! isset($body->resource_type))
-        {
+        if ($body === null || ! isset($body->resource_type)) {
             /**
-             * Every post should have an eventName property, so we've got empty data or a bad format.
+             * Every post should have an eventName property, so we've got
+             * empty data or a bad format.
              */
-
             return $this->badResponse([
                 'reason' => 'NULL response body or missing resource_type.'
             ]);
@@ -62,8 +47,7 @@ class ShipStationWebhooksController extends Controller
         /**
          * Respond to different types of Snipcart events—in this case only one.
          */
-        switch ($body->resource_type)
-        {
+        switch ($body->resource_type) {
             case 'ORDER_NOTIFY':
                 return $this->handleOrderNotifyEvent($body);
             case 'ITEM_ORDER_NOTIFY':
@@ -77,15 +61,10 @@ class ShipStationWebhooksController extends Controller
         }
     }
 
-
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Respond to an order notification. (Currently, we don't.)
+     * Responds to an order notification. (Currently, we don’t.)
      *
-     * @param $body Object sent by ShipStation.
-     *
+     * @param $body Object ShipStation webhook payload
      * @return Response
      */
     private function handleOrderNotifyEvent($body): Response
@@ -94,10 +73,9 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Respond to an *item* order notification. (Currently, we don't.)
+     * Responds to an *item* order notification. (Currently, we don’t.)
      *
-     * @param $body Object sent by ShipStation.
-     *
+     * @param $body Object ShipStation webhook payload
      * @return Response
      */
     private function handleItemOrderNotifyEvent($body): Response
@@ -106,10 +84,9 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Respond to a shipment notification. (Currently, we don't.)
+     * Responds to a shipment notification. (Currently, we don’t.)
      *
-     * @param $body Object sent by ShipStation.
-     *
+     * @param $body Object ShipStation webhook payload
      * @return Response
      */
     private function handleShipNotifyEvent($body): Response
@@ -120,10 +97,9 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Respond to an *item* shipment notification. (Currently, we don't.)
+     * Responds to an *item* shipment notification. (Currently, we don’t.)
      *
-     * @param $body Object sent by ShipStation.
-     *
+     * @param $body Object ShipStation webhook payload
      * @return Response
      */
     private function handleItemShipNotifyEvent($body): Response
@@ -132,10 +108,9 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Output a 400 response with an optional JSON error array.
+     * Outputs a 400 response with an optional JSON error array.
      *
      * @param  array  $errors Array of errors that explain the 400 response
-     *
      * @return Response;
      */
     private function badResponse(array $errors): Response
@@ -154,7 +129,8 @@ class ShipStationWebhooksController extends Controller
     }
 
     /**
-     * Send back a 200 response so Snipcart knows we're okay but not handling the event.
+     * Sends back a 200 response so ShipStation knows we’re okay
+     * but not handling the event.
      *
      * @return Response
      */

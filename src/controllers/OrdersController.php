@@ -15,27 +15,21 @@ use Craft;
 
 class OrdersController extends \craft\web\Controller
 {
-    // Constants
-    // =========================================================================
-
     const START_DATE_PARAM = 'startDate';
     const START_DATE_SESSION_KEY = 'snipcartStartDate';
     const END_DATE_PARAM = 'endDate';
     const END_DATE_SESSION_KEY = 'snipcartEndDate';
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Display paginated list of orders.
+     * Displays paginated list of orders.
+     *
      * @return \yii\web\Response
      * @throws
      */
     public function actionIndex(): \yii\web\Response
     {
-        $startDate  = $this->_getDateRangeExtent('start');
-        $endDate    = $this->_getDateRangeExtent('end');
+        $startDate  = $this->getDateRangeExtent('start');
+        $endDate    = $this->getDateRangeExtent('end');
         $page       = Craft::$app->getRequest()->getPageNum();
         $orders     = Snipcart::$plugin->orders->listOrders($page, 20, [
             'from' => $startDate,
@@ -44,7 +38,8 @@ class OrdersController extends \craft\web\Controller
 
         $totalPages = ceil($orders->totalItems / $orders->limit);
 
-        return $this->renderTemplate('snipcart/cp/orders/index',
+        return $this->renderTemplate(
+            'snipcart/cp/orders/index',
             [
                 'startDate'  => $startDate,
                 'endDate'    => $endDate,
@@ -57,7 +52,8 @@ class OrdersController extends \craft\web\Controller
     }
 
     /**
-     * Display order detail.
+     * Displays order detail.
+     *
      * @param string $orderId
      * @return \yii\web\Response
      * @throws
@@ -67,7 +63,8 @@ class OrdersController extends \craft\web\Controller
         $order = Snipcart::$plugin->orders->getOrder($orderId);
         $orderRefunds = Snipcart::$plugin->orders->getOrderRefunds($orderId);
 
-        return $this->renderTemplate('snipcart/cp/orders/detail',
+        return $this->renderTemplate(
+            'snipcart/cp/orders/detail',
             [
                 'order' => $order,
                 'orderRefunds' => $orderRefunds,
@@ -76,7 +73,8 @@ class OrdersController extends \craft\web\Controller
     }
 
     /**
-     * Refund an order.
+     * Refunds an order.
+     *
      * @return \yii\web\Response
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
@@ -99,11 +97,13 @@ class OrdersController extends \craft\web\Controller
         return $this->redirectToPostedUrl();
     }
 
-
-    // Private Methods
-    // =========================================================================
-
-    private function _getDateRangeExtent($extent)
+    /**
+     * @param string $extent `start` or `end`
+     *
+     * @return array|bool|\DateTime|false|int|string|null
+     * @throws \craft\errors\MissingComponentException
+     */
+    private function getDateRangeExtent($extent)
     {
         $request = Craft::$app->getRequest();
         $session = Craft::$app->getSession();
@@ -116,7 +116,7 @@ class OrdersController extends \craft\web\Controller
             new DateTime();
 
         /**
-         * Initialize the variable we'll be sending back.
+         * Initialize the variable we’ll be sending back.
          */
         $date = $defaultValue;
 
@@ -137,7 +137,7 @@ class OrdersController extends \craft\web\Controller
         /**
          * Get any stored parameter.
          */
-        $paramValue   = $request->getParam($paramName);
+        $paramValue = $request->getParam($paramName);
 
         /**
          * Get any stored session value.
@@ -149,16 +149,14 @@ class OrdersController extends \craft\web\Controller
          */
         $storedValue = $paramValue ?? $sessionValue ?? '';
 
-        if ( ! empty($storedValue))
-        {
+        if (! empty($storedValue)) {
             /**
-             * If we have a stored value, make sure it's a DateTime.
+             * If we have a stored value, make sure it’s a DateTime.
              */
             $date = DateTimeHelper::toDateTime($storedValue);
         }
 
-        if ($session)
-        {
+        if ($session) {
             /**
              * If we have a session to work with, set our value there
              * before returning it.

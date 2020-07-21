@@ -18,9 +18,6 @@ use craft\web\assets\cp\CpAsset;
  */
 class OrdersWidgetAsset extends \craft\web\AssetBundle
 {
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -28,9 +25,9 @@ class OrdersWidgetAsset extends \craft\web\AssetBundle
     {
         $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
         $this->depends = [
-            SnipcartAsset::class, 
-            ChartAsset::class, 
-            CpAsset::class, 
+            SnipcartAsset::class,
+            ChartAsset::class,
+            CpAsset::class,
             JqueryAsset::class
         ];
         $this->js = ['js/OrdersWidget.js'];

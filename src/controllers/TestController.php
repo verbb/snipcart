@@ -17,12 +17,12 @@ class TestController extends Controller
     protected $allowAnonymous = true;
     
     /**
-     * Provide a simple webhook that makes sure the plugin is alive and taking requests.
-     * Useful for Pingdom, UptimeRobot, StatusCake, etc.
-     * 
+     * Provides a simple webhook that makes sure the plugin is alive
+     * and taking requests. Useful for keyword-based uptime check services.
+     *
      * /actions/snipcart/test/check-health
      */
-    public function actionCheckHealth()
+    public function actionCheckHealth(): \yii\web\Response
     {
         $this->requirePostRequest();
         

@@ -17,11 +17,8 @@ use craft\helpers\DateTimeHelper;
 
 class ChartsController extends \craft\web\Controller
 {
-    // Public Methods
-    // =========================================================================
-
     /**
-     * Fetch order data JSON for the Dashboard widget's chart.
+     * Fetches order data JSON for the Dashboard widget's chart.
      *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
@@ -34,16 +31,11 @@ class ChartsController extends \craft\web\Controller
         $type    = $request->getRequiredParam('type');
         $range   = $request->getRequiredParam('range');
 
-        if ($range === 'weekly')
-        {
+        if ($range === 'weekly') {
             $startDate = (new \DateTime('now'))->modify('-1 week');
-        }
-        elseif ($range === 'monthly')
-        {
+        } elseif ($range === 'monthly') {
             $startDate = (new \DateTime('now'))->modify('-1 month');
-        }
-        else
-        {
+        } else {
             $problem = 'Invalid date range requested.';
             Craft::error($problem, 'snipcart');
             return $this->asJson($problem);
@@ -52,20 +44,15 @@ class ChartsController extends \craft\web\Controller
         $endDate = (new \DateTime('now'))->modify('-1 day');
         $formats = [];
 
-        if ($type === 'totalSales')
-        {
+        if ($type === 'totalSales') {
             $data = Snipcart::$plugin->data->getSales($startDate, $endDate);
-            $chartData = $this->_getTotalSales($data);
+            $chartData = $this->getTotalSales($data);
             $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
                 ->getDefaultCurrencySymbol();
-        }
-        elseif ($type === 'numberOfOrders')
-        {
+        } elseif ($type === 'numberOfOrders') {
             $data = Snipcart::$plugin->data->getOrderCount($startDate, $endDate);
-            $chartData = $this->_getNumberOfOrders($data);
-        }
-        else
-        {
+            $chartData = $this->getNumberOfOrders($data);
+        } else {
             $problem = 'Invalid chart type requested.';
             Craft::error($problem, 'snipcart');
             return $this->asJson($problem);
@@ -79,7 +66,7 @@ class ChartsController extends \craft\web\Controller
     }
 
     /**
-     * Fetch order and sales stats in one response for the CP overview chart.
+     * Fetches order and sales stats in one response for the CP overview chart.
      *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
@@ -92,21 +79,21 @@ class ChartsController extends \craft\web\Controller
         $formats = [];
 
         $salesData = Snipcart::$plugin->data->getSales(
-            $this->_getStartDate(),
-            $this->_getEndDate()
+            $this->getStartDate(),
+            $this->getEndDate()
         );
 
-        $salesChartData = $this->_getTotalSales($salesData);
+        $salesChartData = $this->getTotalSales($salesData);
         $salesChartData['series'][0]['type'] = 'area';
 
         $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
             ->getDefaultCurrencySymbol();
 
         $orderData = Snipcart::$plugin->data->getOrderCount(
-            $this->_getStartDate(),
-            $this->_getEndDate()
+            $this->getStartDate(),
+            $this->getEndDate()
         );
-        $orderChartData = $this->_getNumberOfOrders($orderData);
+        $orderChartData = $this->getNumberOfOrders($orderData);
 
         return $this->asJson([
             'series' => [
@@ -118,22 +105,42 @@ class ChartsController extends \craft\web\Controller
         ]);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Reformat Snipcart's returned data into a chart-friendly format.
+     * Gets chart series for Snipcart sales data.
      *
      * @param $data
      * @return array
      */
-    private function _getTotalSales($data): array
+    private function getTotalSales($data): array
+    {
+        return $this->formatForChart($data, 'Sales');
+    }
+
+    /**
+     * Gets chart series for Snipcart orders data.
+     *
+     * @param $data
+     * @return array
+     */
+    private function getNumberOfOrders($data): array
+    {
+        return $this->formatForChart($data, 'Orders');
+    }
+
+    /**
+     * Translates Snipcart’s returned data into a chart-friendly series.
+     *
+     * @param $data
+     * @param string $label
+     *
+     * @return array
+     */
+    private function formatForChart($data, $label): array
     {
         $rows = [];
         $columns = [];
 
-        foreach ($data->data as $row)
-        {
+        foreach ($data->data as $row) {
             $rows[] = $row->value;
             $columns[] = $row->name;
         }
@@ -141,7 +148,7 @@ class ChartsController extends \craft\web\Controller
         return [
             'series' => [
                 [
-                    'name' => 'Sales',
+                    'name' => $label,
                     'data' => $rows,
                 ]
             ],
@@ -150,44 +157,16 @@ class ChartsController extends \craft\web\Controller
     }
 
     /**
-     * Reformat Snipcart's returned data into a chart-friendly format.
+     * Gets the beginning of the range used for visualizing stats.
      *
-     * @param $data
-     * @return array
-     */
-    private function _getNumberOfOrders($data): array
-    {
-        $rows = [];
-        $columns = [];
-
-        foreach ($data->data as $row)
-        {
-            $rows[] = $row->value;
-            $columns[] = $row->name;
-        }
-
-        return [
-            'series' => [
-                [
-                    'name' => 'Orders',
-                    'data' => $rows,
-                ]
-            ],
-            'columns' => $columns
-        ];
-    }
-
-    /**
-     * Get the beginning of the range used for visualizing stats.
      * @return DateTime
      * @throws
      */
-    private function _getStartDate(): DateTime
+    private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
 
-        if ($startDateParam && is_string($startDateParam))
-        {
+        if ($startDateParam && is_string($startDateParam)) {
             return DateTimeHelper::toDateTime([ 'date' => $startDateParam ]);
         }
         
@@ -196,16 +175,16 @@ class ChartsController extends \craft\web\Controller
     }
 
     /**
-     * Get the end of the range used for visualizing stats.
+     * Gets the end of the range used for visualizing stats.
+     *
      * @return DateTime
      * @throws
      */
-    private function _getEndDate(): DateTime
+    private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
 
-        if ($endDateParam && is_string($endDateParam))
-        {
+        if ($endDateParam && is_string($endDateParam)) {
             return DateTimeHelper::toDateTime([ 'date' => $endDateParam ]);
         }
 

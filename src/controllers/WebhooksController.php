@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\controllers;
 
+use craft\helpers\Json;
 use workingconcept\snipcart\services\Webhooks;
 use workingconcept\snipcart\Snipcart;
 
@@ -19,9 +20,6 @@ use yii\base\Exception;
 
 class WebhooksController extends Controller
 {
-    // Constants
-    // =========================================================================
-
     /**
      * Snipcart's available webhook events
      */
@@ -56,10 +54,6 @@ class WebhooksController extends Controller
         self::WEBHOOK_CUSTOMER_UPDATED              => 'handleCustomerUpdated',
     ];
 
-
-    // Properties
-    // =========================================================================
-
     /**
      * @inheritdoc
      * @var bool Disable CSRF for this controller
@@ -77,10 +71,6 @@ class WebhooksController extends Controller
      */
     private static $validateWebhook = true;
 
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -95,7 +85,8 @@ class WebhooksController extends Controller
     }
 
     /**
-     * Validate and handle Snipcart's post.
+     * Validates and responds to the post request.
+     *
      * @return Response
      * @throws BadRequestHttpException if method isn't post or if something's
      *                                 wrong with the post itself.
@@ -105,34 +96,30 @@ class WebhooksController extends Controller
     public function actionHandle(): Response
     {
         $this->requirePostRequest();
+        $requestBody = Craft::$app->getRequest()->getRawBody();
+        $payload = Json::decode($requestBody, false);
 
-        $payload = json_decode(Craft::$app->getRequest()->getRawBody());
-
-        if ($reason = $this->_hasInvalidRequestData($payload))
-        {
-            return $this->_badRequestResponse([ 'reason' => $reason ]);
+        if ($reason = $this->hasInvalidRequestData($payload)) {
+            return $this->badRequestResponse(['reason' => $reason ]);
         }
 
         Snipcart::$plugin->webhooks->setData($payload);
 
-        return $this->_handleWebhookData($payload->eventName);
+        return $this->handleWebhookData($payload->eventName);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
-     * Send the webhook's post content to the appropriate handler method.
+     * Sends the webhook’s POST payload to the appropriate handler method.
+     *
      * @param string $eventName    Event name from `WEBHOOK_EVENT_MAP`.
      * @return Response
-     * @throws Exception if the mapped handler method doesn't exist.
+     * @throws Exception if the mapped handler method doesn’t exist.
      */
-    private function _handleWebhookData($eventName): Response
+    private function handleWebhookData($eventName): Response
     {
         $methodName = self::WEBHOOK_EVENT_MAP[$eventName];
 
-        if (method_exists(Snipcart::$plugin->webhooks, $methodName))
-        {
+        if (method_exists(Snipcart::$plugin->webhooks, $methodName)) {
             /**
              * Call the method defined in `WEBHOOK_EVENT_MAP`,
              * with $postContent as its argument.
@@ -151,13 +138,13 @@ class WebhooksController extends Controller
     }
 
     /**
-     * Output a 400 response with an optional JSON error array.
+     * Returns a 400 response with an optional JSON error array.
      *
      * @param  array  $errors Array of errors that explain the 400 response
      *
      * @return Response
      */
-    private function _badRequestResponse(array $errors): Response
+    private function badRequestResponse(array $errors): Response
     {
         $response = Craft::$app->getResponse();
 
@@ -173,102 +160,99 @@ class WebhooksController extends Controller
     }
 
     /**
-     * Make sure we don't have invalid data, or return a reason if we do.
+     * Make sure we don’t have invalid data, or return a reason if we do.
      *
      * @param mixed $payload Decoded post payload to be checked.
      * @return bool|string
      * @throws BadRequestHttpException if there's a problem with the token.
      */
-    private function _hasInvalidRequestData($payload)
+    private function hasInvalidRequestData($payload)
     {
         /**
-         * Reject requests that can't be validated.
+         * Reject requests that can’t be validated.
          */
-        if (self::$validateWebhook && ! $this->_requestIsValid())
-        {
+        if (self::$validateWebhook && ! $this->requestIsValid()) {
             return 'Could not validate webhook request. Are you Snipcart?';
         }
 
         /**
-         * Every Snipcart post should have an eventName, so we've got
+         * Every Snipcart post should have an eventName, so we’ve got
          * missing data or a bad format.
          */
-        if ($payload === null || !isset($payload->eventName))
-        {
+        if ($payload === null || !isset($payload->eventName)) {
             return 'NULL request body or missing eventName.';
         }
 
         /**
          * Every Snipcart post should have a content property.
          */
-        if (!isset($payload->content))
-        {
+        if (! isset($payload->content)) {
             return 'Request missing content.';
         }
 
         /**
          * Every Snipcart post should either be in live or test mode.
          */
-        if (!isset($payload->mode))
-        {
+        if (! isset($payload->mode)) {
             return 'Request missing mode.';
         }
 
         /**
-         * Every Snipcart post should clarify whether it's in live or test mode.
+         * Every Snipcart post should clarify whether it’s in live or test mode.
          */
         if (! in_array(
             $payload->mode,
             [Webhooks::WEBHOOK_MODE_LIVE, Webhooks::WEBHOOK_MODE_TEST],
             false
-        ))
-        {
+        )) {
             return 'Invalid mode.';
         }
 
         /**
-         * We've received an invalid `eventName`.
+         * We’ve received an invalid `eventName`.
          */
         if (! array_key_exists(
             $payload->eventName,
             self::WEBHOOK_EVENT_MAP
-        ))
-        {
+        )) {
             return 'Invalid event.';
         }
 
-        // We *don't* have invalid request data!
+        // Looks valid! We do *not* have invalid data.
         return false;
     }
 
     /**
-     * Use the supplied token to be sure the request is genuine.
+     * Evaluates the supplied token to be sure the request is genuine.
      *
      * @return boolean
-     * @throws BadRequestHttpException  Thrown if the servery key is missing from the request.
-     * @throws \Exception               Thrown if there's a problem with the actual API call.
+     * @throws BadRequestHttpException if the token is missing or malformed.
+     * @throws \Exception if the token is invalid or there’s a problem
+     *                    with the API call.
      */
-    private function _requestIsValid(): bool
+    private function requestIsValid(): bool
     {
         $key     = 'x-snipcart-requesttoken';
         $headers = Craft::$app->getRequest()->getHeaders();
+        $devMode = Craft::$app->getConfig()->general->devMode;
 
-        if ( ! $headers->has($key) && Craft::$app->getConfig()->general->devMode)
-        {
-            // don't validate if we're in dev mode
+        if (! $headers->has($key) && $devMode) {
+            // don’t validate if we’re in dev mode
             return true;
         }
 
-        if ( ! $headers->has($key))
-        {
-            throw new BadRequestHttpException('Invalid request: no request token');
+        if (! $headers->has($key)) {
+            throw new BadRequestHttpException(
+                'Invalid request: no request token'
+            );
         }
 
         $token = $headers->get($key);
 
-        if ( ! is_string($token))
-        {
-            throw new BadRequestHttpException('Invalid request: token can only be a string');
+        if (! is_string($token)) {
+            throw new BadRequestHttpException(
+                'Invalid request: token can only be a string'
+            );
         }
 
         return Snipcart::$plugin->api->tokenIsValid($token);

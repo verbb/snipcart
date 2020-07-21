@@ -8,7 +8,7 @@
 
 namespace workingconcept\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\CustomField;
+use workingconcept\snipcart\models\snipcart\CustomField;
 
 /**
  * ShipStation Item Option Model
@@ -17,9 +17,6 @@ use workingconcept\snipcart\models\CustomField;
 
 class ItemOption extends \craft\base\Model
 {
-    // Properties
-    // =========================================================================
-
     /**
      * @var string|null Name of item option. Example: "Size"
      */
@@ -29,10 +26,6 @@ class ItemOption extends \craft\base\Model
      * @var string|null The value of the item option. Example: "Medium"
      */
     public $value;
-
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -52,13 +45,11 @@ class ItemOption extends \craft\base\Model
      */
     public static function populateFromSnipcartCustomField($item)
     {
-        if (is_array($item))
-        {
+        if (is_array($item)) {
             $item = (object)$item;
         }
 
-        if (isset($item->name, $item->value))
-        {
+        if (isset($item->name, $item->value)) {
             return new self([
                 'name'  => $item->name,
                 'value' => $item->value,
