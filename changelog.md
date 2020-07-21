@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.4.0 - 2020-07-21
 
 > {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
 
