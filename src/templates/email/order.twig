@@ -5,8 +5,18 @@
 {% set isDevMode = craft.app.getConfig().general.devMode %}
 {% set imageUrl = isDevMode ?
     '@workingconcept/snipcart/assetbundles/dist/img/order-complete-devmode.png' :
-    '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png'
-%}
+    '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png' %}
+
+{% set primaryDetails = {
+    'Order Number': order.invoiceNumber,
+    'Order Email': order.email,
+} %}
+
+{% if providerOrders.shipStation.orderId is defined %}
+    {% set primaryDetails = primaryDetails | merge({
+        'ShipStation #': providerOrders.shipStation.orderId
+    }) %}
+{% endif %}
 
 {% block hero %}
     {% include "snipcart/email/_parts/hero" with {
@@ -21,11 +31,7 @@
     } only %}
 
     {% include "snipcart/email/_parts/primary-details" with {
-        primaryDetails: {
-            'Order Number': order.invoiceNumber,
-            'Order Email': order.email,
-            'ShipStation #': providerOrders.shipStation.orderId
-        }
+        primaryDetails: primaryDetails
     } only %}
 
     {% include "snipcart/email/_parts/items" with {
@@ -39,7 +45,7 @@
     {% include "snipcart/email/_parts/addresses" with {
         order: order
     } only %}
-
+    
     <p style="margin-top: 40px;" class="muted mono">
         {{- order.ipAddress }}<br>
         {{- order.userAgent -}}
