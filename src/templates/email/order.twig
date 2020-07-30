@@ -45,7 +45,11 @@
     {% include "snipcart/email/_parts/addresses" with {
         order: order
     } only %}
-    
+
+    {% include "snipcart/email/_parts/payments" with {
+        order: order
+    } only %}
+
     <p style="margin-top: 40px;" class="muted mono">
         {{- order.ipAddress }}<br>
         {{- order.userAgent -}}

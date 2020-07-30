@@ -5,8 +5,7 @@
 {% set isDevMode = craft.app.getConfig().general.devMode %}
 {% set imageUrl = isDevMode ?
     '@workingconcept/snipcart/assetbundles/dist/img/order-complete-devmode.png' :
-    '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png'
-%}
+    '@workingconcept/snipcart/assetbundles/dist/img/order-complete.png' %}
 
 {% block hero %}
     {% include "snipcart/email/_parts/hero" with {
@@ -36,6 +35,10 @@
     } only %}
 
     {% include "snipcart/email/_parts/addresses" with {
+        order: order
+    } only %}
+
+    {% include "snipcart/email/_parts/payments" with {
         order: order
     } only %}
 
