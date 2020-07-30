@@ -9,9 +9,18 @@
 namespace workingconcept\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
+use workingconcept\snipcart\models\snipcart\PaymentSchedule;
+use workingconcept\snipcart\helpers\ModelHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use craft\elements\MatrixBlock;
 
+/**
+ * Class Item
+ *
+ * @package workingconcept\snipcart\models\snipcart
+ *
+ * @property PaymentSchedule|null $paymentSchedule
+ */
 class Item extends \craft\base\Model
 {
     /**
@@ -169,7 +178,6 @@ class Item extends \craft\base\Model
      */
     public $addedOn;
 
-
     /**
      * @var string
      */
@@ -201,11 +209,6 @@ class Item extends \craft\base\Model
     public $metadata;
 
     /**
-     * @var PaymentSchedule
-     */
-    public $paymentSchedule;
-
-    /**
      * @var
      */
     public $hasTaxesIncluded;
@@ -231,11 +234,24 @@ class Item extends \craft\base\Model
     public $cancellationAction;
 
     /**
+     * @var PaymentSchedule
+     */
+    private $paymentSchedule;
+
+    /**
      * @inheritdoc
      */
     public function datetimeAttributes(): array
     {
         return ['modificationDate'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return ['paymentSchedule'];
     }
 
     /**
@@ -269,4 +285,34 @@ class Item extends \craft\base\Model
         return null;
     }
 
+    /**
+     * @return PaymentSchedule|null
+     */
+    public function getPaymentSchedule()
+    {
+        return $this->paymentSchedule;
+    }
+
+    /**
+     * @param PaymentSchedule|array|null $paymentSchedule
+     * @return PaymentSchedule|null
+     */
+    public function setPaymentSchedule($paymentSchedule)
+    {
+        if ($paymentSchedule === null) {
+            return $this->paymentSchedule = null;
+        }
+
+
+        if (! $paymentSchedule instanceof PaymentSchedule) {
+            $paymentScheduleData = ModelHelper::stripUnknownProperties(
+                $paymentSchedule,
+                PaymentSchedule::class
+            );
+
+            $paymentSchedule = new PaymentSchedule((array) $paymentScheduleData);
+        }
+
+        return $this->paymentSchedule = $paymentSchedule;
+    }
 }
