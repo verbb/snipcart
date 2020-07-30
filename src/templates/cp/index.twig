@@ -144,7 +144,7 @@
                                 {% for order in orders.items %}
                                     <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
                                         <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
-                                        <td>{{ order.creationDate | date('n/j') }}</td>
+                                        <td>{{ craft.snipcart.tinyDateInterval(order.creationDate) }} {{ "ago"|t }}</td>
                                         <td>{{ order.billingAddress.name }}</td>
                                         <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
                                     </tr>

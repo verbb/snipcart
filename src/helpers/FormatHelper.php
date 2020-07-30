@@ -8,6 +8,7 @@
 
 namespace workingconcept\snipcart\helpers;
 
+use DateTimeImmutable;
 use yii\base\InvalidConfigException;
 
 class FormatHelper
@@ -39,5 +40,43 @@ class FormatHelper
         }
 
         return \Craft::$app->formatter->asCurrency($value, $currencyType);
+    }
+
+    /**
+     * Returns relative age of the provided date as short string, with
+     * emphasis on compact display rather than precision.
+     *
+     * - `3y`
+     * - `2m`
+     * - `12d`
+     * - `2h` or `1h`
+     * - `<1h` (no minutes or seconds)
+     *
+     * @param  \DateTime  $date
+     *
+     * @return string
+     */
+    public static function tinyDateInterval(\DateTime $date): string
+    {
+        $now = new DateTimeImmutable();
+        $interval = $now->diff($date);
+
+        if ($interval->y > 0) {
+            return $interval->y . 'y';
+        }
+
+        if ($interval->m > 0) {
+            return $interval->m . 'm';
+        }
+
+        if ($interval->d > 0) {
+            return $interval->d . 'd';
+        }
+
+        if ($interval->h >= 1) {
+            return $interval->h . 'h';
+        }
+
+        return '<1h';
     }
 }
