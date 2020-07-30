@@ -1,4 +1,4 @@
-{# @var order \workingconcept\snipcart\models\Order #}
+{# @var order \workingconcept\snipcart\models\snipcart\Order #}
 {# @var craft \Craft #}
 {# @var shipStationOrder \workingconcept\snipcart\models\shipstation\Order as ShipStationOrder #}
 {#
@@ -26,14 +26,14 @@ Order table with items, shipping, and tax details.
     </thead>
     <tbody>
     {% for item in order.items %}
-        {# @var item \workingconcept\snipcart\models\Item #}
+        {# @var item \workingconcept\snipcart\models\snipcart\Item #}
         <tr>
             <td class="align-left first-cell-padding">
                 {{- item.quantity -}}
             </td>
             <td class="align-left normal-cell-padding" width="50%">
                 {{ item.name }}
-                {% if item.paymentSchedule and item.paymentSchedule.intervalCount is defined %}
+                {% if item.paymentSchedule and item.paymentSchedule.interval %}
                     <p class="no-padding small">Subscription:
                         every {{ item.paymentSchedule.intervalCount > 1 ? item.paymentSchedule.intervalCount : "" }} {{ item.paymentSchedule.interval|lower }}{{ item.paymentSchedule.intervalCount != 1 ? "s" : "" }}
                         starting {{ item.paymentSchedule.startsOn }}</p>
