@@ -288,16 +288,23 @@ class Orders extends \craft\base\Component
         Snipcart::$plugin->notifications->setNotificationVars($emailVars);
 
         $toEmails = [];
-        $subject = $order->billingAddressName . ' just placed an order';
+        $subject = Craft::t(
+            'snipcart',
+            '{name} just placed an order',
+            [ 'name' => $order->billingAddressName ]
+        );
 
         if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
         } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $toEmails = [ $order->email ];
-            $subject = sprintf(
-                '%s Order #%s',
-                Craft::$app->getSites()->getCurrentSite()->name,
-                $order->invoiceNumber
+            $subject = Craft::t(
+                'snipcart',
+                '{siteName} Order #{invoiceNumber}',
+                [
+                    'siteName' => Craft::$app->getSites()->getCurrentSite()->name,
+                    'invoiceNumber' => $order->invoiceNumber
+                ]
             );
         }
 
