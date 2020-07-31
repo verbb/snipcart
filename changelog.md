@@ -1,5 +1,14 @@
 # Snipcart Changelog
 
+## Unreleased
+### Fixed
+- Fixed custom email notifications.
+- Order notification email subjects are now translatable.
+- Admin order email notifications will only display a ShipStation ID when it’s not empty. 
+
+### Changed
+- The Recent Orders summary now uses relative timestamps rather than `m/d` format.
+
 ## 1.4.0 - 2020-07-21
 
 > {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
