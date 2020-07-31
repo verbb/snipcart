@@ -275,11 +275,16 @@ class Orders extends \craft\base\Component
     {
         $templateSettings = $this->selectNotificationTemplate($type);
         $emailVars = array_merge([
-            'order'    => $order,
+            'order' => $order,
             'settings' => Snipcart::$plugin->getSettings()
         ], $extra);
 
-        Snipcart::$plugin->notifications->setEmailTemplate($templateSettings['path']);
+        Snipcart::$plugin->notifications->setEmailTemplate(
+            $templateSettings['path'],
+            null,
+            $templateSettings['user']
+        );
+
         Snipcart::$plugin->notifications->setNotificationVars($emailVars);
 
         $toEmails = [];
@@ -398,7 +403,7 @@ class Orders extends \craft\base\Component
             $customTemplatePath  = $settings->notificationEmailTemplate;
         } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $defaultTemplatePath = 'snipcart/email/customer-order';
-            $customTemplatePath  = $settings->notificationEmailTemplate;
+            $customTemplatePath  = $settings->customerNotificationEmailTemplate;
         }
 
         $useCustom = ! empty($customTemplatePath);
