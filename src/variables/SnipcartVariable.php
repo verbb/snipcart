@@ -68,6 +68,19 @@ class SnipcartVariable
     }
 
     /**
+     * Returns a compact, general, relative, human-readable string representing
+     * the age of the provided DateTime.
+     *
+     * @param  \DateTime  $date
+     *
+     * @return string
+     */
+    public function tinyDateInterval(\DateTime $date): string
+    {
+        return FormatHelper::tinyDateInterval($date);
+    }
+
+    /**
      * Returns a Snipcart customer by ID.
      *
      * @param string $customerId
