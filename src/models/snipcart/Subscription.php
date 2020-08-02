@@ -151,5 +151,4 @@ class Subscription extends \craft\base\Model
     {
         return 'https://app.snipcart.com/dashboard/subscriptions/' . $this->id;
     }
-
 }

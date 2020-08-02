@@ -37,4 +37,40 @@ class PaymentSchedule extends \craft\base\Model
     {
         return ['startsOn'];
     }
+
+    /**
+     * Returns a formatted string describing the description interval, meant to
+     * come after a word like “every”.
+     *
+     * Omits `1` and pluralizes units.
+     *
+     * Examples:
+     *
+     * - `week`
+     * - `2 weeks`
+     * - `3 months`
+     * - `year`
+     *
+     * @return string
+     */
+    public function getIntervalLabel(): string
+    {
+        if (!$this->intervalCount) {
+            return "";
+        }
+
+        $label = "";
+
+        if ($this->intervalCount > 1) {
+            $label .= $this->intervalCount . " ";
+        }
+
+        $label .= strtolower($this->interval);
+
+        if ($this->intervalCount !== 1) {
+            $label .= "s";
+        }
+
+        return $label;
+    }
 }
