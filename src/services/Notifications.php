@@ -98,8 +98,8 @@ class Notifications extends \craft\base\Component
      */
     public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false)
     {
-        $this->htmlEmailTemplate          = $htmlTemplate;
-        $this->textEmailTemplate          = $textTemplate;
+        $this->htmlEmailTemplate = $htmlTemplate;
+        $this->textEmailTemplate = $textTemplate;
         $this->emailTemplatesAreFrontEnd = $frontend;
     }
 
@@ -126,7 +126,7 @@ class Notifications extends \craft\base\Component
     {
         $pluginSettings = Snipcart::$plugin->getSettings();
 
-        // bail if we're in test mode and don't want to send emails
+        // Bail if we’re in test mode and don’t want to send emails.
         if ($pluginSettings->testMode && ! $pluginSettings->sendTestModeEmail) {
             // pretend it went well
             return true;
