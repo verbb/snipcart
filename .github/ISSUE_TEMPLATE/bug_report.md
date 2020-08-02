@@ -27,7 +27,7 @@ A clear and concise description of what you expected to happen.
 
 If applicable, add screenshots to help explain your problem.
 
-**Sofware**
+**Software**
 
  - Craft version: [e.g. Pro 3.1.14]
  - Snipcart plugin version: [e.g. 1.0.0]
