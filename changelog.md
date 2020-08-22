@@ -1,6 +1,10 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.4.1.1 - 2020-08-01
+### Fixed
+- Recent Orders summary displays order completion dates rather than creation dates.
+
+## 1.4.1 - 2020-08-01
 ### Fixed
 - Fixed custom email notifications.
 - Order notification email subjects are now translatable.
