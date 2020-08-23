@@ -92,10 +92,12 @@ class Subscriptions extends \craft\base\Component
      */
     public function getSubscriptionInvoices($subscriptionId): array
     {
-        return Snipcart::$plugin->api->get(sprintf(
+        $response = Snipcart::$plugin->api->get(sprintf(
             'subscriptions/%s/invoices',
             $subscriptionId
         ));
+
+        return is_array($response) ? $response : [];
     }
 
     /**
