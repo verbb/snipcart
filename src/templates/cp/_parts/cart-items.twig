@@ -26,13 +26,20 @@
     </thead>
     <tbody>
         {% for item in order.items %}
-            {% set isSubscription = item.paymentSchedule and item.paymentSchedule.interval %}
+            {% set isSubscription = item.paymentSchedule is defined
+                and item.paymentSchedule
+                and item.paymentSchedule.interval %}
             <tr>
                 <td>
                     {{- item.quantity -}}
                 </td>
                 <td>
-                    {{- item.name -}}{% if isSubscription %} <span data-icon="refresh" class="opacity-75" title="{{ 'Subscription'|t }}"></span>{% endif %}
+                    {{- item.name -}}
+                    {%- if isSubscription %}
+                        &nbsp;<span data-icon="refresh"
+                                    class="opacity-75"
+                                    title="{{ 'Subscription'|t }}"></span>
+                    {%- endif -%}
                     {% if isSubscription %}
                         <p class="text-xs leading-tight font-bold my-1">
                             {{- 'Every {intervalLabel}, starts {date}'|t(params = {
