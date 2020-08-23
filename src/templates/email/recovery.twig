@@ -3,8 +3,8 @@
 {% block content %}
 
     <h1 style="margin: 0 0 25px 0; font-size: 25px; line-height: 30px; color: #333333; font-weight: normal;">
-        The following Snipcart order{% if orders | length != 1 %}s{% endif %} didn't initially
-        make it to ShipStation. {% if orders | length != 1 %}They{% else %}It{% endif %} may need attention.
+        {% if orders | length == 1 %}A {% endif %}Snipcart order{% if orders | length != 1 %}s{% endif %} didn’t initially
+        make it to ShipStation.{% if containsFailures %} {% if orders | length != 1 %}They{% else %}It{% endif %} may need attention.{% endif %}
     </h1>
 
     <ul>
@@ -15,9 +15,9 @@
             </a> from {{ order.creationDate.diff(now)|duration(false) }} ago
             {%- if reattempt[order.invoiceNumber] is defined %}
                 {%- if reattempt[order.invoiceNumber] == true -%}
-                    , re-sent to ShipStation successfully.
+                    , re-sent successfully.
                 {%- elseif reattempt[order.invoiceNumber] == false -%}
-                    , attempted re-send to ShipStation failed.
+                    , failed to re-send.
                 {%- endif -%}
             {%- endif -%}
         </li>

@@ -165,13 +165,23 @@ class VerifyController extends Controller
             'snipcart/email/recovery'
         );
 
+        $containsFailures = false;
+
+        foreach ($reFeedResults as $invoiceNumber => $success) {
+            if ($success === false) {
+                $containsFailures = true;
+                break;
+            }
+        }
+
         Snipcart::$plugin->notifications->setNotificationVars([
-            'orders'    => $snipcartOrders,
+            'orders' => $snipcartOrders,
             'reattempt' => $reFeedResults,
+            'containsFailures' => $containsFailures
         ]);
 
         $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
-        $subject  = 'Recovered Snipcart Orders';
+        $subject = 'Recovered Snipcart Orders';
 
         if (! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject)) {
             $this->stderr('Notifications failed.'. PHP_EOL);
