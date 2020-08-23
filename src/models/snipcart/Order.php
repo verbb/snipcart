@@ -16,7 +16,7 @@ use workingconcept\snipcart\helpers\ModelHelper;
  * Snipcart Order model
  * https://docs.snipcart.com/v2/api-reference/orders
  *
- * @package workingconcept\snipcart\models
+ * @package workingconcept\snipcart\models\snipcart
  *
  * @property Address $billingAddress
  * @property Address $shippingAddress

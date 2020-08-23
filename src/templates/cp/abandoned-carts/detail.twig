@@ -11,21 +11,12 @@
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = abandonedCart.billingAddress.name ~ (isTestMode ? " 🚧") %}
 
-{#
-
-TODO:
-
-- support recoveryCampaignStatus
-- support guest?
-
-#}
-
 {% block content %}
-    <div class="block mb-8 clearfix">
-        <div class="w-1/2 float-left">
+    <div class="md:flex mb-8">
+        <div class="md:w-1/2">
 
-            <p class="text-xl font-thin">
-                {{- abandonedCart.modificationDate | date('long') -}}{# <small class="ml-2 text-muted text-xs">{{ abandonedCart.status }}</small>#}
+            <p class="font-bold">
+                {{- abandonedCart.modificationDate|datetime('long') -}}
             </p>
 
             {% include "snipcart/cp/_parts/customer-summary" with { 
@@ -42,7 +33,7 @@ TODO:
             </a>
 
         </div>
-        <div class="w-1/2 float-left">
+        <div class="mt-6 md:w-1/2 md:mt-0">
             <h3>{{ "Items"|t }}</h3>
 
             {% include "snipcart/cp/_parts/cart-items" with { 
@@ -57,12 +48,4 @@ TODO:
             order: abandonedCart,
         } %}
     </div>
-
-    {# {% for prop, value in abandonedCart %}
-        <p>
-            <b>{{ prop }}</b>
-            {{ dump(value) }}
-        </p>
-    {% endfor %} #}
-
 {% endblock %}

@@ -8,9 +8,12 @@
 
 namespace workingconcept\snipcart\models\snipcart;
 
+use workingconcept\snipcart\Snipcart;
+
 /**
  * Class Subscription
  * https://docs.snipcart.com/v2/api-reference/subscriptions
+ *
  * @package workingconcept\snipcart\models
  */
 class Subscription extends \craft\base\Model
@@ -152,4 +155,8 @@ class Subscription extends \craft\base\Model
         return 'https://app.snipcart.com/dashboard/subscriptions/' . $this->id;
     }
 
+    public function getInvoices(): array
+    {
+        return Snipcart::$plugin->subscriptions->getSubscriptionInvoices($this->id);
+    }
 }
