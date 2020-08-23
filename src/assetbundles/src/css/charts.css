@@ -8,4 +8,6 @@
 #overview-chart .apexcharts-tooltip-series-group.active, .apexcharts-tooltip-series-group:last-child { padding-bottom: 0; }
 #overview-chart .apexcharts-tooltip { border: 0; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25); }
 #overview-chart .apexcharts-legend-marker { top: 1px; }
+#overview-chart .apexcharts-tooltip-series-group.apexcharts-active,
+#overview-chart .apexcharts-tooltip-series-group:last-child { padding-bottom: 0; }
 /* purgecss end ignore */
