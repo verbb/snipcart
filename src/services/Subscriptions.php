@@ -83,6 +83,22 @@ class Subscriptions extends \craft\base\Component
     }
 
     /**
+     * Returns invoices related to a subscription.
+     *
+     * @param $subscriptionId
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function getSubscriptionInvoices($subscriptionId): array
+    {
+        return Snipcart::$plugin->api->get(sprintf(
+            'subscriptions/%s/invoices',
+            $subscriptionId
+        ));
+    }
+
+    /**
      * Cancels a subscription.
      *
      * @param string $subscriptionId Snipcart subscription ID

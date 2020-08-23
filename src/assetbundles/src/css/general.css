@@ -4,8 +4,12 @@
 
 .text-muted { color: #b9bfc6; }
 
-/* because .flex clashes with Craft's own styles */
+/* because .flex clashes with Craft’s own styles */
 .flex-wrapper {
+    @apply flex;
+}
+
+.lg\:flex-wrapper {
     @apply flex;
 }
 

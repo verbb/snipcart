@@ -18,6 +18,7 @@
                 <thead>
                 <th scope="col">{{ "Plan"|t }}</th>
                 <th scope="col">{{ "Subscriber"|t }}</th>
+                <th scope="col">{{ "Created"|t }}</th>
                 <th scope="col">{{ "Amount"|t }}</th>
                 <th scope="col">{{ "Quantity"|t }}</th>
                 <th scope="col">{{ "Status"|t }}</th>
@@ -31,6 +32,7 @@
                             <a href="{{ subscription.cpUrl }}">{{ subscription.name }}</a>
                         </td>
                         <td>{{ subscription.user.billingAddressName }}</td>
+                        <td>{{ subscription.creationDate|date('short') }}</td>
                         <td>{{ craft.snipcart.formatCurrency(subscription.amount) }}</td>
                         <td>{{ subscription.quantity }}</td>
                         <td>{{ subscription.status }}</td>
