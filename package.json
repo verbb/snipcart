@@ -1,6 +1,6 @@
 {
   "name": "snipcart-craft-plugin",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "![Snipcart](resources/hero.svg)",
   "directories": {
     "doc": "docs",
@@ -43,5 +43,5 @@
   "bugs": {
     "url": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
   },
-  "homepage": "https://github.com/workingconcept/snipcart-craft-plugin#readme"
+  "homepage": "https://workingconcept.com/plugins/snipcart"
 }

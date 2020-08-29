@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.4.2 - 2020-08-29
 ### Added
 - Exposed order item subscription details in control panel views.
 
