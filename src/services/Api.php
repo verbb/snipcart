@@ -369,7 +369,7 @@ class Api extends Component
             }
 
             if ($statusCode === 500) {
-                // unauthorized, meaning invalid API credentials
+                // something went wrong on the other end
                 throw new Exception('Snipcart API responded with 500 error.');
             }
         } else {
