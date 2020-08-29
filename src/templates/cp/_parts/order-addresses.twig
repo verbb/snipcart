@@ -15,7 +15,7 @@
     {{ order.billingAddress.city }}, {{ order.billingAddress.province }} {{ order.billingAddress.postalCode }}
 </p>
 
-<p>{{ order.billingAddress.phone }}</p>
+<p>{{ order.billingAddress.formattedPhone }}</p>
 
 {% set actuallyHasShippingAddress = order.shippingAddress.name and
     order.shippingAddress.address1 and
@@ -43,7 +43,7 @@
     </p>
 
     {% if order.shippingAddress.phone %}
-        <p>{{ order.shippingAddress.phone }}</p>
+        <p>{{ order.shippingAddress.formattedPhone }}</p>
     {% endif %}
 
 {% endif %}
