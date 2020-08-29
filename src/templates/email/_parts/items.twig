@@ -41,9 +41,8 @@ Order table with items, shipping, and tax details.
                 {{ item.name }}
                 {% if item.paymentSchedule and item.paymentSchedule.interval %}
                     <p class="no-padding no-top-margin small">
-                        {{- 'Subscription: every {intervalLabel}, starts {date}'|t(params = {
-                            intervalLabel: item.paymentSchedule.getIntervalLabel(),
-                            date: item.paymentSchedule.startsOn | date('short')
+                        {{- 'Subscription: every {intervalLabel}'|t(params = {
+                            intervalLabel: item.paymentSchedule.getIntervalLabel()
                         }) -}}
                     </p>
                 {% endif %}
