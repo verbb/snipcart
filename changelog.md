@@ -6,6 +6,7 @@
 
 ### Fixed
 - Various minor improvements for control panel templates.
+- Product details `getBuyNowButton()` no longer requires a `|raw` Twig filter.
 
 ## 1.4.1.1 - 2020-08-01
 ### Fixed
