@@ -4,8 +4,12 @@
 
 .text-muted { color: #b9bfc6; }
 
-/* because .flex clashes with Craft's own styles */
+/* because .flex clashes with Craft’s own styles */
 .flex-wrapper {
+    @apply flex;
+}
+
+.lg\:flex-wrapper {
     @apply flex;
 }
 
@@ -16,6 +20,15 @@
 
 .stat-panel .spinner {
     height: 20px;
+}
+
+.items-table {
+    td {
+        @apply align-top;
+    }
+    .text-right {
+        text-align: right;
+    }
 }
 
 /* purgecss start ignore */

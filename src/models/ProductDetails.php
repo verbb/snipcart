@@ -10,12 +10,12 @@ namespace workingconcept\snipcart\models;
 
 use craft\elements\Entry;
 use craft\elements\MatrixBlock;
+use Twig\Markup;
 use workingconcept\snipcart\helpers\MeasurementHelper;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
 use workingconcept\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
-use craft\helpers\Localization;
 use craft\helpers\Template as TemplateHelper;
 
 /**
@@ -342,20 +342,20 @@ class ProductDetails extends \craft\base\Model
      * Get markup for a "buy now" button on the public end of the site.
      *
      * @param array $params
-     * @return string
+     * @return Markup
      * @throws
      */
-    public function getBuyNowButton($params = []): string
+    public function getBuyNowButton($params = []): Markup
     {
         $params = $this->getBuyButtonParams($params);
 
-        return $this->renderFieldTemplate(
+        return TemplateHelper::raw($this->renderFieldTemplate(
             'snipcart/fields/front-end/buy-now',
             [
                 'fieldData'      => $this,
                 'templateParams' => $params,
             ]
-        );
+        ));
     }
 
     /**

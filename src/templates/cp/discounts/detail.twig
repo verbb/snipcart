@@ -15,28 +15,30 @@
 
     <div>
         {% if discount.expires and discount.expires < now %}
-            <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
+            <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-6">
                 {{ "This discount expired"|t }} {{ discount.expires | date('long') }}.
             </div>
         {% endif %}
 
         <div class="detail-columns block px-3 mb-8">
-            <div class="flex-wrapper -mx-6">
-                <div class="w-1/2 mx-3">
+            <div class="md:flex -mx-6">
+                <div class="md:w-1/2 mx-3">
                     <div class="inner">
 
                         <h2>{{ "Details"|t }}</h2>
 
-                        <p class="text-muted">
-                            {{ "Created"|t }} {{ discount.creationDate | date('long') }}
-                            {%- if discount.expires %}, {{ "expires"|t }} {{ discount.expires | date('long') }}{% endif %}
-                        </p>
-
-                        <table class="data fullwidth fixed-layout">
+                        <table class="data fullwidth fixed-layout -mx-3">
                             <tbody>
                                 <tr>
                                     <th class="light">{{ "Type"|t }}</th>
                                     <td>{{ discount.type }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="light">{{ "Created"|t }}</th>
+                                    <td>
+                                        {{ discount.creationDate|date('long') }}
+                                        {%- if discount.expires %}, {{ "expires"|t }} {{ discount.expires|date('long') }}{% endif %}
+                                    </td>
                                 </tr>
                                 {% if 'amount' in discount.typeOptionFields() %}
                                     <tr>
@@ -190,20 +192,20 @@
                         </table>
                     </div>
                 </div>
-                <div class="w-1/2 mx-3">
+                <div class="mt-8 md:w-1/2 md:mt-0 mx-3">
                     <div class="inner">
                         <h2>{{ "Usage"|t }}</h2>
 
                         {% set hasUsage = discount.maxNumberOfUsages ? true : false %}
 
                         {% if hasUsage %}
-                            <div class="block border h-2 border-solid border-grey rounded-full w-full relative overflow-hidden mt-5" style="margin-bottom: 1.15rem;">
+                            <div class="block border h-2 border-solid border-grey rounded-full w-full relative overflow-hidden mb-5">
                                 {% set usage = discount.numberOfUsages > 0 ? discount.numberOfUsages / discount.maxNumberOfUsages : 0 %}
                                 <div class="bg-grey h-full absolute" style="width: {{ usage * 100 }}%;"></div>
                             </div>
                         {% endif %}
 
-                        <table class="data fullwidth fixed-layout{{ not hasUsage ? ' mt-12' }}">
+                        <table class="data fullwidth -mx-3 fixed-layout">
                             <tbody>
                             <tr>
                                 <th class="light">{{ "Number of Usages / Max"|t }}</th>

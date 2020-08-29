@@ -1,5 +1,13 @@
 # Snipcart Changelog
 
+## 1.4.2 - 2020-08-29
+### Added
+- Exposed order item subscription details in control panel views.
+
+### Fixed
+- Various minor improvements for control panel templates.
+- Product details `getBuyNowButton()` no longer requires a `|raw` Twig filter.
+
 ## 1.4.1.1 - 2020-08-01
 ### Fixed
 - Recent Orders summary displays order completion dates rather than creation dates.

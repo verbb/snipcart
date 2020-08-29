@@ -11,18 +11,18 @@ const chartContainer = document.getElementById('overview-chart');
 var chart;
 
 if (statPanels) {
-
     fetchStatPanels();
     updateChart();
 
-    updateStatsBtn.onclick = function(e) {
+    updateStatsBtn.onclick = function (e) {
         e.preventDefault();
         fetchStatPanels();
         updateChart();
     }
 }
 
-function fetchStatPanels() {
+function fetchStatPanels()
+{
     const ordersCount = document.getElementById('stat-ordersCount');
     const ordersSales = document.getElementById('stat-ordersSales');
     const averageOrdersValue = document.getElementById('stat-averageOrdersValue');
@@ -45,7 +45,7 @@ function fetchStatPanels() {
             startDate: startDateField.value,
             endDate: endDateField.value,
         },
-        function(response, textStatus) {
+        function (response, textStatus) {
             if (textStatus === 'success' && typeof (response.error) === 'undefined') {
                 ordersCount.innerHTML = response.stats.ordersCount;
                 ordersSales.innerHTML = response.stats.ordersSales;
@@ -58,13 +58,12 @@ function fetchStatPanels() {
     );
 }
 
-
-
-Array.prototype.max = function() {
+Array.prototype.max = function () {
     return Math.max.apply(null, this);
 };
 
-function updateChart() {
+function updateChart()
+{
     chartContainer.classList.add('spinner');
 
     Craft.postActionRequest(
@@ -73,7 +72,7 @@ function updateChart() {
             startDate: startDateField.value,
             endDate: endDateField.value,
         },
-        function(response, textStatus) {
+        function (response, textStatus) {
             // TODO: gracefully handle error
             chartContainer.classList.remove('spinner');
 
@@ -87,7 +86,18 @@ function updateChart() {
                         height: 220,
                         type: 'line',
                         toolbar: {
-                            show: true
+                            show: true,
+                            offsetX: 0,
+                            offsetY: 15,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: false,
+                                zoomin: false,
+                                zoomout: false,
+                                pan: false,
+                                reset: false,
+                            },
                         },
                         animations: {
                             speed: 350,

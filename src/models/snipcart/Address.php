@@ -86,9 +86,14 @@ class Address extends \craft\base\Model
     public $vatNumber;
 
     /**
-     * @var string|null Used only via Settings->shipFrom; not part of Snipcart's own API.
+     * @var string|null Used only via Settings->shipFrom; not part of Snipcart’s own API.
      */
     public $email;
+
+    /**
+     * @var bool
+     */
+    public $hasMinimalRequiredInfo;
 
     /**
      * @return string|null

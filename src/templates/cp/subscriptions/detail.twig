@@ -14,10 +14,7 @@
 ] %}
 
 {#
-TODO:
-- support pause
-- support resume
-- detail invoices
+TODO: support pause + resume
 #}
 
 {% set isCancelled = subscription.cancelledOn is not empty %}
@@ -31,16 +28,10 @@ TODO:
         {% endif %}
 
         <div class="detail-columns block px-3 mb-8">
-            <div class="flex-wrapper -mx-6">
-                <div class="w-1/2 mx-3">
+            <div class="md:flex -mx-6">
+                <div class="w-full md:w-1/2 mx-3">
                     <div class="inner">
-                        <h3>{{ "Subscription Details"|t }}</h3>
-
-                        <p class="text-muted">
-                            {{ "Created"|t }} {{ subscription.creationDate | date('long') }}, {{ "last updated"|t }} {{ subscription.modificationDate | datetime('short') }}
-                        </p>
-
-                        <table class="data fullwidth fixed-layout">
+                        <table class="data fullwidth fixed-layout -mx-3">
                             <tbody>
                                 <tr>
                                     <th class="light">{{ "Name"|t }}</th>
@@ -81,39 +72,6 @@ TODO:
                                     </tr>
                                 {% endif %}
                                 <tr>
-                                    <th class="light">{{ "Recurring Shipping"|t }}</th>
-                                    <td>{{ subscription.recurringShipping ? "yes"|t : "no"|t }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="light">{{ "Shipping Charged"|t }}</th>
-                                    <td>{{ subscription.shippingCharged ? "yes"|t : "no"|t }}</td>
-                                </tr>
-                                {% if subscription.cancelledOn %}
-                                    <tr>
-                                        <th class="light">{{ "Cancelled On"|t }}</th>
-                                        <td>{{ subscription.cancelledOn | date('long') }}</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="w-1/2 mx-3">
-                    <div class="inner">
-                        <h3>{{ "Payments"|t }}</h3>
-
-                        <p class="text-muted">
-                            {{ "Next billing"|t }}
-                            {% if subscription.nextBillingDate %}
-                                {{ subscription.nextBillingDate | date('long') }}
-                            {% else %}
-                                {{ "n/a"|t }}
-                            {% endif %}
-                        </p>
-
-                        <table class="data fullwidth fixed-layout">
-                            <tbody>
-                                <tr>
                                     <th class="light">{{ "Amount"|t }}</th>
                                     <td>{{ craft.snipcart.formatCurrency(subscription.amount) }}</td>
                                 </tr>
@@ -128,33 +86,68 @@ TODO:
                                 {% if subscription.firstInvoiceReceivedOn %}
                                     <tr>
                                         <th class="light">{{ "First Invoice Received"|t }}</th>
-                                        <td>{{ subscription.firstInvoiceReceivedOn | date('long') }}</td>
+                                        <td>{{ subscription.firstInvoiceReceivedOn|date('long') }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th class="light">{{ "Shipping Charged"|t }}</th>
+                                    <td>
+                                        {% if subscription.shippingCharged %}
+                                            <span data-icon="check"
+                                                  title="{{ 'Yes'|t('snipcart') }}"></span>
+                                        {% else %}
+                                            <span data-icon="remove"
+                                                  title="{{ 'No'|t('snipcart') }}"></span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="light">{{ "Recurring Shipping"|t }}</th>
+                                    <td>
+                                        {% if subscription.recurringShipping %}
+                                            <span data-icon="check"
+                                                  title="{{ 'Yes'|t('snipcart') }}"></span>
+                                        {% else %}
+                                            <span data-icon="remove"
+                                                  title="{{ 'No'|t('snipcart') }}"></span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if subscription.cancelledOn %}
+                                    <tr>
+                                        <th class="light">{{ "Cancelled On"|t }}</th>
+                                        <td>{{ subscription.cancelledOn|date('long') }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if subscription.gatewayId %}
+                                    <tr>
+                                        <th class="light">{{ "Gateway Subscription ID"|t }}</th>
+                                        <td><code>{{ subscription.gatewayId }}</code></td>
                                     </tr>
                                 {% endif %}
                             </tbody>
                         </table>
-
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 mx-3 mt-6 md:mt-2">
+                    <div class="inner">
                         {% if subscription.upcomingPayments %}
-                            <h3 class="mt-8">{{ "Upcoming Payments"|t }}</h3>
+                            <h2>{{ "Upcoming Payments"|t }}</h2>
 
-                            <table class="data fullwidth">
+                            <table class="fullwidth">
                                 <thead>
-                                    <th>{{ "Subtotal"|t }}</th>
-                                    <th>{{ "Taxable"|t }}</th>
+                                    <th>{{ "Date"|t }}</th>
                                     <th>{{ "Total"|t }}</th>
-                                    <th>{{ "Payment Method"|t }}</th>
                                     <th>{{ "Taxes"|t }}</th>
                                     <th>{{ "Shipping"|t }}</th>
                                 </thead>
                                 <tbody>
                                     {% for payment in subscription.upcomingPayments %}
                                     <tr>
-                                        <td>{{ craft.snipcart.formatCurrency(payment.subtotal) }}</td>
-                                        <td>{{ craft.snipcart.formatCurrency(payment.taxableTotal) }}</td>
-                                        <td>{{ craft.snipcart.formatCurrency(payment.total) }}</td>
-                                        <td>{{ payment.paymentMethod }}</td>
+                                        <td>{{ payment.date|date('short') }}</td>
+                                        <td title="{{ 'subtotal'|t }}: {{ craft.snipcart.formatCurrency(payment.subtotal) }}, {{ 'taxable total'|t }}: {{ craft.snipcart.formatCurrency(payment.taxableTotal) }}">{{ craft.snipcart.formatCurrency(payment.total) }}</td>
                                         <td>
-                                            {{ payment.taxes | join("\n") | nl2br }}
+                                            {{ payment.taxes|join("\n")|nl2br }}
                                         </td>
                                         <td>{{ payment.shipping ? craft.snipcart.formatCurrency(payment.shipping) : '' }}</td>
                                     </tr>
@@ -162,12 +155,43 @@ TODO:
                                 </tbody>
                             </table>
                         {% endif %}
+
+                        {% set invoices = subscription.getInvoices() %}
+
+                        {% if invoices|length %}
+                            <div class="mt-8">
+                                <h2>{{ "Invoices"|t }}</h2>
+
+                                <table class="fullwidth">
+                                    <thead>
+                                    <th>{{ "Number"|t }}</th>
+                                    <th>{{ "Date"|t }}</th>
+                                    <th>{{ "Amount"|t }}</th>
+                                    <th>{{ "Status"|t }}</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for invoice in subscription.getInvoices() %}
+                                        <tr>
+                                            <td><a href="{{ cpUrl('snipcart/order/' ~ invoice.id) }}">{{ invoice.number }}</a></td>
+                                            <td>{{ invoice.creationDate|date('short') }}</td>
+                                            <td>{{ craft.snipcart.formatCurrency(invoice.amount) }}</td>
+                                            <td>{{ invoice.paid ? 'Paid'|t : 'Unpaid'|t }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
 
-        <a href="{{ subscription.dashboardUrl() }}" class="btn mt-8" target="_blank">
+        <p class="text-muted mt-8">
+            {{ "Created"|t }} {{ subscription.creationDate|date('long') }}, {{ "last updated"|t }} {{ subscription.modificationDate|datetime('short') }}
+        </p>
+
+        <a href="{{ subscription.dashboardUrl() }}" class="btn" target="_blank">
             {{- "View in Snipcart Dashboard"|t -}}
         </a>
 

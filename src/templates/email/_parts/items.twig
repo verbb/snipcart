@@ -1,4 +1,4 @@
-{# @var order \workingconcept\snipcart\models\Order #}
+{# @var order \workingconcept\snipcart\models\snipcart\Order #}
 {# @var craft \Craft #}
 {# @var shipStationOrder \workingconcept\snipcart\models\shipstation\Order as ShipStationOrder #}
 {#
@@ -9,32 +9,46 @@ Order table with items, shipping, and tax details.
 @param  ShipStationOrder  shipStationOrder    ShipStation Order model, if relevant
 
 #}
+{% set hasMultiQuantityItems = false %}
+{% for item in order.items %}
+    {% if item.quantity > 1 %}
+        {% set hasMultiQuantityItems = true %}
+    {% endif %}
+{% endfor %}
 <table class="content-table">
     <thead>
-    <th class="align-left no-left-margin first-cell-padding">
-        {{- "Qty"|t -}}
-    </th>
-    <th class="align-left normal-cell-padding" width="50%">
-        {{- "Item"|t -}}
-    </th>
-    <th class="align-right normal-cell-padding nowrap">
-        {{- "Price"|t -}}
-    </th>
-    <th class="align-right no-right-margin last-cell-padding nowrap">
-        {{- "Subtotal"|t -}}
-    </th>
+        <th class="align-left no-left-margin first-cell-padding">
+            {{- "Qty"|t -}}
+        </th>
+        <th class="align-left normal-cell-padding" width="50%">
+            {{- "Item"|t -}}
+        </th>
+        <th class="align-right normal-cell-padding nowrap">
+            {{- "Price"|t -}}
+        </th>
+        <th class="align-right no-right-margin last-cell-padding nowrap">
+            {{- "Subtotal"|t -}}
+        </th>
     </thead>
     <tbody>
     {% for item in order.items %}
-        {# @var item \workingconcept\snipcart\models\Item #}
+        {# @var item \workingconcept\snipcart\models\snipcart\Item #}
         <tr>
             <td class="align-left first-cell-padding">
                 {{- item.quantity -}}
             </td>
             <td class="align-left normal-cell-padding" width="50%">
                 {{ item.name }}
+                {% if item.paymentSchedule and item.paymentSchedule.interval %}
+                    <p class="no-padding no-top-margin small">
+                        {{- 'Subscription: every {intervalLabel}'|t(params = {
+                            intervalLabel: item.paymentSchedule.getIntervalLabel()
+                        }) -}}
+                    </p>
+                {% endif %}
                 {% if item.customFields | length -%}
-                    <ul class="no-padding reset-list" style="margin: 4px 0 0 0; list-style-type: none; padding: 0;">
+                    <ul class="no-padding reset-list"
+                        style="margin: 4px 0 0 0; list-style-type: none; padding: 0;">
                         {%- for field in item.customFields -%}
                             <li class="muted small no-left-margin">
                                 {{- field.name }}: {{ field.value -}}
@@ -43,8 +57,12 @@ Order table with items, shipping, and tax details.
                     </ul>
                 {%- endif -%}
             </td>
-            <td class="align-right normal-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.unitPrice, order.currency) }}</nobr></td>
-            <td class="align-right last-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(item.totalPrice, order.currency) }}</nobr></td>
+            <td class="align-right normal-cell-padding nowrap">
+                <nobr>{{ craft.snipcart.formatCurrency(item.unitPrice, order.currency) }}</nobr>
+            </td>
+            <td class="align-right last-cell-padding nowrap">
+                <nobr>{{ craft.snipcart.formatCurrency(item.totalPrice, order.currency) }}</nobr>
+            </td>
         </tr>
     {% endfor %}
     <tr>
@@ -54,13 +72,17 @@ Order table with items, shipping, and tax details.
                 {{- (shipStationOrder.weight.value ?? order.totalWeight) | number_format }} {{ "grams"|t -}}
             </span>
         </td>
-        <td class="align-right last-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(order.shippingFees, order.currency) }}</nobr></td>
+        <td class="align-right last-cell-padding nowrap">
+            <nobr>{{ craft.snipcart.formatCurrency(order.shippingFees, order.currency) }}</nobr>
+        </td>
     </tr>
     <tr>
         <td class="subtotal align-right first-cell-padding" colspan="3">
             {{- "Tax"|t -}}
         </td>
-        <td class="align-right last-cell-padding nowrap"><nobr>{{ craft.snipcart.formatCurrency(order.taxesTotal, order.currency) }}</nobr></td>
+        <td class="align-right last-cell-padding nowrap">
+            <nobr>{{ craft.snipcart.formatCurrency(order.taxesTotal, order.currency) }}</nobr>
+        </td>
     </tr>
     <tr>
         <td class="subtotal align-right first-cell-padding" colspan="3">
@@ -70,7 +92,9 @@ Order table with items, shipping, and tax details.
             </span>
         </td>
         <td class="align-right last-cell-padding nowrap">
-            <nobr><b>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</b></nobr>
+            <nobr>
+                <b>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</b>
+            </nobr>
         </td>
     </tr>
     </tbody>
