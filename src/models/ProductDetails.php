@@ -448,7 +448,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Returns true if the given attribute's value is unique among
+     * Returns true if the given attribute’s value is unique among
      * ProductDetailsRecord rows.
      *
      * This tests uniqueness of a SKU in Craft<=3.1.
@@ -498,13 +498,17 @@ class ProductDetails extends \craft\base\Model
             ->all();
 
         /**
-         * Check each published Element to see if it's a variation of the current
+         * Check each published Element to see if it’s a variation of the current
          * one or a totally separate one with a clashing SKU.
          */
         $currentElement = $this->getElement();
 
         foreach ($potentialDuplicates as $record) {
             $recordElement = Craft::$app->elements->getElementById($record->elementId);
+
+            if ($recordElement === null) {
+                continue;
+            }
 
             if ($currentElement === null ||
                 get_class($recordElement) !== get_class($currentElement)
@@ -516,13 +520,13 @@ class ProductDetails extends \craft\base\Model
             }
 
             if (is_a($recordElement, Entry::class)) {
-                // Don’t worry about Elements that aren’t published.
+                // Don’t worry about unpublished Elements.
                 if ($recordElement->revisionId === null) {
                     continue;
                 }
 
                 // If a different Entry is using the SKU, that’s a conflict.
-                if ($recordElement->sourceId !== $currentElement->sourceId) {
+                if ((int)$recordElement->sourceId !== (int)$currentElement->sourceId) {
                     $hasConflict = true;
                     break;
                 }
@@ -530,14 +534,14 @@ class ProductDetails extends \craft\base\Model
 
             if (is_a($recordElement, MatrixBlock::class)) {
                 // A duplicate in a different field is a conflict.
-                if ($recordElement->fieldId !== $currentElement->fieldId) {
+                if ((int)$recordElement->fieldId !== (int)$currentElement->fieldId) {
                     $hasConflict = true;
                     break;
                 }
 
                 // Duplicate within same Matrix field on the same Entry.
                 $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
-                $sameOwner = $recordElement->ownerId === $currentElement->ownerId;
+                $sameOwner = (int)$recordElement->ownerId === (int)$currentElement->ownerId;
 
                 if ($sameSource and $sameOwner) {
                     $hasConflict = true;
