@@ -571,11 +571,11 @@ class ProductDetails extends \craft\base\Model
         $view = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
 
-        Craft::$app->getView()->setTemplateMode($view::TEMPLATE_MODE_CP);
+        $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
-        $html = Craft::$app->getView()->renderTemplate($template, $data);
+        $html = $view->renderTemplate($template, $data);
 
-        Craft::$app->getView()->setTemplateMode($templateMode);
+        $view->setTemplateMode($templateMode);
 
         return TemplateHelper::raw($html);
     }
