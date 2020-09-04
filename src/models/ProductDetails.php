@@ -476,7 +476,7 @@ class ProductDetails extends \craft\base\Model
      * @param $attribute
      *
      * @return bool
-     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\base\InvalidConfigException|\yii\base\ExitException
      */
     private function skuIsUniqueElementAttribute($attribute): bool
     {
@@ -504,14 +504,17 @@ class ProductDetails extends \craft\base\Model
         $currentElement = $this->getElement();
 
         foreach ($potentialDuplicates as $record) {
-            $recordElement = Craft::$app->elements->getElementById($record->elementId);
+            $duplicateElement = Craft::$app->elements->getElementById($record->elementId);
 
-            if ($recordElement === null) {
+            // Let’s be paranoid.
+            if ($duplicateElement === null ||
+                is_a($duplicateElement, \craft\base\ElementInterface::class) === false
+            ) {
                 continue;
             }
 
             if ($currentElement === null ||
-                get_class($recordElement) !== get_class($currentElement)
+                get_class($duplicateElement) !== get_class($currentElement)
             ) {
                 // Different element types with the same SKU are a conflict, as
                 // are new and existing.
@@ -519,29 +522,29 @@ class ProductDetails extends \craft\base\Model
                 break;
             }
 
-            if (is_a($recordElement, Entry::class)) {
+            if (is_a($duplicateElement, Entry::class)) {
                 // Don’t worry about unpublished Elements.
-                if ($recordElement->revisionId === null) {
+                if ($duplicateElement->revisionId === null) {
                     continue;
                 }
 
                 // If a different Entry is using the SKU, that’s a conflict.
-                if ((int)$recordElement->sourceId !== (int)$currentElement->sourceId) {
+                if ((int)$duplicateElement->sourceId !== (int)$currentElement->sourceId) {
                     $hasConflict = true;
                     break;
                 }
             }
 
-            if (is_a($recordElement, MatrixBlock::class)) {
+            if (is_a($duplicateElement, MatrixBlock::class)) {
                 // A duplicate in a different field is a conflict.
-                if ((int)$recordElement->fieldId !== (int)$currentElement->fieldId) {
+                if ((int)$duplicateElement->fieldId !== (int)$currentElement->fieldId) {
                     $hasConflict = true;
                     break;
                 }
 
                 // Duplicate within same Matrix field on the same Entry.
-                $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
-                $sameOwner = (int)$recordElement->ownerId === (int)$currentElement->ownerId;
+                $sameSource = $duplicateElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
+                $sameOwner = (int)$duplicateElement->ownerId === (int)$currentElement->ownerId;
 
                 if ($sameSource and $sameOwner) {
                     $hasConflict = true;
@@ -550,7 +553,7 @@ class ProductDetails extends \craft\base\Model
             }
         }
 
-        return ! $hasConflict;
+        return $hasConflict === false;
     }
 
     /**
