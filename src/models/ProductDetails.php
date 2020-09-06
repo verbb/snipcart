@@ -448,7 +448,7 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
-     * Returns true if the given attribute's value is unique among
+     * Returns true if the given attribute’s value is unique among
      * ProductDetailsRecord rows.
      *
      * This tests uniqueness of a SKU in Craft<=3.1.
@@ -476,7 +476,7 @@ class ProductDetails extends \craft\base\Model
      * @param $attribute
      *
      * @return bool
-     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\base\InvalidConfigException|\yii\base\ExitException
      */
     private function skuIsUniqueElementAttribute($attribute): bool
     {
@@ -498,16 +498,23 @@ class ProductDetails extends \craft\base\Model
             ->all();
 
         /**
-         * Check each published Element to see if it's a variation of the current
+         * Check each published Element to see if it’s a variation of the current
          * one or a totally separate one with a clashing SKU.
          */
         $currentElement = $this->getElement();
 
         foreach ($potentialDuplicates as $record) {
-            $recordElement = Craft::$app->elements->getElementById($record->elementId);
+            $duplicateElement = Craft::$app->elements->getElementById($record->elementId);
+
+            // Let’s be paranoid.
+            if ($duplicateElement === null ||
+                is_a($duplicateElement, \craft\base\ElementInterface::class) === false
+            ) {
+                continue;
+            }
 
             if ($currentElement === null ||
-                get_class($recordElement) !== get_class($currentElement)
+                get_class($duplicateElement) !== get_class($currentElement)
             ) {
                 // Different element types with the same SKU are a conflict, as
                 // are new and existing.
@@ -515,29 +522,29 @@ class ProductDetails extends \craft\base\Model
                 break;
             }
 
-            if (is_a($recordElement, Entry::class)) {
-                // Don’t worry about Elements that aren’t published.
-                if ($recordElement->revisionId === null) {
+            if (is_a($duplicateElement, Entry::class)) {
+                // Don’t worry about unpublished Elements.
+                if ($duplicateElement->revisionId === null) {
                     continue;
                 }
 
                 // If a different Entry is using the SKU, that’s a conflict.
-                if ($recordElement->sourceId !== $currentElement->sourceId) {
+                if ((int)$duplicateElement->sourceId !== (int)$currentElement->sourceId) {
                     $hasConflict = true;
                     break;
                 }
             }
 
-            if (is_a($recordElement, MatrixBlock::class)) {
+            if (is_a($duplicateElement, MatrixBlock::class)) {
                 // A duplicate in a different field is a conflict.
-                if ($recordElement->fieldId !== $currentElement->fieldId) {
+                if ((int)$duplicateElement->fieldId !== (int)$currentElement->fieldId) {
                     $hasConflict = true;
                     break;
                 }
 
                 // Duplicate within same Matrix field on the same Entry.
-                $sameSource = $recordElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
-                $sameOwner = $recordElement->ownerId === $currentElement->ownerId;
+                $sameSource = $duplicateElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
+                $sameOwner = (int)$duplicateElement->ownerId === (int)$currentElement->ownerId;
 
                 if ($sameSource and $sameOwner) {
                     $hasConflict = true;
@@ -546,10 +553,12 @@ class ProductDetails extends \craft\base\Model
             }
         }
 
-        return ! $hasConflict;
+        return $hasConflict === false;
     }
 
     /**
+     * Renders plugin Twig templates with provided data.
+     *
      * @param $template
      * @param $data
      *
@@ -564,13 +573,12 @@ class ProductDetails extends \craft\base\Model
         $view = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
 
-        Craft::$app->getView()->setTemplateMode($view::TEMPLATE_MODE_CP);
+        $view->setTemplateMode($view::TEMPLATE_MODE_CP);
 
-        $html = Craft::$app->getView()->renderTemplate($template, $data);
+        $html = $view->renderTemplate($template, $data);
 
-        Craft::$app->getView()->setTemplateMode($templateMode);
+        $view->setTemplateMode($templateMode);
 
         return TemplateHelper::raw($html);
     }
-
 }
