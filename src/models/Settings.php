@@ -188,6 +188,22 @@ class Settings extends Model
     }
 
     /**
+     * Returns an indexed array of store currency options.
+     *
+     * @return array
+     */
+    public static function getCurrencySymbols(): array
+    {
+        return [
+            self::CURRENCY_USD => Craft::t('snipcart', '$'),
+            self::CURRENCY_CAD => Craft::t('snipcart', '$'),
+            self::CURRENCY_EUR => Craft::t('snipcart', '€'),
+            self::CURRENCY_GBP => Craft::t('snipcart', '£'),
+            self::CURRENCY_CHF => Craft::t('snipcart', 'CHF'),
+        ];
+    }
+
+    /**
      * Returns the stored public API key value depending on testMode.
      *
      * @return string
@@ -386,19 +402,13 @@ class Settings extends Model
      */
     public function getDefaultCurrencySymbol(): string
     {
-        switch ($this->getDefaultCurrency()) {
-            case self::CURRENCY_USD:
-            case self::CURRENCY_CAD:
-                return '$';
-            case self::CURRENCY_EUR:
-                return '€';
-            case self::CURRENCY_GBP:
-                return '£';
-            case self::CURRENCY_CHF:
-                return 'CHF';
-            default:
-                return '';
+        $currency = $this->getDefaultCurrency();
+
+        if ( ! in_array($currency, self::getCurrencySymbols(), true)) {
+            return '';
         }
+
+        return self::getCurrencySymbols()[$currency];
     }
 
     /**

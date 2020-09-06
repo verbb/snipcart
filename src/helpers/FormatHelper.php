@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\helpers;
 
 use DateTimeImmutable;
+use workingconcept\snipcart\models\Settings;
 use yii\base\InvalidConfigException;
 
 class FormatHelper
@@ -28,18 +29,56 @@ class FormatHelper
     public static function formatCurrency($value, $currencyType = null): string
     {
         if (is_string($value)) {
-            // do we have a currency symbol?
-            $includesSymbol = strpos($value, '$') !== false
-                || strpos($value, '€') !== false
-                || strpos($value, '£') !== false
-                || strpos($value, 'CHF') !== false;
+            $includesSymbol = self::containsSupportedCurrencySymbol($value);
 
-            if ($includesSymbol) {
+            if ($currencyType !== null) {
+                $includesSpecifiedSymbol = self::containsSupportedCurrencySymbol(
+                    $value,
+                    $currencyType
+                );
+            }
+
+            if (
+                $includesSymbol &&
+                ($currencyType === null || $includesSpecifiedSymbol)
+            ) {
                 return $value;
             }
+
+            $value = self::normalizeCurrencyValue($value);
         }
 
         return \Craft::$app->formatter->asCurrency($value, $currencyType);
+    }
+
+    /**
+     * Returns `true` if the provided string contains supported `$currencyType`
+     * if provided or *any* supported currency type symbol otherwise.
+     *
+     * @param  string       $value
+     * @param  string|null  $currencyType
+     *
+     * @return bool
+     */
+    public static function containsSupportedCurrencySymbol($value, $currencyType = null): bool
+    {
+        $supportedSymbols = Settings::getCurrencySymbols();
+
+        if ($currencyType) {
+            if ( ! array_key_exists($currencyType, $supportedSymbols)) {
+                return false;
+            }
+
+            return strpos($value, $supportedSymbols[$currencyType]) !== false;
+        }
+
+        foreach ($supportedSymbols as $currency => $symbol) {
+            if (strpos($value, $symbol) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -78,5 +117,20 @@ class FormatHelper
         }
 
         return '<1h';
+    }
+
+    /**
+     * Strip anything other than numbers and decimals from the provided string.
+     *
+     * @param $value
+     *
+     * @return string|string[]|null
+     */
+    private static function normalizeCurrencyValue($value) {
+        return preg_replace(
+            "/[^0-9\.]/",
+            "",
+            $value
+        );
     }
 }
