@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.4.3 - 2020-09-06
+### Fixed
+- Fixed a bug that could have misidentified duplicate SKUs in Craft 3.5. ([#21](https://github.com/workingconcept/snipcart-craft-plugin/issues/21))
+- Updated Codeception setup, added simple unit tests.
+### Changed
+- Refactored format helper to do a better job returning an explicitly-requested currency’s symbol.
+
 ## 1.4.2 - 2020-08-29
 ### Added
 - Exposed order item subscription details in control panel views.
