@@ -26,7 +26,7 @@ class DiscountsController extends \craft\web\Controller
         return $this->renderTemplate(
             'snipcart/cp/discounts/index',
             [
-                'discounts'  => Snipcart::$plugin->discounts->listDiscounts()
+                'discounts' => Snipcart::$plugin->discounts->listDiscounts()
             ]
         );
     }
