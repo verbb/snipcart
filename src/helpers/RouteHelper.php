@@ -32,5 +32,4 @@ class RouteHelper
             'snipcart/subscription/<subscriptionId>' => 'snipcart/subscriptions/detail',
         ];
     }
-
 }

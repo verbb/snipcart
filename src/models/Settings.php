@@ -428,9 +428,6 @@ class Settings extends Model
         return $this->_providers;
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Returns `true` if the setting has a value and that value isn't
      * simply an unparsed environment variable.
@@ -515,5 +512,5 @@ class Settings extends Model
 
         return false;
     }
-
 }
+

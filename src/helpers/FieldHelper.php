@@ -70,6 +70,4 @@ class FieldHelper
 
         return null;
     }
-
-
 }

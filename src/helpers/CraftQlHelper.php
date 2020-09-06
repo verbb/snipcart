@@ -82,5 +82,4 @@ class CraftQlHelper
 
         return $outputSchema;
     }
-
 }

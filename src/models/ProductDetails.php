@@ -557,6 +557,8 @@ class ProductDetails extends \craft\base\Model
     }
 
     /**
+     * Renders plugin Twig templates with provided data.
+     *
      * @param $template
      * @param $data
      *
@@ -579,5 +581,4 @@ class ProductDetails extends \craft\base\Model
 
         return TemplateHelper::raw($html);
     }
-
 }
