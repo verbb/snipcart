@@ -1,3 +1,4 @@
+actor: Tester
 paths:
   tests: tests
   output: tests/_output
@@ -12,7 +13,24 @@ coverage:
   exclude:
     - src/icon.svg
     - src/icon-mask.svg
-actor_suffix: Tester
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
+params:
+  - env
+  - tests/.env
+modules:
+  config:
+    \craft\test\Craft:
+      configFile: 'tests/_craft/config/test.php'
+      entryUrl: 'http://snipcart-craft-plugin.test/index.php'
+      projectConfig: {}
+      migrations: []
+      plugins:
+        commerce:
+          class: '\workingconcept\snipcart\Snipcart'
+          handle: snipcart
+      cleanup: true
+      transaction: true
+      dbSetup: {clean: true, setupCraft: true}
+      fullMock: false
