@@ -21,13 +21,6 @@ jobs:
         #operating-system: [ubuntu-latest, windows-latest, macos-latest]
         #php-versions: ['7.1', '7.2', '7.3', '7.4']
     env:
-        DB_DSN: mysql:host=127.0.0.1;port=${{ job.services.mysql.ports['3306'] }};dbname=test
-        DB_USER: root
-        DB_PASSWORD: password
-        SECURITY_KEY: abcde12345
-        DEFAULT_SITE_URL: "http://snipcart-craft-plugin.test/index.php"
-        FROM_EMAIL_NAME: Craft CMS
-        FROM_EMAIL_ADDRESS: "info@craftcms.com"
         DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
         
     services:
@@ -85,3 +78,11 @@ jobs:
     
     - name: Test with Codeception
       run: vendor/bin/codecept run
+      env:
+        DB_DSN: mysql:host=127.0.0.1;port=${{ job.services.mysql.ports['3306'] }};dbname=test
+        DB_USER: root
+        DB_PASSWORD: password
+        SECURITY_KEY: abcde12345
+        DEFAULT_SITE_URL: "http://snipcart-craft-plugin.test/index.php"
+        FROM_EMAIL_NAME: Craft CMS
+        FROM_EMAIL_ADDRESS: "info@craftcms.com"
