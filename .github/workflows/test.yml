@@ -86,4 +86,5 @@ jobs:
         DEFAULT_SITE_URL: "http://snipcart-craft-plugin.test/index.php"
         FROM_EMAIL_NAME: Craft CMS
         FROM_EMAIL_ADDRESS: "info@craftcms.com"
-        CRAFT_TESTS_PATH: $HOME
+        CRAFT_TESTS_PATH: $HOME/tests
+        CRAFT_STORAGE_PATH: $HOME/tests/_craft/storage
