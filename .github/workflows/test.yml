@@ -16,8 +16,10 @@ jobs:
     
     strategy:
       matrix:
-        operating-system: [ubuntu-latest, windows-latest, macos-latest]
-        php-versions: ['7.1', '7.2', '7.3', '7.4']
+        operating-system: [ubuntu-latest]
+        php-versions: ['7.4']
+        #operating-system: [ubuntu-latest, windows-latest, macos-latest]
+        #php-versions: ['7.1', '7.2', '7.3', '7.4']
     env:
         DB_DSN: "mysql:host=127.0.0.1;port=3306;dbname=test"
         DB_USER: root
