@@ -31,7 +31,7 @@ modules:
       projectConfig: {}
       migrations: []
       plugins:
-        commerce:
+        snipcart:
           class: '\workingconcept\snipcart\Snipcart'
           handle: snipcart
       cleanup: true

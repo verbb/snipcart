@@ -73,6 +73,5 @@ class FormatHelperTest extends \Codeception\Test\Unit
                 $testValue[1]
             );
         }
-
     }
 }
