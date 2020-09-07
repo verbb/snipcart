@@ -77,7 +77,7 @@ jobs:
       run: cp tests/.env.example.mysql tests/.env
     
     - name: Test with Codeception
-      run: vendor/bin/codecept run
+      run: vendor/bin/codecept run --debug -vvv
       env:
         DB_DSN: mysql:host=127.0.0.1;port=${{ job.services.mysql.ports['3306'] }};dbname=test
         DB_USER: root
