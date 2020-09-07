@@ -10,8 +10,8 @@ on:
       - master
 
 jobs:
-  build:
-
+  test:
+    name: Codeception Tests (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     
     strategy:
