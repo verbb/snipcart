@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: Codeception Tests (PHP ${{ matrix.php-versions }})
+    name: Codeception Tests (PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }})
     runs-on: ubuntu-latest
     
     strategy:
