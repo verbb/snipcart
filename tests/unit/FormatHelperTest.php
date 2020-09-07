@@ -28,7 +28,8 @@ class FormatHelperTest extends \Codeception\Test\Unit
             [1, 'CA$1.00', Settings::CURRENCY_CAD],
             [1, '€1.00', Settings::CURRENCY_EUR],
             [1, '£1.00', Settings::CURRENCY_GBP],
-            [1, 'CHF 1.00', Settings::CURRENCY_CHF],
+            // non-breaking space after CHF
+            [1, "CHF\xC2\xA01.00", Settings::CURRENCY_CHF],
             ['€1.00', '$1.00', Settings::CURRENCY_USD],
             ['1,000', '$1,000.00', Settings::CURRENCY_USD],
         ];
