@@ -77,7 +77,7 @@ jobs:
       run: cp tests/.env.example.mysql tests/.env
     
     - name: Test with Codeception
-      run: sudo vendor/bin/codecept run
+      run: vendor/bin/codecept run
       env:
         DB_DSN: mysql:host=127.0.0.1;port=${{ job.services.mysql.ports['3306'] }};dbname=test
         DB_USER: root
@@ -86,4 +86,4 @@ jobs:
         DEFAULT_SITE_URL: "http://snipcart-craft-plugin.test/index.php"
         FROM_EMAIL_NAME: Craft CMS
         FROM_EMAIL_ADDRESS: "info@craftcms.com"
-        CRAFT_TESTS_PATH: $HOME/tests
+        CRAFT_TESTS_PATH: $HOME
