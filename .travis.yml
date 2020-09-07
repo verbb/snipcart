@@ -1,6 +1,6 @@
 language: php
+os: linux
 dist: bionic
-sudo: required
 group: edge
 env:
   global:
@@ -11,10 +11,17 @@ branches:
   - develop
 services:
 - mysql
-matrix:
+- postgres
+jobs:
   fast_finish: true
   include:
   - php: 7.4
+    env: DB=mysql
+  - php: 7.3
+    env: DB=mysql
+  - php: 7.2
+    env: DB=mysql
+  - php: 7.1
     env: DB=mysql
 cache:
   directories:
