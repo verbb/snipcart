@@ -11,11 +11,15 @@ coverage:
   include:
     - src/*
   exclude:
-    - src/icon.svg
-    - src/icon-mask.svg
-extensions:
-  enabled:
-    - Codeception\Extension\RunFailed
+    - src/etc/*
+    - src/migrations/*
+    - src/templates/*
+    - src/translations/*
+    - src/web/assets/*
+    - docs/*
+    - templates/*
+    - tests/*
+    - vendor/*
 params:
   - env
   - tests/.env
