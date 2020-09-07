@@ -16,10 +16,8 @@ jobs:
     
     strategy:
       matrix:
-        operating-system: [ubuntu-latest]
-        php-versions: ['7.4']
-        #operating-system: [ubuntu-latest, windows-latest, macos-latest]
-        #php-versions: ['7.1', '7.2', '7.3', '7.4']
+        operating-system: [ubuntu-latest, windows-latest, macos-latest]
+        php-versions: ['7.1', '7.2', '7.3', '7.4']
     env:
         DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
         
@@ -56,21 +54,7 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Get composer cache directory
-      id: composercache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.composercache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
     - name: Install Composer dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Prepare the application
