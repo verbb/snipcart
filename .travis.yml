@@ -5,6 +5,7 @@ group: edge
 env:
   global:
   - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+  - CRAFT_TESTS_PATH=$TRAVIS_BUILD_DIR
 branches:
   only:
   - master
