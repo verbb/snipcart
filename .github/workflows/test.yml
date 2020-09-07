@@ -51,8 +51,7 @@ jobs:
         tools: php-cs-fixer, phpunit
     
     - name: Start mysql service
-      run: | 
-       sudo /etc/init.d/mysql start
+      run: sudo /etc/init.d/mysql start
 
     - name: Validate composer.json and composer.lock
       run: composer validate
@@ -87,3 +86,4 @@ jobs:
         DEFAULT_SITE_URL: "http://snipcart-craft-plugin.test/index.php"
         FROM_EMAIL_NAME: Craft CMS
         FROM_EMAIL_ADDRESS: "info@craftcms.com"
+        CRAFT_TESTS_PATH: ${{ HOME}}/tests
