@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 2020-09-08
 ### Fixed
 - Fixed a bug that kept the Product Details currency symbol from being displayed.
 
