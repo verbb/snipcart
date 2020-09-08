@@ -404,7 +404,7 @@ class Settings extends Model
     {
         $currency = $this->getDefaultCurrency();
 
-        if ( ! in_array($currency, self::getCurrencySymbols(), true)) {
+        if ( ! array_key_exists($currency, self::getCurrencySymbols())) {
             return '';
         }
 

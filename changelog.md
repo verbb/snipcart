@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## Unreleased
+### Fixed
+- Fixed a bug that kept the Product Details currency symbol from being displayed.
+
 ## 1.4.3 - 2020-09-06
 ### Fixed
 - Fixed a bug that could have misidentified duplicate SKUs in Craft 3.5. ([#21](https://github.com/workingconcept/snipcart-craft-plugin/issues/21))
