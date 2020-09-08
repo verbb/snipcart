@@ -10,15 +10,17 @@ use craft\test\TestSetup;
 ini_set('date.timezone', 'UTC');
 date_default_timezone_set('UTC');
 
-// Use the current installation of Craft
-define('CRAFT_STORAGE_PATH', __DIR__ . DIRECTORY_SEPARATOR . '_craft' . DIRECTORY_SEPARATOR . 'storage');
-define('CRAFT_TEMPLATES_PATH', __DIR__ . DIRECTORY_SEPARATOR . '_craft' . DIRECTORY_SEPARATOR . 'templates');
-define('CRAFT_CONFIG_PATH', __DIR__ . DIRECTORY_SEPARATOR . '_craft' . DIRECTORY_SEPARATOR . 'config');
-define('CRAFT_MIGRATIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . '_craft' . DIRECTORY_SEPARATOR . 'migrations');
-define('CRAFT_TRANSLATIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . '_craft' . DIRECTORY_SEPARATOR . 'translations');
+define('CRAFT_TESTS_PATH', __DIR__);
+define('CRAFT_STORAGE_PATH', __DIR__ . '/_craft/storage');
+define('CRAFT_TEMPLATES_PATH', __DIR__ . '/_craft/templates');
+define('CRAFT_CONFIG_PATH', __DIR__ . '/_craft/config');
+define('CRAFT_MIGRATIONS_PATH', __DIR__ . '/_craft/migrations');
+define('CRAFT_TRANSLATIONS_PATH', __DIR__ . '/_craft/translations');
 define('CRAFT_VENDOR_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor');
-define('CRAFT_TESTS_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
 $devMode = true;
 
 TestSetup::configureCraft();
+
+// Set the @webroot alias so that the cpresources folder is created in the correct directory
+Craft::setAlias('@webroot', __DIR__ . '/_craft/web');
