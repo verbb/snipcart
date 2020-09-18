@@ -36,9 +36,19 @@ class Refund extends \craft\base\Model
     public $refundedByPaymentGateway;
 
     /**
-     * @var bool
+     * @var bool Whether the customer should be notified if this is a new refund.
      */
     public $notifyCustomer;
+
+    /**
+     * @var bool Whether or not the customer has been notified by email about the refund.
+     */
+    public $notifiedCustomerByEmail;
+
+    /**
+     * @var string The currency of the order that is getting refunded.
+     */
+    public $currency;
 
     /**
      * @var
@@ -70,7 +80,9 @@ class Refund extends \craft\base\Model
             $payload['orderToken'],
             $payload['refundedByPaymentGateway'],
             $payload['creationDate'],
-            $payload['modificationDate']
+            $payload['modificationDate'],
+            $payload['notifiedCustomerByEmail'],
+            $payload['currency'],
         );
 
         $payload['token'] = $this->orderToken;

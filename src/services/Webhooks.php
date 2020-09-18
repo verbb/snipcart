@@ -9,10 +9,14 @@
 namespace workingconcept\snipcart\services;
 
 use workingconcept\snipcart\events\CustomerEvent;
+use workingconcept\snipcart\events\OrderNotificationEvent;
+use workingconcept\snipcart\events\OrderRefundEvent;
 use workingconcept\snipcart\events\OrderStatusEvent;
 use workingconcept\snipcart\events\OrderTrackingEvent;
 use workingconcept\snipcart\events\SubscriptionEvent;
 use workingconcept\snipcart\events\TaxesEvent;
+use workingconcept\snipcart\models\snipcart\Notification;
+use workingconcept\snipcart\models\snipcart\Refund;
 use workingconcept\snipcart\models\snipcart\Subscription;
 use workingconcept\snipcart\models\snipcart\Customer;
 use workingconcept\snipcart\Snipcart;
@@ -84,6 +88,16 @@ class Webhooks extends \craft\base\Component
      * @event CustomerEvent
      */
     const EVENT_ON_CUSTOMER_UPDATE = 'onCustomerUpdate';
+
+    /**
+     * @event OrderRefundEvent
+     */
+    const EVENT_ON_ORDER_REFUND_CREATED = 'onOrderRefundCreated';
+
+    /**
+     * @event OrderNotificationEvent
+     */
+    const EVENT_ON_ORDER_NOTIFICATION_CREATED = 'onOrderNotificationCreated';
 
     /**
      * @var string Indicates that the webhook payload is live
@@ -478,13 +492,54 @@ class Webhooks extends \craft\base\Component
         return $this->nonResponse();
     }
 
+    /**
+     * Handles new refund.
+     *
+     * @return array
+     */
+    public function handleRefundCreated(): array
+    {
+        $refund = $this->getCleanRefund();
+
+        if ($this->hasEventHandlers(self::EVENT_ON_ORDER_REFUND_CREATED)) {
+            $this->trigger(
+                self::EVENT_ON_ORDER_REFUND_CREATED,
+                new OrderRefundEvent([
+                    'refund' => $refund
+                ])
+            );
+        }
+
+        return $this->nonResponse();
+    }
+
+    /**
+     * Handles new order notification.
+     *
+     * @return array
+     */
+    public function handleNotificationCreated(): array
+    {
+        $notification = $this->getCleanNotification();
+
+        if ($this->hasEventHandlers(self::EVENT_ON_ORDER_NOTIFICATION_CREATED)) {
+            $this->trigger(
+                self::EVENT_ON_ORDER_NOTIFICATION_CREATED,
+                new OrderNotificationEvent([
+                    'notification' => $notification
+                ])
+            );
+        }
+
+        return $this->nonResponse();
+    }
 
     /**
      * Returns posted payload as an Order without letting unexpected root-level
      * attributes throw an exception.
      *
      * This is important because Snipcart payloads sometimes include new
-     * attributes without warning and we don't want errors in production.
+     * attributes without warning and we don’t want errors in production.
      *
      * @return Order
      */
@@ -497,11 +552,11 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Returns posted payload as an Subscription without letting unexpected
+     * Returns posted payload as a Subscription without letting unexpected
      * root-level attributes throw an exception.
      *
      * This is important because Snipcart payloads sometimes include new
-     * attributes without warning and we don't want errors in production.
+     * attributes without warning and we don’t want errors in production.
      *
      * @return Subscription
      */
@@ -514,11 +569,11 @@ class Webhooks extends \craft\base\Component
     }
 
     /**
-     * Returns posted payload as an Customer without letting unexpected
+     * Returns posted payload as a Customer without letting unexpected
      * root-level attributes throw an exception.
      *
      * This is important because Snipcart payloads sometimes include new
-     * attributes without warning and we don't want errors in production.
+     * attributes without warning and we don’t want errors in production.
      *
      * @return Customer
      */
@@ -527,6 +582,40 @@ class Webhooks extends \craft\base\Component
         return ModelHelper::safePopulateModel(
             $this->getData()->content,
             Customer::class
+        );
+    }
+
+    /**
+     * Returns posted payload as a Refund without letting unexpected
+     * root-level attributes throw an exception.
+     *
+     * This is important because Snipcart payloads sometimes include new
+     * attributes without warning and we don’t want errors in production.
+     *
+     * @return Refund
+     */
+    private function getCleanRefund(): Refund
+    {
+        return ModelHelper::safePopulateModel(
+            $this->getData()->content,
+            Refund::class
+        );
+    }
+
+    /**
+     * Returns posted payload as a Notification without letting unexpected
+     * root-level attributes throw an exception.
+     *
+     * This is important because Snipcart payloads sometimes include new
+     * attributes without warning and we don’t want errors in production.
+     *
+     * @return Notification
+     */
+    private function getCleanNotification(): Notification
+    {
+        return ModelHelper::safePopulateModel(
+            $this->getData()->content,
+            Notification::class
         );
     }
 
