@@ -187,6 +187,8 @@ TODO: support pause + resume
             </div>
         </div>
 
+        {% hook 'cp.snipcart.subscription.detail' %}
+
         <p class="text-muted mt-8">
             {{ "Created"|t }} {{ subscription.creationDate|date('long') }}, {{ "last updated"|t }} {{ subscription.modificationDate|datetime('short') }}
         </p>

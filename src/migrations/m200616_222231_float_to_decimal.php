@@ -3,6 +3,7 @@
 namespace workingconcept\snipcart\migrations;
 
 use craft\db\Migration;
+use workingconcept\snipcart\db\Table;
 
 /**
  * m200616_222231_float_to_decimal migration.
@@ -11,40 +12,38 @@ use craft\db\Migration;
  */
 class m200616_222231_float_to_decimal extends Migration
 {
-    public $productDetailsTable = '{{%snipcart_product_details}}';
-
     /**
      * @inheritdoc
      */
     public function safeUp()
     {
-        if ($this->getDb()->tableExists($this->productDetailsTable)) {
+        if ($this->getDb()->tableExists(Table::PRODUCT_DETAILS)) {
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'price',
                 $this->decimal(14, 2)->unsigned()
             );
 
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'weight',
                 $this->decimal(12, 2)->unsigned()
             );
 
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'length',
                 $this->decimal(12, 2)->unsigned()
             );
 
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'width',
                 $this->decimal(12, 2)->unsigned()
             );
 
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'height',
                 $this->decimal(12, 2)->unsigned()
             );

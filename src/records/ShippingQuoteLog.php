@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\records;
 
 use craft\db\ActiveRecord;
+use workingconcept\snipcart\db\Table;
 
 /**
  * Class ShippingQuoteLog
@@ -26,6 +27,6 @@ class ShippingQuoteLog extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%snipcart_shipping_quotes}}';
+        return Table::SHIPPING_QUOTES;
     }
 }

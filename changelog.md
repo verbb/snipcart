@@ -1,6 +1,17 @@
 # Snipcart Changelog
 
-## 2020-09-08
+## Unreleased
+### Added
+- Added support for `order.refund.created` and `order.notification.created` webhooks.
+- Added template hooks: `cp.snipcart.cart.detail`, `cp.snipcart.customer.detail`, `cp.snipcart.discount.detail`, `cp.snipcart.order.detail`, `cp.snipcart.subscription.detail`.
+
+### Changed
+- Uninstalling now properly removes all plugin data.
+
+### Fixed
+- Fixed an issue that prevented plugin from uninstalling successfully.
+
+## 1.4.3.1 - 2020-09-08
 ### Fixed
 - Fixed a bug that kept the Product Details currency symbol from being displayed.
 
