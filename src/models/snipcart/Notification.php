@@ -94,6 +94,11 @@ class Notification extends \craft\base\Model
     public $sentOn;
 
     /**
+     * @var
+     */
+    public $resourceUrl;
+
+    /**
      * @inheritdoc
      */
     public function datetimeAttributes(): array
