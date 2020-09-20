@@ -82,7 +82,7 @@ class Refund extends \craft\base\Model
             $payload['creationDate'],
             $payload['modificationDate'],
             $payload['notifiedCustomerByEmail'],
-            $payload['currency'],
+            $payload['currency']
         );
 
         $payload['token'] = $this->orderToken;
