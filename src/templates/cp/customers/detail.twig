@@ -41,6 +41,8 @@
                             {{ customer.shippingAddressPhone }}
                         </p>
 
+                        {% hook 'cp.snipcart.customer.detail' %}
+
                         <a href="{{ customer.dashboardUrl() }}" class="btn mt-8" target="_blank">
                             {{- "View in Snipcart Dashboard"|t -}}
                         </a>

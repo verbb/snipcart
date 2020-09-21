@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\fields;
 
 use craft\helpers\Localization;
+use workingconcept\snipcart\db\Table;
 use workingconcept\snipcart\helpers\VersionHelper;
 use workingconcept\snipcart\Snipcart;
 use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
@@ -191,7 +192,7 @@ class ProductDetails extends \craft\base\Field
             if (count($subQueries) > 0) {
                 /** @var ElementQuery $query */
                 $query->subQuery->innerJoin(
-                    '{{%snipcart_product_details}} snipcart_product_details',
+                    Table::PRODUCT_DETAILS . ' snipcart_product_details',
                     '[[snipcart_product_details.elementId]] = [[elements.id]]'
                 );
 
@@ -331,5 +332,4 @@ class ProductDetails extends \craft\base\Field
             }
         }
     }
-
 }

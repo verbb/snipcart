@@ -8,25 +8,25 @@
 
 namespace workingconcept\snipcart\migrations;
 
-use craft\db\Migration;
+use workingconcept\snipcart\db\Table;
 use workingconcept\snipcart\models\ProductDetails;
 use workingconcept\snipcart\controllers\WebhooksController;
+use Craft;
+use craft\db\Migration;
+use craft\helpers\MigrationHelper;
 
 /**
  * m181205_000036_api_log migration.
  */
 class Install extends Migration
 {
-    public $webhookLogTable     = '{{%snipcart_webhook_log}}';
-    public $shippingQuotesTable = '{{%snipcart_shipping_quotes}}';
-    public $productDetailsTable = '{{%snipcart_product_details}}';
-
     /**
      * @inheritdoc
      */
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->createTables();
+        return true;
     }
 
     /**
@@ -34,16 +34,18 @@ class Install extends Migration
      */
     public function safeDown(): bool
     {
-        echo "Install cannot be reverted.\n";
-        return false;
+        $this->dropForeignKeys();
+        $this->dropTables();
+        $this->dropProjectConfig();
+        return true;
     }
 
     private function createTables()
     {
-        if (! $this->getDb()->tableExists($this->webhookLogTable)) {
+        if (! $this->getDb()->tableExists(Table::WEBHOOK_LOG)) {
             $typeValues = array_keys(WebhooksController::WEBHOOK_EVENT_MAP);
 
-            $this->createTable($this->webhookLogTable, [
+            $this->createTable(Table::WEBHOOK_LOG, [
                 'id'          => $this->primaryKey(),
                 'siteId'      => $this->integer(),
                 'type'        => $this->enum('type', $typeValues),
@@ -54,12 +56,12 @@ class Install extends Migration
                 'uid'         => $this->uid(),
             ]);
 
-            $this->createIndex(null, $this->webhookLogTable, ['siteId']);
-            $this->addForeignKey(null, $this->webhookLogTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
+            $this->createIndex(null, Table::WEBHOOK_LOG, ['siteId']);
+            $this->addForeignKey(null, Table::WEBHOOK_LOG, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
-        if (! $this->getDb()->tableExists($this->shippingQuotesTable)) {
-            $this->createTable($this->shippingQuotesTable, [
+        if (! $this->getDb()->tableExists(Table::SHIPPING_QUOTES)) {
+            $this->createTable(Table::SHIPPING_QUOTES, [
                 'id'          => $this->primaryKey(),
                 'siteId'      => $this->integer(),
                 'token'       => $this->text(),
@@ -69,11 +71,11 @@ class Install extends Migration
                 'uid'         => $this->uid(),
             ]);
 
-            $this->createIndex(null, $this->shippingQuotesTable, ['siteId']);
-            $this->addForeignKey(null, $this->shippingQuotesTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
+            $this->createIndex(null, Table::SHIPPING_QUOTES, ['siteId']);
+            $this->addForeignKey(null, Table::SHIPPING_QUOTES, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
 
-        if (! $this->getDb()->tableExists($this->productDetailsTable)) {
+        if (! $this->getDb()->tableExists(Table::PRODUCT_DETAILS)) {
             $weightUnitOptions = array_keys(
                 ProductDetails::getWeightUnitOptions()
             );
@@ -82,7 +84,7 @@ class Install extends Migration
                 ProductDetails::getDimensionsUnitOptions()
             );
 
-            $this->createTable($this->productDetailsTable, [
+            $this->createTable(Table::PRODUCT_DETAILS, [
                 'id'             => $this->primaryKey(),
                 'elementId'      => $this->integer()->notNull(),
                 'fieldId'        => $this->integer()->notNull(),
@@ -104,13 +106,41 @@ class Install extends Migration
                 'uid'            => $this->uid(),
             ]);
 
-            $this->createIndex(null, $this->productDetailsTable, ['elementId']);
-            $this->createIndex(null, $this->productDetailsTable, ['fieldId']);
-            $this->createIndex(null, $this->productDetailsTable, ['siteId']);
+            $this->createIndex(null, Table::PRODUCT_DETAILS, ['elementId']);
+            $this->createIndex(null, Table::PRODUCT_DETAILS, ['fieldId']);
+            $this->createIndex(null, Table::PRODUCT_DETAILS, ['siteId']);
 
-            $this->addForeignKey(null, $this->productDetailsTable, ['elementId'], '{{%elements}}', ['id'], 'CASCADE');
-            $this->addForeignKey(null, $this->productDetailsTable, ['fieldId'], '{{%fields}}', ['id'], 'CASCADE');
-            $this->addForeignKey(null, $this->productDetailsTable, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
+            $this->addForeignKey(null, Table::PRODUCT_DETAILS, ['elementId'], '{{%elements}}', ['id'], 'CASCADE');
+            $this->addForeignKey(null, Table::PRODUCT_DETAILS, ['fieldId'], '{{%fields}}', ['id'], 'CASCADE');
+            $this->addForeignKey(null, Table::PRODUCT_DETAILS, ['siteId'], '{{%sites}}', ['id'], 'CASCADE');
         }
+    }
+
+    private function dropForeignKeys()
+    {
+        $tables = [
+            Table::WEBHOOK_LOG,
+            Table::SHIPPING_QUOTES,
+            Table::PRODUCT_DETAILS
+        ];
+
+        foreach ($tables as $table) {
+            if ($this->getDb()->tableExists($table)) {
+                MigrationHelper::dropAllForeignKeysToTable($table, $this);
+                MigrationHelper::dropAllForeignKeysOnTable($table, $this);
+            }
+        }
+    }
+
+    private function dropTables()
+    {
+        $this->dropTableIfExists(Table::WEBHOOK_LOG);
+        $this->dropTableIfExists(Table::SHIPPING_QUOTES);
+        $this->dropTableIfExists(Table::PRODUCT_DETAILS);
+    }
+
+    private function dropProjectConfig()
+    {
+        Craft::$app->projectConfig->remove('snipcart');
     }
 }

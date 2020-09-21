@@ -35,6 +35,8 @@ class WebhooksController extends Controller
     const WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  = 'subscription.invoice.created';
     const WEBHOOK_TAXES_CALCULATE               = 'taxes.calculate';
     const WEBHOOK_CUSTOMER_UPDATED              = 'customauth:customer_updated';
+    const WEBHOOK_REFUND_CREATED                = 'order.refund.created';
+    const WEBHOOK_NOTIFICATION_CREATED          = 'order.notification.created';
 
     /**
      * What we call to handle each event
@@ -52,6 +54,8 @@ class WebhooksController extends Controller
         self::WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  => 'handleSubscriptionInvoiceCreated',
         self::WEBHOOK_TAXES_CALCULATE               => 'handleTaxesCalculate',
         self::WEBHOOK_CUSTOMER_UPDATED              => 'handleCustomerUpdated',
+        self::WEBHOOK_REFUND_CREATED                => 'handleRefundCreated',
+        self::WEBHOOK_NOTIFICATION_CREATED          => 'handleNotificationCreated',
     ];
 
     /**

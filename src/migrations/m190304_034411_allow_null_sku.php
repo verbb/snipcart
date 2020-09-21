@@ -3,34 +3,26 @@
 namespace workingconcept\snipcart\migrations;
 
 use craft\db\Migration;
+use workingconcept\snipcart\db\Table;
 
 /**
  * m190304_034411_allow_null_sku migration.
  */
 class m190304_034411_allow_null_sku extends Migration
 {
-    // Public Properties
-    // =========================================================================
-
-    public $productDetailsTable = '{{%snipcart_product_details}}';
-
-
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
     public function safeUp()
     {
-        if ($this->getDb()->tableExists($this->productDetailsTable)) {
+        if ($this->getDb()->tableExists(Table::PRODUCT_DETAILS)) {
             /**
              * Allow storing null in the column to keep from causing an Element
              * re-save failure after adding a new Product Details field
              * to a Section.
              */
             $this->alterColumn(
-                $this->productDetailsTable,
+                Table::PRODUCT_DETAILS,
                 'sku',
                 $this->string()->null()
             );
@@ -40,7 +32,7 @@ class m190304_034411_allow_null_sku extends Migration
     /**
      * @inheritdoc
      */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190304_034411_allow_null_sku cannot be reverted.\n";
         return false;

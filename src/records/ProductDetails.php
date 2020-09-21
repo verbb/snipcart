@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\records;
 
 use craft\db\ActiveRecord;
+use workingconcept\snipcart\db\Table;
 
 /**
  * Class ProductDetails
@@ -47,6 +48,6 @@ class ProductDetails extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%snipcart_product_details}}';
+        return Table::PRODUCT_DETAILS;
     }
 }

@@ -9,6 +9,7 @@
 namespace workingconcept\snipcart\records;
 
 use craft\db\ActiveRecord;
+use workingconcept\snipcart\db\Table;
 
 /**
  * Class WebhookLog
@@ -30,6 +31,6 @@ class WebhookLog extends ActiveRecord
      */
     public static function tableName(): string
     {
-        return '{{%snipcart_webhook_log}}';
+        return Table::WEBHOOK_LOG;
     }
 }

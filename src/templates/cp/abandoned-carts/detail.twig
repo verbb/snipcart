@@ -14,7 +14,6 @@
 {% block content %}
     <div class="md:flex mb-8">
         <div class="md:w-1/2">
-
             <p class="font-bold">
                 {{- abandonedCart.modificationDate|datetime('long') -}}
             </p>
@@ -28,10 +27,11 @@
                 shippingSameAsBilling: abandonedCart.shipToBillingAddress
             } %}
 
+            {% hook 'cp.snipcart.cart.detail' %}
+
             <a href="{{ abandonedCart.dashboardUrl() }}" class="btn mt-4" target="_blank">
                 {{- "View in Snipcart Dashboard"|t -}}
             </a>
-
         </div>
         <div class="mt-6 md:w-1/2 md:mt-0">
             <h3>{{ "Items"|t }}</h3>
