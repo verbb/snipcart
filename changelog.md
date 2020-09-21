@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.4.4 - 2020-09-21
 ### Added
 - Added support for `order.refund.created` and `order.notification.created` webhooks.
 - Added template hooks: `cp.snipcart.cart.detail`, `cp.snipcart.customer.detail`, `cp.snipcart.discount.detail`, `cp.snipcart.order.detail`, `cp.snipcart.subscription.detail`.
