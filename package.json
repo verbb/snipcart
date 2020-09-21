@@ -1,6 +1,6 @@
 {
   "name": "snipcart-craft-plugin",
-  "version": "1.4.4",
+  "version": "1.4.4.1",
   "description": "![Snipcart](resources/hero.svg)",
   "directories": {
     "doc": "docs",

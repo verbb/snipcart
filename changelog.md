@@ -1,5 +1,9 @@
 # Snipcart Changelog
 
+## 1.4.4.1 - 2020-09-21
+### Fixed
+- Fixed an issue preventing new webhook events from being logged.
+
 ## 1.4.4 - 2020-09-21
 ### Added
 - Added support for `order.refund.created` and `order.notification.created` webhooks.
