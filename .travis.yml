@@ -25,6 +25,12 @@ jobs:
     env: DB=mysql
   - php: 7.4
     env: DB=pgsql
+  - php: 7.3
+    env: DB=pgsql
+  - php: 7.2
+    env: DB=pgsql
+  - php: 7.1
+    env: DB=pgsql
 cache:
   directories:
   - "$HOME/.composer/cache"
