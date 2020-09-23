@@ -36,6 +36,17 @@ jobs:
         ports:
           - 6379/tcp
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: snipcart
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     
     steps:
     - uses: actions/checkout@v2
