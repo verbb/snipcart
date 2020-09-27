@@ -37,6 +37,10 @@ cache:
     - "$HOME/.npm"
 addons:
   postgresql: "12"
+  apt:
+    packages:
+      - postgresql-12
+      - postgresql-client-12
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
