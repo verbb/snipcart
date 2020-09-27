@@ -5,14 +5,13 @@ group: edge
 env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
-    - PGUSER=postgres
-    - PGPORT=5432
 branches:
   only:
     - master
     - develop
 services:
   - mysql
+  - postgresql
 jobs:
   fast_finish: true
   include:
@@ -36,12 +35,6 @@ cache:
   directories:
     - "$HOME/.composer/cache"
     - "$HOME/.npm"
-addons:
-  postgresql: "12"
-  apt:
-    packages:
-      - postgresql-12
-      - postgresql-client-12
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
@@ -68,9 +61,8 @@ before_script:
       travis_retry mysql -e 'CREATE DATABASE `test`;';
       mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
     elif [[ "$DB" == "pgsql" ]]; then
-      pg_ctlcluster 12 main start
       psql --version
-      psql -U postgres -c 'CREATE DATABASE "test";';
+      psql -c 'CREATE DATABASE test;' -U postgres
     fi
   - pear config-set preferred_state beta
   - pecl channel-update pecl.php.net
