@@ -74,3 +74,5 @@ jobs:
         run: |
           vendor/bin/codecept run unit
           vendor/bin/codecept run functional
+        env:
+          DB_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
