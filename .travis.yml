@@ -13,7 +13,6 @@ branches:
     - develop
 services:
   - mysql
-  - postgresql
 jobs:
   fast_finish: true
   include:
