@@ -21,7 +21,8 @@ jobs:
         db: ["mysql", "pgsql"]
     env:
       DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
-
+      MYSQL_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
+      PGSQL_DSN: ${{ format('pgsql:host=127.0.0.1;port={0};dbname=test', job.services.postgres.ports['5432'] }}
     services:
       mysql:
         image: mysql:5.7
@@ -75,4 +76,4 @@ jobs:
           vendor/bin/codecept run unit
           vendor/bin/codecept run functional
         env:
-          DB_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
+          DB_DSN: echo ${{ env.PGSQL_DSN }}
