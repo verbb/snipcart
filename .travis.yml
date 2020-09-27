@@ -45,22 +45,23 @@ addons:
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed.
+      # Disable Xdebug for performance when code coverage is not needed.
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
 
-    # install composer dependencies
+    # Install composer dependencies.
     export PATH="$HOME/.composer/vendor/bin:$PATH"
     composer validate
     travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 before_script:
   - |
-    # show some version and environment information
+    # Display version and environment information.
     php --version
     composer --version
     php -r "echo INTL_ICU_VERSION . \"\n\";"
     php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
-  - /
+  - |
+    # Prep databases.
     if [[ "$DB" == "mysql" ]]; then
       mysql --version
       sudo mysql_upgrade || echo "MySQL is already up to date"
