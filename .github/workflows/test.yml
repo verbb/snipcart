@@ -69,11 +69,14 @@ jobs:
       - name: Prepare the application
         run: cp .github/workflows/.env.example.${{ matrix.db }} tests/.env
 
+      - name: Set DSN string
+        run: |
+          echo ::set-env name=DB_DSN::$(echo $PGSQL_DSN)
+        env:
+          MYSQL_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
+          PGSQL_DSN: ${{ format('pgsql:host=127.0.0.1;port={0};dbname=test', job.services.postgres.ports['5432']) }}
+
       - name: Test with Codeception
         run: |
           vendor/bin/codecept run unit
           vendor/bin/codecept run functional
-        env:
-          MYSQL_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
-          PGSQL_DSN: ${{ format('pgsql:host=127.0.0.1;port={0};dbname=test', job.services.postgres.ports['5432']) }}
-          DB_DSN: echo ${{ env.PGSQL_DSN }}
