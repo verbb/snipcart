@@ -71,7 +71,7 @@ jobs:
 
       - name: Set DSN string
         run: |
-          echo ::set-env name=DB_DSN::$(echo $PGSQL_DSN)
+          echo ::set-env name=DB_DSN::$(if "${{ matrix.db }}" == "mysql"; then echo $MYSQL_DSN; else echo $PGSQL_DSN; fi)
         env:
           MYSQL_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
           PGSQL_DSN: ${{ format('pgsql:host=127.0.0.1;port={0};dbname=test', job.services.postgres.ports['5432']) }}
