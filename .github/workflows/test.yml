@@ -57,9 +57,6 @@ jobs:
           ini-values: post_max_size=256M
           tools: php-cs-fixer, phpunit
 
-      - name: Start MySQL
-        run: sudo /etc/init.d/mysql start
-
       - name: Validate composer.json and composer.lock
         run: composer validate
 
