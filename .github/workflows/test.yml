@@ -57,7 +57,7 @@ jobs:
           ini-values: post_max_size=256M
           tools: php-cs-fixer, phpunit
 
-      - name: Start mysql service
+      - name: Start MySQL
         run: sudo /etc/init.d/mysql start
 
       - name: Validate composer.json and composer.lock
@@ -69,9 +69,11 @@ jobs:
       - name: Prepare the application
         run: cp .github/workflows/.env.example.${{ matrix.db }} tests/.env
 
+      # Dynamically set DB_DSN to use the randomized port number for the relevant database.
       - name: Set DSN string
         run: |
           echo ::set-env name=DB_DSN::$(if "${{ matrix.db }}" == "mysql"; then echo $MYSQL_DSN; else echo $PGSQL_DSN; fi)
+          echo $DB_DSN
         env:
           MYSQL_DSN: ${{ format('mysql:host=127.0.0.1;port={0};dbname=test', job.services.mysql.ports['3306']) }}
           PGSQL_DSN: ${{ format('pgsql:host=127.0.0.1;port={0};dbname=test', job.services.postgres.ports['5432']) }}
