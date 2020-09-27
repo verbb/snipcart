@@ -41,6 +41,7 @@ jobs:
         image: postgres:12
         env:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test
         ports:
           - 5432/tcp
@@ -67,7 +68,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Prepare the application
-        run: cp tests/.env.example.${{ matrix.db }} tests/.env
+        run: cp .github/workflows/.env.example.${{ matrix.db }} tests/.env
 
       - name: Test with Codeception
         run: |

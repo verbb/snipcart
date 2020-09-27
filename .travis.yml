@@ -74,7 +74,7 @@ before_script:
   - pear config-set preferred_state beta
   - pecl channel-update pecl.php.net
   - yes | pecl install imagick
-  - cp tests/.env.example.$DB tests/.env
+  - cp .travis/.env.example.$DB tests/.env
 script:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
