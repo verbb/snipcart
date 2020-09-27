@@ -67,6 +67,7 @@ before_script:
       travis_retry mysql -e 'CREATE DATABASE `test`;';
       mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
     elif [ $DB == 'pgsql' ]; then
+      pg_ctlcluster 12 main start
       psql --version
       psql -U postgres -c 'CREATE DATABASE "test";';
     fi
