@@ -5,6 +5,8 @@ group: edge
 env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+    - PGUSER=postgres
+    - PGPORT=5432
 branches:
   only:
     - master
