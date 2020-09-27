@@ -64,9 +64,14 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Prepare the application
-        run: cp .github/workflows/.env.example.${{ matrix.db }} tests/.env
+        run: cp .github/workflows/.env.${{ matrix.db }} tests/.env
 
       - name: Test with Codeception
         run: |
           vendor/bin/codecept run unit
           vendor/bin/codecept run functional
+        env:
+          SECURITY_KEY: abcde12345
+          DEFAULT_SITE_URL: http://snipcart-craft-plugin.test/index.php
+          FROM_EMAIL_NAME: Craft CMS
+          FROM_EMAIL_ADDRESS: info@craftcms.com
