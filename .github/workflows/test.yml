@@ -12,7 +12,7 @@ on:
 jobs:
   test:
     name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.operating-system }}
 
     strategy:
       matrix:
