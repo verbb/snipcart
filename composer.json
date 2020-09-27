@@ -44,6 +44,9 @@
         },
         "files": ["src/deprecated.php"]
     },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "name": "Snipcart",
         "handle": "snipcart",
