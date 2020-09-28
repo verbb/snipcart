@@ -5,6 +5,10 @@ group: edge
 env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+    - SECURITY_KEY="abcde12345"
+    - DEFAULT_SITE_URL="http://snipcart-craft-plugin.test/index.php"
+    - FROM_EMAIL_NAME="Craft CMS"
+    - FROM_EMAIL_ADDRESS="info@craftcms.com"
 branches:
   only:
     - master
@@ -67,7 +71,7 @@ before_script:
   - pear config-set preferred_state beta
   - pecl channel-update pecl.php.net
   - yes | pecl install imagick
-  - cp .travis/.env.example.$DB tests/.env
+  - cp .travis/.env.$DB tests/.env
 script:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
