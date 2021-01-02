@@ -41,8 +41,7 @@
     "autoload": {
         "psr-4": {
             "workingconcept\\snipcart\\": "src/"
-        },
-        "files": ["src/deprecated.php"]
+        }
     },
     "config": {
         "sort-packages": true

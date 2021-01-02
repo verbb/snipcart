@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.5.0 - Unreleased
+
+> {warning} Links to deprecated classes have been removed. Be sure to update any custom modules or plugins relying on Snipcart prior to 1.4.0.
+
+### Removed
+- Removed deprecated class links to get rid of composer warnings.
+
 ## 1.4.4.1 - 2020-09-21
 ### Fixed
 - Fixed an issue preventing new webhook events from being logged.
