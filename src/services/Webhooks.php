@@ -28,7 +28,7 @@ use workingconcept\snipcart\records\WebhookLog;
 use Craft;
 
 /**
- * This class handles valid data that's posted to Snipcart's webhook endpoint.
+ * This class handles valid data that's posted to Snipcart’s webhook endpoint.
  *
  * @package workingconcept\snipcart\services
  */
