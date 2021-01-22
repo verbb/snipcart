@@ -4,6 +4,9 @@
 
 > {warning} Links to deprecated classes have been removed. Be sure to update any custom modules or plugins relying on Snipcart prior to 1.4.0.
 
+### Changed
+- Changed `workingconcept` namespace to `fostercommerce`.
+
 ### Removed
 - Removed deprecated class links to get rid of composer warnings.
 
