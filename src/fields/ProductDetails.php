@@ -333,3 +333,5 @@ class ProductDetails extends \craft\base\Field
         }
     }
 }
+
+class_alias(ProductDetails::class, \workingconcept\snipcart\fields\ProductDetails::class);
