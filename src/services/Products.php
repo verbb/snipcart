@@ -6,11 +6,11 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\events\InventoryEvent;
-use workingconcept\snipcart\helpers\FieldHelper;
-use workingconcept\snipcart\models\snipcart\Item;
+use fostercommerce\snipcart\events\InventoryEvent;
+use fostercommerce\snipcart\helpers\FieldHelper;
+use fostercommerce\snipcart\models\snipcart\Item;
 use craft\elements\Entry;
 use craft\base\Component;
 use Craft;
@@ -22,7 +22,7 @@ use Craft;
  *
  * Products become Items once added to a cart and/or purchased.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Products extends Component
 {

@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\events;
+namespace fostercommerce\snipcart\events;
 
-use workingconcept\snipcart\models\snipcart\Customer;
+use fostercommerce\snipcart\models\snipcart\Customer;
 use yii\base\Event;
 
 /**

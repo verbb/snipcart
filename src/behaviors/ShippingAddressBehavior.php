@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\behaviors;
+namespace fostercommerce\snipcart\behaviors;
 
-use workingconcept\snipcart\models\snipcart\Address;
+use fostercommerce\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
 /**
@@ -16,7 +16,7 @@ use yii\base\Behavior;
  * directly on the Snipcart Order model, where they exist within a nested
  * Address object.
  *
- * @package workingconcept\snipcart\behaviors
+ * @package fostercommerce\snipcart\behaviors
  */
 class ShippingAddressBehavior extends Behavior
 {

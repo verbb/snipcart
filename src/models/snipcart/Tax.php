@@ -6,13 +6,13 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\snipcart;
+namespace fostercommerce\snipcart\models\snipcart;
 
 /**
  * Class Tax
  * https://docs.snipcart.com/v2/webhooks/taxes
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class Tax extends \craft\base\Model
 {

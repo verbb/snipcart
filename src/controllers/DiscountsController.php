@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\controllers;
+namespace fostercommerce\snipcart\controllers;
 
-use workingconcept\snipcart\models\snipcart\Discount;
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\models\snipcart\Discount;
+use fostercommerce\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
 use Craft;
 

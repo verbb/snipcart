@@ -6,15 +6,15 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\records;
+namespace fostercommerce\snipcart\records;
 
 use craft\db\ActiveRecord;
-use workingconcept\snipcart\db\Table;
+use fostercommerce\snipcart\db\Table;
 
 /**
  * Class WebhookLog
  *
- * @package workingconcept\snipcart\records
+ * @package fostercommerce\snipcart\records
  *
  * @property int    $id
  * @property int    $siteId

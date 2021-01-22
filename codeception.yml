@@ -32,7 +32,7 @@ modules:
       migrations: []
       plugins:
         snipcart:
-          class: '\workingconcept\snipcart\Snipcart'
+          class: '\fostercommerce\snipcart\Snipcart'
           handle: snipcart
       cleanup: true
       transaction: true

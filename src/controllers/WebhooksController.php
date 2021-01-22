@@ -6,11 +6,11 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\controllers;
+namespace fostercommerce\snipcart\controllers;
 
 use craft\helpers\Json;
-use workingconcept\snipcart\services\Webhooks;
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\services\Webhooks;
+use fostercommerce\snipcart\Snipcart;
 
 use Craft;
 use craft\web\Controller;

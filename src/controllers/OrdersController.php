@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\controllers;
+namespace fostercommerce\snipcart\controllers;
 
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\Snipcart;
 use craft\helpers\DateTimeHelper;
 use DateTime;
 use Craft;

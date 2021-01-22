@@ -6,14 +6,14 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\fields;
+namespace fostercommerce\snipcart\fields;
 
 use craft\helpers\Localization;
-use workingconcept\snipcart\db\Table;
-use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
-use workingconcept\snipcart\assetbundles\ProductDetailsFieldAsset;
+use fostercommerce\snipcart\db\Table;
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
+use fostercommerce\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;
@@ -333,3 +333,5 @@ class ProductDetails extends \craft\base\Field
         }
     }
 }
+
+class_alias(ProductDetails::class, \workingconcept\snipcart\fields\ProductDetails::class);

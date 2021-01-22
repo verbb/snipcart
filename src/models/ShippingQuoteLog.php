@@ -6,14 +6,14 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace fostercommerce\snipcart\models;
 
 use craft\base\Model;
 
 /**
  * Class ShippingQuoteLog
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class ShippingQuoteLog extends Model
 {

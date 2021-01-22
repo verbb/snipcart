@@ -6,31 +6,31 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart;
+namespace fostercommerce\snipcart;
 
-use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\providers\shipstation\ShipStation;
-use workingconcept\snipcart\services\Api;
-use workingconcept\snipcart\services\Carts;
-use workingconcept\snipcart\services\Customers;
-use workingconcept\snipcart\services\Data;
-use workingconcept\snipcart\services\DigitalGoods;
-use workingconcept\snipcart\services\Discounts;
-use workingconcept\snipcart\services\Fields as SnipcartFields;
-use workingconcept\snipcart\services\Notifications;
-use workingconcept\snipcart\services\Orders;
-use workingconcept\snipcart\services\Products;
-use workingconcept\snipcart\services\Shipments;
-use workingconcept\snipcart\services\Subscriptions;
-use workingconcept\snipcart\services\Webhooks;
-use workingconcept\snipcart\variables\SnipcartVariable;
-use workingconcept\snipcart\widgets\Orders as OrdersWidget;
-use workingconcept\snipcart\models\Settings;
-use workingconcept\snipcart\fields\ProductDetails;
-use workingconcept\snipcart\assetbundles\PluginSettingsAsset;
-use workingconcept\snipcart\events\RegisterShippingProvidersEvent;
-use workingconcept\snipcart\helpers\RouteHelper;
-use workingconcept\snipcart\helpers\CraftQlHelper;
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\providers\shipstation\ShipStation;
+use fostercommerce\snipcart\services\Api;
+use fostercommerce\snipcart\services\Carts;
+use fostercommerce\snipcart\services\Customers;
+use fostercommerce\snipcart\services\Data;
+use fostercommerce\snipcart\services\DigitalGoods;
+use fostercommerce\snipcart\services\Discounts;
+use fostercommerce\snipcart\services\Fields as SnipcartFields;
+use fostercommerce\snipcart\services\Notifications;
+use fostercommerce\snipcart\services\Orders;
+use fostercommerce\snipcart\services\Products;
+use fostercommerce\snipcart\services\Shipments;
+use fostercommerce\snipcart\services\Subscriptions;
+use fostercommerce\snipcart\services\Webhooks;
+use fostercommerce\snipcart\variables\SnipcartVariable;
+use fostercommerce\snipcart\widgets\Orders as OrdersWidget;
+use fostercommerce\snipcart\models\Settings;
+use fostercommerce\snipcart\fields\ProductDetails;
+use fostercommerce\snipcart\assetbundles\PluginSettingsAsset;
+use fostercommerce\snipcart\events\RegisterShippingProvidersEvent;
+use fostercommerce\snipcart\helpers\RouteHelper;
+use fostercommerce\snipcart\helpers\CraftQlHelper;
 use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterUrlRulesEvent;
@@ -79,7 +79,7 @@ class Snipcart extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.9';
+    public $schemaVersion = '1.0.10';
 
     /**
      * @inheritdoc
@@ -185,7 +185,7 @@ class Snipcart extends Plugin
         }
 
         if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
+            $this->controllerNamespace = 'fostercommerce\snipcart\console\controllers';
         }
 
         $this->registerShippingProviders();

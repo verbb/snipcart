@@ -6,16 +6,16 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\variables;
+namespace fostercommerce\snipcart\variables;
 
-use workingconcept\snipcart\fields\ProductDetails;
-use workingconcept\snipcart\helpers\FieldHelper;
-use workingconcept\snipcart\helpers\FormatHelper;
-use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\models\snipcart\Customer;
-use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\models\snipcart\Subscription;
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\fields\ProductDetails;
+use fostercommerce\snipcart\helpers\FieldHelper;
+use fostercommerce\snipcart\helpers\FormatHelper;
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\models\snipcart\Customer;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\models\snipcart\Subscription;
+use fostercommerce\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
 use yii\base\InvalidConfigException;

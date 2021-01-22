@@ -6,13 +6,13 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\events\ShippingRateEvent;
-use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\providers\shipstation\ShipStation;
-use workingconcept\snipcart\records\ShippingQuoteLog;
+use fostercommerce\snipcart\events\ShippingRateEvent;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\providers\shipstation\ShipStation;
+use fostercommerce\snipcart\records\ShippingQuoteLog;
 use Craft;
 
 /**
@@ -20,7 +20,7 @@ use Craft;
  *
  * For interacting with external shipping providers.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  * @property ShipStation $shipStation
  */
 class Shipments extends \craft\base\Component

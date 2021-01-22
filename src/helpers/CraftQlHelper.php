@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\helpers;
+namespace fostercommerce\snipcart\helpers;
 
 use markhuot\CraftQL\Builders\Schema as SchemaBuilder;
 

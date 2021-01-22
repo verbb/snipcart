@@ -6,11 +6,11 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
 use craft\helpers\Json;
-use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\Snipcart;
 
 use Craft;
 use craft\base\Component;
@@ -26,7 +26,7 @@ use yii\base\Exception;
  * configured Guzzle client, can optionally cache GET requests, and validates
  * tokens.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Api extends Component
 {

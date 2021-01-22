@@ -6,31 +6,31 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\events\CustomerEvent;
-use workingconcept\snipcart\events\OrderNotificationEvent;
-use workingconcept\snipcart\events\OrderRefundEvent;
-use workingconcept\snipcart\events\OrderStatusEvent;
-use workingconcept\snipcart\events\OrderTrackingEvent;
-use workingconcept\snipcart\events\SubscriptionEvent;
-use workingconcept\snipcart\events\TaxesEvent;
-use workingconcept\snipcart\models\snipcart\Notification;
-use workingconcept\snipcart\models\snipcart\Refund;
-use workingconcept\snipcart\models\snipcart\Subscription;
-use workingconcept\snipcart\models\snipcart\Customer;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\events\OrderEvent;
-use workingconcept\snipcart\records\ShippingQuoteLog;
-use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\records\WebhookLog;
+use fostercommerce\snipcart\events\CustomerEvent;
+use fostercommerce\snipcart\events\OrderNotificationEvent;
+use fostercommerce\snipcart\events\OrderRefundEvent;
+use fostercommerce\snipcart\events\OrderStatusEvent;
+use fostercommerce\snipcart\events\OrderTrackingEvent;
+use fostercommerce\snipcart\events\SubscriptionEvent;
+use fostercommerce\snipcart\events\TaxesEvent;
+use fostercommerce\snipcart\models\snipcart\Notification;
+use fostercommerce\snipcart\models\snipcart\Refund;
+use fostercommerce\snipcart\models\snipcart\Subscription;
+use fostercommerce\snipcart\models\snipcart\Customer;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\events\OrderEvent;
+use fostercommerce\snipcart\records\ShippingQuoteLog;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\records\WebhookLog;
 use Craft;
 
 /**
- * This class handles valid data that's posted to Snipcart's webhook endpoint.
+ * This class handles valid data that's posted to Snipcart’s webhook endpoint.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Webhooks extends \craft\base\Component
 {

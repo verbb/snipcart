@@ -6,15 +6,15 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\snipcart;
+namespace fostercommerce\snipcart\models\snipcart;
 
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Subscription
  * https://docs.snipcart.com/v2/api-reference/subscriptions
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class Subscription extends \craft\base\Model
 {

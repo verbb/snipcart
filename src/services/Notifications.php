@@ -6,18 +6,18 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
 use Craft;
 use craft\mail\Message;
 use Pelago\Emogrifier\CssInliner;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\helpers\VersionHelper;
 
 /**
  * Sends notifications as things happen. Currently just email.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  * @todo Make a proper Notification model
  */
 class Notifications extends \craft\base\Component

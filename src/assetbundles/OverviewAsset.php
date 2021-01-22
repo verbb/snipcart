@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\assetbundles;
+namespace fostercommerce\snipcart\assetbundles;
 
 use craft\web\AssetBundle;
 use yii\web\JqueryAsset;
@@ -24,7 +24,7 @@ class OverviewAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
+        $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
         $this->depends = [
             SnipcartAsset::class,
             ChartAsset::class,

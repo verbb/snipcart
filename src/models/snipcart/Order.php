@@ -6,17 +6,17 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\snipcart;
+namespace fostercommerce\snipcart\models\snipcart;
 
-use workingconcept\snipcart\behaviors\BillingAddressBehavior;
-use workingconcept\snipcart\behaviors\ShippingAddressBehavior;
-use workingconcept\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
+use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
+use fostercommerce\snipcart\helpers\ModelHelper;
 
 /**
  * Snipcart Order model
  * https://docs.snipcart.com/v2/api-reference/orders
  *
- * @package workingconcept\snipcart\models\snipcart
+ * @package fostercommerce\snipcart\models\snipcart
  *
  * @property Address $billingAddress
  * @property Address $shippingAddress
@@ -205,7 +205,7 @@ class Order extends \craft\base\Model
     public $willBePaidLater;
 
     /**
-     * @var \workingconcept\snipcart\models\CustomField[]|null
+     * @var \fostercommerce\snipcart\models\CustomField[]|null
      */
     public $customFields;
 

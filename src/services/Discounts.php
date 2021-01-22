@@ -6,18 +6,18 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\snipcart\Discount;
-use workingconcept\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\models\snipcart\Discount;
+use fostercommerce\snipcart\helpers\ModelHelper;
 
 /**
  * Class Discounts
  *
  * For interacting with Snipcart discounts.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Discounts extends \craft\base\Component
 {

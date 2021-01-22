@@ -6,12 +6,12 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\base;
+namespace fostercommerce\snipcart\base;
 
 use craft\base\ComponentInterface;
-use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
-use workingconcept\snipcart\models\snipcart\ShippingRate as SnipcartRate;
-use workingconcept\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
+use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
+use fostercommerce\snipcart\models\snipcart\Package;
 use GuzzleHttp\Client;
 
 interface ShippingProviderInterface extends ComponentInterface

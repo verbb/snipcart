@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\providers\shipstation;
+namespace fostercommerce\snipcart\providers\shipstation;
 
 class Settings extends \craft\base\Model
 {

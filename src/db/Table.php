@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2020 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\db;
+namespace fostercommerce\snipcart\db;
 
 abstract class Table
 {

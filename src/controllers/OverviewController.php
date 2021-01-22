@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\controllers;
+namespace fostercommerce\snipcart\controllers;
 
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\helpers\FormatHelper;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\helpers\FormatHelper;
 use craft\helpers\DateTimeHelper;
 use DateTimeZone;
 use DateTime;

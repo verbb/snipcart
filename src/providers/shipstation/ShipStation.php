@@ -6,28 +6,28 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\providers\shipstation;
+namespace fostercommerce\snipcart\providers\shipstation;
 
 use Craft;
 use craft\helpers\Json;
-use workingconcept\snipcart\helpers\VersionHelper;
-use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
-use workingconcept\snipcart\models\snipcart\Package;
-use workingconcept\snipcart\models\snipcart\ShippingRate as SnipcartRate;
-use workingconcept\snipcart\models\shipstation\Dimensions;
-use workingconcept\snipcart\models\shipstation\Order;
-use workingconcept\snipcart\models\shipstation\Rate;
-use workingconcept\snipcart\models\shipstation\Weight;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\base\ShippingProvider;
-use workingconcept\snipcart\providers\shipstation\Settings as ShipStationSettings;
-use workingconcept\snipcart\providers\shipstation\events\OrderEvent;
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
+use fostercommerce\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
+use fostercommerce\snipcart\models\shipstation\Dimensions;
+use fostercommerce\snipcart\models\shipstation\Order;
+use fostercommerce\snipcart\models\shipstation\Rate;
+use fostercommerce\snipcart\models\shipstation\Weight;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\base\ShippingProvider;
+use fostercommerce\snipcart\providers\shipstation\Settings as ShipStationSettings;
+use fostercommerce\snipcart\providers\shipstation\events\OrderEvent;
 
 /**
  * Class ShipStation
  *
- * @package workingconcept\snipcart\providers
+ * @package fostercommerce\snipcart\providers
  * @todo log exceptions for troubleshooting
  */
 class ShipStation extends ShippingProvider

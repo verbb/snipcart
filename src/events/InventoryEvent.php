@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\events;
+namespace fostercommerce\snipcart\events;
 
 use craft\base\Element;
 use yii\base\Event;

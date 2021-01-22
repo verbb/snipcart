@@ -6,11 +6,11 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\migrations;
+namespace fostercommerce\snipcart\migrations;
 
-use workingconcept\snipcart\db\Table;
-use workingconcept\snipcart\models\ProductDetails;
-use workingconcept\snipcart\controllers\WebhooksController;
+use fostercommerce\snipcart\db\Table;
+use fostercommerce\snipcart\models\ProductDetails;
+use fostercommerce\snipcart\controllers\WebhooksController;
 use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;

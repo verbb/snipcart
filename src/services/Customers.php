@@ -6,19 +6,19 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\snipcart\Customer;
-use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\models\snipcart\Customer;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\helpers\ModelHelper;
 
 /**
  * Class Customers
  *
  * For interacting with Snipcart customers.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Customers extends \craft\base\Component
 {

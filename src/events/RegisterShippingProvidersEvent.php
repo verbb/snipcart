@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\events;
+namespace fostercommerce\snipcart\events;
 
 use yii\base\Event;
-use workingconcept\snipcart\base\ShippingProvider;
+use fostercommerce\snipcart\base\ShippingProvider;
 
 /**
  * Register shipping provider event class.

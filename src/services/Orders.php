@@ -6,15 +6,15 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
-use workingconcept\snipcart\events\ShippingRateEvent;
-use workingconcept\snipcart\Snipcart;
-use workingconcept\snipcart\models\snipcart\Order;
-use workingconcept\snipcart\models\snipcart\Notification;
-use workingconcept\snipcart\models\snipcart\Refund;
-use workingconcept\snipcart\models\snipcart\Package;
-use workingconcept\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\events\ShippingRateEvent;
+use fostercommerce\snipcart\Snipcart;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\models\snipcart\Notification;
+use fostercommerce\snipcart\models\snipcart\Refund;
+use fostercommerce\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\helpers\ModelHelper;
 use Craft;
 
 /**
@@ -22,7 +22,7 @@ use Craft;
  * documented models. The service can be accessed globally from
  * `Snipcart::$plugin->orders`.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  *
  * @todo clean up interfaces to be more Craft-y and obscure pagination concerns
  * @todo return null for invalid single-object requests, otherwise empty arrays

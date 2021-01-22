@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\controllers;
+namespace fostercommerce\snipcart\controllers;
 
 use craft\web\Controller;
 

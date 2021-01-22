@@ -1,7 +1,7 @@
-{# @var discount \workingconcept\snipcart\models\Discount #}
+{# @var discount \fostercommerce\snipcart\models\Discount #}
 {% extends "snipcart/cp/_layout" %}
 
-{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = "Snipcart Discounts" ~ (isTestMode ? " 🚧") %}

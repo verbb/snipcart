@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\helpers;
+namespace fostercommerce\snipcart\helpers;
 
-use workingconcept\snipcart\fields\ProductDetails;
+use fostercommerce\snipcart\fields\ProductDetails;
 
 /**
  * Field utility methods.

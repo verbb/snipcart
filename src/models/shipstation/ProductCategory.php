@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\shipstation;
+namespace fostercommerce\snipcart\models\shipstation;
 
 /**
  * ShipStation Product Category Model

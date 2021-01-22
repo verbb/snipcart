@@ -1,10 +1,10 @@
 <?php
 
-namespace workingconcept\snipcart\migrations;
+namespace fostercommerce\snipcart\migrations;
 
 use craft\db\Migration;
-use workingconcept\snipcart\controllers\WebhooksController;
-use workingconcept\snipcart\db\Table;
+use fostercommerce\snipcart\controllers\WebhooksController;
+use fostercommerce\snipcart\db\Table;
 
 /**
  * m200921_165936_webhook_types migration.

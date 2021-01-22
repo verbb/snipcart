@@ -6,13 +6,13 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\base;
+namespace fostercommerce\snipcart\base;
 
 use craft\helpers\Json;
-use workingconcept\snipcart\models\snipcart\Order as SnipcartOrder;
-use workingconcept\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
+use fostercommerce\snipcart\models\snipcart\Package;
 use craft\base\Component;
-use workingconcept\snipcart\Snipcart;
+use fostercommerce\snipcart\Snipcart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use craft\base\Model;

@@ -6,17 +6,17 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models;
+namespace fostercommerce\snipcart\models;
 
-use workingconcept\snipcart\models\snipcart\Address;
+use fostercommerce\snipcart\models\snipcart\Address;
 use Craft;
 use craft\base\Model;
-use workingconcept\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\helpers\VersionHelper;
 
 /**
  * Settings model
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  * @property Address $shipFrom
  */
 class Settings extends Model

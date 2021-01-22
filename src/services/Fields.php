@@ -6,17 +6,17 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\services;
+namespace fostercommerce\snipcart\services;
 
 use craft\elements\Entry;
-use workingconcept\snipcart\fields\ProductDetails;
-use workingconcept\snipcart\models\ProductDetails as ProductDetailsModel;
-use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use fostercommerce\snipcart\fields\ProductDetails;
+use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
+use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 use Craft;
 use craft\base\ElementInterface;
 
 /**
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Fields extends \craft\base\Component
 {

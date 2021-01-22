@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\snipcart;
+namespace fostercommerce\snipcart\models\snipcart;
 
 /**
  * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods

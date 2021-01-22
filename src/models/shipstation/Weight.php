@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\shipstation;
+namespace fostercommerce\snipcart\models\shipstation;
 
-use workingconcept\snipcart\models\snipcart\Item as SnipcartItem;
+use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
  * ShipStation Weight Model

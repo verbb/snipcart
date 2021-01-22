@@ -1,9 +1,9 @@
 <?php
 
-namespace workingconcept\snipcart\migrations;
+namespace fostercommerce\snipcart\migrations;
 
 use craft\db\Migration;
-use workingconcept\snipcart\db\Table;
+use fostercommerce\snipcart\db\Table;
 
 /**
  * m190304_034411_allow_null_sku migration.

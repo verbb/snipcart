@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2019 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\helpers;
+namespace fostercommerce\snipcart\helpers;
 
 class VersionHelper
 {

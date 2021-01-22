@@ -6,18 +6,18 @@
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
-namespace workingconcept\snipcart\models\snipcart;
+namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
-use workingconcept\snipcart\models\snipcart\PaymentSchedule;
-use workingconcept\snipcart\helpers\ModelHelper;
-use workingconcept\snipcart\records\ProductDetails as ProductDetailsRecord;
+use fostercommerce\snipcart\models\snipcart\PaymentSchedule;
+use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 use craft\elements\MatrixBlock;
 
 /**
  * Class Item
  *
- * @package workingconcept\snipcart\models\snipcart
+ * @package fostercommerce\snipcart\models\snipcart
  *
  * @property PaymentSchedule|null $paymentSchedule
  */
