@@ -1,8 +1,8 @@
 {
-    "name": "workingconcept/craft-snipcart",
+    "name": "fostercommerce/craft-snipcart",
     "description": "Craft CMS e-commerce in a day.",
     "type": "craft-plugin",
-    "version": "1.4.4.1",
+    "version": "1.5.0",
     "keywords": [
         "craft",
         "cms",
@@ -12,14 +12,14 @@
         "snipcart"
     ],
     "support": {
-        "docs": "https://snipcart.docs.workingconcept.com/",
-        "issues": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
+        "docs": "https://snipcart.fostercommerce.com/",
+        "issues": "https://github.com/FosterCommerce/snipcart-craft-plugin/issues"
     },
     "license": "proprietary",
     "authors": [
         {
-            "name": "Working Concept",
-            "homepage": "https://workingconcept.com"
+            "name": "Foster Commerce",
+            "homepage": "https://www.fostercommerce.com/"
         }
     ],
     "require": {
@@ -51,7 +51,7 @@
         "handle": "snipcart",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://github.com/workingconcept/snipcart-craft-plugin/changelog.md",
-        "class": "workingconcept\\snipcart\\Snipcart"
+        "changelogUrl": "https://github.com/FosterCommerce/snipcart-craft-plugin/changelog.md",
+        "class": "fostercommerce\\snipcart\\Snipcart"
     }
 }

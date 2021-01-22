@@ -1,7 +1,7 @@
 <?php
 
-use workingconcept\snipcart\helpers\FormatHelper;
-use workingconcept\snipcart\models\Settings;
+use fostercommerce\snipcart\helpers\FormatHelper;
+use fostercommerce\snipcart\models\Settings;
 use craft\helpers\DateTimeHelper;
 
 class FormatHelperTest extends \Codeception\Test\Unit
