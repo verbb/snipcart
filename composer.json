@@ -40,7 +40,7 @@
     },
     "autoload": {
         "psr-4": {
-            "workingconcept\\snipcart\\": "src/"
+            "fostercommerce\\snipcart\\": "src/"
         }
     },
     "config": {
