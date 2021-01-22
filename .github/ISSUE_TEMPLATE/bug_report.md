@@ -45,4 +45,4 @@ Include any potentially-relevant configuration:
 
 ---
 
-Please don't post full logs here! Send to support@workingconcept.com.
+Please don't post full logs here! Send to support@fostercommerce.com.
