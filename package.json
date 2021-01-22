@@ -1,6 +1,6 @@
 {
   "name": "snipcart-craft-plugin",
-  "version": "1.4.4.1",
+  "version": "1.5.0",
   "description": "![Snipcart](resources/hero.svg)",
   "directories": {
     "doc": "docs",
@@ -38,10 +38,9 @@
     "build": "webpack -p --display-error-details",
     "watch": "webpack -d --watch --display-error-details"
   },
-  "author": "Working Concept",
+  "author": "Foster Commerce",
   "license": "proprietary",
   "bugs": {
-    "url": "https://github.com/workingconcept/snipcart-craft-plugin/issues"
-  },
-  "homepage": "https://workingconcept.com/plugins/snipcart"
+    "url": "https://github.com/FosterCommerce/snipcart-craft-plugin/issues"
+  }
 }
