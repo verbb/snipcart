@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.5.0 - Unreleased
+## 1.5.0 - 2021-01-22
 
 > {warning} Links to deprecated classes have been removed. Be sure to update any custom modules or plugins relying on Snipcart prior to 1.4.0.
 
