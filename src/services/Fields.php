@@ -16,7 +16,7 @@ use Craft;
 use craft\base\ElementInterface;
 
 /**
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Fields extends \craft\base\Component
 {

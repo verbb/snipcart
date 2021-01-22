@@ -18,7 +18,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  *
  * For interacting with Snipcart customers.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Customers extends \craft\base\Component
 {

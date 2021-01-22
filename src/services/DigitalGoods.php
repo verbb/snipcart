@@ -11,7 +11,7 @@ namespace fostercommerce\snipcart\services;
 /**
  * These exist but aren't yet documented.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class DigitalGoods extends \craft\base\Component
 {

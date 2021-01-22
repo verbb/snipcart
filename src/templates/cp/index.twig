@@ -1,8 +1,8 @@
-{# @var order \workingconcept\snipcart\models\Order #}
-{# @var customer \workingconcept\snipcart\models\Customer #}
+{# @var order \fostercommerce\snipcart\models\Order #}
+{# @var customer \fostercommerce\snipcart\models\Customer #}
 {% extends "snipcart/cp/_layout" %}
 
-{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\OverviewAsset") %}
+{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\OverviewAsset") %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = "Snipcart" ~ (isTestMode ? " 🚧") %}

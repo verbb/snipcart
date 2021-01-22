@@ -16,7 +16,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  * Snipcart Order model
  * https://docs.snipcart.com/v2/api-reference/orders
  *
- * @package workingconcept\snipcart\models\snipcart
+ * @package fostercommerce\snipcart\models\snipcart
  *
  * @property Address $billingAddress
  * @property Address $shippingAddress

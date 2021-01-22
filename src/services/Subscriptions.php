@@ -17,7 +17,7 @@ use fostercommerce\snipcart\models\snipcart\Subscription;
  *
  * For interacting with Snipcart subscriptions.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Subscriptions extends \craft\base\Component
 {

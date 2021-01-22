@@ -17,7 +17,7 @@ use craft\elements\MatrixBlock;
 /**
  * Class Item
  *
- * @package workingconcept\snipcart\models\snipcart
+ * @package fostercommerce\snipcart\models\snipcart
  *
  * @property PaymentSchedule|null $paymentSchedule
  */

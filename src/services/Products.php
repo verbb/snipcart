@@ -22,7 +22,7 @@ use Craft;
  *
  * Products become Items once added to a cart and/or purchased.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Products extends Component
 {

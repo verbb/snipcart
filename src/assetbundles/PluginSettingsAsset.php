@@ -22,7 +22,7 @@ class PluginSettingsAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
+        $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
         $this->depends = [SnipcartAsset::class];
         $this->js = ['js/settings-plugin.js'];
         $this->css = ['css/settings-plugin.css'];

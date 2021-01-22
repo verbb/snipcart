@@ -22,7 +22,7 @@ use craft\helpers\Template as TemplateHelper;
  * This model is used explicitly for storing Product Details field data and
  * making some Twig functions available for convenience.
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class ProductDetails extends \craft\base\Model
 {

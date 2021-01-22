@@ -26,7 +26,7 @@ use yii\base\Exception;
  * configured Guzzle client, can optionally cache GET requests, and validates
  * tokens.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Api extends Component
 {

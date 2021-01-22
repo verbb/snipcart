@@ -20,7 +20,7 @@ use Craft;
  *
  * For interacting with external shipping providers.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  * @property ShipStation $shipStation
  */
 class Shipments extends \craft\base\Component

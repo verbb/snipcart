@@ -17,7 +17,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  *
  * For interacting with Snipcart discounts.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Discounts extends \craft\base\Component
 {

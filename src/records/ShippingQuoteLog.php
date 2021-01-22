@@ -14,7 +14,7 @@ use fostercommerce\snipcart\db\Table;
 /**
  * Class ShippingQuoteLog
  *
- * @package workingconcept\snipcart\records
+ * @package fostercommerce\snipcart\records
  *
  * @property int $siteId
  * @property string $token

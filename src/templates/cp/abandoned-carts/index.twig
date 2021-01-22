@@ -1,7 +1,7 @@
-{# @var cart \workingconcept\snipcart\models\AbandonedCart #}
+{# @var cart \fostercommerce\snipcart\models\AbandonedCart #}
 {% extends "snipcart/cp/_layout" %}
 
-{% do view.registerAssetBundle("workingconcept\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = "Snipcart Abandoned Carts" ~ (isTestMode ? " 🚧") %}

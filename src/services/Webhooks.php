@@ -30,7 +30,7 @@ use Craft;
 /**
  * This class handles valid data that's posted to Snipcart’s webhook endpoint.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Webhooks extends \craft\base\Component
 {

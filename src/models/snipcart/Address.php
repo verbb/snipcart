@@ -11,7 +11,7 @@ namespace fostercommerce\snipcart\models\snipcart;
 /**
  * Class Address
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class Address extends \craft\base\Model
 {

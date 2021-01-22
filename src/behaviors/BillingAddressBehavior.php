@@ -16,7 +16,7 @@ use yii\base\Behavior;
  * directly on the Snipcart Order model, where they exist within a nested
  * Address object.
  *
- * @package workingconcept\snipcart\behaviors
+ * @package fostercommerce\snipcart\behaviors
  */
 class BillingAddressBehavior extends Behavior
 {

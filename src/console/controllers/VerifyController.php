@@ -19,7 +19,7 @@ use yii\console\ExitCode;
  * Console utility for making sure Snipcart orders made it to ShipStation,
  * and attempting to re-feed any order that got lost in the tubes.
  *
- * @package workingconcept\snipcart\console\controllers
+ * @package fostercommerce\snipcart\console\controllers
  */
 class VerifyController extends Controller
 {

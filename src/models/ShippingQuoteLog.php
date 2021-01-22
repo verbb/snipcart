@@ -13,7 +13,7 @@ use craft\base\Model;
 /**
  * Class ShippingQuoteLog
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  */
 class ShippingQuoteLog extends Model
 {

@@ -14,7 +14,7 @@ use fostercommerce\snipcart\db\Table;
 /**
  * Class ProductDetails
  *
- * @package workingconcept\snipcart\records
+ * @package fostercommerce\snipcart\records
  *
  * @property int       $id
  * @property int       $elementId

@@ -22,7 +22,7 @@ use Craft;
  * documented models. The service can be accessed globally from
  * `Snipcart::$plugin->orders`.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  *
  * @todo clean up interfaces to be more Craft-y and obscure pagination concerns
  * @todo return null for invalid single-object requests, otherwise empty arrays

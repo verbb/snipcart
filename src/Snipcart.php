@@ -185,7 +185,7 @@ class Snipcart extends Plugin
         }
 
         if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'workingconcept\snipcart\console\controllers';
+            $this->controllerNamespace = 'fostercommerce\snipcart\console\controllers';
         }
 
         $this->registerShippingProviders();

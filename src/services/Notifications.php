@@ -17,7 +17,7 @@ use fostercommerce\snipcart\helpers\VersionHelper;
 /**
  * Sends notifications as things happen. Currently just email.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  * @todo Make a proper Notification model
  */
 class Notifications extends \craft\base\Component

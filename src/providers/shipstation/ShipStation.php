@@ -27,7 +27,7 @@ use fostercommerce\snipcart\providers\shipstation\events\OrderEvent;
 /**
  * Class ShipStation
  *
- * @package workingconcept\snipcart\providers
+ * @package fostercommerce\snipcart\providers
  * @todo log exceptions for troubleshooting
  */
 class ShipStation extends ShippingProvider

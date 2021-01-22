@@ -16,7 +16,7 @@ use fostercommerce\snipcart\helpers\VersionHelper;
 /**
  * Settings model
  *
- * @package workingconcept\snipcart\models
+ * @package fostercommerce\snipcart\models
  * @property Address $shipFrom
  */
 class Settings extends Model

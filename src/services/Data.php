@@ -13,7 +13,7 @@ use fostercommerce\snipcart\Snipcart;
 /**
  * Undocumented data API methods for grabbing store statistics.
  *
- * @package workingconcept\snipcart\services
+ * @package fostercommerce\snipcart\services
  */
 class Data extends \craft\base\Component
 {

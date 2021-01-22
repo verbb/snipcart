@@ -23,7 +23,7 @@ class ChartAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = '@workingconcept/snipcart/assetbundles/dist';
+        $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
         $this->depends = [CpAsset::class];
         $this->js = ['js/charts.js'];
         $this->css = ['css/charts.css'];
