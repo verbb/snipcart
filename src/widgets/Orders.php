@@ -41,7 +41,7 @@ class Orders extends Widget
      */
     public static function iconPath()
     {
-        return Craft::getAlias('@workingconcept/snipcart/assetbundles/dist/img/orders-icon.svg');
+        return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
     }
 
     /**
