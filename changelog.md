@@ -1,5 +1,10 @@
 # Snipcart Changelog
 
+## 1.5.1.1 - 2021-02-09
+### Fixed
+- Fixed composer and package plugin version number.
+
+
 ## 1.5.1 - 2021-02-01
 ### Fixed
 - Fixed aliases to use new `@fostercommerce` instead of `@workingconcept`. Thanks @mattstein.
