@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## 1.5.3
+## 1.5.3 - 2021-02-28
 
 ### Fixed
 
