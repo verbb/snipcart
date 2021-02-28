@@ -1,9 +1,14 @@
 # Snipcart Changelog
 
+## 1.5.2 - 2021-02-28
+
+### Fixed
+
+- Saving product details on non-default sites cleared the field data ([#31](https://github.com/FosterCommerce/snipcart-craft-plugin/issues/31))
+
 ## 1.5.1.1 - 2021-02-09
 ### Fixed
 - Fixed composer and package plugin version number.
-
 
 ## 1.5.1 - 2021-02-01
 ### Fixed

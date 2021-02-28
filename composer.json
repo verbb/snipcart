@@ -2,7 +2,7 @@
     "name": "fostercommerce/craft-snipcart",
     "description": "Craft CMS e-commerce in a day.",
     "type": "craft-plugin",
-    "version": "1.5.1.1",
+    "version": "1.5.2",
     "keywords": [
         "craft",
         "cms",

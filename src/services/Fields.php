@@ -70,15 +70,14 @@ class Fields extends \craft\base\Component
             return null;
         }
 
-        $sitesService = Craft::$app->getSites();
-        $currentSiteId = $sitesService->getCurrentSite()->id;
-        $elementId = $element->getId();
+        $siteId = $element->siteId;
+        $elementId = $element->id;
 
         if (is_array($value)) {
             $model = new ProductDetailsModel($value);
 
             $model->fieldId = $field->id;
-            $model->siteId  = $currentSiteId;
+            $model->siteId  = $siteId;
 
             if ($elementId !== null) {
                 $model->elementId = $elementId;
@@ -99,7 +98,7 @@ class Fields extends \craft\base\Component
          */
         if ($elementId !== null &&
             $record = $this->getRecord(
-                $currentSiteId,
+                $siteId,
                 $elementId,
                 $field->id
             )
@@ -124,7 +123,7 @@ class Fields extends \craft\base\Component
         $model = new ProductDetailsModel();
 
         $model->fieldId = $field->id;
-        $model->siteId  = $currentSiteId;
+        $model->siteId  = $siteId;
 
         if ($elementId !== null) {
             $model->elementId = $elementId;
