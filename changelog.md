@@ -1,5 +1,12 @@
 # Snipcart Changelog
 
+## 1.5.3
+
+### Fixed
+
+- Fixed encoded onload value when loading Snipcart's JS.
+- Fixed some Control Panel screens using the incorrect currency symbols.
+
 ## 1.5.2 - 2021-02-28
 
 ### Fixed

@@ -30,7 +30,7 @@
                             <td>{{ cart.email }}</td>
                             <td>{{ cart.status }}</td>
                             <td>{{ cart.modificationDate | date('short') }}</td>
-                            <td>{{ craft.snipcart.formatCurrency(cart.total) }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(cart.total, cart.currency) }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
