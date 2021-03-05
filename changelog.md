@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.5.4 - 2021-03-05
+
+### Removed
+
+- Removed unnecessary warning log when transforming model data.
+
 ## 1.5.3 - 2021-02-28
 
 ### Fixed

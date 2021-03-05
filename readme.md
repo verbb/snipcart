@@ -11,7 +11,7 @@
 Quickly turn a Craft CMS website into a fully functioning store.
 
 -   Fast store setup (even if you're new to Snipcart) with an optional Field Type and Twig tags.
--   Powerful store customization with developer-friendly Events, Models, and a [test project](https://github.com/FosterCommerce/snipcart-test) with examples and automated tests.
+-   Powerful store customization with developer-friendly Events, Models, and a [test project](https://github.com/FosterCommerce/snipcart-dev) with examples and automated tests.
 -   Control panel section for sales stats and browsing orders, customers, subscriptions, and abandoned carts without leaving Craft CMS.
 -   Create discounts and issue refunds from the Craft CMS control panel.
 -   Live shipping rates and tax calculation at checkout with Snipcart's various shipping and tax providers.
