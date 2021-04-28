@@ -23,7 +23,7 @@ If Commerce Pro is too complex for your project and Commerce Lite is too limitin
 
 <p align="center">
     <br>
-    <img src="https://github.com/FosterCommerce/snipcart-craft-plugin/raw/master/resources/commerce-comparison.png" width="750" alt="Snipcart vs. Craft Commerce comparison chart" />
+    <img src="https://github.com/FosterCommerce/snipcart-craft-plugin/raw/main/resources/commerce-comparison.png" width="750" alt="Snipcart vs. Craft Commerce comparison chart" />
     <br>
 </p>
 
