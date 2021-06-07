@@ -3,6 +3,6 @@
 {% set showCount = showCount ?? true -%}
 {% if craft.snipcart.publicApiKey -%}
     <a id="snipcart-cart-link" href="{{ href }}" class="snipcart-checkout snipcart-summary{% if classes | length %} {{ classes | join(' ') }}{% endif %}">
-        {{- text ?? "Shopping Cart"|t }}{% if showCount %} <span id="snipcart-item-count" class="snipcart-total-items">0</span>{% endif -%}
+        {{- text|raw ?? "Shopping Cart"|t }}{% if showCount %} <span id="snipcart-item-count" class="snipcart-total-items">0</span>{% endif -%}
     </a>
 {%- endif %}
