@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## Unreleased
+
+### Changed
+
+- `craft.snipcart.cartLink` now renders HTML passed as its first argument, not just text
+
 ## 1.5.4 - 2021-03-05
 
 ### Removed
