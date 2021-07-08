@@ -11,7 +11,7 @@ namespace fostercommerce\snipcart\events;
 use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\models\snipcart\ShippingRate;
 use fostercommerce\snipcart\models\snipcart\Package;
-use yii\base\Event;
+use craft\events\CancelableEvent;
 
 /**
  * Shipping rate event class.
@@ -19,7 +19,7 @@ use yii\base\Event;
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
-class ShippingRateEvent extends Event
+class ShippingRateEvent extends CancelableEvent
 {
     /**
      * @var Order
@@ -36,4 +36,26 @@ class ShippingRateEvent extends Event
      */
     public $package;
 
+    /**
+     * @var array[] with 'key' and 'message' keys
+     */
+    public $errors;
+
+    public function getErrors()
+    {
+        if ($this->isValid) {
+            return null;
+        }
+
+        $errors = $this->errors ?? [];
+
+        if (empty($errors)) {
+            $errors[] = [
+                'key' => 'unknown',
+                'message' => 'There was an error fetching the shipping rates.',
+            ];
+        }
+
+        return $errors;
+    }
 }

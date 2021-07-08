@@ -13,6 +13,7 @@ use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\Snipcart;
 use fostercommerce\snipcart\providers\shipstation\ShipStation;
 use fostercommerce\snipcart\records\ShippingQuoteLog;
+use fostercommerce\snipcart\errors\ShippingRateException;
 use Craft;
 
 /**
@@ -55,7 +56,7 @@ class Shipments extends \craft\base\Component
      *
      * @param Order $order
      *
-     * @return array [ 'rates' => ShippingRate[], 'package' => Package ]
+     * @return array [ 'rates' => ShippingRate[], 'package' => Package ] or [ 'errors' => [ ['key' => '...', 'message' => '...'] ] ]
      */
     public function collectRatesForOrder(Order $order): array
     {
@@ -68,34 +69,51 @@ class Shipments extends \craft\base\Component
             return [];
         }
 
-        $rates = [];
-        $package = Snipcart::$plugin->orders->getOrderPackaging($order);
+        try {
+            $rates = [];
+            $package = Snipcart::$plugin->orders->getOrderPackaging($order);
 
-        $includeShipStationRates = $this->getShipStation()->isConfigured() &&
-            $this->getShipStation()->getSettings()->enableShippingRates;
+            $includeShipStationRates = $this->getShipStation()->isConfigured() &&
+                $this->getShipStation()->getSettings()->enableShippingRates;
 
-        if ($includeShipStationRates &&
-            $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)
-        ) {
-            $rates = array_merge($rates, $shipStationRates);
+            if ($includeShipStationRates &&
+                $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)
+            ) {
+                $rates = array_merge($rates, $shipStationRates);
+            }
+
+            if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES)) {
+                $event = new ShippingRateEvent([
+                    'rates'   => $rates,
+                    'order'   => $order,
+                    'package' => $package
+                ]);
+
+                $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $event);
+
+                if (!$event->isValid) {
+                    throw new ShippingRateException($event);
+                }
+
+                $rates = $event->rates;
+            }
+        } catch (ShippingRateException $exception) {
+            Craft::warning(sprintf(
+                'Snipcart plugin returned an error while fetching rates for %s',
+                $order->invoiceNumber
+            ), 'snipcart');
+
+            return [
+                'errors' => $exception->event->getErrors(),
+            ];
         }
 
-        if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES)) {
-            $event = new ShippingRateEvent([
-                'rates'   => $rates,
-                'order'   => $order,
-                'package' => $package
-            ]);
-
-            $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $event);
-
-            $rates = $event->rates;
+        if (empty($rates)) {
+            Craft::warning(sprintf(
+                'Snipcart plugin did not return any rates for %s',
+                $order->invoiceNumber
+            ), 'snipcart');
         }
-
-        Craft::warning(sprintf(
-            'Snipcart plugin did not return any rates for %s',
-            $order->invoiceNumber
-        ), 'snipcart');
 
         return [
             'rates'   => $rates,

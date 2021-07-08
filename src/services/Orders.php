@@ -15,6 +15,7 @@ use fostercommerce\snipcart\models\snipcart\Notification;
 use fostercommerce\snipcart\models\snipcart\Refund;
 use fostercommerce\snipcart\models\snipcart\Package;
 use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\errors\ShippingRateException;
 use Craft;
 
 /**
@@ -244,6 +245,7 @@ class Orders extends \craft\base\Component
      * @param Order $order
      *
      * @return Package
+     * @throws fostercommerce\snipcart\errors\ShippingRateException
      */
     public function getOrderPackaging(Order $order): Package
     {
@@ -255,6 +257,9 @@ class Orders extends \craft\base\Component
                 'package' => $package
             ]);
             $this->trigger(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES, $event);
+            if (!$event->isValid) {
+                throw new ShippingRateException($event);
+            }
             $package = $event->package;
         }
 

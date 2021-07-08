@@ -423,7 +423,7 @@ class ShipStation extends ShippingProvider
         );
 
         if ($responseData === null) {
-            Craft::info(sprintf(
+            Craft::warning(sprintf(
                 'ShipStation did not return any rates for %s',
                 $snipcartOrder->invoiceNumber
             ), 'snipcart');
@@ -509,6 +509,7 @@ class ShipStation extends ShippingProvider
      *
      * @param $order
      * @return Rate|null
+     * @throws fostercommerce\snipcart\errors\ShippingRateException
      */
     private function getClosestRateForOrder($order)
     {
