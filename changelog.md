@@ -1,6 +1,6 @@
 # Snipcart Changelog
 
-## Unreleased
+## 1.5.5 - 2021-07-09
 
 ### Changed
 
