@@ -4,8 +4,8 @@
 
 ### Changed
 
-- `craft.snipcart.cartLink` now renders HTML passed as its first argument, not just text
-- `ShippingRateEvent` is now a `craft\events\CancelableEvent`; set `isValid` to `false` to display an error message, which can be customized with [the `errors` property](https://docs.snipcart.com/v2/webhooks/shipping#error)
+- `craft.snipcart.cartLink` now renders HTML passed as its first argument, not just text.
+- `ShippingRateEvent` is now a `craft\events\CancelableEvent`. Set `isValid` to `false` to display an error message, which can be customized with [the `errors` property](https://docs.snipcart.com/v2/webhooks/shipping#error).
 
 ## 1.5.4 - 2021-03-05
 
