@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.5.6 - 2021-11-26
+
+### Fixed
+
+- Fixed deprecation warning for `getSourceId()`
+
 ## 1.5.5 - 2021-07-09
 
 ### Changed

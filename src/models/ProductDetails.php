@@ -522,6 +522,15 @@ class ProductDetails extends \craft\base\Model
                 break;
             }
 
+            $getCanonicalId = function ($element) {
+                if (version_compare(Craft::$app->getVersion(), '3.7', '>=')) {
+                    throw new \Exception(''. $element->canonicalId);
+                    return (int) $element->canonicalId;
+                } else {
+                    return (int) $element->sourceId;
+                }
+            };
+
             if (is_a($duplicateElement, Entry::class)) {
                 // Don’t worry about unpublished Elements.
                 if ($duplicateElement->revisionId === null) {
@@ -529,7 +538,7 @@ class ProductDetails extends \craft\base\Model
                 }
 
                 // If a different Entry is using the SKU, that’s a conflict.
-                if ((int)$duplicateElement->sourceId !== (int)$currentElement->sourceId) {
+                if ($getCanonicalId($duplicateElement) !== $getCanonicalId($currentElement)) {
                     $hasConflict = true;
                     break;
                 }
@@ -543,7 +552,7 @@ class ProductDetails extends \craft\base\Model
                 }
 
                 // Duplicate within same Matrix field on the same Entry.
-                $sameSource = $duplicateElement->getOwner()->sourceId === $currentElement->getOwner()->sourceId;
+                $sameSource = $getCanonicalId($duplicateElement->getOwner()) === $getCanonicalId($currentElement->getOwner());
                 $sameOwner = (int)$duplicateElement->ownerId === (int)$currentElement->ownerId;
 
                 if ($sameSource and $sameOwner) {
