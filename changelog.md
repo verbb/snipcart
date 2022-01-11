@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.5.7 - 2022-01-11
+
+### Fixed
+
+- Removed debug code left in the `ProductDetails` class
+
 ## 1.5.6 - 2021-11-26
 
 ### Fixed

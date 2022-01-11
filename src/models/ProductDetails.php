@@ -524,7 +524,6 @@ class ProductDetails extends \craft\base\Model
 
             $getCanonicalId = function ($element) {
                 if (version_compare(Craft::$app->getVersion(), '3.7', '>=')) {
-                    throw new \Exception(''. $element->canonicalId);
                     return (int) $element->canonicalId;
                 } else {
                     return (int) $element->sourceId;
