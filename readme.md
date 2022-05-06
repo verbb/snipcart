@@ -1,4 +1,4 @@
-![Snipcart](resources/hero.svg)
+![Snipcart](resources/new-plugin-header.png)
 
 <h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
 
