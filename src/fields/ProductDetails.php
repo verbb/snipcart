@@ -122,7 +122,7 @@ class ProductDetails extends \craft\base\Field
             $this,
             $element
         );
-
+  
         parent::afterElementSave($element, $isNew);
     }
 
