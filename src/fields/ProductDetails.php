@@ -118,7 +118,7 @@ class ProductDetails extends \craft\base\Field
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        if ($element->isFieldDirty()) {
+        if ($element->isFieldDirty($this->handle)) {
             Snipcart::$plugin->fields->saveProductDetailsField(
                 $this,
                 $element
@@ -135,7 +135,7 @@ class ProductDetails extends \craft\base\Field
      */
     public function afterElementPropagate(ElementInterface $element, bool $isNew)
     {
-        if ($element->isFieldDirty()) {
+        if ($element->isFieldDirty($this->handle)) {
             Snipcart::$plugin->fields->saveProductDetailsField(
                 $this,
                 $element
