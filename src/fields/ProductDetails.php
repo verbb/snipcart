@@ -260,6 +260,7 @@ class ProductDetails extends \craft\base\Field
             ProductDetailsFieldAsset::class
         );
 
+        
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/field',
             [

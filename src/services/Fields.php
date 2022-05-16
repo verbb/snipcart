@@ -14,6 +14,7 @@ use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 use Craft;
 use craft\base\ElementInterface;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * @package fostercommerce\snipcart\services
@@ -59,7 +60,8 @@ class Fields extends \craft\base\Component
      * @throws
      */
     public function getProductDetailsField($field, ElementInterface $element = null, $value = null)
-    {
+    {   
+        sleep(3); // PETE: This sucks but makes things work
         // if we’ve already got a model, just give it back
         if ($value instanceof ProductDetailsModel) {
             return $value;
@@ -72,7 +74,7 @@ class Fields extends \craft\base\Component
 
         $siteId = $element->siteId;
         $elementId = $element->id;
-
+        
         if (is_array($value)) {
             $model = new ProductDetailsModel($value);
 
@@ -103,6 +105,7 @@ class Fields extends \craft\base\Component
                 $field->id
             )
         ) {
+
             if (! $this->isUnsavedRecord($record)) {
                 // populate with stored values
                 return new ProductDetailsModel($record->getAttributes());

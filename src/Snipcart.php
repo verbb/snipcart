@@ -88,9 +88,7 @@ class Snipcart extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-        
-        $this->log('Snipcart plugin intialised');
-        
+                
         $this->setComponents([
             'api'           => Api::class,
             'carts'         => Carts::class,

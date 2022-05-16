@@ -17,6 +17,7 @@ use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 use fostercommerce\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * This model is used explicitly for storing Product Details field data and
@@ -142,14 +143,16 @@ class ProductDetails extends \craft\base\Model
         if (! $this->elementId) {
             return null;
         }
-
+        
+        
         $element  = Craft::$app->elements->getElementById($this->elementId);
+                
         $isMatrix = isset($element) && get_class($element) === MatrixBlock::class;
 
         if ($isMatrix && $entryOnly) {
             return $element->getOwner();
         }
-
+        
         return $element;
     }
 
