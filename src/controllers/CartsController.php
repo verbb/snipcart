@@ -12,16 +12,17 @@ use fostercommerce\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
 use craft\helpers\DateTimeHelper;
 use Craft;
+use yii\web\Response;
 
 class CartsController extends \craft\web\Controller
 {
     /**
      * Displays paginated list of abandoned carts.
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
         $page  = Craft::$app->getRequest()->getPageNum();
         $carts = Snipcart::$plugin->carts->listAbandonedCarts($page);
@@ -40,10 +41,10 @@ class CartsController extends \craft\web\Controller
     /**
      * Gets the next page/grouping of abandoned carts.
      *
-     * @return \yii\web\Response
+     * @return Response
      * @throws
      */
-    public function actionGetNextCarts(): \yii\web\Response
+    public function actionGetNextCarts(): Response
     {
         $this->requirePostRequest();
 
@@ -71,10 +72,10 @@ class CartsController extends \craft\web\Controller
      * Displays abandoned cart detail.
      *
      * @param string $cartId
-     * @return \yii\web\Response
+     * @return Response
      * @throws \Exception
      */
-    public function actionDetail(string $cartId): \yii\web\Response
+    public function actionDetail(string $cartId): Response
     {
         $abandonedCart = Snipcart::$plugin->carts->getAbandonedCart($cartId);
 

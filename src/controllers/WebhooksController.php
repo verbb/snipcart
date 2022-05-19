@@ -62,23 +62,23 @@ class WebhooksController extends Controller
      * @inheritdoc
      * @var bool Disable CSRF for this controller
      */
-    public $enableCsrfValidation = false;
+   // public bool $enableCsrfValidation = false;
 
     /**
      * @inheritdoc
      * @var bool allow all endpoints in this controller to be used publicly
      */
-    protected $allowAnonymous = true;
+    protected array|int|bool $allowAnonymous = true;
 
     /**
      * @var bool
      */
-    private static $validateWebhook = true;
+    private static bool $validateWebhook = true;
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -170,7 +170,7 @@ class WebhooksController extends Controller
      * @return bool|string
      * @throws BadRequestHttpException if there's a problem with the token.
      */
-    private function hasInvalidRequestData($payload)
+    private function hasInvalidRequestData($payload): bool|string
     {
         /**
          * Reject requests that can’t be validated.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Snipcart plugin for Craft CMS 3.x
+ * Snipcart plugin for Craft CMS 4.x
  *
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
@@ -33,6 +33,7 @@ use fostercommerce\snipcart\helpers\RouteHelper;
 use fostercommerce\snipcart\helpers\CraftQlHelper;
 use Craft;
 use craft\base\Plugin;
+use craft\base\Model;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCacheOptionsEvent;
@@ -47,7 +48,7 @@ use yii\base\Event;
 /**
  * Class Snipcart
  *
- * @author    Working Concept
+ * @author    Working Concept / Foster Commerce
  * @package   Snipcart
  * @since     1.0.0
  *
@@ -69,17 +70,17 @@ class Snipcart extends Plugin
     /**
      * @var Snipcart
      */
-    public static $plugin;
+    public static Plugin $plugin;
 
     /**
      * @event ShippingProviderEvent
      */
-    const EVENT_REGISTER_SHIPPING_PROVIDERS = 'registerShippingProviders';
+    public const EVENT_REGISTER_SHIPPING_PROVIDERS = 'registerShippingProviders';
 
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.10';
+    public string $schemaVersion = '1.0.10';
 
     /**
      * @inheritdoc
@@ -194,7 +195,7 @@ class Snipcart extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -202,7 +203,7 @@ class Snipcart extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
         Craft::$app->getView()->registerAssetBundle(
             PluginSettingsAsset::class

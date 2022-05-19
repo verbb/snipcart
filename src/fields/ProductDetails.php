@@ -52,71 +52,71 @@ class ProductDetails extends \craft\base\Field
      * @var bool Whether to display "shippable" option for this field instance
      *           and allow it to be set per entry.
      */
-    public $displayShippableSwitch = false;
+    public bool $displayShippableSwitch = false;
 
     /**
      * @var bool Whether to display "taxable" option for this field instance
      *           and allow it to be set per entry.
      *
      */
-    public $displayTaxableSwitch = false;
+    public bool $displayTaxableSwitch = false;
 
     /**
      * @var bool Whether to display "inventory" option for this field instance.
      */
-    public $displayInventory = false;
+    public bool $displayInventory = false;
 
     /**
      * @var bool Default "shippable" value.
      */
-    public $defaultShippable = false;
+    public bool $defaultShippable = false;
 
     /**
      * @var bool Default "taxable" value.
      */
-    public $defaultTaxable = false;
+    public bool $defaultTaxable = false;
 
     /**
      * @var
      */
-    public $defaultWeight;
+    public float $defaultWeight = 0;
 
     /**
      * @var
      */
-    public $defaultWeightUnit;
+    public string $defaultWeightUnit = "g";
 
     /**
      * @var
      */
-    public $defaultLength;
+    public float $defaultLength = 0;
 
     /**
      * @var
      */
-    public $defaultWidth;
+    public float $defaultWidth = 0;
 
     /**
      * @var
      */
-    public $defaultHeight;
+    public float $defaultHeight = 0;
 
     /**
      * @var
      */
-    public $defaultDimensionsUnit;
+    public string $defaultDimensionsUnit = "cm";
 
     /**
      * @var string
      */
-    public $skuDefault = '';
+    public string $skuDefault = '';
 
     /**
      * Saves the Product Details data to table after element save.
      *
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $element, bool $isNew)
+    public function afterElementSave(ElementInterface $element, bool $isNew): void
     {
         Snipcart::$plugin->fields->saveProductDetailsField(
             $this,
@@ -131,7 +131,7 @@ class ProductDetails extends \craft\base\Field
      *
      * @inheritdoc
      */
-    public function afterElementPropagate(ElementInterface $element, bool $isNew)
+    public function afterElementPropagate(ElementInterface $element, bool $isNew): void
     {
         Snipcart::$plugin->fields->saveProductDetailsField(
             $this,
@@ -146,7 +146,7 @@ class ProductDetails extends \craft\base\Field
      *
      * @inheritdoc
      */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue($value, ElementInterface $element = null): mixed
     {
         return Snipcart::$plugin->fields->getProductDetailsField(
             $this,
@@ -158,7 +158,7 @@ class ProductDetails extends \craft\base\Field
     /**
      * @inheritdoc
      */
-    public function modifyElementsQuery(ElementQueryInterface $query, $value)
+    public function modifyElementsQuery(ElementQueryInterface $query, $value): void
     {
         $queryable = [
             'sku',
@@ -176,7 +176,8 @@ class ProductDetails extends \craft\base\Field
 
         if ($value !== null) {
             if (! is_array($value)) {
-                return false;
+                //return false; // replaced with exit as this base class must return void
+                exit;
             }
 
             foreach ($value as $key => $val) {
@@ -206,14 +207,14 @@ class ProductDetails extends \craft\base\Field
             }
         }
 
-        return null;
+        //return false; // commented out because base class must return void
     }
 
     /**
      * @inheritdoc
      * @since 3.3.0
      */
-    public function getContentGqlType()
+    public function getContentGqlType(): Type|array
     {
         $typeName = $this->handle.'_SnipcartField';
 
@@ -308,7 +309,7 @@ class ProductDetails extends \craft\base\Field
      *
      * @param  ElementInterface  $element
      */
-    public function validateProductDetails(ElementInterface $element)
+    public function validateProductDetails(ElementInterface $element): void
     {
         $productDetails = $element->getFieldValue($this->handle);
 
