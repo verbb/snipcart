@@ -2,35 +2,38 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\web\Controller;
+use yii\web\Response;
+use craft\errors\MissingComponentException;
+use yii\web\BadRequestHttpException;
 use Craft;
+use fostercommerce\snipcart\Snipcart;
 
-class SubscriptionsController extends \craft\web\Controller
+class SubscriptionsController extends Controller
 {
     /**
      * Displays paginated list of subscriptions.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
-        $page          = Craft::$app->getRequest()->getPageNum();
+        $page = Craft::$app->getRequest()->getPageNum();
         $subscriptions = Snipcart::$plugin->subscriptions->listSubscriptions($page);
-        $totalPages    = ceil($subscriptions->totalItems / $subscriptions->limit);
+        $totalPages = ceil($subscriptions->totalItems / $subscriptions->limit);
 
         return $this->renderTemplate(
             'snipcart/cp/subscriptions/index',
             [
-                'pageNumber'    => $page,
-                'totalPages'    => $totalPages,
-                'totalItems'    => $subscriptions->totalItems,
+                'pageNumber' => $page,
+                'totalPages' => $totalPages,
+                'totalItems' => $subscriptions->totalItems,
                 'subscriptions' => $subscriptions->items,
             ]
         );
@@ -39,11 +42,9 @@ class SubscriptionsController extends \craft\web\Controller
     /**
      * Displays subscription detail.
      *
-     * @param string $subscriptionId
-     * @return \yii\web\Response
      * @throws \Exception
      */
-    public function actionDetail(string $subscriptionId): \yii\web\Response
+    public function actionDetail(string $subscriptionId): Response
     {
         $subscription = Snipcart::$plugin->subscriptions->getSubscription($subscriptionId);
 
@@ -58,11 +59,10 @@ class SubscriptionsController extends \craft\web\Controller
     /**
      * Cancels a subscription.
      *
-     * @return \yii\web\Response
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
      */
-    public function actionCancel(): \yii\web\Response
+    public function actionCancel(): Response
     {
         $this->requirePostRequest();
 

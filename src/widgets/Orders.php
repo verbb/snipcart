@@ -2,16 +2,21 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\widgets;
 
-use fostercommerce\snipcart\assetbundles\OrdersWidgetAsset;
-use fostercommerce\snipcart\Snipcart;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use Craft;
 use craft\base\Widget;
+use fostercommerce\snipcart\assetbundles\OrdersWidgetAsset;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Orders Widget
@@ -21,44 +26,32 @@ class Orders extends Widget
     /**
      * @var string Type of order data to be displayed.
      */
-    public $chartType = 'itemsSold';
+    public string $chartType = 'itemsSold';
 
     /**
      * @var string Range of time for which data should be summarized.
      */
-    public $chartRange = 'weekly';
+    public string $chartRange = 'weekly';
 
-    /**
-     * @inheritdoc
-     */
     public static function displayName(): string
     {
         return Craft::t('snipcart', 'Snipcart Orders');
     }
 
-    /**
-     * @inheritdoc
-     */
-    public static function iconPath()
+    public static function iconPath(): string
     {
         return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function maxColspan(): int
     {
         return 3;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTitle(): string
     {
         $rangeName = $this->getChartRangeOptions()[$this->chartRange];
-        $typeName  = $this->getChartTypeOptions()[$this->chartType];
+        $typeName = $this->getChartTypeOptions()[$this->chartType];
 
         return Craft::t('snipcart', sprintf(
             'Snipcart %s %s',
@@ -67,9 +60,6 @@ class Orders extends Widget
         ));
     }
 
-   /**
-    * @inheritdoc
-    */
     public function rules(): array
     {
         $rules = parent::rules();
@@ -94,13 +84,13 @@ class Orders extends Widget
      * Returns the widget body HTML.
      *
      * @return false|string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     * @throws InvalidConfigException
      */
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         $view = Craft::$app->getView();
 
@@ -113,49 +103,41 @@ class Orders extends Widget
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders/orders',
             [
-                'widget'   => $this,
-                'settings' => Snipcart::$plugin->getSettings()
+                'widget' => $this,
+                'settings' => Snipcart::$plugin->getSettings(),
             ]
         );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders/settings',
             [
-                'widget' => $this
+                'widget' => $this,
             ]
         );
     }
 
     /**
      * Get a key-value array representing options for the type of data to be charted.
-     *
-     * @return array
      */
     public function getChartTypeOptions(): array
     {
         return [
-            'totalSales'     => 'Sales',
+            'totalSales' => 'Sales',
             'numberOfOrders' => 'Orders',
         ];
     }
 
     /**
      * Get a key-value array representing options for the chart's time range.
-     *
-     * @return array
      */
     public function getChartRangeOptions(): array
     {
         return [
-            'weekly'  => 'Weekly',
+            'weekly' => 'Weekly',
             'monthly' => 'Monthly',
         ];
     }
-
 }

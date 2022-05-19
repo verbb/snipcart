@@ -2,19 +2,21 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
+use craft\base\Component;
+use yii\db\ActiveRecord;
+use Craft;
+use fostercommerce\snipcart\errors\ShippingRateException;
 use fostercommerce\snipcart\events\ShippingRateEvent;
 use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\Snipcart;
 use fostercommerce\snipcart\providers\shipstation\ShipStation;
 use fostercommerce\snipcart\records\ShippingQuoteLog;
-use fostercommerce\snipcart\errors\ShippingRateException;
-use Craft;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Shipments
@@ -24,12 +26,12 @@ use Craft;
  * @package fostercommerce\snipcart\services
  * @property ShipStation $shipStation
  */
-class Shipments extends \craft\base\Component
+class Shipments extends Component
 {
     /**
      * @event WebhookEvent Triggered before shipping rates are returned to Snipcart.
      */
-    const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
+    public const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
     /**
      * @var ShipStation Local reference to instantiated ShipStation provider
@@ -38,12 +40,10 @@ class Shipments extends \craft\base\Component
 
     /**
      * Returns an instance of the ShipStation provider.
-     *
-     * @return ShipStation
      */
     public function getShipStation(): ShipStation
     {
-        if ($this->_shipStation === null) {
+        if (! $this->_shipStation instanceof ShipStation) {
             $settings = Snipcart::$plugin->getSettings();
             return $this->_shipStation = $settings->getProvider('shipStation');
         }
@@ -53,8 +53,6 @@ class Shipments extends \craft\base\Component
 
     /**
      * Collects shipping rate options for a Snipcart order.
-     *
-     * @param Order $order
      *
      * @return array [ 'rates' => ShippingRate[], 'package' => Package ] or [ 'errors' => [ ['key' => '...', 'message' => '...'] ] ]
      */
@@ -83,28 +81,28 @@ class Shipments extends \craft\base\Component
             }
 
             if ($this->hasEventHandlers(self::EVENT_BEFORE_RETURN_SHIPPING_RATES)) {
-                $event = new ShippingRateEvent([
-                    'rates'   => $rates,
-                    'order'   => $order,
-                    'package' => $package
+                $shippingRateEvent = new ShippingRateEvent([
+                    'rates' => $rates,
+                    'order' => $order,
+                    'package' => $package,
                 ]);
 
-                $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $event);
+                $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $shippingRateEvent);
 
-                if (!$event->isValid) {
-                    throw new ShippingRateException($event);
+                if (! $shippingRateEvent->isValid) {
+                    throw new ShippingRateException($shippingRateEvent);
                 }
 
-                $rates = $event->rates;
+                $rates = $shippingRateEvent->rates;
             }
-        } catch (ShippingRateException $exception) {
+        } catch (ShippingRateException $shippingRateException) {
             Craft::warning(sprintf(
                 'Snipcart plugin returned an error while fetching rates for %s',
                 $order->invoiceNumber
             ), 'snipcart');
 
             return [
-                'errors' => $exception->event->getErrors(),
+                'errors' => $shippingRateException->event->getErrors(),
             ];
         }
 
@@ -116,7 +114,7 @@ class Shipments extends \craft\base\Component
         }
 
         return [
-            'rates'   => $rates,
+            'rates' => $rates,
             'package' => $package,
         ];
     }
@@ -125,14 +123,13 @@ class Shipments extends \craft\base\Component
      * Handles an order that’s been completed, normally sent after
      * receiving a webhook post from Snipcart.
      *
-     * @param Order $order
      * @return object
      */
     public function handleCompletedOrder(Order $order)
     {
         $response = (object) [
             'orders' => [],
-            'errors' => []
+            'errors' => [],
         ];
 
         // is the plugin in test mode?
@@ -155,7 +152,7 @@ class Shipments extends \craft\base\Component
             $shipStationOrder = $this->getShipStation()->createOrder($order);
             $response->orders['shipStation'] = $shipStationOrder;
 
-            if (count($shipStationOrder->getErrors()) > 0) {
+            if ((is_countable($shipStationOrder->getErrors()) ? count($shipStationOrder->getErrors()) : 0) > 0) {
                 $response->errors['shipStation'] = $shipStationOrder->getErrors();
             }
         }
@@ -167,13 +164,17 @@ class Shipments extends \craft\base\Component
      * Gets the last shipping rate quote that was returned for the given order.
      *
      * @param $order
-     * @return array|ShippingQuoteLog|\yii\db\ActiveRecord|null
+     * @return array|ShippingQuoteLog|ActiveRecord|null
      */
     public function getQuoteLogForOrder($order)
     {
         return ShippingQuoteLog::find()
-            ->where(['token' => $order->token])
-            ->orderBy(['dateCreated' => SORT_DESC])
+            ->where([
+                'token' => $order->token,
+            ])
+            ->orderBy([
+                'dateCreated' => SORT_DESC,
+            ])
             ->one();
     }
 }

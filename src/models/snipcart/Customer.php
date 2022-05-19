@@ -2,20 +2,23 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
 /**
  * Snipcart Customer model
  * https://docs.snipcart.com/v2/api-reference/customers
  */
-class Customer extends \craft\base\Model
+class Customer extends Model
 {
-    const STATUS_CONFIRMED = 'Confirmed';
-    const STATUS_UNCONFIRMED = 'Unconfirmed';
+    public const STATUS_CONFIRMED = 'Confirmed';
+
+    public const STATUS_UNCONFIRMED = 'Unconfirmed';
 
     /**
      * @var string
@@ -183,43 +186,33 @@ class Customer extends \craft\base\Model
 
     /**
      * Returns the Craft control panel URL for the detail page.
-     * @return string
      */
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/customer/' . $this->id);
+        return UrlHelper::cpUrl('snipcart/customer/' . $this->id);
     }
 
     /**
      * Returns the URL for the customer in the Snipcart customer dashboard.
-     *
-     * @return string|null
      */
-    public function getDashboardUrl()
+    public function getDashboardUrl(): ?string
     {
-        if (! isset($this->id)) {
+        if ($this->id === null) {
             return null;
         }
 
         return 'https://app.snipcart.com/dashboard/customers/' . $this->id;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['creationDate'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function extraFields(): array
     {
         return [
-            'cpUrl'
+            'cpUrl',
         ];
     }
-
 }

@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -14,7 +14,7 @@ use yii\base\Event;
 /**
  * Order tracking event class.
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 class OrderTrackingEvent extends Event
@@ -33,5 +33,4 @@ class OrderTrackingEvent extends Event
      * @var string
      */
     public $trackingUrl;
-
 }

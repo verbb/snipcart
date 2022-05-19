@@ -2,15 +2,16 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\snipcart\Discount;
+use craft\base\Component;
 use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\models\snipcart\Discount;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Discounts
@@ -19,7 +20,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  *
  * @package fostercommerce\snipcart\services
  */
-class Discounts extends \craft\base\Component
+class Discounts extends Component
 {
     /**
      * Lists discounts.
@@ -32,7 +33,7 @@ class Discounts extends \craft\base\Component
         $response = Snipcart::$plugin->api->get('discounts');
 
         return ModelHelper::safePopulateArrayWithModels(
-            (array)$response,
+            (array) $response,
             Discount::class
         );
     }
@@ -42,7 +43,7 @@ class Discounts extends \craft\base\Component
      *
      * @param Discount $discount
      *
-     * @return mixed $response
+     * @return mixed
      * @throws \Exception when there isn't an API key to authenticate requests.
      */
     public function createDiscount($discount)
@@ -68,7 +69,7 @@ class Discounts extends \craft\base\Component
             $discountId
         ))) {
             return ModelHelper::safePopulateModel(
-                (array)$discountData,
+                (array) $discountData,
                 Discount::class
             );
         }

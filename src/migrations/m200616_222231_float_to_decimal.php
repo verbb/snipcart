@@ -12,10 +12,7 @@ use fostercommerce\snipcart\db\Table;
  */
 class m200616_222231_float_to_decimal extends Migration
 {
-    /**
-     * @inheritdoc
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         if ($this->getDb()->tableExists(Table::PRODUCT_DETAILS)) {
             $this->alterColumn(
@@ -50,9 +47,6 @@ class m200616_222231_float_to_decimal extends Migration
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown(): bool
     {
         echo "m200616_222231_float_to_decimal cannot be reverted.\n";

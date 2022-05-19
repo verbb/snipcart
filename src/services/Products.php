@@ -2,18 +2,18 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
+use Craft;
+use craft\base\Component;
+use craft\elements\Entry;
 use fostercommerce\snipcart\events\InventoryEvent;
 use fostercommerce\snipcart\helpers\FieldHelper;
 use fostercommerce\snipcart\models\snipcart\Item;
-use craft\elements\Entry;
-use craft\base\Component;
-use Craft;
 
 /**
  * The Products service lets you interact with Snipcart products as tidy,
@@ -30,7 +30,7 @@ class Products extends Component
      * @event InventoryEvent Triggered when a product's inventory has changed
      *                       because an order was created or updated.
      */
-    const EVENT_PRODUCT_INVENTORY_CHANGE = 'productInventoryChange';
+    public const EVENT_PRODUCT_INVENTORY_CHANGE = 'productInventoryChange';
 
     /**
      * Adjusts the supplied Item's inventory value if...
@@ -44,10 +44,10 @@ class Products extends Component
      *
      * @throws
      */
-    public function reduceInventory($orderItem)
+    public function reduceInventory($orderItem): void
     {
         // subtract the order quantity
-        $quantityToAdjust = - $orderItem->quantity;
+        $quantityToAdjust = -$orderItem->quantity;
 
         // get the Entry or Matrix block owning the Product Details field
         $element = $orderItem->getRelatedElement();
@@ -64,24 +64,24 @@ class Products extends Component
         }
 
         if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE)) {
-            $event = new InventoryEvent([
-                'element'  => $element,
-                'entry'    => $element,
+            $inventoryEvent = new InventoryEvent([
+                'element' => $element,
+                'entry' => $element,
                 'quantity' => $quantityToAdjust,
             ]);
 
-            $this->trigger(self::EVENT_PRODUCT_INVENTORY_CHANGE, $event);
+            $this->trigger(self::EVENT_PRODUCT_INVENTORY_CHANGE, $inventoryEvent);
 
             /**
              * Allow an event handler to override the quantity change before
              * it gets applied.
              */
-            $quantityToAdjust = $event->quantity;
+            $quantityToAdjust = $inventoryEvent->quantity;
         }
 
-        if ($fieldHandle) {
+        if ($fieldHandle !== '' && $fieldHandle !== '0') {
             $originalQuantity = $element->{$fieldHandle}->inventory;
-            $newQuantity      = $originalQuantity + $quantityToAdjust;
+            $newQuantity = $originalQuantity + $quantityToAdjust;
 
             if ($originalQuantity > 0 && $originalQuantity !== $newQuantity) {
                 $element->{$fieldHandle}->inventory = $newQuantity;
@@ -105,10 +105,10 @@ class Products extends Component
      *
      * @deprecated in 1.1. Use reduceInventory() instead.
      */
-    public function reduceProductInventory($entry, $quantity)
+    public function reduceProductInventory($entry, $quantity): void
     {
         // subtract the order quantity
-        $quantityToAdjust = - $quantity;
+        $quantityToAdjust = -$quantity;
         $fieldHandle = FieldHelper::getProductInfoFieldHandle($entry);
         $usesInventory = isset($fieldHandle) &&
             $entry->{$fieldHandle}->inventory !== null;
@@ -118,23 +118,23 @@ class Products extends Component
         }
 
         if ($this->hasEventHandlers(self::EVENT_PRODUCT_INVENTORY_CHANGE)) {
-            $event = new InventoryEvent([
-                'entry'    => $entry,
+            $inventoryEvent = new InventoryEvent([
+                'entry' => $entry,
                 'quantity' => $quantityToAdjust,
             ]);
 
-            $this->trigger(self::EVENT_PRODUCT_INVENTORY_CHANGE, $event);
+            $this->trigger(self::EVENT_PRODUCT_INVENTORY_CHANGE, $inventoryEvent);
 
             /**
              * Allow an event handler to override the quantity change before
              * it gets adjusted.
              */
-            $quantityToAdjust = $event->quantity;
+            $quantityToAdjust = $inventoryEvent->quantity;
         }
 
-        if ($fieldHandle) {
+        if ($fieldHandle !== '' && $fieldHandle !== '0') {
             $originalQuantity = $entry->{$fieldHandle}->inventory;
-            $newQuantity      = $originalQuantity + $quantityToAdjust;
+            $newQuantity = $originalQuantity + $quantityToAdjust;
 
             if ($originalQuantity > 0 && $originalQuantity !== $newQuantity) {
                 $entry->{$fieldHandle}->inventory = $newQuantity;

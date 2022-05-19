@@ -2,16 +2,17 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\base\Component;
+use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\models\snipcart\Customer;
 use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Customers
@@ -20,7 +21,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  *
  * @package fostercommerce\snipcart\services
  */
-class Customers extends \craft\base\Component
+class Customers extends Component
 {
     /**
      * Lists Snipcart customers.
@@ -36,15 +37,14 @@ class Customers extends \craft\base\Component
      *              ->items (Customer[])
      * @throws \Exception if our API key is missing.
      */
-    public function listCustomers($page = 1, $limit = 20, $params = [])
+    public function listCustomers($page = 1, $limit = 20, array $params = [])
     {
         $params['offset'] = ($page - 1) * $limit;
-        $params['limit']  = $limit;
+        $params['limit'] = $limit;
 
         $customerData = Snipcart::$plugin->api->get('customers', $params);
-
         $customerData->items = ModelHelper::safePopulateArrayWithModels(
-            (array)$customerData->items,
+            (array) $customerData->items,
             Customer::class
         );
 
@@ -66,7 +66,7 @@ class Customers extends \craft\base\Component
             $customerId
         ))) {
             return ModelHelper::safePopulateModel(
-                (array)$customerData,
+                (array) $customerData,
                 Customer::class
             );
         }
@@ -85,14 +85,16 @@ class Customers extends \craft\base\Component
     public function getCustomerOrders($customerId): array
     {
         $orders = ModelHelper::safePopulateArrayWithModels(
-            (array)Snipcart::$plugin->api->get(sprintf(
+            (array) Snipcart::$plugin->api->get(sprintf(
                 'customers/%s/orders',
                 $customerId
-            ), ['orderBy' => 'creationDate']),
+            ), [
+                'orderBy' => 'creationDate',
+            ]),
             Order::class
         );
 
-        usort($orders, [$this, 'sortOrdersByDateDescending']);
+        usort($orders, fn($a, $b): bool => $this->sortOrdersByDateDescending($a, $b));
 
         return $orders;
     }
@@ -102,7 +104,6 @@ class Customers extends \craft\base\Component
      *
      * @param $a
      * @param $b
-     * @return bool
      */
     private function sortOrdersByDateDescending($a, $b): bool
     {

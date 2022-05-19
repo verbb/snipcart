@@ -2,13 +2,13 @@
     "name": "fostercommerce/craft-snipcart",
     "description": "Craft CMS e-commerce in a day.",
     "type": "craft-plugin",
-    "version": "1.6.0",
+    "version": "2.0.0",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
         "craft-plugin",
-        "craft3",
+        "craft4",
         "snipcart"
     ],
     "support": {
@@ -24,14 +24,17 @@
     ],
     "require": {
         "php": "^8.0",
-        "craftcms/cms": "^3.3.0",
+        "craftcms/cms": "^4.0.0",
         "pelago/emogrifier": "*"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main",
+        "craftcms/rector": "dev-main",
+        "roave/security-advisories": "dev-latest",
+        "fakerphp/faker": "^1.23",
         "vlucas/phpdotenv": "^3.4",
         "codeception/codeception": "^4.0.0",
-        "fzaninotto/faker": "^1.8",
         "codeception/module-phpbrowser": "^1.0.0",
         "codeception/module-asserts": "^1.0.0",
         "codeception/module-rest": "^1.0.0",
@@ -44,7 +47,11 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     },
     "extra": {
         "name": "Snipcart",
@@ -53,5 +60,14 @@
         "hasCpSection": true,
         "changelogUrl": "https://github.com/FosterCommerce/snipcart-craft-plugin/changelog.md",
         "class": "fostercommerce\\snipcart\\Snipcart"
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "scripts": {
+        "phpstan": "phpstan --memory-limit=1G",
+        "ecs-check": "ecs check --ansi --memory-limit=1G",
+        "ecs-fix": "ecs check --ansi --fix --memory-limit=1G",
+        "rector": "rector process",
+        "rector-dry-run": "rector process --dry-run"
     }
 }

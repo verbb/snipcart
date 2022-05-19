@@ -2,31 +2,34 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
+use craft\web\Controller;
+use yii\web\Response;
+use craft\errors\MissingComponentException;
+use yii\web\BadRequestHttpException;
+use Craft;
+use craft\helpers\UrlHelper;
 use fostercommerce\snipcart\models\snipcart\Discount;
 use fostercommerce\snipcart\Snipcart;
-use craft\helpers\UrlHelper;
-use Craft;
 
-class DiscountsController extends \craft\web\Controller
+class DiscountsController extends Controller
 {
     /**
      * Displays discounts, which don’t come paginated.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
         return $this->renderTemplate(
             'snipcart/cp/discounts/index',
             [
-                'discounts' => Snipcart::$plugin->discounts->listDiscounts()
+                'discounts' => Snipcart::$plugin->discounts->listDiscounts(),
             ]
         );
     }
@@ -34,26 +37,22 @@ class DiscountsController extends \craft\web\Controller
     /**
      * Displays discount detail.
      *
-     * @param string $discountId
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionDiscountDetail(string $discountId): \yii\web\Response
+    public function actionDiscountDetail(string $discountId): Response
     {
         return $this->renderTemplate(
             'snipcart/cp/discounts/detail',
             [
-                'discount' => Snipcart::$plugin->discounts->getDiscount($discountId)
+                'discount' => Snipcart::$plugin->discounts->getDiscount($discountId),
             ]
         );
     }
 
     /**
      * Displays new discount form.
-     *
-     * @return \yii\web\Response
      */
-    public function actionNew(): \yii\web\Response
+    public function actionNew(): Response
     {
         return $this->renderTemplate('snipcart/cp/discounts/new');
     }
@@ -61,11 +60,10 @@ class DiscountsController extends \craft\web\Controller
     /**
      * Saves a new discount.
      *
-     * @return \yii\web\Response
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
      */
-    public function actionSave(): \yii\web\Response
+    public function actionSave(): Response
     {
         $this->requirePostRequest();
 
@@ -75,11 +73,15 @@ class DiscountsController extends \craft\web\Controller
 
         if (! $discount = new Discount($params)) {
             Craft::$app->getUrlManager()->setRouteParams([
-                'variables' => ['discount' => $discount]
+                'variables' => [
+                    'discount' => $discount,
+                ],
             ]);
         } elseif (! $discount->validate()) {
             Craft::$app->getUrlManager()->setRouteParams([
-                'variables' => ['discount' => $discount]
+                'variables' => [
+                    'discount' => $discount,
+                ],
             ]);
 
             Craft::$app->getSession()->setError('Invalid Discount details.');
@@ -93,9 +95,9 @@ class DiscountsController extends \craft\web\Controller
     }
 
     /**
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
-    public function actionUpdateDiscount()
+    public function actionUpdateDiscount(): void
     {
         $this->requirePostRequest();
     }
@@ -103,14 +105,14 @@ class DiscountsController extends \craft\web\Controller
     /**
      * Deletes a discount.
      *
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \craft\errors\MissingComponentException
+     * @throws BadRequestHttpException
+     * @throws MissingComponentException
      */
-    public function actionDeleteDiscount(): \yii\web\Response
+    public function actionDeleteDiscount(): Response
     {
         $this->requirePostRequest();
 
-        $discountId = (string)Craft::$app->getRequest()->post('discountId');
+        $discountId = (string) Craft::$app->getRequest()->post('discountId');
 
         // successful response will be `null`, do don't bother checking
         Snipcart::$plugin->discounts->deleteDiscountById($discountId);

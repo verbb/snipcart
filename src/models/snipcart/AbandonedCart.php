@@ -2,19 +2,20 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
 /**
  * https://docs.snipcart.com/v2/api-reference/abandoned-carts
  */
-
-class AbandonedCart extends \craft\base\Model
+class AbandonedCart extends Model
 {
-    const STATUS_IN_PROGRESS = 'InProgress';
+    public const STATUS_IN_PROGRESS = 'InProgress';
 
     /**
      * @var
@@ -82,6 +83,7 @@ class AbandonedCart extends \craft\base\Model
     public $invoiceNumber;
 
     public $shippingInformation;
+
     /*
     "shippingInformation": {
       "provider": null,
@@ -93,6 +95,7 @@ class AbandonedCart extends \craft\base\Model
     public $paymentMethod;
 
     public $summary;
+
     /*
     summary": {
       "subtotal": 20,
@@ -304,9 +307,6 @@ class AbandonedCart extends \craft\base\Model
      */
     public $totalPriceWithoutDiscountsAndTaxes;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['modificationDate', 'completionDate'];
@@ -314,16 +314,14 @@ class AbandonedCart extends \craft\base\Model
 
     /**
      * Returns the Craft control panel URL for the detail page.
-     * @return string
      */
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
+        return UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
     }
 
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/abandoned/' . $this->token;
     }
-
 }

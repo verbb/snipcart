@@ -2,16 +2,17 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\base;
 
+use craft\base\Model;
 use craft\base\ComponentInterface;
 use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
-use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
 use fostercommerce\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
 use GuzzleHttp\Client;
 
 interface ShippingProviderInterface extends ComponentInterface
@@ -25,8 +26,6 @@ interface ShippingProviderInterface extends ComponentInterface
 
     /**
      * Gets the base URL for the provider's REST API, used by client.
-     *
-     * @return string
      */
     public static function apiBaseUrl(): string;
 
@@ -34,7 +33,7 @@ interface ShippingProviderInterface extends ComponentInterface
      * Gets the provider settings model, null if it's not ready, false
      * if there isn’t one.
      *
-     * @return \craft\base\Model|bool|null
+     * @return Model|bool|null
      */
     public function getSettings();
 
@@ -47,16 +46,12 @@ interface ShippingProviderInterface extends ComponentInterface
 
     /**
      * Whether the provider is ready to go.
-     *
-     * @return bool
      */
     public function isConfigured(): bool;
 
     /**
      * Gets shipping rates for the provided Snipcart order.
      *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Package       $package
      * @return SnipcartRate[]
      */
     public function getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array;
@@ -64,15 +59,12 @@ interface ShippingProviderInterface extends ComponentInterface
     /**
      * Creates an equivalent order in the provider’s system.
      *
-     * @param SnipcartOrder $snipcartOrder
      * @return mixed|null The created order model.
      */
     public function createOrder(SnipcartOrder $snipcartOrder);
 
     /**
      * Gets an instance of the Guzzle client.
-     *
-     * @return Client
      */
     public function getClient(): Client;
 
@@ -87,7 +79,6 @@ interface ShippingProviderInterface extends ComponentInterface
     /**
      * Gets an order by Snipcart invoice number.
      *
-     * @param string $snipcartInvoice
      * @return mixed provider order model or null
      */
     public function getOrderBySnipcartInvoice(string $snipcartInvoice);
@@ -95,7 +86,6 @@ interface ShippingProviderInterface extends ComponentInterface
     /**
      * Creates a shipping label for the provided order.
      *
-     * @param SnipcartOrder $snipcartOrder
      * @return string|null URL to the label
      * @todo decide on sensible uniform return value
      */
@@ -106,7 +96,6 @@ interface ShippingProviderInterface extends ComponentInterface
      * as an object, array of objects, or null.
      *
      * @param $endpoint
-     * @param array $params
      * @return mixed
      */
     public function get(string $endpoint, array $params = []);
@@ -116,9 +105,7 @@ interface ShippingProviderInterface extends ComponentInterface
      * as an object, array of objects, or null.
      *
      * @param $endpoint
-     * @param array $data
      * @return mixed
      */
     public function post(string $endpoint, array $data = []);
-
 }

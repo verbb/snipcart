@@ -2,37 +2,38 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
-use craft\helpers\UrlHelper;
-use craft\helpers\DateTimeHelper;
+use craft\web\Controller;
 use Craft;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\UrlHelper;
+use fostercommerce\snipcart\Snipcart;
+use yii\web\Response;
 
-class CartsController extends \craft\web\Controller
+class CartsController extends Controller
 {
     /**
      * Displays paginated list of abandoned carts.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
-        $page  = Craft::$app->getRequest()->getPageNum();
+        $page = Craft::$app->getRequest()->getPageNum();
         $carts = Snipcart::$plugin->carts->listAbandonedCarts($page);
 
         return $this->renderTemplate(
             'snipcart/cp/abandoned-carts/index',
             [
-                'pageNumber'        => $page,
-                'carts'             => $carts->items,
+                'pageNumber' => $page,
+                'carts' => $carts->items,
                 'continuationToken' => $carts->continuationToken ?? null,
-                'hasMoreResults'    => $carts->hasMoreResults ?? false,
+                'hasMoreResults' => $carts->hasMoreResults ?? false,
             ]
         );
     }
@@ -40,17 +41,16 @@ class CartsController extends \craft\web\Controller
     /**
      * Gets the next page/grouping of abandoned carts.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionGetNextCarts(): \yii\web\Response
+    public function actionGetNextCarts(): Response
     {
         $this->requirePostRequest();
 
         $token = Craft::$app->getRequest()->getRequiredParam('continuationToken');
 
         $response = Snipcart::$plugin->api->get('carts/abandoned', [
-            'continuationToken' => $token
+            'continuationToken' => $token,
         ]);
 
         if (isset($response->items)) {
@@ -70,11 +70,9 @@ class CartsController extends \craft\web\Controller
     /**
      * Displays abandoned cart detail.
      *
-     * @param string $cartId
-     * @return \yii\web\Response
      * @throws \Exception
      */
-    public function actionDetail(string $cartId): \yii\web\Response
+    public function actionDetail(string $cartId): Response
     {
         $abandonedCart = Snipcart::$plugin->carts->getAbandonedCart($cartId);
 
@@ -85,5 +83,4 @@ class CartsController extends \craft\web\Controller
             ]
         );
     }
-
 }

@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2020 Working Concept Inc.
  */
 
@@ -14,7 +14,7 @@ use yii\base\Event;
 /**
  * Order refund event class.
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2020 Working Concept Inc.
  */
 class OrderRefundEvent extends Event

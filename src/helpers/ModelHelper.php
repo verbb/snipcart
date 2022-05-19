@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -19,8 +19,6 @@ class ModelHelper
      *
      * @param array   $array  array where each item can be transformed into model
      * @param string  $class  name of desired model class
-     *
-     * @return array
      */
     public static function populateArrayWithModels(array $array, $class): array
     {
@@ -40,8 +38,9 @@ class ModelHelper
      *
      * @return mixed
      */
-    public static function safePopulateModel($data, $class)
+    public static function safePopulateModel(mixed $data, string $class)
     {
+        //\Craft::dd((object)$data);
         $cleanData = self::stripUnknownProperties($data, $class);
 
         return new $class($cleanData);
@@ -54,13 +53,11 @@ class ModelHelper
      * @param array  $array  Array in which each item contains data for
      *                       populating a model.
      * @param string $class  Model to be populated.
-     *
-     * @return array
      */
-    public static function safePopulateArrayWithModels(array $array, $class): array
+    public static function safePopulateArrayWithModels(array $array, string $class): array
     {
         foreach ($array as &$item) {
-            $item = self::safePopulateModel($item, $class);
+            $item = self::safePopulateModel((array) $item, $class);
         }
 
         return $array;
@@ -73,13 +70,14 @@ class ModelHelper
      * @param object $data   Object with data, like a webhook payload.
      * @param string $class  Model to be populated, which can't receive any
      *                       unknown attributes.
-     * @return object
+     * @return array
      * @throws
      */
-    public static function stripUnknownProperties($data, $class)
+    public static function stripUnknownProperties(mixed $data, string $class): mixed
     {
+
         // instantiate the model so we can poke at it
-        $model = new $class;
+        $model = new $class();
 
         // get normal model attributes
         $fields = array_keys($model->fields());

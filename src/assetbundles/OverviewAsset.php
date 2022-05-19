@@ -2,15 +2,15 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\assetbundles;
 
 use craft\web\AssetBundle;
-use yii\web\JqueryAsset;
 use craft\web\assets\cp\CpAsset;
+use yii\web\JqueryAsset;
 
 /**
  * @author    Working Concept
@@ -19,17 +19,14 @@ use craft\web\assets\cp\CpAsset;
  */
 class OverviewAsset extends AssetBundle
 {
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
         $this->depends = [
             SnipcartAsset::class,
             ChartAsset::class,
             CpAsset::class,
-            JqueryAsset::class
+            JqueryAsset::class,
         ];
         $this->js = ['js/overview.js'];
         $this->css = ['css/snipcart.css'];

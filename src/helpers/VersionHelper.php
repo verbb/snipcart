@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2019 Working Concept Inc.
  */
 
@@ -12,8 +12,6 @@ class VersionHelper
 {
     /**
      * Returns true if the current Craft version is 3.1 or greater.
-     *
-     * @return bool
      */
     public static function isCraft31(): bool
     {
@@ -26,8 +24,6 @@ class VersionHelper
 
     /**
      * Returns true if the current Craft version is 3.2 or greater.
-     *
-     * @return bool
      */
     public static function isCraft32(): bool
     {
@@ -40,8 +36,6 @@ class VersionHelper
 
     /**
      * Returns true if the current Craft version is 3.4 or greater.
-     *
-     * @return bool
      */
     public static function isCraft34(): bool
     {

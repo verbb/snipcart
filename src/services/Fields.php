@@ -2,23 +2,24 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
+use craft\base\Component;
+use Craft;
+use craft\base\ElementInterface;
 use craft\elements\Entry;
 use fostercommerce\snipcart\fields\ProductDetails;
 use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
-use Craft;
-use craft\base\ElementInterface;
 
 /**
  * @package fostercommerce\snipcart\services
  */
-class Fields extends \craft\base\Component
+class Fields extends Component
 {
     /**
      * Saves data for a Product Details field.
@@ -26,10 +27,9 @@ class Fields extends \craft\base\Component
      * @param ProductDetails   $field   Related Field instance
      * @param ElementInterface $element Related Element
      *
-     * @return bool|null
      * @throws
      */
-    public function saveProductDetailsField($field, $element)
+    public function saveProductDetailsField($field, $element): ?bool
     {
         $data = $element->getFieldValue($field->handle);
 
@@ -55,10 +55,9 @@ class Fields extends \craft\base\Component
      * @param mixed                 $value   Data that should be used
      *                                       to populate the model
      *
-     * @return ProductDetailsModel|null
      * @throws
      */
-    public function getProductDetailsField($field, ElementInterface $element = null, $value = null)
+    public function getProductDetailsField($field, ElementInterface $element = null, mixed $value = null): ?ProductDetailsModel
     {
         // if we’ve already got a model, just give it back
         if ($value instanceof ProductDetailsModel) {
@@ -77,7 +76,7 @@ class Fields extends \craft\base\Component
             $model = new ProductDetailsModel($value);
 
             $model->fieldId = $field->id;
-            $model->siteId  = $siteId;
+            $model->siteId = $siteId;
 
             if ($elementId !== null) {
                 $model->elementId = $elementId;
@@ -87,7 +86,7 @@ class Fields extends \craft\base\Component
         }
 
         // if we have an Entry, we’re working with a source ID and need the corresponding Element ID
-        if (is_a($element, Entry::class) &&
+        if ($element instanceof Entry &&
             $currentRevision = $element->getCurrentRevision()
         ) {
             $elementId = $currentRevision->getId();
@@ -123,7 +122,7 @@ class Fields extends \craft\base\Component
         $model = new ProductDetailsModel();
 
         $model->fieldId = $field->id;
-        $model->siteId  = $siteId;
+        $model->siteId = $siteId;
 
         if ($elementId !== null) {
             $model->elementId = $elementId;
@@ -138,13 +137,10 @@ class Fields extends \craft\base\Component
      * Returns true if the record has not yet been saved to the database, or
      * if it was created without yet being populated like during a bulk Element
      * re-save after the field is newly added.
-     *
-     * @param ProductDetailsRecord $record
-     * @return bool
      */
-    private function isUnsavedRecord($record): bool
+    private function isUnsavedRecord(ProductDetailsRecord $productDetailsRecord): bool
     {
-        if ($record->isNew) {
+        if ($productDetailsRecord->isNew) {
             return true;
         }
 
@@ -152,7 +148,7 @@ class Fields extends \craft\base\Component
          * A record can only have a `null` sku and price if saved during a
          * bulk operation.
          */
-        return $record->sku === null && $record->price === null;
+        return $productDetailsRecord->sku === null && $productDetailsRecord->price === null;
     }
 
     /**
@@ -162,29 +158,27 @@ class Fields extends \craft\base\Component
      * @param int        $siteId     Relevant Site ID
      * @param int        $elementId  Relevant Element ID
      * @param int        $fieldId    Relevant Field ID
-     *
-     * @return bool
      */
     private function saveRecord($data, $siteId, $elementId, $fieldId): bool
     {
-        $record = $this->getRecord($siteId, $elementId, $fieldId);
+        $productDetailsRecord = $this->getRecord($siteId, $elementId, $fieldId);
 
-        $record->setAttributes([
-            'sku'            => $data->sku,
-            'price'          => $data->price,
-            'shippable'      => $data->shippable,
-            'taxable'        => $data->taxable,
-            'weight'         => $data->weight,
-            'weightUnit'     => $data->weightUnit,
-            'length'         => $data->length,
-            'width'          => $data->width,
-            'height'         => $data->height,
-            'inventory'      => $data->inventory,
+        $productDetailsRecord->setAttributes([
+            'sku' => $data->sku,
+            'price' => $data->price,
+            'shippable' => $data->shippable,
+            'taxable' => $data->taxable,
+            'weight' => $data->weight,
+            'weightUnit' => $data->weightUnit,
+            'length' => $data->length,
+            'width' => $data->width,
+            'height' => $data->height,
+            'inventory' => $data->inventory,
             'dimensionsUnit' => $data->dimensionsUnit,
-            'customOptions'  => $data->customOptions,
+            'customOptions' => $data->customOptions,
         ], false);
 
-        return $record->save();
+        return $productDetailsRecord->save();
     }
 
     /**
@@ -194,24 +188,22 @@ class Fields extends \craft\base\Component
      * @param int  $siteId     Relevant Site ID
      * @param int  $elementId  Relevant Element ID
      * @param int  $fieldId    Relevant Field ID
-     *
-     * @return ProductDetailsRecord
      */
     private function getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
     {
         $record = ProductDetailsRecord::findOne([
-            'siteId'    => $siteId,
+            'siteId' => $siteId,
             'elementId' => $elementId,
-            'fieldId'   => $fieldId
+            'fieldId' => $fieldId,
         ]);
 
-        if ($record === null) {
+        if (! $record instanceof ProductDetailsRecord) {
             $record = new ProductDetailsRecord();
 
-            $record->isNew     = true;
-            $record->siteId    = $siteId;
+            $record->isNew = true;
+            $record->siteId = $siteId;
             $record->elementId = $elementId;
-            $record->fieldId   = $fieldId;
+            $record->fieldId = $fieldId;
         }
 
         return $record;

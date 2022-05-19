@@ -2,18 +2,18 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 /**
  * ShipStation Product Category Model
  * https://www.shipstation.com/developer-api/#/reference/model-product-category
  */
-
-class ProductCategory extends \craft\base\Model
+class ProductCategory extends Model
 {
     /**
      * @var number The system generated identifier for the product category.
@@ -25,15 +25,14 @@ class ProductCategory extends \craft\base\Model
      */
     public $name;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['categoryId'], 'number', 'integerOnly' => true],
+            [['categoryId'],
+                'number',
+                'integerOnly' => true,
+            ],
             [['name'], 'string'],
         ];
     }
-
 }

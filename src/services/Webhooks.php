@@ -2,112 +2,113 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
+use craft\base\Component;
+use Craft;
 use fostercommerce\snipcart\events\CustomerEvent;
+use fostercommerce\snipcart\events\OrderEvent;
 use fostercommerce\snipcart\events\OrderNotificationEvent;
 use fostercommerce\snipcart\events\OrderRefundEvent;
 use fostercommerce\snipcart\events\OrderStatusEvent;
 use fostercommerce\snipcart\events\OrderTrackingEvent;
 use fostercommerce\snipcart\events\SubscriptionEvent;
 use fostercommerce\snipcart\events\TaxesEvent;
+use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\models\snipcart\Customer;
 use fostercommerce\snipcart\models\snipcart\Notification;
+use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\models\snipcart\Refund;
 use fostercommerce\snipcart\models\snipcart\Subscription;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\events\OrderEvent;
 use fostercommerce\snipcart\records\ShippingQuoteLog;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\records\WebhookLog;
-use Craft;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * This class handles valid data that's posted to Snipcart’s webhook endpoint.
  *
  * @package fostercommerce\snipcart\services
  */
-class Webhooks extends \craft\base\Component
+class Webhooks extends Component
 {
     /**
      * @event OrderEvent Triggered before a completed event is handled by the plugin.
      */
-    const EVENT_BEFORE_PROCESS_COMPLETED_ORDER = 'beforeProcessCompletedOrder';
+    public const EVENT_BEFORE_PROCESS_COMPLETED_ORDER = 'beforeProcessCompletedOrder';
 
     /**
      * @event OrderStatusEvent
      */
-    const EVENT_ON_ORDER_STATUS_CHANGED = 'onOrderStatusChanged';
+    public const EVENT_ON_ORDER_STATUS_CHANGED = 'onOrderStatusChanged';
 
     /**
      * @event OrderStatusEvent
      */
-    const EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED = 'onOrderPaymentStatusChanged';
+    public const EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED = 'onOrderPaymentStatusChanged';
 
     /**
      * @event OrderTrackingEvent
      */
-    const EVENT_ON_ORDER_TRACKING_CHANGED = 'onOrderTrackingChanged';
+    public const EVENT_ON_ORDER_TRACKING_CHANGED = 'onOrderTrackingChanged';
 
     /**
      * @event SubscriptionEvent
      */
-    const EVENT_ON_SUBSCRIPTION_CREATED = 'onSubscriptionCreated';
+    public const EVENT_ON_SUBSCRIPTION_CREATED = 'onSubscriptionCreated';
 
     /**
      * @event SubscriptionEvent
      */
-    const EVENT_ON_SUBSCRIPTION_CANCELLED = 'onSubscriptionCancelled';
+    public const EVENT_ON_SUBSCRIPTION_CANCELLED = 'onSubscriptionCancelled';
 
     /**
      * @event SubscriptionEvent
      */
-    const EVENT_ON_SUBSCRIPTION_PAUSED = 'onSubscriptionPaused';
+    public const EVENT_ON_SUBSCRIPTION_PAUSED = 'onSubscriptionPaused';
 
     /**
      * @event SubscriptionEvent
      */
-    const EVENT_ON_SUBSCRIPTION_RESUMED = 'onSubscriptionResumed';
+    public const EVENT_ON_SUBSCRIPTION_RESUMED = 'onSubscriptionResumed';
 
     /**
      * @event SubscriptionEvent
      */
-    const EVENT_ON_SUBSCRIPTION_INVOICE_CREATED = 'onSubscriptionInvoiceCreated';
+    public const EVENT_ON_SUBSCRIPTION_INVOICE_CREATED = 'onSubscriptionInvoiceCreated';
 
     /**
      * @event TaxesEvent
      */
-    const EVENT_ON_TAXES_CALCULATE = 'onTaxesCalculate';
+    public const EVENT_ON_TAXES_CALCULATE = 'onTaxesCalculate';
 
     /**
      * @event CustomerEvent
      */
-    const EVENT_ON_CUSTOMER_UPDATE = 'onCustomerUpdate';
+    public const EVENT_ON_CUSTOMER_UPDATE = 'onCustomerUpdate';
 
     /**
      * @event OrderRefundEvent
      */
-    const EVENT_ON_ORDER_REFUND_CREATED = 'onOrderRefundCreated';
+    public const EVENT_ON_ORDER_REFUND_CREATED = 'onOrderRefundCreated';
 
     /**
      * @event OrderNotificationEvent
      */
-    const EVENT_ON_ORDER_NOTIFICATION_CREATED = 'onOrderNotificationCreated';
+    public const EVENT_ON_ORDER_NOTIFICATION_CREATED = 'onOrderNotificationCreated';
 
     /**
      * @var string Indicates that the webhook payload is live
      */
-    const WEBHOOK_MODE_LIVE = 'Live';
+    public const WEBHOOK_MODE_LIVE = 'Live';
 
     /**
      * @var string Indicates that the webhook payload is for testing
      */
-    const WEBHOOK_MODE_TEST = 'Test';
+    public const WEBHOOK_MODE_TEST = 'Test';
 
     /**
      * @var mixed local reference to decoded post data
@@ -117,7 +118,7 @@ class Webhooks extends \craft\base\Component
     /**
      * @var string Should be either WEBHOOK_MODE_LIVE or WEBHOOK_MODE_TEST
      */
-    private $currentMode;
+    private string $currentMode = '';
 
     /**
      * Sets the payload data and derived mode to be utilized within the service
@@ -125,7 +126,7 @@ class Webhooks extends \craft\base\Component
      *
      * @param $payload
      */
-    public function setData($payload)
+    public function setData($payload): void
     {
         /**
          * Track whether we’re in live or test mode. We know ->mode exists
@@ -163,14 +164,13 @@ class Webhooks extends \craft\base\Component
      *
      * @return mixed
      */
-    public function setMode($mode)
+    public function setMode(string $mode): string
     {
         return $this->currentMode = $mode;
     }
 
     /**
      * Gets the mode of the current request, which is either `Live` or `Test`.
-     * @return string
      */
     public function getMode(): string
     {
@@ -196,7 +196,7 @@ class Webhooks extends \craft\base\Component
             $this->trigger(
                 self::EVENT_BEFORE_PROCESS_COMPLETED_ORDER,
                 new OrderEvent([
-                    'order' => $order
+                    'order' => $order,
                 ])
             );
         }
@@ -204,14 +204,14 @@ class Webhooks extends \craft\base\Component
         $providerOrders = Snipcart::$plugin->shipments->handleCompletedOrder($order);
 
         if (! empty($providerOrders->errors)) {
-            $responseData['success']  = false;
+            $responseData['success'] = false;
             $responseData['errors'][] = $providerOrders->errors;
         }
 
         if (! Snipcart::$plugin->orders->updateProductsFromOrder($order)) {
-            $responseData['success']  = false;
+            $responseData['success'] = false;
             $responseData['errors'][] = [
-                'elements' => 'Failed to update product Elements.'
+                'elements' => 'Failed to update product Elements.',
             ];
         }
 
@@ -226,7 +226,9 @@ class Webhooks extends \craft\base\Component
         if (Snipcart::$plugin->getSettings()->sendOrderNotificationEmail) {
             Snipcart::$plugin->orders->sendOrderEmailNotification(
                 $order,
-                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                [
+                    'providerOrders' => $providerOrders->orders ?? null,
+                ],
                 Orders::NOTIFICATION_TYPE_ADMIN
             );
         }
@@ -234,12 +236,14 @@ class Webhooks extends \craft\base\Component
         if (Snipcart::$plugin->getSettings()->sendCustomerOrderNotificationEmail) {
             Snipcart::$plugin->orders->sendOrderEmailNotification(
                 $order,
-                [ 'providerOrders' => $providerOrders->orders ?? null ],
+                [
+                    'providerOrders' => $providerOrders->orders ?? null,
+                ],
                 Orders::NOTIFICATION_TYPE_CUSTOMER
             );
         }
 
-        if (count($responseData['errors']) === 0) {
+        if ($responseData['errors'] === []) {
             unset($responseData['errors']);
         }
 
@@ -258,10 +262,10 @@ class Webhooks extends \craft\base\Component
         $rates = Snipcart::$plugin->shipments->collectRatesForOrder($order);
 
         if (Snipcart::$plugin->getSettings()->logCustomRates) {
-            $shippingQuoteLog         = new ShippingQuoteLog();
+            $shippingQuoteLog = new ShippingQuoteLog();
             $shippingQuoteLog->siteId = Craft::$app->sites->currentSite->id;
-            $shippingQuoteLog->token  = $order->token;
-            $shippingQuoteLog->body   = $rates;
+            $shippingQuoteLog->token = $order->token;
+            $shippingQuoteLog->body = $rates;
             $shippingQuoteLog->save();
         }
 
@@ -270,22 +274,20 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles an order status change.
-     *
-     * @return array
      */
     public function handleOrderStatusChange(): array
     {
         $fromStatus = $this->getData()->from;
-        $toStatus   = $this->getData()->to;
-        $order      = $this->getCleanOrder();
+        $toStatus = $this->getData()->to;
+        $order = $this->getCleanOrder();
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_STATUS_CHANGED)) {
             $this->trigger(
                 self::EVENT_ON_ORDER_STATUS_CHANGED,
                 new OrderStatusEvent([
-                    'order'      => $order,
+                    'order' => $order,
                     'fromStatus' => $fromStatus,
-                    'toStatus'   => $toStatus,
+                    'toStatus' => $toStatus,
                 ])
             );
         }
@@ -295,22 +297,20 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles an order payment status change.
-     *
-     * @return array
      */
     public function handleOrderPaymentStatusChange(): array
     {
         $fromStatus = $this->getData()->from;
-        $toStatus   = $this->getData()->to;
-        $order      = $this->getCleanOrder();
+        $toStatus = $this->getData()->to;
+        $order = $this->getCleanOrder();
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED)) {
             $this->trigger(
                 self::EVENT_ON_ORDER_PAYMENT_STATUS_CHANGED,
                 new OrderStatusEvent([
-                    'order'      => $order,
+                    'order' => $order,
                     'fromStatus' => $fromStatus,
-                    'toStatus'   => $toStatus,
+                    'toStatus' => $toStatus,
                 ])
             );
         }
@@ -320,22 +320,20 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles an order tracking number change.
-     *
-     * @return array
      */
     public function handleOrderTrackingNumberChange(): array
     {
         $trackingNumber = $this->getData()->trackingNumber;
-        $trackingUrl    = $this->getData()->trackingUrl;
-        $order          = $this->getCleanOrder();
+        $trackingUrl = $this->getData()->trackingUrl;
+        $order = $this->getCleanOrder();
 
         if ($this->hasEventHandlers(self::EVENT_ON_ORDER_TRACKING_CHANGED)) {
             $this->trigger(
                 self::EVENT_ON_ORDER_TRACKING_CHANGED,
                 new OrderTrackingEvent([
-                    'order'          => $order,
+                    'order' => $order,
                     'trackingNumber' => $trackingNumber,
-                    'trackingUrl'    => $trackingUrl,
+                    'trackingUrl' => $trackingUrl,
                 ])
             );
         }
@@ -345,8 +343,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles a created subscription.
-     *
-     * @return array
      */
     public function handleSubscriptionCreated(): array
     {
@@ -366,8 +362,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles a cancelled subscription.
-     *
-     * @return array
      */
     public function handleSubscriptionCancelled(): array
     {
@@ -387,8 +381,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles a paused subscription.
-     *
-     * @return array
      */
     public function handleSubscriptionPaused(): array
     {
@@ -408,8 +400,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles a resumed subscription.
-     *
-     * @return array
      */
     public function handleSubscriptionResumed(): array
     {
@@ -429,8 +419,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles a new subscription invoice.
-     *
-     * @return array
      */
     public function handleSubscriptionInvoiceCreated(): array
     {
@@ -459,22 +447,22 @@ class Webhooks extends \craft\base\Component
         $taxes = [];
 
         if ($this->hasEventHandlers(self::EVENT_ON_TAXES_CALCULATE)) {
-            $event = new TaxesEvent([
+            $taxesEvent = new TaxesEvent([
                 'order' => $order,
                 'taxes' => [],
             ]);
 
-            $this->trigger(self::EVENT_ON_TAXES_CALCULATE, $event);
-            $taxes = array_merge($taxes, $event->taxes);
+            $this->trigger(self::EVENT_ON_TAXES_CALCULATE, $taxesEvent);
+            $taxes = array_merge($taxes, $taxesEvent->taxes);
         }
 
-        return [ 'taxes' => $taxes ];
+        return [
+            'taxes' => $taxes,
+        ];
     }
 
     /**
      * Handles updated customer details.
-     *
-     * @return array
      */
     public function handleCustomerUpdated(): array
     {
@@ -494,8 +482,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles new refund.
-     *
-     * @return array
      */
     public function handleRefundCreated(): array
     {
@@ -505,7 +491,7 @@ class Webhooks extends \craft\base\Component
             $this->trigger(
                 self::EVENT_ON_ORDER_REFUND_CREATED,
                 new OrderRefundEvent([
-                    'refund' => $refund
+                    'refund' => $refund,
                 ])
             );
         }
@@ -515,8 +501,6 @@ class Webhooks extends \craft\base\Component
 
     /**
      * Handles new order notification.
-     *
-     * @return array
      */
     public function handleNotificationCreated(): array
     {
@@ -526,7 +510,7 @@ class Webhooks extends \craft\base\Component
             $this->trigger(
                 self::EVENT_ON_ORDER_NOTIFICATION_CREATED,
                 new OrderNotificationEvent([
-                    'notification' => $notification
+                    'notification' => $notification,
                 ])
             );
         }
@@ -540,8 +524,6 @@ class Webhooks extends \craft\base\Component
      *
      * This is important because Snipcart payloads sometimes include new
      * attributes without warning and we don’t want errors in production.
-     *
-     * @return Order
      */
     private function getCleanOrder(): Order
     {
@@ -557,8 +539,6 @@ class Webhooks extends \craft\base\Component
      *
      * This is important because Snipcart payloads sometimes include new
      * attributes without warning and we don’t want errors in production.
-     *
-     * @return Subscription
      */
     private function getCleanSubscription(): Subscription
     {
@@ -574,8 +554,6 @@ class Webhooks extends \craft\base\Component
      *
      * This is important because Snipcart payloads sometimes include new
      * attributes without warning and we don’t want errors in production.
-     *
-     * @return Customer
      */
     private function getCleanCustomer(): Customer
     {
@@ -591,8 +569,6 @@ class Webhooks extends \craft\base\Component
      *
      * This is important because Snipcart payloads sometimes include new
      * attributes without warning and we don’t want errors in production.
-     *
-     * @return Refund
      */
     private function getCleanRefund(): Refund
     {
@@ -608,8 +584,6 @@ class Webhooks extends \craft\base\Component
      *
      * This is important because Snipcart payloads sometimes include new
      * attributes without warning and we don’t want errors in production.
-     *
-     * @return Notification
      */
     private function getCleanNotification(): Notification
     {
@@ -622,14 +596,14 @@ class Webhooks extends \craft\base\Component
     /**
      * Stores webhook details to the database for later scrutiny.
      */
-    private function logWebhookTransaction()
+    private function logWebhookTransaction(): void
     {
         $webhookLog = new WebhookLog();
 
         $webhookLog->siteId = Craft::$app->sites->currentSite->id;
-        $webhookLog->type   = $this->getData()->eventName;
-        $webhookLog->body   = $this->getData();
-        $webhookLog->mode   = strtolower($this->getMode());
+        $webhookLog->type = $this->getData()->eventName;
+        $webhookLog->body = $this->getData();
+        $webhookLog->mode = strtolower($this->getMode());
 
         $webhookLog->save();
     }
@@ -637,11 +611,11 @@ class Webhooks extends \craft\base\Component
     /**
      * Sends back a positive non-response to indicate the webhook was handled
      * even though we don't have any meaningful data to give back.
-     *
-     * @return array
      */
     private function nonResponse(): array
     {
-        return [ 'success' => true ];
+        return [
+            'success' => true,
+        ];
     }
 }

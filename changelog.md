@@ -1,5 +1,14 @@
 # Snipcart Changelog
 
+## 2.0 -  2023-09-11
+
+- Update plugin to work with Craft 4
+- Move to using native Craft content table instead of custom `product_details` table
+- Add migration to move product data from the custom `product_details` table to Craft native content tables
+- Add convenience console command to remove legacy `product_details` table when required
+  - Command is `snipcart/cleanup`
+- Removes legacy class alias for field type
+
 ## 1.6.0 - 2023-06-20
 
 ### Added
@@ -108,7 +117,7 @@
 ### Fixed
 - Fixed custom email notifications.
 - Order notification email subjects are now translatable.
-- Admin order email notifications will only display a ShipStation ID when it’s not empty. 
+- Admin order email notifications will only display a ShipStation ID when it’s not empty.
 
 ### Changed
 - The Recent Orders summary now uses relative timestamps rather than `m/d` format.
@@ -324,7 +333,7 @@
 
 ## 1.0.3 - 2019-03-05
 ### Fixed
-- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2. 
+- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2.
 
 ## 1.0.2 - 2019-03-04
 ### Fixed

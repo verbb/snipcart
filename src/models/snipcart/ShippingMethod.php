@@ -2,17 +2,17 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
 /**
  * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods
  */
-
-class ShippingMethod extends \craft\base\Model
+class ShippingMethod extends Model
 {
     /**
      * @var
@@ -43,46 +43,45 @@ class ShippingMethod extends \craft\base\Model
      * @var
      */
     public $guaranteedEstimatedDelivery;
-        // minimumDaysForDelivery 10
-        // maximumDaysForDelivery null
+
+    // minimumDaysForDelivery 10
+    // maximumDaysForDelivery null
 
     /**
      * @var
      */
     public $location;
-        // country null,
-        // province null
+
+    // country null,
+    // province null
 
     /**
      * @var
      */
     public $rates;
-        // {
-        //   "cost": 20,
-        //   "weight": {
-        //     "to": 1000
-        //   }
-        // },
-        // {
-        //   "cost": 30,
-        //   "weight": {
-        //     "from": 1000,
-        //     "to": 2000
-        //   }
-        // },
-        // {
-        //   "cost": 60,
-        //   "weight": {
-        //     "from": 3000
-        //   }
-        // }
 
-    /**
-     * @inheritdoc
-     */
+    // {
+    //   "cost": 20,
+    //   "weight": {
+    //     "to": 1000
+    //   }
+    // },
+    // {
+    //   "cost": 30,
+    //   "weight": {
+    //     "from": 1000,
+    //     "to": 2000
+    //   }
+    // },
+    // {
+    //   "cost": 60,
+    //   "weight": {
+    //     "from": 3000
+    //   }
+    // }
+
     public function datetimeAttributes(): array
     {
         return ['creationDate', 'modificationDate'];
     }
-
 }

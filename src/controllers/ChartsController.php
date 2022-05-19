@@ -2,34 +2,35 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\web\Controller;
+use yii\web\BadRequestHttpException;
 use Craft;
-use yii\base\Response;
-use DateTimeZone;
-use DateTime;
 use craft\helpers\DateTimeHelper;
+use DateTime;
+use DateTimeZone;
+use fostercommerce\snipcart\Snipcart;
+use yii\base\Response;
 
-class ChartsController extends \craft\web\Controller
+class ChartsController extends Controller
 {
     /**
      * Fetches order data JSON for the Dashboard widget's chart.
      *
-     * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionGetOrdersData(): Response
     {
         $this->requirePostRequest();
 
         $request = Craft::$app->getRequest();
-        $type    = $request->getRequiredParam('type');
-        $range   = $request->getRequiredParam('range');
+        $type = $request->getRequiredParam('type');
+        $range = $request->getRequiredParam('range');
 
         if ($range === 'weekly') {
             $startDate = (new \DateTime('now'))->modify('-1 week');
@@ -59,7 +60,7 @@ class ChartsController extends \craft\web\Controller
         }
 
         return $this->asJson([
-            'series'  => $chartData['series'],
+            'series' => $chartData['series'],
             'columns' => $chartData['columns'],
             'formats' => $formats,
         ]);
@@ -68,8 +69,7 @@ class ChartsController extends \craft\web\Controller
     /**
      * Fetches order and sales stats in one response for the CP overview chart.
      *
-     * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      * @throws
      */
     public function actionGetCombinedData(): Response
@@ -109,7 +109,6 @@ class ChartsController extends \craft\web\Controller
      * Gets chart series for Snipcart sales data.
      *
      * @param $data
-     * @return array
      */
     private function getTotalSales($data): array
     {
@@ -120,7 +119,6 @@ class ChartsController extends \craft\web\Controller
      * Gets chart series for Snipcart orders data.
      *
      * @param $data
-     * @return array
      */
     private function getNumberOfOrders($data): array
     {
@@ -131,11 +129,8 @@ class ChartsController extends \craft\web\Controller
      * Translates Snipcart’s returned data into a chart-friendly series.
      *
      * @param $data
-     * @param string $label
-     *
-     * @return array
      */
-    private function formatForChart($data, $label): array
+    private function formatForChart($data, string $label): array
     {
         $rows = [];
         $columns = [];
@@ -150,45 +145,53 @@ class ChartsController extends \craft\web\Controller
                 [
                     'name' => $label,
                     'data' => $rows,
-                ]
+                ],
             ],
-            'columns' => $columns
+            'columns' => $columns,
         ];
     }
 
     /**
      * Gets the beginning of the range used for visualizing stats.
      *
-     * @return DateTime
      * @throws
      */
     private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
-
-        if ($startDateParam && is_string($startDateParam)) {
-            return DateTimeHelper::toDateTime([ 'date' => $startDateParam ]);
+        if (! $startDateParam) {
+            return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+                ->modify('-1 month');
         }
-        
-        return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
-            ->modify('-1 month');
+
+        if (! is_string($startDateParam)) {
+            return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+                ->modify('-1 month');
+        }
+
+        return DateTimeHelper::toDateTime([
+            'date' => $startDateParam,
+        ]);
     }
 
     /**
      * Gets the end of the range used for visualizing stats.
      *
-     * @return DateTime
      * @throws
      */
     private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
-
-        if ($endDateParam && is_string($endDateParam)) {
-            return DateTimeHelper::toDateTime([ 'date' => $endDateParam ]);
+        if (! $endDateParam) {
+            return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
         }
 
-        return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
-    }
+        if (! is_string($endDateParam)) {
+            return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
+        }
 
+        return DateTimeHelper::toDateTime([
+            'date' => $endDateParam,
+        ]);
+    }
 }

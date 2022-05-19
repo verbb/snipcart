@@ -9,11 +9,8 @@
 
 {% block content %}
     <div>
-        <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
-            {{- "There aren’t any orders to show. Time to sell some things!"|t -}}
-        </p>
-
-        {% if orders|length %}
+        
+        
             <div class="mb-6 p-2 bg-light-grey rounded">
                 <form action="" method="post">
                     {{ csrfInput() }}
@@ -43,7 +40,12 @@
                     <input type="submit" class="btn submit" name="submit" value="Update">
                 </form>
             </div>
+            
+        <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
+            {{- "There aren’t any orders to show. Time to sell some things!"|t -}}
+        </p>
 
+        {% if orders|length %}
             <table id="orders" class="data w-full">
                 <thead>
                     <th scope="col">{{ "Invoice"|t }}</th>

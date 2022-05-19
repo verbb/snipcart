@@ -2,20 +2,22 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 /**
  * ShipStation Insurance Options Model
  * https://www.shipstation.com/developer-api/#/reference/model-insuranceoptions
  */
-class InsuranceOptions extends \craft\base\Model
+class InsuranceOptions extends Model
 {
-    const PROVIDER_CARRIER = 'carrier';
-    const PROVIDER_SHIPSURANCE = 'shipsurance';
+    public const PROVIDER_CARRIER = 'carrier';
+
+    public const PROVIDER_SHIPSURANCE = 'shipsurance';
 
     /**
      * @var string|null Preferred Insurance provider.
@@ -33,18 +35,23 @@ class InsuranceOptions extends \craft\base\Model
      */
     public $insuredValue;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             [['provider'], 'string'],
-            [['provider'], 'in', 'range' => [self::PROVIDER_CARRIER, self::PROVIDER_SHIPSURANCE]],
+            [['provider'],
+                'in',
+                'range' => [self::PROVIDER_CARRIER, self::PROVIDER_SHIPSURANCE],
+            ],
             [['insureShipment'], 'boolean'],
-            [['insuredValue'], 'number', 'integerOnly' => false],
-            [['insuredValue'], 'default', 'value' => 0],
+            [['insuredValue'],
+                'number',
+                'integerOnly' => false,
+            ],
+            [['insuredValue'],
+                'default',
+                'value' => 0,
+            ],
         ];
     }
-
 }

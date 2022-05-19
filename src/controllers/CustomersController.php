@@ -2,35 +2,38 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\web\Controller;
+use yii\web\Response;
+use craft\errors\MissingComponentException;
 use Craft;
+use fostercommerce\snipcart\Snipcart;
 
-class CustomersController extends \craft\web\Controller
+class CustomersController extends Controller
 {
-    const SEARCH_KEYWORD_PARAM = 'searchKeywords';
-    const SEARCH_KEYWORD_SESSION_KEY = 'snipcartSearchKeywords';
+    public const SEARCH_KEYWORD_PARAM = 'searchKeywords';
+
+    public const SEARCH_KEYWORD_SESSION_KEY = 'snipcartSearchKeywords';
 
     /**
      * Displays paginated list of customers.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
-        $request        = Craft::$app->getRequest();
+        $request = Craft::$app->getRequest();
         $searchKeywords = $this->getSearchKeywords();
-        $page           = $request->getPageNum();
+        $page = $request->getPageNum();
 
         if (! empty($searchKeywords)) {
             $customers = Snipcart::$plugin->customers->listCustomers($page, 20, [
-                'name' => $searchKeywords
+                'name' => $searchKeywords,
             ]);
         } else {
             $customers = Snipcart::$plugin->customers->listCustomers($page);
@@ -44,8 +47,8 @@ class CustomersController extends \craft\web\Controller
                 'pageNumber' => $page,
                 'totalPages' => $totalPages,
                 'totalItems' => $customers->totalItems,
-                'customers'  => $customers->items,
-                'keywords'   => $searchKeywords,
+                'customers' => $customers->items,
+                'keywords' => $searchKeywords,
             ]
         );
     }
@@ -53,11 +56,9 @@ class CustomersController extends \craft\web\Controller
     /**
      * Displays customer detail.
      *
-     * @param string $customerId
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionCustomerDetail(string $customerId): \yii\web\Response
+    public function actionCustomerDetail(string $customerId): Response
     {
         $customer = Snipcart::$plugin->customers->getCustomer($customerId);
         $customerOrders = Snipcart::$plugin->customers->getCustomerOrders($customerId);
@@ -66,7 +67,7 @@ class CustomersController extends \craft\web\Controller
             'snipcart/cp/customers/detail',
             [
                 'customer' => $customer,
-                'orders'   => $customerOrders,
+                'orders' => $customerOrders,
             ]
         );
     }
@@ -76,7 +77,7 @@ class CustomersController extends \craft\web\Controller
      * session in the process. Returns empty string if no keywords are present.
      *
      * @return array|mixed|string
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      */
     private function getSearchKeywords()
     {
@@ -94,5 +95,4 @@ class CustomersController extends \craft\web\Controller
 
         return $keywords;
     }
-
 }

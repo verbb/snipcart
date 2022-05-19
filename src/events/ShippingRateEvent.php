@@ -2,21 +2,21 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\events;
 
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\ShippingRate;
-use fostercommerce\snipcart\models\snipcart\Package;
 use craft\events\CancelableEvent;
+use fostercommerce\snipcart\models\snipcart\Order;
+use fostercommerce\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\ShippingRate;
 
 /**
  * Shipping rate event class.
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 class ShippingRateEvent extends CancelableEvent
@@ -29,7 +29,7 @@ class ShippingRateEvent extends CancelableEvent
     /**
      * @var ShippingRate[]
      */
-    public $rates;
+    public $rates = [];
 
     /**
      * @var Package
@@ -39,7 +39,7 @@ class ShippingRateEvent extends CancelableEvent
     /**
      * @var array[] with 'key' and 'message' keys
      */
-    public $errors;
+    public $errors = [];
 
     public function getErrors()
     {

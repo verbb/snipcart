@@ -2,27 +2,29 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\providers\shipstation;
 
+use GuzzleHttp\Client;
+use fostercommerce\snipcart\errors\ShippingRateException;
 use Craft;
 use craft\helpers\Json;
+use fostercommerce\snipcart\base\ShippingProvider;
+use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
-use fostercommerce\snipcart\models\snipcart\Package;
-use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
 use fostercommerce\snipcart\models\shipstation\Dimensions;
 use fostercommerce\snipcart\models\shipstation\Order;
 use fostercommerce\snipcart\models\shipstation\Rate;
 use fostercommerce\snipcart\models\shipstation\Weight;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\base\ShippingProvider;
-use fostercommerce\snipcart\providers\shipstation\Settings as ShipStationSettings;
+use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
+use fostercommerce\snipcart\models\snipcart\Package;
+use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
 use fostercommerce\snipcart\providers\shipstation\events\OrderEvent;
+use fostercommerce\snipcart\providers\shipstation\Settings as ShipStationSettings;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class ShipStation
@@ -35,45 +37,28 @@ class ShipStation extends ShippingProvider
     /**
      * @event WebhookEvent Triggered before an order is sent to ShipStation.
      */
-    const EVENT_BEFORE_SEND_ORDER = 'beforeSendOrder';
+    public const EVENT_BEFORE_SEND_ORDER = 'beforeSendOrder';
 
     /**
      * @var int  fake ID returned to simulate success in test mode
      */
-    const TEST_ORDER_ID = 99999999;
+    public const TEST_ORDER_ID = 99_999_999;
 
     /**
-     * @var \GuzzleHttp\Client
+     * @var Client
      */
     protected $client;
 
-    /**
-     * @inheritdoc
-     */
     public static function refHandle(): string
     {
         return 'shipStation';
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function apiBaseUrl(): string
     {
         return 'https://ssapi.shipstation.com/';
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
-    {
-        return new ShipStationSettings();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function isConfigured(): bool
     {
         if ($settings = $this->getSettings()) {
@@ -87,12 +72,9 @@ class ShipStation extends ShippingProvider
         return false;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getClient(): \GuzzleHttp\Client
+    public function getClient(): Client
     {
-        if ($this->client !== null) {
+        if ($this->client instanceof Client) {
             return $this->client;
         }
 
@@ -106,13 +88,13 @@ class ShipStation extends ShippingProvider
 
         $clientConfig = [
             'base_uri' => self::apiBaseUrl(),
-            'auth' => [ $key, $secret ],
+            'auth' => [$key, $secret],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
-                'Accept'       => 'application/json',
+                'Accept' => 'application/json',
             ],
             'verify' => false,
-            'debug' => false
+            'debug' => false,
         ];
 
         $this->client = Craft::createGuzzleClient($clientConfig);
@@ -120,9 +102,6 @@ class ShipStation extends ShippingProvider
         return $this->client;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getRatesForOrder(SnipcartOrder $snipcartOrder, Package $package): array
     {
         $rates = [];
@@ -135,9 +114,9 @@ class ShipStation extends ShippingProvider
             $rate = new Rate($responseItem);
 
             $rates[] = new SnipcartRate([
-                'cost'        => number_format($rate->shipmentCost + $rate->otherCost, 2),
+                'cost' => number_format($rate->shipmentCost + $rate->otherCost, 2),
                 'description' => $rate->serviceName,
-                'code'        => $rate->serviceCode
+                'code' => $rate->serviceCode,
             ]);
         }
 
@@ -151,12 +130,12 @@ class ShipStation extends ShippingProvider
     public function createOrder(SnipcartOrder $snipcartOrder)
     {
         $package = Snipcart::$plugin->orders->getOrderPackaging($snipcartOrder);
-        $order   = Order::populateFromSnipcartOrder($snipcartOrder);
+        $order = Order::populateFromSnipcartOrder($snipcartOrder);
 
-        $order->orderStatus   = Order::STATUS_AWAITING_SHIPMENT;
+        $order->orderStatus = Order::STATUS_AWAITING_SHIPMENT;
         $order->customerNotes = $this->getOrderNotes($snipcartOrder->customFields);
-        $order->giftMessage   = $this->getGiftNote($snipcartOrder->customFields);
-        $order->weight        = $this->getOrderWeight($snipcartOrder, $package);
+        $order->giftMessage = $this->getGiftNote($snipcartOrder->customFields);
+        $order->weight = $this->getOrderWeight($snipcartOrder, $package);
 
         // it's a gift order if it has a gift message
         $order->gift = $order->giftMessage !== null;
@@ -164,9 +143,9 @@ class ShipStation extends ShippingProvider
         if ($package->hasPhysicalDimensions()) {
             $order->dimensions = new Dimensions([
                 'length' => $package->length,
-                'width'  => $package->width,
+                'width' => $package->width,
                 'height' => $package->height,
-                'units'  => Dimensions::UNIT_INCHES,
+                'units' => Dimensions::UNIT_INCHES,
             ]);
 
             $order->dimensions->validate();
@@ -184,13 +163,13 @@ class ShipStation extends ShippingProvider
             $isTestMode = Snipcart::$plugin->getSettings()->testMode;
 
             if ($this->hasEventHandlers(self::EVENT_BEFORE_SEND_ORDER)) {
-                $event = new OrderEvent([
+                $orderEvent = new OrderEvent([
                     'order' => $order,
                 ]);
 
-                $this->trigger(self::EVENT_BEFORE_SEND_ORDER, $event);
+                $this->trigger(self::EVENT_BEFORE_SEND_ORDER, $orderEvent);
 
-                $order = $event->order;
+                $order = $orderEvent->order;
             }
 
             if ($isDevMode || $isTestMode) {
@@ -201,7 +180,7 @@ class ShipStation extends ShippingProvider
                 return $order;
             }
 
-            if ($createdOrder = $this->sendOrder($order)) {
+            if (($createdOrder = $this->sendOrder($order)) instanceof Order) {
                 /**
                  * TODO: delete related rate quotes when order makes it to
                  * ShipStation, or after a sensible amount of time
@@ -229,10 +208,8 @@ class ShipStation extends ShippingProvider
      *
      * https://shipstation.docs.apiary.io/#reference/orders/create-label-for-order/create-label-for-order
      *
-     * @param Order  $order
      * @param bool   $isTest       true if we only want to create a sample label
      * @param string $packageCode  package code to be sent
-     *
      * @return \stdClass|null      response data, with ->labelData
      *                             base64-encoded PDF body
      */
@@ -244,7 +221,7 @@ class ShipStation extends ShippingProvider
             true
         );
 
-        $payload['testLabel']   = $isTest;
+        $payload['testLabel'] = $isTest;
         $payload['packageCode'] = $packageCode;
 
         return $this->post('orders/createlabelfororder', $payload);
@@ -254,7 +231,7 @@ class ShipStation extends ShippingProvider
      * @inheritdoc
      * https://www.shipstation.com/developer-api/#/reference/orders/getdelete-order/get-order
      */
-    public function getOrderById($providerId)
+    public function getOrderById($providerId): ?Order
     {
         $responseData = $this->get(sprintf(
             'order/%d',
@@ -272,47 +249,47 @@ class ShipStation extends ShippingProvider
      * @inheritdoc
      * https://www.shipstation.com/developer-api/#/reference/orders/list-orders/list-orders-with-parameters
      */
-    public function getOrderBySnipcartInvoice(string $snipcartInvoice)
+    public function getOrderBySnipcartInvoice(string $snipcartInvoice): ?Order
     {
         $responseData = $this->get(sprintf(
             'orders?orderNumber=%s',
             $snipcartInvoice
         ));
 
-        if (count($responseData->orders) === 1) {
+        if ((is_countable($responseData->orders) ? count($responseData->orders) : 0) === 1) {
             return new Order($responseData->orders[0]);
         }
 
         return null;
     }
 
+    protected function createSettingsModel(): ShipStationSettings
+    {
+        return new ShipStationSettings();
+    }
+
     /**
      * Gets an array of shipment information for requesting a rate quote.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Dimensions $dimensions
-     * @param Weight $weight
-     * @return array
      */
     private function prepShipmentInfo(
         SnipcartOrder $snipcartOrder,
         Dimensions $dimensions,
-        Weight $weight
+        Weight $weight,
     ): array {
-        $pluginSettings = Snipcart::$plugin->getSettings();
+        $model = Snipcart::$plugin->getSettings();
 
         $shipmentInfo = [
-            'carrierCode'    => $this->getSettings()->defaultCarrierCode,
+            'carrierCode' => $this->getSettings()->defaultCarrierCode,
             //'serviceCode'  => '',
-            'packageCode'    => $this->getSettings()->defaultPackageCode,
-            'fromPostalCode' => $pluginSettings->shipFromAddress['postalCode'],
-            'toCity'         => $snipcartOrder->shippingAddress->city,
-            'toState'        => $snipcartOrder->shippingAddress->province,
-            'toPostalCode'   => $snipcartOrder->shippingAddress->postalCode,
-            'toCountry'      => $snipcartOrder->shippingAddress->country,
-            'weight'         => $weight->toArray(),
-            'confirmation'   => $this->getSettings()->defaultOrderConfirmation,
-            'residential'    => false
+            'packageCode' => $this->getSettings()->defaultPackageCode,
+            'fromPostalCode' => $model->shipFromAddress['postalCode'],
+            'toCity' => $snipcartOrder->shippingAddress->city,
+            'toState' => $snipcartOrder->shippingAddress->province,
+            'toPostalCode' => $snipcartOrder->shippingAddress->postalCode,
+            'toCountry' => $snipcartOrder->shippingAddress->country,
+            'weight' => $weight->toArray(),
+            'confirmation' => $this->getSettings()->defaultOrderConfirmation,
+            'residential' => false,
         ];
 
         if ($dimensions->hasPhysicalDimensions()) {
@@ -325,10 +302,9 @@ class ShipStation extends ShippingProvider
     /**
      * Send the order to ShipStation via API.
      *
-     * @param Order $order
      * @return Order|null
      */
-    private function sendOrder(Order $order)
+    private function sendOrder(Order $order): Order
     {
         $responseData = $this->post(
             'orders/createorder',
@@ -340,11 +316,6 @@ class ShipStation extends ShippingProvider
 
     /**
      * Get a Weight model for the order, adding package weight when relevant.
-     *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Package $package
-     *
-     * @return Weight
      */
     private function getOrderWeight(SnipcartOrder $snipcartOrder, Package $package): Weight
     {
@@ -356,7 +327,7 @@ class ShipStation extends ShippingProvider
 
         $weight = new Weight([
             'value' => $orderWeight,
-            'units' => Weight::UNIT_GRAMS
+            'units' => Weight::UNIT_GRAMS,
         ]);
 
         $weight->validate();
@@ -401,13 +372,11 @@ class ShipStation extends ShippingProvider
     /**
      * Return ShipStation rates for a Snipcart order.
      *
-     * @param SnipcartOrder $snipcartOrder
-     * @param Package $package
      * @return Rate[]
      */
     private function getShipStationRatesForOrder(
         SnipcartOrder $snipcartOrder,
-        Package $package
+        Package $package,
     ): array {
         $dimensions = Dimensions::populateFromSnipcartPackage($package);
         $weight = $this->getOrderWeight($snipcartOrder, $package);
@@ -444,21 +413,21 @@ class ShipStation extends ShippingProvider
      *
      * @todo Or can we? Does an order have a unique ID beyond its invoice number?
      *
-     * @param SnipcartOrder  $order           Snipcart order.
+     * @param SnipcartOrder $snipcartOrder Snipcart order.
      * @return Rate|null
      */
-    private function getShippingMethodFromOrder(SnipcartOrder $order)
+    private function getShippingMethodFromOrder(SnipcartOrder $snipcartOrder)
     {
         /**
          * First try and find a matching rate quote, which would have preceded
          * the completed order.
          */
-        $rateQuote = Snipcart::$plugin->shipments->getQuoteLogForOrder($order);
+        $rateQuote = Snipcart::$plugin->shipments->getQuoteLogForOrder($snipcartOrder);
 
         if (! empty($rateQuote)) {
-            $rate = $this->getMatchingRateFromLog($rateQuote, $order);
+            $rate = $this->getMatchingRateFromLog($rateQuote, $snipcartOrder);
 
-            if ($rate !== null) {
+            if ($rate instanceof Rate) {
                 return $rate;
             }
         }
@@ -467,7 +436,7 @@ class ShipStation extends ShippingProvider
          * If there wasn't a matching option, query the API for rates again
          * and look for the closest match.
          */
-        return $this->getClosestRateForOrder($order);
+        return $this->getClosestRateForOrder($snipcartOrder);
     }
 
     /**
@@ -475,9 +444,8 @@ class ShipStation extends ShippingProvider
      * matches the rate cost and description for this order.
      *
      * @param $rateQuoteLog
-     * @return Rate|null
      */
-    private function getMatchingRateFromLog($rateQuoteLog, $order)
+    private function getMatchingRateFromLog($rateQuoteLog, SnipcartOrder $snipcartOrder): ?Rate
     {
         // get the rates that were already returned to Snipcart earlier
         $quoteRecord = Json::decode($rateQuoteLog->body, false);
@@ -487,15 +455,15 @@ class ShipStation extends ShippingProvider
              * See if the collected shipping fees and service name are
              * an exact match.
              */
-            $labelAndCostMatch = $quotedRate->description === $order->shippingMethod
-                && (float)$quotedRate->cost === $order->shippingFees;
+            $labelAndCostMatch = $quotedRate->description === $snipcartOrder->shippingMethod
+                && (float) $quotedRate->cost === $snipcartOrder->shippingFees;
 
             if ($labelAndCostMatch) {
                 return new Rate([
-                    'serviceName'  => $quotedRate->description,
-                    'serviceCode'  => $quotedRate->code ?? null,
+                    'serviceName' => $quotedRate->description,
+                    'serviceCode' => $quotedRate->code ?? null,
                     'shipmentCost' => $quotedRate->cost,
-                    'otherCost'    => 0,
+                    'otherCost' => 0,
                 ]);
             }
         }
@@ -507,15 +475,14 @@ class ShipStation extends ShippingProvider
      * Fetch new rates based on this order, and choose either the exact match
      * or next-closest rate to what was purchased and specified at checkout.
      *
-     * @param $order
      * @return Rate|null
-     * @throws fostercommerce\snipcart\errors\ShippingRateException
+     * @throws ShippingRateException
      */
-    private function getClosestRateForOrder($order)
+    private function getClosestRateForOrder(SnipcartOrder $snipcartOrder)
     {
         $closest = null;
-        $package = Snipcart::$plugin->orders->getOrderPackaging($order);
-        $rates   = $this->getShipStationRatesForOrder($order, $package);
+        $package = Snipcart::$plugin->orders->getOrderPackaging($snipcartOrder);
+        $rates = $this->getShipStationRatesForOrder($snipcartOrder, $package);
 
         // check rates for matching name and/or price, otherwise take closest
         foreach ($rates as $rate) {
@@ -523,21 +490,21 @@ class ShipStation extends ShippingProvider
              * See if the collected shipping fees and service name are
              * an exact match.
              */
-            $labelAndCostMatch = $rate->serviceName === $order->shippingMethod
-                && ($rate->shipmentCost + $rate->otherCost) === $order->shippingFees;
+            $labelAndCostMatch = $rate->serviceName === $snipcartOrder->shippingMethod
+                && ($rate->shipmentCost + $rate->otherCost) === $snipcartOrder->shippingFees;
 
             if ($labelAndCostMatch) {
                 // return exact match
                 return $rate;
             }
 
-            if ($closest === null) {
+            if (! $closest instanceof Rate) {
                 $closest = $rate;
                 continue;
             }
 
-            $currentRateDelta = abs($rate->shipmentCost - $order->shippingFees);
-            $closestRateDelta = abs($closest->shipmentCost - $order->shippingFees);
+            $currentRateDelta = abs($rate->shipmentCost - $snipcartOrder->shippingFees);
+            $closestRateDelta = abs($closest->shipmentCost - $snipcartOrder->shippingFees);
 
             if ($currentRateDelta < $closestRateDelta) {
                 // use the rate that has the least cost difference
@@ -547,5 +514,4 @@ class ShipStation extends ShippingProvider
 
         return $closest;
     }
-
 }

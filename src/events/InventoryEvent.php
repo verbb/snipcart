@@ -2,20 +2,20 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\events;
 
 use craft\base\Element;
-use yii\base\Event;
 use craft\elements\Entry;
+use yii\base\Event;
 
 /**
  * Inventory event class.
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 class InventoryEvent extends Event
@@ -35,5 +35,4 @@ class InventoryEvent extends Event
      * @var int The value (+/-) that should be added to the existing inventory.
      */
     public $quantity;
-
 }

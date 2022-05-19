@@ -2,22 +2,25 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
-use craft\helpers\Json;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\Snipcart;
-
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
 use Craft;
 use craft\base\Component;
+use craft\helpers\Json;
+
+use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\Snipcart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use yii\caching\TagDependency;
 use yii\base\Exception;
+use yii\caching\TagDependency;
 
 /**
  * Class Api
@@ -34,12 +37,12 @@ class Api extends Component
      * @var string The tag we'll attach to our caches here so they can be
      *             neatly invalidated with a reference to it.
      */
-    const CACHE_TAG = 'snipcart-api-cache';
+    public const CACHE_TAG = 'snipcart-api-cache';
 
     /**
      * @var string Characters to prepend to any cache keys that are used.
      */
-    const CACHE_KEY_PREFIX = 'snipcart_';
+    public const CACHE_KEY_PREFIX = 'snipcart_';
 
     /**
      * @var string Snipcart's base API URL used for all interactions.
@@ -56,10 +59,7 @@ class Api extends Component
      */
     protected $client;
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->isLinked = $this->getSecretApiKey() !== null;
@@ -68,7 +68,6 @@ class Api extends Component
     /**
      * Returns a configured Guzzle client.
      *
-     * @return Client
      * @throws \Exception if our API key is missing.
      */
     public function getClient(): Client
@@ -77,19 +76,19 @@ class Api extends Component
             throw new Exception('Snipcart plugin not configured.');
         }
 
-        if ($this->client !== null) {
+        if ($this->client instanceof Client) {
             return $this->client;
         }
 
         $clientConfig = [
             'base_uri' => self::$apiBaseUrl,
-            'auth' => [$this->getSecretApiKey(), 'password' ],
+            'auth' => [$this->getSecretApiKey(), 'password'],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
-                'Accept'       => 'application/json',
+                'Accept' => 'application/json',
             ],
             'verify' => false,
-            'debug'  => false
+            'debug' => false,
         ];
 
         return $this->client = Craft::createGuzzleClient($clientConfig);
@@ -108,18 +107,18 @@ class Api extends Component
      */
     public function get(string $endpoint, array $parameters = [], bool $useCache = true)
     {
-        if (! empty($parameters)) {
+        if ($parameters !== []) {
             $endpoint .= '?' . http_build_query($parameters);
         }
 
         $cacheService = Craft::$app->getCache();
-        $cacheKey     = self::CACHE_KEY_PREFIX . $endpoint;
+        $cacheKey = self::CACHE_KEY_PREFIX . $endpoint;
 
         /**
          * Make sure plugin settings *and* local parameter both allow caching.
          */
         $useCache = $useCache && Snipcart::$plugin->getSettings()->cacheResponses;
-        
+
         if ($useCache && $cachedResponseData = $cacheService->get($cacheKey)) {
             return $cachedResponseData;
         }
@@ -131,7 +130,9 @@ class Api extends Component
                 $cacheKey,
                 $responseData,
                 Snipcart::$plugin->getSettings()->cacheDurationLimit,
-                new TagDependency([ 'tags' => [ self::CACHE_TAG ] ])
+                new TagDependency([
+                    'tags' => [self::CACHE_TAG],
+                ])
             );
         }
 
@@ -191,7 +192,6 @@ class Api extends Component
      * @param string  $token  token to be validated, probably
      *                        from $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
      *
-     * @return bool
      * @throws \Exception if our API key is missing.
      */
     public function tokenIsValid($token): bool
@@ -207,7 +207,7 @@ class Api extends Component
     /**
      * Invalidate any cached GET requests we may have accumulated.
      */
-    public static function invalidateCache()
+    public static function invalidateCache(): void
     {
         TagDependency::invalidate(
             Craft::$app->getCache(),
@@ -239,8 +239,8 @@ class Api extends Component
         try {
             $response = $this->getClient()->get($endpoint);
             return $this->prepResponseData($response->getBody());
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception, $endpoint);
+        } catch (RequestException $requestException) {
+            return $this->handleRequestException($requestException, $endpoint);
         }
     }
 
@@ -257,12 +257,12 @@ class Api extends Component
     {
         try {
             $response = $this->getClient()->post($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
+                RequestOptions::JSON => $data,
             ]);
 
             return $this->prepResponseData($response->getBody());
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception, $endpoint);
+        } catch (RequestException $requestException) {
+            return $this->handleRequestException($requestException, $endpoint);
         }
     }
 
@@ -279,12 +279,12 @@ class Api extends Component
     {
         try {
             $response = $this->getClient()->put($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
+                RequestOptions::JSON => $data,
             ]);
 
             return $this->prepResponseData($response->getBody());
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception, $endpoint);
+        } catch (RequestException $requestException) {
+            return $this->handleRequestException($requestException, $endpoint);
         }
     }
 
@@ -301,48 +301,45 @@ class Api extends Component
     {
         try {
             $response = $this->getClient()->delete($endpoint, [
-                \GuzzleHttp\RequestOptions::JSON => $data
+                RequestOptions::JSON => $data,
             ]);
 
             return $this->prepResponseData($response->getBody());
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception, $endpoint);
+        } catch (RequestException $requestException) {
+            return $this->handleRequestException($requestException, $endpoint);
         }
     }
 
     /**
      * Takes the raw response body and gives it back as data that’s ready to use.
      *
-     * @param $body
-     *
      * @return mixed Appropriate PHP type, or null if json cannot be decoded
      *               or encoded data is deeper than the recursion limit.
      */
-    private function prepResponseData($body)
+    private function prepResponseData(StreamInterface $stream)
     {
         /**
          * Get the response data as an object, not an associative array.
          */
-        return Json::decode($body, false);
+        return Json::decode($stream, false);
     }
 
     /**
      * Handles a failed request.
      *
-     * @param RequestException $exception  Exception that was thrown
+     * @param RequestException $requestException Exception that was thrown
      * @param string           $endpoint   Endpoint that was queried
      *
-     * @return null
      * @throws \Exception
      */
     private function handleRequestException(
-        RequestException $exception,
-        string $endpoint
+        RequestException $requestException,
+        string $endpoint,
     ) {
         $statusCode = null;
         $reason = null;
 
-        if ($response = $exception->getResponse()) {
+        if (($response = $requestException->getResponse()) instanceof ResponseInterface) {
             /**
              * Get the status code, which should be 200 or 201 if things went well.
              */
@@ -355,7 +352,7 @@ class Api extends Component
             $reason = $response->getBody();
         }
 
-        if ($statusCode !== null && $reason !== null) {
+        if ($statusCode !== null && $reason instanceof StreamInterface) {
             // return code and message
             Craft::warning(sprintf(
                 'Snipcart API responded with %d: %s',
@@ -382,5 +379,4 @@ class Api extends Component
 
         return null;
     }
-
 }

@@ -2,12 +2,20 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\variables;
 
+use craft\base\Element;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use Twig\Markup;
+use Craft;
+use craft\helpers\Template as TemplateHelper;
 use fostercommerce\snipcart\fields\ProductDetails;
 use fostercommerce\snipcart\helpers\FieldHelper;
 use fostercommerce\snipcart\helpers\FormatHelper;
@@ -16,16 +24,12 @@ use fostercommerce\snipcart\models\snipcart\Customer;
 use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\models\snipcart\Subscription;
 use fostercommerce\snipcart\Snipcart;
-use Craft;
-use craft\helpers\Template as TemplateHelper;
 use yii\base\InvalidConfigException;
 
 class SnipcartVariable
 {
     /**
      * Returns Snipcart public API key.
-     *
-     * @return string
      */
     public function publicApiKey(): string
     {
@@ -34,8 +38,6 @@ class SnipcartVariable
 
     /**
      * Returns the default currency.
-     *
-     * @return string
      */
     public function defaultCurrency(): string
     {
@@ -44,8 +46,6 @@ class SnipcartVariable
 
     /**
      * Returns the default currency symbol.
-     *
-     * @return string
      */
     public function defaultCurrencySymbol(): string
     {
@@ -59,10 +59,9 @@ class SnipcartVariable
      * @param string $currencyType Optional string representing desired currency
      *                             to be explicitly set.
      *
-     * @return string
      * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
      */
-    public function formatCurrency($value, $currencyType = null): string
+    public function formatCurrency(mixed $value, $currencyType = null): string
     {
         return FormatHelper::formatCurrency($value, $currencyType);
     }
@@ -70,14 +69,10 @@ class SnipcartVariable
     /**
      * Returns a compact, general, relative, human-readable string representing
      * the age of the provided DateTime.
-     *
-     * @param  \DateTime  $date
-     *
-     * @return string
      */
-    public function tinyDateInterval(\DateTime $date): string
+    public function tinyDateInterval(\DateTime $dateTime): string
     {
-        return FormatHelper::tinyDateInterval($date);
+        return FormatHelper::tinyDateInterval($dateTime);
     }
 
     /**
@@ -95,11 +90,10 @@ class SnipcartVariable
     /**
      * Returns a Snipcart order by ID.
      *
-     * @param string $orderId
      * @return Order|null
      * @throws \Exception if API key is missing.
      */
-    public function getOrder($orderId)
+    public function getOrder(string $orderId)
     {
         return Snipcart::$plugin->orders->getOrder($orderId);
     }
@@ -120,7 +114,7 @@ class SnipcartVariable
      * Returns product info for the provided Element regardless of what the
      * field handle might be.
      *
-     * @param \craft\base\Element $element
+     * @param Element $element
      * @return ProductDetails|null
      */
     public function getProductInfo($element)
@@ -134,19 +128,18 @@ class SnipcartVariable
      * @param  string  $text       Button's inner text. Defaults to `Shopping Cart`.
      * @param  bool    $showCount  `false` to remove dynamic item count.
      *
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function cartLink($text = null, $showCount = true): \Twig\Markup
+    public function cartLink($text = null, $showCount = true): Markup
     {
         return $this->renderTemplate(
             'snipcart/front-end/cart-link',
             [
                 'text' => $text,
-                'showCount' => $showCount
+                'showCount' => $showCount,
             ]
         );
     }
@@ -159,16 +152,15 @@ class SnipcartVariable
      * @param  string  $onload
      * @param  bool    $includeStyles
      *
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): \Twig\Markup
+    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): Markup
     {
-        $settings = Snipcart::$plugin->getSettings();
-        $publicApiKey = $settings->publicKey();
+        $model = Snipcart::$plugin->getSettings();
+        $publicApiKey = $model->publicKey();
 
         if (VersionHelper::isCraft31()) {
             $publicApiKey = Craft::parseEnv($publicApiKey);
@@ -177,31 +169,28 @@ class SnipcartVariable
         return $this->renderTemplate(
             'snipcart/front-end/cart-js',
             [
-                'settings'      => $settings,
+                'settings' => $model,
                 'includejQuery' => $includejQuery,
                 'includeStyles' => $includeStyles,
-                'publicApiKey'  => $publicApiKey,
-                'onload'        => $onload
+                'publicApiKey' => $publicApiKey,
+                'onload' => $onload,
             ]
         );
     }
-
 
     /**
      * Renders an internal (plugin) Twig template.
      *
      * @param         $template
-     * @param  array  $data
      *
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    private function renderTemplate($template, $data = []): \Twig\Markup
+    private function renderTemplate(string $template, array $data = []): Markup
     {
-        $view         = Craft::$app->getView();
+        $view = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();
 
         // use CP mode
@@ -215,5 +204,4 @@ class SnipcartVariable
 
         return TemplateHelper::raw($html);
     }
-
 }

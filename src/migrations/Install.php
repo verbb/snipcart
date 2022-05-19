@@ -2,58 +2,53 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\migrations;
 
-use fostercommerce\snipcart\db\Table;
-use fostercommerce\snipcart\models\ProductDetails;
-use fostercommerce\snipcart\controllers\WebhooksController;
 use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;
+use fostercommerce\snipcart\controllers\WebhooksController;
+use fostercommerce\snipcart\db\Table;
+use fostercommerce\snipcart\models\ProductDetails;
 
 /**
  * m181205_000036_api_log migration.
  */
 class Install extends Migration
 {
-    /**
-     * @inheritdoc
-     */
     public function safeUp(): bool
     {
         $this->createTables();
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown(): bool
     {
-        $this->dropForeignKeys();
-        $this->dropTables();
-        $this->dropProjectConfig();
+        // don't remove the tables yet while we are testing
+        //$this->dropForeignKeys();
+        //$this->dropTables();
+        //$this->dropProjectConfig();
         return true;
     }
 
-    private function createTables()
+    private function createTables(): void
     {
         if (! $this->getDb()->tableExists(Table::WEBHOOK_LOG)) {
             $typeValues = array_keys(WebhooksController::WEBHOOK_EVENT_MAP);
 
             $this->createTable(Table::WEBHOOK_LOG, [
-                'id'          => $this->primaryKey(),
-                'siteId'      => $this->integer(),
-                'type'        => $this->enum('type', $typeValues),
-                'mode'        => $this->enum('mode', ['live', 'test']),
-                'body'        => $this->longText(),
+                'id' => $this->primaryKey(),
+                'siteId' => $this->integer(),
+                'type' => $this->enum('type', $typeValues),
+                'mode' => $this->enum('mode', ['live', 'test']),
+                'body' => $this->longText(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
-                'uid'         => $this->uid(),
+                'uid' => $this->uid(),
             ]);
 
             $this->createIndex(null, Table::WEBHOOK_LOG, ['siteId']);
@@ -62,13 +57,13 @@ class Install extends Migration
 
         if (! $this->getDb()->tableExists(Table::SHIPPING_QUOTES)) {
             $this->createTable(Table::SHIPPING_QUOTES, [
-                'id'          => $this->primaryKey(),
-                'siteId'      => $this->integer(),
-                'token'       => $this->text(),
-                'body'        => $this->mediumText(),
+                'id' => $this->primaryKey(),
+                'siteId' => $this->integer(),
+                'token' => $this->text(),
+                'body' => $this->mediumText(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
-                'uid'         => $this->uid(),
+                'uid' => $this->uid(),
             ]);
 
             $this->createIndex(null, Table::SHIPPING_QUOTES, ['siteId']);
@@ -85,25 +80,25 @@ class Install extends Migration
             );
 
             $this->createTable(Table::PRODUCT_DETAILS, [
-                'id'             => $this->primaryKey(),
-                'elementId'      => $this->integer()->notNull(),
-                'fieldId'        => $this->integer()->notNull(),
-                'siteId'         => $this->integer(),
-                'sku'            => $this->string(),
-                'price'          => $this->decimal(14, 2)->unsigned(),
-                'shippable'      => $this->boolean(),
-                'taxable'        => $this->boolean(),
-                'weight'         => $this->decimal(12, 2)->unsigned(),
-                'weightUnit'     => $this->enum('weightUnit', $weightUnitOptions),
-                'length'         => $this->decimal(12, 2)->unsigned(),
-                'width'          => $this->decimal(12, 2)->unsigned(),
-                'height'         => $this->decimal(12, 2)->unsigned(),
+                'id' => $this->primaryKey(),
+                'elementId' => $this->integer()->notNull(),
+                'fieldId' => $this->integer()->notNull(),
+                'siteId' => $this->integer(),
+                'sku' => $this->string(),
+                'price' => $this->decimal(14, 2)->unsigned(),
+                'shippable' => $this->boolean(),
+                'taxable' => $this->boolean(),
+                'weight' => $this->decimal(12, 2)->unsigned(),
+                'weightUnit' => $this->enum('weightUnit', $weightUnitOptions),
+                'length' => $this->decimal(12, 2)->unsigned(),
+                'width' => $this->decimal(12, 2)->unsigned(),
+                'height' => $this->decimal(12, 2)->unsigned(),
                 'dimensionsUnit' => $this->enum('dimensionsUnit', $dimensionsUnitOptions),
-                'inventory'      => $this->integer(),
-                'customOptions'  => $this->longText(),
-                'dateCreated'    => $this->dateTime()->notNull(),
-                'dateUpdated'    => $this->dateTime()->notNull(),
-                'uid'            => $this->uid(),
+                'inventory' => $this->integer(),
+                'customOptions' => $this->longText(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
             ]);
 
             $this->createIndex(null, Table::PRODUCT_DETAILS, ['elementId']);
@@ -116,12 +111,12 @@ class Install extends Migration
         }
     }
 
-    private function dropForeignKeys()
+    private function dropForeignKeys(): void
     {
         $tables = [
             Table::WEBHOOK_LOG,
             Table::SHIPPING_QUOTES,
-            Table::PRODUCT_DETAILS
+            Table::PRODUCT_DETAILS,
         ];
 
         foreach ($tables as $table) {
@@ -132,14 +127,14 @@ class Install extends Migration
         }
     }
 
-    private function dropTables()
+    private function dropTables(): void
     {
         $this->dropTableIfExists(Table::WEBHOOK_LOG);
         $this->dropTableIfExists(Table::SHIPPING_QUOTES);
         $this->dropTableIfExists(Table::PRODUCT_DETAILS);
     }
 
-    private function dropProjectConfig()
+    private function dropProjectConfig(): void
     {
         Craft::$app->projectConfig->remove('snipcart');
     }

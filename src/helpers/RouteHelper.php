@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -12,8 +12,6 @@ class RouteHelper
 {
     /**
      * Returns an array of control panel routes.
-     *
-     * @return array
      */
     public static function getCpRoutes(): array
     {

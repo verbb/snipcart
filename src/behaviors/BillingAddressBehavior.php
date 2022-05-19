@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -20,9 +20,9 @@ use yii\base\Behavior;
  */
 class BillingAddressBehavior extends Behavior
 {
-    private $billingAddress;
+    private ?Address $billingAddress = null;
 
-    public function getBillingAddress()
+    public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
     }
@@ -41,7 +41,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressName($name)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -62,7 +62,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressFirstName($firstName)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -83,7 +83,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCompanyName($companyName)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -104,7 +104,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressAddress1($address1)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -125,16 +125,13 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressAddress2($address2)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->address2 = $address2;
     }
 
-    /**
-     * @return string
-     */
     public function getBillingAddressCity(): string
     {
         return $this->getBillingAddress()->city;
@@ -146,7 +143,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCity($city)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -167,7 +164,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressCountry($country)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -188,7 +185,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressProvince($province)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -209,7 +206,7 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressPostalCode($postalCode)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
@@ -230,11 +227,10 @@ class BillingAddressBehavior extends Behavior
      */
     public function setBillingAddressPhone($phone)
     {
-        if ($this->billingAddress === null) {
+        if (! $this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->phone = $phone;
     }
-
 }

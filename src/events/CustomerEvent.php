@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -14,7 +14,7 @@ use yii\base\Event;
 /**
  * Customer event class.
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 class CustomerEvent extends Event
@@ -23,5 +23,4 @@ class CustomerEvent extends Event
      * @var Customer
      */
     public $customer;
-
 }

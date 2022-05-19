@@ -2,21 +2,30 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models;
 
-use craft\elements\Entry;
+use craft\base\Model;
+use craft\base\ElementInterface;
 use craft\elements\MatrixBlock;
-use Twig\Markup;
+use craft\base\FieldInterface;
+use yii\base\InvalidConfigException;
+use yii\base\ExitException;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use Craft;
+use craft\elements\Entry;
+use craft\helpers\Template as TemplateHelper;
+use fostercommerce\snipcart\fields\ProductDetails as ProductDetailsField;
 use fostercommerce\snipcart\helpers\MeasurementHelper;
 use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
-use fostercommerce\snipcart\fields\ProductDetails as ProductDetailsField;
-use Craft;
-use craft\helpers\Template as TemplateHelper;
+use Twig\Markup;
 
 /**
  * This model is used explicitly for storing Product Details field data and
@@ -24,13 +33,17 @@ use craft\helpers\Template as TemplateHelper;
  *
  * @package fostercommerce\snipcart\models
  */
-class ProductDetails extends \craft\base\Model
+class ProductDetails extends Model
 {
-    const WEIGHT_UNIT_GRAMS = 'grams';
-    const WEIGHT_UNIT_POUNDS = 'pounds';
-    const WEIGHT_UNIT_OUNCES = 'ounces';
-    const DIMENSIONS_UNIT_CENTIMETERS = 'centimeters';
-    const DIMENSIONS_UNIT_INCHES = 'inches';
+    public const WEIGHT_UNIT_GRAMS = 'grams';
+
+    public const WEIGHT_UNIT_POUNDS = 'pounds';
+
+    public const WEIGHT_UNIT_OUNCES = 'ounces';
+
+    public const DIMENSIONS_UNIT_CENTIMETERS = 'centimeters';
+
+    public const DIMENSIONS_UNIT_INCHES = 'inches';
 
     /**
      * @var
@@ -134,7 +147,7 @@ class ProductDetails extends \craft\base\Model
      * @param bool $entryOnly Whether to return the immediately-associated
      *                        Element, like a Matrix block, or the closest Entry.
      *
-     * @return \craft\base\ElementInterface|null
+     * @return ElementInterface|null
      */
     public function getElement($entryOnly = false)
     {
@@ -143,8 +156,8 @@ class ProductDetails extends \craft\base\Model
             return null;
         }
 
-        $element  = Craft::$app->elements->getElementById($this->elementId);
-        $isMatrix = isset($element) && get_class($element) === MatrixBlock::class;
+        $element = Craft::$app->elements->getElementById($this->elementId);
+        $isMatrix = isset($element) && $element instanceof MatrixBlock;
 
         if ($isMatrix && $entryOnly) {
             return $element->getOwner();
@@ -156,44 +169,58 @@ class ProductDetails extends \craft\base\Model
     /**
      * Get the relevant Field instance.
      *
-     * @return \craft\base\FieldInterface|ProductDetailsField|null
+     * @return FieldInterface|ProductDetailsField|null
      */
     public function getField()
     {
         return Craft::$app->fields->getFieldById($this->fieldId);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             ['sku', 'validateSku'],
             [['sku', 'weightUnit', 'dimensionsUnit'], 'string'],
-            [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],
-            [['elementId', 'fieldId', 'inventory'], 'number', 'integerOnly' => true],
+            [['length', 'width', 'height', 'weight'],
+                'number',
+                'integerOnly' => false,
+            ],
+            [['elementId', 'fieldId', 'inventory'],
+                'number',
+                'integerOnly' => true,
+            ],
             [['shippable'], 'boolean'],
             [['taxable'], 'boolean'],
             [['sku'], 'required'],
-            [['weightUnit'], 'in', 'range' => [
-                self::WEIGHT_UNIT_GRAMS,
-                self::WEIGHT_UNIT_OUNCES,
-                self::WEIGHT_UNIT_POUNDS
-            ]],
-            [['dimensionsUnit'], 'in', 'range' => [
-                self::DIMENSIONS_UNIT_CENTIMETERS,
-                self::DIMENSIONS_UNIT_INCHES
-            ]],
-            [['weight', 'weightUnit'], 'required', 'when' => function ($model) {
-                return $this->isShippable($model);
-            }, 'message' => '{attribute} is required when product is shippable.'],
-            [['length', 'width', 'height'], 'required', 'when' => function ($model) {
-                return $this->hasDimensions($model);
-            }, 'message' => '{attribute} required if there are other dimensions.'],
-            [['dimensionsUnit'], 'required', 'when' => function ($model) {
-                return $this->hasAllDimensions($model);
-            }],
+            [['weightUnit'],
+                'in',
+                'range' => [
+                    self::WEIGHT_UNIT_GRAMS,
+                    self::WEIGHT_UNIT_OUNCES,
+                    self::WEIGHT_UNIT_POUNDS,
+                ],
+            ],
+            [['dimensionsUnit'],
+                'in',
+                'range' => [
+                    self::DIMENSIONS_UNIT_CENTIMETERS,
+                    self::DIMENSIONS_UNIT_INCHES,
+                ],
+            ],
+            [['weight', 'weightUnit'],
+                'required',
+                'when' => fn($model): bool => $this->isShippable($model),
+                'message' => '{attribute} is required when product is shippable.',
+            ],
+            [['length', 'width', 'height'],
+                'required',
+                'when' => fn($model): bool => $this->hasDimensions($model),
+                'message' => '{attribute} required if there are other dimensions.',
+            ],
+            [['dimensionsUnit'],
+                'required',
+                'when' => fn($model): bool => $this->hasAllDimensions($model),
+            ],
         ];
     }
 
@@ -202,8 +229,7 @@ class ProductDetails extends \craft\base\Model
      *
      * @param $attribute
      *
-     * @return bool
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function validateSku($attribute): bool
     {
@@ -226,27 +252,25 @@ class ProductDetails extends \craft\base\Model
     /**
      * Sets default values according to what’s configured on the field instance.
      */
-    public function populateDefaults()
+    public function populateDefaults(): void
     {
         $field = $this->getField();
         $isProductDetails = $field instanceof ProductDetailsField;
 
         if ($field && $isProductDetails) {
-            $this->shippable      = $field->defaultShippable;
-            $this->taxable        = $field->defaultTaxable;
-            $this->weight         = $field->defaultWeight;
-            $this->weightUnit     = $field->defaultWeightUnit;
-            $this->length         = $field->defaultLength;
-            $this->width          = $field->defaultWidth;
-            $this->height         = $field->defaultHeight;
+            $this->shippable = $field->defaultShippable;
+            $this->taxable = $field->defaultTaxable;
+            $this->weight = $field->defaultWeight;
+            $this->weightUnit = $field->defaultWeightUnit;
+            $this->length = $field->defaultLength;
+            $this->width = $field->defaultWidth;
+            $this->height = $field->defaultHeight;
             $this->dimensionsUnit = $field->defaultDimensionsUnit;
         }
     }
 
     /**
      * Returns weight unit options for menus.
-     *
-     * @return array
      */
     public static function getWeightUnitOptions(): array
     {
@@ -259,8 +283,6 @@ class ProductDetails extends \craft\base\Model
 
     /**
      * Gets dimension unit options for menus.
-     *
-     * @return array
      */
     public static function getDimensionsUnitOptions(): array
     {
@@ -285,8 +307,6 @@ class ProductDetails extends \craft\base\Model
      * non-zero value.
      *
      * @param ProductDetails $model
-     *
-     * @return bool
      */
     public function hasDimensions($model = null): bool
     {
@@ -297,7 +317,6 @@ class ProductDetails extends \craft\base\Model
     /**
      * Returns true if each dimension (length, width, height) as a non-zero value.
      * @param ProductDetails $model
-     * @return bool
      */
     public function hasAllDimensions($model = null): bool
     {
@@ -309,24 +328,20 @@ class ProductDetails extends \craft\base\Model
      * Returns true if product is shippable.
      *
      * @param ProductDetails $model
-     *
-     * @return bool
      */
     public function isShippable($model = null): bool
     {
-        return ($model ?? $this)->shippable === true;
+        return ($model ?? $this)->shippable;
     }
 
     /**
      * Return the current item's weight in grams.
-     *
-     * @return float
      */
-    public function getWeightInGrams()
+    public function getWeightInGrams(): float
     {
         if ($this->weightUnit === self::WEIGHT_UNIT_GRAMS) {
             // Already in grams, safe to return.
-            return (float) $this->weight;
+            return $this->weight;
         }
 
         if ($this->weightUnit === self::WEIGHT_UNIT_OUNCES) {
@@ -336,13 +351,14 @@ class ProductDetails extends \craft\base\Model
         if ($this->weightUnit === self::WEIGHT_UNIT_POUNDS) {
             return MeasurementHelper::poundsToGrams((float) $this->weight);
         }
+
+        return 0.0;
     }
 
     /**
      * Get markup for a "buy now" button on the public end of the site.
      *
      * @param array $params
-     * @return Markup
      * @throws
      */
     public function getBuyNowButton($params = []): Markup
@@ -352,7 +368,7 @@ class ProductDetails extends \craft\base\Model
         return TemplateHelper::raw($this->renderFieldTemplate(
             'snipcart/fields/front-end/buy-now',
             [
-                'fieldData'      => $this,
+                'fieldData' => $this,
                 'templateParams' => $params,
             ]
         ));
@@ -399,20 +415,19 @@ class ProductDetails extends \craft\base\Model
      * ```
      *
      * @param array $params
-     * @return array
      */
     private function getBuyButtonParams($params = []): array
     {
         $defaults = [
-            'href'           => '#',
-            'target'         => null,
-            'rel'            => null,
-            'title'          => null,
-            'image'          => null,
-            'text'           => 'Buy Now',
-            'quantity'       => 1,
-            'classes'        => ['btn'],
-            'customOptions'  => [],
+            'href' => '#',
+            'target' => null,
+            'rel' => null,
+            'title' => null,
+            'image' => null,
+            'text' => 'Buy Now',
+            'quantity' => 1,
+            'classes' => ['btn'],
+            'customOptions' => [],
         ];
 
         $params = array_merge($defaults, $params);
@@ -422,7 +437,7 @@ class ProductDetails extends \craft\base\Model
          * for consistency and set all prices to 0.
          */
         if (is_array($params['customOptions']) &&
-            count($params['customOptions']) > 0
+            $params['customOptions'] !== []
         ) {
             foreach ($params['customOptions'] as &$customOption) {
                 $customOptionOptions = [];
@@ -432,13 +447,13 @@ class ProductDetails extends \craft\base\Model
                         if (! isset($option['name']) && ! isset($option['price'])) {
                             $customOptionOptions[] = [
                                 'name' => $option,
-                                'price' => 0
+                                'price' => 0,
                             ];
                         } else {
                             $customOptionOptions[] = $option;
                         }
                     }
-                    
+
                     $customOption['options'] = $customOptionOptions;
                 }
             }
@@ -454,16 +469,17 @@ class ProductDetails extends \craft\base\Model
      * This tests uniqueness of a SKU in Craft<=3.1.
      *
      * @param $attribute
-     * @return bool
      */
     private function skuIsUniqueRecordAttribute($attribute): bool
     {
         $duplicateCount = ProductDetailsRecord::find()
-            ->where([$attribute => $this->{$attribute}])
+            ->where([
+                $attribute => $this->{$attribute},
+            ])
             ->andWhere(['!=', 'elementId', $this->elementId])
             ->count();
 
-        return (int)$duplicateCount === 0;
+        return (int) $duplicateCount === 0;
     }
 
     /**
@@ -475,16 +491,17 @@ class ProductDetails extends \craft\base\Model
      *
      * @param $attribute
      *
-     * @return bool
-     * @throws \yii\base\InvalidConfigException|\yii\base\ExitException
+     * @throws InvalidConfigException|ExitException
      */
     private function skuIsUniqueElementAttribute($attribute): bool
     {
         $hasConflict = false;
+        $currentElement = $this->getElement();
 
         /**
          * Get product details with matching SKUs on published Elements.
          */
+        /*
         $potentialDuplicates = ProductDetailsRecord::find()
             ->leftJoin('{{%elements}} elements', '[[elements.id]] = {{%snipcart_product_details.elementId}}')
             ->where([$attribute => $this->{$attribute}])
@@ -496,25 +513,30 @@ class ProductDetails extends \craft\base\Model
                 'elements.dateDeleted' => null,
             ])
             ->all();
+        */
+        $potentialDuplicates = Entry::find()
+            ->id(['not', $currentElement->id])
+            ->sectionId($currentElement->section->id)
+            ->all();
 
         /**
          * Check each published Element to see if it’s a variation of the current
          * one or a totally separate one with a clashing SKU.
          */
-        $currentElement = $this->getElement();
 
-        foreach ($potentialDuplicates as $record) {
-            $duplicateElement = Craft::$app->elements->getElementById($record->elementId);
-
+        foreach ($potentialDuplicates as $potentialDuplicate) {
+            $duplicateElement = Craft::$app->elements->getElementById($potentialDuplicate->elementId);
             // Let’s be paranoid.
-            if ($duplicateElement === null ||
-                is_a($duplicateElement, \craft\base\ElementInterface::class) === false
-            ) {
+            if ($duplicateElement === null) {
                 continue;
             }
 
-            if ($currentElement === null ||
-                get_class($duplicateElement) !== get_class($currentElement)
+            if (is_a($duplicateElement, ElementInterface::class) === false) {
+                continue;
+            }
+
+            if (! $currentElement instanceof ElementInterface ||
+                $duplicateElement::class !== $currentElement::class
             ) {
                 // Different element types with the same SKU are a conflict, as
                 // are new and existing.
@@ -522,15 +544,15 @@ class ProductDetails extends \craft\base\Model
                 break;
             }
 
-            $getCanonicalId = function ($element) {
+            $getCanonicalId = static function($element): int {
                 if (version_compare(Craft::$app->getVersion(), '3.7', '>=')) {
                     return (int) $element->canonicalId;
-                } else {
-                    return (int) $element->sourceId;
                 }
+
+                return (int) $element->sourceId;
             };
 
-            if (is_a($duplicateElement, Entry::class)) {
+            if ($duplicateElement instanceof Entry) {
                 // Don’t worry about unpublished Elements.
                 if ($duplicateElement->revisionId === null) {
                     continue;
@@ -543,18 +565,18 @@ class ProductDetails extends \craft\base\Model
                 }
             }
 
-            if (is_a($duplicateElement, MatrixBlock::class)) {
+            if ($duplicateElement instanceof MatrixBlock) {
                 // A duplicate in a different field is a conflict.
-                if ((int)$duplicateElement->fieldId !== (int)$currentElement->fieldId) {
+                if ((int) $duplicateElement->fieldId !== (int) $currentElement->fieldId) {
                     $hasConflict = true;
                     break;
                 }
 
                 // Duplicate within same Matrix field on the same Entry.
                 $sameSource = $getCanonicalId($duplicateElement->getOwner()) === $getCanonicalId($currentElement->getOwner());
-                $sameOwner = (int)$duplicateElement->ownerId === (int)$currentElement->ownerId;
+                $sameOwner = (int) $duplicateElement->ownerId === (int) $currentElement->ownerId;
 
-                if ($sameSource and $sameOwner) {
+                if ($sameSource && $sameOwner) {
                     $hasConflict = true;
                     break;
                 }
@@ -570,13 +592,12 @@ class ProductDetails extends \craft\base\Model
      * @param $template
      * @param $data
      *
-     * @return string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    private function renderFieldTemplate($template, $data): string
+    private function renderFieldTemplate(string $template, array $data): string
     {
         $view = Craft::$app->getView();
         $templateMode = $view->getTemplateMode();

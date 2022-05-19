@@ -2,12 +2,13 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
 
 /**
@@ -23,17 +24,20 @@ use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
  * @property InternationalOptions $internationalOptions
  * @property AdvancedOptions $advancedOptions
  */
-class Order extends \craft\base\Model
+class Order extends Model
 {
     /**
      * Used for creating a new Order with the ShipStation API.
      */
-    const SCENARIO_NEW = 'new';
+    public const SCENARIO_NEW = 'new';
 
-    const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
-    const STATUS_AWAITING_SHIPMENT = 'awaiting_shipment';
-    const STATUS_ON_HOLD = 'on_hold';
-    const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_AWAITING_PAYMENT = 'awaiting_payment';
+
+    public const STATUS_AWAITING_SHIPMENT = 'awaiting_shipment';
+
+    public const STATUS_ON_HOLD = 'on_hold';
+
+    public const STATUS_CANCELLED = 'cancelled';
 
     /**
      * @var int|null Order ID (read-only)
@@ -94,21 +98,6 @@ class Order extends \craft\base\Model
      * @var string|null Customer Email
      */
     public $customerEmail;
-
-    /**
-     * @var Address|null
-     */
-    private $_billTo;
-
-    /**
-     * @var Address|null
-     */
-    private $_shipTo;
-
-    /**
-     * @var OrderItem[]|null
-     */
-    private $_items;
 
     /**
      * @var float|null Order Total (read-only)
@@ -191,31 +180,6 @@ class Order extends \craft\base\Model
     public $holdUntilDate;
 
     /**
-     * @var Weight|null
-     */
-    private $_weight;
-
-    /**
-     * @var Dimensions|null
-     */
-    private $_dimensions;
-
-    /**
-     * @var InsuranceOptions|null
-     */
-    private $_insuranceOptions;
-
-    /**
-     * @var InternationalOptions|null
-     */
-    private $_internationalOptions;
-
-    /**
-     * @var AdvancedOptions|null
-     */
-    private $_advancedOptions;
-
-    /**
      * @var int[]|null
      */
     public $tagIds;
@@ -240,12 +204,31 @@ class Order extends \craft\base\Model
      */
     public $labelMessages;
 
+    private ?Address $_billTo = null;
+
+    private ?Address $_shipTo = null;
+
+    /**
+     * @var OrderItem[]|null
+     */
+    private ?array $_items = null;
+
+    private ?Weight $_weight = null;
+
+    private ?Dimensions $_dimensions = null;
+
+    private ?InsuranceOptions $_insuranceOptions = null;
+
+    private ?InternationalOptions $_internationalOptions = null;
+
+    private ?AdvancedOptions $_advancedOptions = null;
+
     /**
      * Gets the order’s billing address.
      *
      * @return Address|null
      */
-    public function getBillTo()
+    public function getBillTo(): ?Address
     {
         return $this->_billTo;
     }
@@ -254,8 +237,6 @@ class Order extends \craft\base\Model
      * Sets the order’s billing address.
      *
      * @param Address|array $address The order's billing address.
-     *
-     * @return Address
      */
     public function setBillTo($address): Address
     {
@@ -271,7 +252,7 @@ class Order extends \craft\base\Model
      *
      * @return Address|null
      */
-    public function getShipTo()
+    public function getShipTo(): ?Address
     {
         return $this->_shipTo;
     }
@@ -280,8 +261,6 @@ class Order extends \craft\base\Model
      * Sets the order’s shipping address.
      *
      * @param Address|array $address The order's shipping address.
-     *
-     * @return Address
      */
     public function setShipTo($address): Address
     {
@@ -312,10 +291,8 @@ class Order extends \craft\base\Model
      * Sets the order’s items.
      *
      * @param OrderItem[] $items The order's items.
-     *
-     * @return void
      */
-    public function setItems(array $items)
+    public function setItems(array $items): void
     {
         $this->_items = $items;
     }
@@ -325,7 +302,7 @@ class Order extends \craft\base\Model
      *
      * @return Weight|null
      */
-    public function getWeight()
+    public function getWeight(): ?Weight
     {
         return $this->_weight;
     }
@@ -351,7 +328,7 @@ class Order extends \craft\base\Model
      *
      * @return Dimensions|null
      */
-    public function getDimensions()
+    public function getDimensions(): ?Dimensions
     {
         return $this->_dimensions;
     }
@@ -377,7 +354,7 @@ class Order extends \craft\base\Model
      *
      * @return InsuranceOptions|null
      */
-    public function getInsuranceOptions()
+    public function getInsuranceOptions(): ?InsuranceOptions
     {
         return $this->_insuranceOptions;
     }
@@ -403,7 +380,7 @@ class Order extends \craft\base\Model
      *
      * @return InternationalOptions|null
      */
-    public function getInternationalOptions()
+    public function getInternationalOptions(): ?InternationalOptions
     {
         return $this->_internationalOptions;
     }
@@ -429,7 +406,7 @@ class Order extends \craft\base\Model
      *
      * @return AdvancedOptions|null
      */
-    public function getAdvancedOptions()
+    public function getAdvancedOptions(): ?AdvancedOptions
     {
         return $this->_advancedOptions;
     }
@@ -452,41 +429,35 @@ class Order extends \craft\base\Model
 
     /**
      * Map Order properties to this model.
-     *
-     * @param SnipcartOrder $order
-     * @return Order
      */
-    public static function populateFromSnipcartOrder(SnipcartOrder $order): Order
+    public static function populateFromSnipcartOrder(SnipcartOrder $snipcartOrder): self
     {
         $items = [];
 
-        foreach ($order->items as $item) {
+        foreach ($snipcartOrder->items as $item) {
             $items[] = OrderItem::populateFromSnipcartItem($item);
         }
 
         return new self([
-            'orderNumber' => $order->invoiceNumber,
-            'orderKey' => $order->token,
-            'orderDate' => $order->creationDate,
-            'paymentDate' => $order->completionDate,
-            'customerEmail' => $order->email,
-            'amountPaid' => $order->total,
-            'shippingAmount' => $order->shippingFees,
-            'requestedShippingService' => $order->shippingMethod,
-            'taxAmount' => $order->taxesTotal,
+            'orderNumber' => $snipcartOrder->invoiceNumber,
+            'orderKey' => $snipcartOrder->token,
+            'orderDate' => $snipcartOrder->creationDate,
+            'paymentDate' => $snipcartOrder->completionDate,
+            'customerEmail' => $snipcartOrder->email,
+            'amountPaid' => $snipcartOrder->total,
+            'shippingAmount' => $snipcartOrder->shippingFees,
+            'requestedShippingService' => $snipcartOrder->shippingMethod,
+            'taxAmount' => $snipcartOrder->taxesTotal,
             'shipTo' => Address::populateFromSnipcartAddress(
-                $order->shippingAddress
+                $snipcartOrder->shippingAddress
             ),
             'billTo' => Address::populateFromSnipcartAddress(
-                $order->billingAddress
+                $snipcartOrder->billingAddress
             ),
-            'items' => $items
+            'items' => $items,
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return [
@@ -500,9 +471,6 @@ class Order extends \craft\base\Model
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function extraFields(): array
     {
         return [
@@ -513,13 +481,10 @@ class Order extends \craft\base\Model
             'dimensions',
             'insuranceOptions',
             'internationalOptions',
-            'advancedOptions'
+            'advancedOptions',
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         /**
@@ -531,21 +496,34 @@ class Order extends \craft\base\Model
          * and submit any dateTime requests in PST/PDT.
          */
         return [
-            [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true],
-            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
-            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'default', 'value' => 0],
+            [['orderId', 'customerId', 'userId'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'],
+                'number',
+                'integerOnly' => false,
+            ],
+            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'],
+                'default',
+                'value' => 0,
+            ],
             [['orderNumber', 'orderStatus'], 'string'],
             [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string'],
             [['customerEmail'], 'email'],
             [['gift', 'externallyFulfilled'], 'boolean'],
-            [['gift', 'externallyFulfilled'], 'default', 'value' => false],
-            ['tagIds', 'each', 'rule' => ['integer']],
+            [['gift', 'externallyFulfilled'],
+                'default',
+                'value' => false,
+            ],
+            [
+                'tagIds',
+                'each',
+                'rule' => ['integer'],
+            ],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scenarios(): array
     {
         $scenarios = parent::scenarios();
@@ -553,9 +531,6 @@ class Order extends \craft\base\Model
         return $scenarios;
     }
 
-    /**
-     * @return array
-     */
     public function getPayloadForPost(): array
     {
         $payload = $this->toArray(
@@ -608,12 +583,12 @@ class Order extends \craft\base\Model
             'orderItemId',
             'adjustment',
             'createDate',
-            'modifyDate'
+            'modifyDate',
         ];
 
         foreach ($payload['items'] as &$item) {
-            foreach ($removeFromItems as $removeKey) {
-                unset($item[$removeKey]);
+            foreach ($removeFromItems as $removeFromItem) {
+                unset($item[$removeFromItem]);
             }
 
             unset($item['weight']['WeightUnits']);
@@ -623,5 +598,4 @@ class Order extends \craft\base\Model
 
         return $payload;
     }
-
 }

@@ -2,38 +2,45 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\web\Controller;
+use yii\web\Response;
+use craft\errors\MissingComponentException;
+use yii\web\BadRequestHttpException;
+use Craft;
 use craft\helpers\DateTimeHelper;
 use DateTime;
-use Craft;
+use fostercommerce\snipcart\Snipcart;
 
-class OrdersController extends \craft\web\Controller
+class OrdersController extends Controller
 {
-    const START_DATE_PARAM = 'startDate';
-    const START_DATE_SESSION_KEY = 'snipcartStartDate';
-    const END_DATE_PARAM = 'endDate';
-    const END_DATE_SESSION_KEY = 'snipcartEndDate';
+    public const START_DATE_PARAM = 'startDate';
+
+    public const START_DATE_SESSION_KEY = 'snipcartStartDate';
+
+    public const END_DATE_PARAM = 'endDate';
+
+    public const END_DATE_SESSION_KEY = 'snipcartEndDate';
 
     /**
      * Displays paginated list of orders.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
-        $startDate  = $this->getDateRangeExtent('start');
-        $endDate    = $this->getDateRangeExtent('end');
-        $page       = Craft::$app->getRequest()->getPageNum();
-        $orders     = Snipcart::$plugin->orders->listOrders($page, 20, [
+        $startDate = $this->getDateRangeExtent('start');
+        $endDate = $this->getDateRangeExtent('end');
+
+        $page = Craft::$app->getRequest()->getPageNum();
+        $orders = Snipcart::$plugin->orders->listOrders($page, 20, [
             'from' => $startDate,
-            'to'   => $endDate
+            'to' => $endDate,
         ]);
 
         $totalPages = ceil($orders->totalItems / $orders->limit);
@@ -41,12 +48,12 @@ class OrdersController extends \craft\web\Controller
         return $this->renderTemplate(
             'snipcart/cp/orders/index',
             [
-                'startDate'  => $startDate,
-                'endDate'    => $endDate,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
                 'pageNumber' => $page,
                 'totalPages' => $totalPages,
                 'totalItems' => $orders->totalItems,
-                'orders'     => $orders->items,
+                'orders' => $orders->items,
             ]
         );
     }
@@ -54,15 +61,12 @@ class OrdersController extends \craft\web\Controller
     /**
      * Displays order detail.
      *
-     * @param string $orderId
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionOrderDetail(string $orderId): \yii\web\Response
+    public function actionOrderDetail(string $orderId): Response
     {
         $order = Snipcart::$plugin->orders->getOrder($orderId);
         $orderRefunds = Snipcart::$plugin->orders->getOrderRefunds($orderId);
-
         return $this->renderTemplate(
             'snipcart/cp/orders/detail',
             [
@@ -75,11 +79,10 @@ class OrdersController extends \craft\web\Controller
     /**
      * Refunds an order.
      *
-     * @return \yii\web\Response
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
      */
-    public function actionRefund(): \yii\web\Response
+    public function actionRefund(): Response
     {
         $this->requirePostRequest();
 
@@ -101,9 +104,9 @@ class OrdersController extends \craft\web\Controller
      * @param string $extent `start` or `end`
      *
      * @return array|bool|\DateTime|false|int|string|null
-     * @throws \craft\errors\MissingComponentException
+     * @throws MissingComponentException
      */
-    private function getDateRangeExtent($extent)
+    private function getDateRangeExtent(string $extent)
     {
         $request = Craft::$app->getRequest();
         $session = Craft::$app->getSession();
@@ -166,5 +169,4 @@ class OrdersController extends \craft\web\Controller
 
         return $date;
     }
-
 }

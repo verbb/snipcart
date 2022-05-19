@@ -2,28 +2,30 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\helpers\FormatHelper;
-use craft\helpers\DateTimeHelper;
-use DateTimeZone;
-use DateTime;
+use craft\web\Controller;
+use yii\web\Response;
+use yii\base\InvalidConfigException;
 use Craft;
+use craft\helpers\DateTimeHelper;
+use DateTime;
+use DateTimeZone;
+use fostercommerce\snipcart\helpers\FormatHelper;
+use fostercommerce\snipcart\Snipcart;
 
-class OverviewController extends \craft\web\Controller
+class OverviewController extends Controller
 {
     /**
      * Displays store overview.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionIndex(): \yii\web\Response
+    public function actionIndex(): Response
     {
         if (! Snipcart::$plugin->getSettings()->isConfigured()) {
             return $this->renderTemplate('snipcart/cp/welcome');
@@ -38,10 +40,9 @@ class OverviewController extends \craft\web\Controller
     /**
      * Gets the stats for the top panels.
      *
-     * @return \yii\web\Response
      * @throws
      */
-    public function actionGetStats(): \yii\web\Response
+    public function actionGetStats(): Response
     {
         return $this->asJson(
             $this->getOverviewStats(true)
@@ -51,10 +52,9 @@ class OverviewController extends \craft\web\Controller
     /**
      * Gets the data for the recent order and top customer summary tables.
      *
-     * @return \yii\web\Response
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function actionGetOrdersCustomers(): \yii\web\Response
+    public function actionGetOrdersCustomers(): Response
     {
         return $this->asJson(
             $this->getOrderAndCustomerSummary(true)
@@ -64,15 +64,13 @@ class OverviewController extends \craft\web\Controller
     /**
      * Gets store statistics for the Snipcart landing/overview.
      *
-     * @param bool $preFormat
-     * @return array
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    private function getOverviewStats($preFormat = false): array
+    private function getOverviewStats(bool $preFormat = false): array
     {
         $startDate = $this->getStartDate();
-        $endDate   = $this->getEndDate();
-        $stats     = Snipcart::$plugin->data->getPerformance($startDate, $endDate);
+        $endDate = $this->getEndDate();
+        $stats = Snipcart::$plugin->data->getPerformance($startDate, $endDate);
 
         if ($preFormat) {
             $defaultCurrency = Snipcart::$plugin->getSettings()->defaultCurrency;
@@ -91,24 +89,26 @@ class OverviewController extends \craft\web\Controller
                 $defaultCurrency
             );
         }
-        
-        return [ 'stats' => $stats ];
+
+        return [
+            'stats' => $stats,
+        ];
     }
 
     /**
      * Gets recent order and top customer statistics.
      *
-     * @param bool $preFormat
-     * @return array
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    private function getOrderAndCustomerSummary($preFormat = false): array
+    private function getOrderAndCustomerSummary(bool $preFormat = false): array
     {
         $startDate = $this->getStartDate();
-        $endDate   = $this->getEndDate();
-        $orders    = Snipcart::$plugin->orders->listOrders(1, 10);
+        $endDate = $this->getEndDate();
+
+        $orders = Snipcart::$plugin->orders->listOrders(1, 10);
+
         $customers = Snipcart::$plugin->customers->listCustomers(1, 10, [
-            'orderBy' => 'ordersValue'
+            'orderBy' => 'ordersValue',
         ]);
 
         if ($preFormat) {
@@ -134,11 +134,11 @@ class OverviewController extends \craft\web\Controller
                 $item['statistics']['ordersAmount'] = FormatHelper::formatCurrency($item['statistics']['ordersAmount']);
             }
         }
-        
+
         return [
             'startDate' => $startDate,
-            'endDate'   => $endDate,
-            'orders'    => $orders,
+            'endDate' => $endDate,
+            'orders' => $orders,
             'customers' => $customers,
         ];
     }
@@ -146,35 +146,44 @@ class OverviewController extends \craft\web\Controller
     /**
      * Gets the beginning of the range used for visualizing stats.
      *
-     * @return DateTime
      * @throws
      */
     private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
-
-        if ($startDateParam && is_string($startDateParam)) {
-            return DateTimeHelper::toDateTime([ 'date' => $startDateParam ]);
+        if (! $startDateParam) {
+            return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+                ->modify('-1 month');
         }
 
-        return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
-            ->modify('-1 month');
+        if (! is_string($startDateParam)) {
+            return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
+                ->modify('-1 month');
+        }
+
+        return DateTimeHelper::toDateTime([
+            'date' => $startDateParam,
+        ]);
     }
 
     /**
      * Gets the end of the range used for visualizing stats.
      *
-     * @return DateTime
      * @throws
      */
     private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
-
-        if ($endDateParam && is_string($endDateParam)) {
-            return DateTimeHelper::toDateTime([ 'date' => $endDateParam ]);
+        if (! $endDateParam) {
+            return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
         }
 
-        return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
+        if (! is_string($endDateParam)) {
+            return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
+        }
+
+        return DateTimeHelper::toDateTime([
+            'date' => $endDateParam,
+        ]);
     }
 }

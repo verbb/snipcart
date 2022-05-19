@@ -2,15 +2,15 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
-use craft\helpers\Json;
-
 use Craft;
+
+use craft\helpers\Json;
 use craft\web\Controller;
 use yii\web\Response;
 
@@ -24,7 +24,7 @@ class ShipStationWebhooksController extends Controller
     /**
      * @var bool Allow anonymous, unauthenticated access to our one method.
      */
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
     /**
      * Handles the $_POST data that ShipStation sent, which is a raw body of JSON.
@@ -40,32 +40,23 @@ class ShipStationWebhooksController extends Controller
              * empty data or a bad format.
              */
             return $this->badResponse([
-                'reason' => 'NULL response body or missing resource_type.'
+                'reason' => 'NULL response body or missing resource_type.',
             ]);
         }
 
-        /**
-         * Respond to different types of Snipcart events—in this case only one.
-         */
-        switch ($body->resource_type) {
-            case 'ORDER_NOTIFY':
-                return $this->handleOrderNotifyEvent($body);
-            case 'ITEM_ORDER_NOTIFY':
-                return $this->handleItemOrderNotifyEvent($body);
-            case 'SHIP_NOTIFY':
-                return $this->handleShipNotifyEvent($body);
-            case 'ITEM_SHIP_NOTIFY':
-                return $this->handleItemShipNotifyEvent($body);
-            default:
-                return $this->notSupportedResponse();
-        }
+        return match ($body->resource_type) {
+            'ORDER_NOTIFY' => $this->handleOrderNotifyEvent($body),
+            'ITEM_ORDER_NOTIFY' => $this->handleItemOrderNotifyEvent($body),
+            'SHIP_NOTIFY' => $this->handleShipNotifyEvent($body),
+            'ITEM_SHIP_NOTIFY' => $this->handleItemShipNotifyEvent($body),
+            default => $this->notSupportedResponse(),
+        };
     }
 
     /**
      * Responds to an order notification. (Currently, we don’t.)
      *
-     * @param $body Object ShipStation webhook payload
-     * @return Response
+     * @param object $body ShipStation webhook payload
      */
     private function handleOrderNotifyEvent($body): Response
     {
@@ -75,8 +66,7 @@ class ShipStationWebhooksController extends Controller
     /**
      * Responds to an *item* order notification. (Currently, we don’t.)
      *
-     * @param $body Object ShipStation webhook payload
-     * @return Response
+     * @param object $body ShipStation webhook payload
      */
     private function handleItemOrderNotifyEvent($body): Response
     {
@@ -86,21 +76,19 @@ class ShipStationWebhooksController extends Controller
     /**
      * Responds to a shipment notification. (Currently, we don’t.)
      *
-     * @param $body Object ShipStation webhook payload
-     * @return Response
+     * @param object $body ShipStation webhook payload
      */
     private function handleShipNotifyEvent($body): Response
     {
         // TODO: notify customer that the order has shipped + provide tracking number
-            // follow $body->resource_url to get more information
+        // follow $body->resource_url to get more information
         return $this->notSupportedResponse();
     }
 
     /**
      * Responds to an *item* shipment notification. (Currently, we don’t.)
      *
-     * @param $body Object ShipStation webhook payload
-     * @return Response
+     * @param object $body ShipStation webhook payload
      */
     private function handleItemShipNotifyEvent($body): Response
     {
@@ -117,11 +105,11 @@ class ShipStationWebhooksController extends Controller
     {
         $response = Craft::$app->getResponse();
 
-        $response->format  = Response::FORMAT_JSON;
+        $response->format = Response::FORMAT_JSON;
         $response->content = json_encode([
             'success' => false,
-            'errors' => $errors
-        ]);
+            'errors' => $errors,
+        ], JSON_THROW_ON_ERROR);
 
         $response->setStatusCode(400, 'Bad Request');
 
@@ -131,8 +119,6 @@ class ShipStationWebhooksController extends Controller
     /**
      * Sends back a 200 response so ShipStation knows we’re okay
      * but not handling the event.
-     *
-     * @return Response
      */
     private function notSupportedResponse(): Response
     {
@@ -141,5 +127,4 @@ class ShipStationWebhooksController extends Controller
 
         return $response;
     }
-
 }

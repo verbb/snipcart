@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -20,9 +20,9 @@ use yii\base\Behavior;
  */
 class ShippingAddressBehavior extends Behavior
 {
-    private $shippingAddress;
+    private ?Address $shippingAddress = null;
 
-    public function getShippingAddress()
+    public function getShippingAddress(): ?Address
     {
         return $this->shippingAddress;
     }
@@ -41,7 +41,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressName($name)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -62,7 +62,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressFirstName($firstName)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -83,7 +83,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCompanyName($companyName)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -104,7 +104,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressAddress1($address1)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -125,7 +125,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressAddress2($address2)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -146,7 +146,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCity($city)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -167,7 +167,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressCountry($country)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -188,7 +188,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressProvince($province)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -209,7 +209,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressPostalCode($postalCode)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
@@ -230,7 +230,7 @@ class ShippingAddressBehavior extends Behavior
      */
     public function setShippingAddressPhone($phone)
     {
-        if ($this->shippingAddress === null) {
+        if (! $this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 

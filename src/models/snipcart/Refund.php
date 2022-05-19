@@ -2,13 +2,14 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
-class Refund extends \craft\base\Model
+use craft\base\Model;
+class Refund extends Model
 {
     /**
      * @var string The refund's unique identifier.
@@ -60,17 +61,11 @@ class Refund extends \craft\base\Model
      */
     public $modificationDate;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['creationDate', 'modificationDate'];
     }
 
-    /**
-     * @return array
-     */
     public function getPayloadForPost(): array
     {
         $payload = $this->toArray();
@@ -89,5 +84,4 @@ class Refund extends \craft\base\Model
 
         return $payload;
     }
-
 }
