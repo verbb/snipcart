@@ -40,10 +40,10 @@ class ModelHelper
      *
      * @return mixed
      */
-    public static function safePopulateModel($data, $class)
+    public static function safePopulateModel($data, $class): mixed
     {
         $cleanData = self::stripUnknownProperties($data, $class);
-
+        
         return new $class($cleanData);
     }
 
@@ -76,7 +76,7 @@ class ModelHelper
      * @return object
      * @throws
      */
-    public static function stripUnknownProperties($data, $class)
+    public static function stripUnknownProperties($data, $class): object
     {
         // instantiate the model so we can poke at it
         $model = new $class;

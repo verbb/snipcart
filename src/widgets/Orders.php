@@ -21,12 +21,12 @@ class Orders extends Widget
     /**
      * @var string Type of order data to be displayed.
      */
-    public $chartType = 'itemsSold';
+    public string $chartType = 'itemsSold';
 
     /**
      * @var string Range of time for which data should be summarized.
      */
-    public $chartRange = 'weekly';
+    public string $chartRange = 'weekly';
 
     /**
      * @inheritdoc
@@ -39,7 +39,7 @@ class Orders extends Widget
     /**
      * @inheritdoc
      */
-    public static function iconPath()
+    public static function iconPath(): string
     {
         return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
     }
@@ -100,7 +100,7 @@ class Orders extends Widget
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         $view = Craft::$app->getView();
 
@@ -122,7 +122,7 @@ class Orders extends Widget
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate(
             'snipcart/widgets/orders/settings',

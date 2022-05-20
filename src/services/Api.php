@@ -59,7 +59,7 @@ class Api extends Component
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->isLinked = $this->getSecretApiKey() !== null;

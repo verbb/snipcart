@@ -62,112 +62,112 @@ class Order extends \craft\base\Model
     /**
      * @var string
      */
-    public $token;
+    public string $token;
 
     /**
      * @var string|null
      */
-    public $parentToken;
+    public string $parentToken;
 
     /**
      * @var \DateTime Date order was created. ("2018-12-05T18:37:19Z")
      */
-    public $creationDate;
+    public \DateTime $creationDate;
 
     /**
      * @var \DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
      */
-    public $modificationDate;
+    public \DateTime $modificationDate;
 
     /**
      * @var \DateTime Date the order was completed.
      */
-    public $completionDate;
+    public \DateTime $completionDate;
 
     /**
      * @var string Order status.
      */
-    public $status;
+    public string $status;
 
     /**
      * @var string
      */
-    public $paymentStatus;
+    public string $paymentStatus;
 
     /**
      * @var string
      */
-    public $paymentMethod;
+    public string $paymentMethod;
 
     /**
      * @var string
      */
-    public $invoiceNumber;
+    public string $invoiceNumber;
 
     /**
      * @var string
      */
-    public $parentInvoiceNumber;
+    public string $parentInvoiceNumber;
 
     /**
      * @var string
      */
-    public $email;
+    public string $email;
 
     /**
      * @var Customer|null
      */
-    private $_user;
+    private ?Customer $_user;
 
     /**
      * @var string
      */
-    public $cardHolderName;
+    public string $cardHolderName;
 
     /**
      * @var
      */
-    public $creditCardLast4Digits;
+    public string $creditCardLast4Digits;
 
     /**
      * @var Address
      */
-    private $_billingAddress;
+    private Address $_billingAddress;
 
     /**
      * @var Address
      */
-    private $_shippingAddress;
+    private Address $_shippingAddress;
 
     /**
      * @var string
      */
-    public $notes;
+    public string $notes;
 
     /**
      * @var bool
      */
-    public $shippingAddressSameAsBilling;
+    public bool $shippingAddressSameAsBilling;
 
     /**
      * @var bool
      */
-    public $isRecurringOrder;
+    public bool $isRecurringOrder;
 
     /**
      * @var float
      */
-    public $finalGrandTotal;
+    public float $finalGrandTotal;
 
     /**
      * @var float
      */
-    public $shippingFees;
+    public float $shippingFees;
 
     /**
      * @var string
      */
-    public $shippingMethod;
+    public string $shippingMethod;
 
     /**
      * @var Discount[]
@@ -192,7 +192,7 @@ class Order extends \craft\base\Model
     /**
      * @var array
      */
-    public $taxes;
+    public array $taxes;
 
     /**
      * @var
@@ -426,7 +426,7 @@ class Order extends \craft\base\Model
      * @param $discounts
      * @return mixed
      */
-    public function setDiscounts($discounts)
+    public function setDiscounts($discounts): mixed
     {
         return $this->_discounts = $discounts;
     }
@@ -443,7 +443,7 @@ class Order extends \craft\base\Model
      * @param mixed[] $items
      * @return array|null
      */
-    public function setItems($items)
+    public function setItems($items): ?array
     {
         foreach ($items as &$item) {
             if (! $item instanceof Item) {
@@ -471,7 +471,7 @@ class Order extends \craft\base\Model
      * @param $plans
      * @return mixed
      */
-    public function setPlans($plans)
+    public function setPlans($plans): mixed
     {
         return $this->_plans = $plans;
     }
@@ -488,7 +488,7 @@ class Order extends \craft\base\Model
      * @param $refunds
      * @return mixed
      */
-    public function setRefunds($refunds)
+    public function setRefunds($refunds): mixed
     {
         return $this->_refunds = $refunds;
     }
@@ -496,7 +496,7 @@ class Order extends \craft\base\Model
     /**
      * @return Customer|null
      */
-    public function getUser()
+    public function getUser(): ?Customer
     {
         return $this->_user;
     }
@@ -505,7 +505,7 @@ class Order extends \craft\base\Model
      * @param $user
      * @return mixed
      */
-    public function setUser($user)
+    public function setUser($user): mixed
     {
         return $this->_user = $user;
     }
@@ -562,7 +562,7 @@ class Order extends \craft\base\Model
      *
      * @return string|null
      */
-    public function getDashboardUrl()
+    public function getDashboardUrl(): ?string
     {
         if (! isset($this->token)) {
             return null;

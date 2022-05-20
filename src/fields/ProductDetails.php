@@ -84,7 +84,7 @@ class ProductDetails extends \craft\base\Field
     /**
      * @var
      */
-    public string $defaultWeightUnit = "g";
+    public string $defaultWeightUnit = "grams";
 
     /**
      * @var
@@ -104,7 +104,7 @@ class ProductDetails extends \craft\base\Field
     /**
      * @var
      */
-    public string $defaultDimensionsUnit = "cm";
+    public string $defaultDimensionsUnit = "centimeters";
 
     /**
      * @var string
