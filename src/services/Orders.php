@@ -190,10 +190,13 @@ class Orders extends \craft\base\Component
         $params['limit']  = $limit;
 
         $response = $this->fetchOrders($params);
-
+        
+        // convert the data from an stdClass to an array
+        $items = json_decode(json_encode($response->items), true);
+        
         return (object) [
             'items' => ModelHelper::safePopulateArrayWithModels(
-                $response->items,
+                $items,
                 Order::class
             ),
             'totalItems' => $response->totalItems,

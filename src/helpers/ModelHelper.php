@@ -7,7 +7,7 @@
  */
 
 namespace fostercommerce\snipcart\helpers;
-
+use craft;
 /**
  * Model utility methods.
  */
@@ -40,7 +40,7 @@ class ModelHelper
      *
      * @return mixed
      */
-    public static function safePopulateModel($data, $class): mixed
+    public static function safePopulateModel($data, $class)
     {
         $cleanData = self::stripUnknownProperties($data, $class);
         
@@ -57,12 +57,11 @@ class ModelHelper
      *
      * @return array
      */
-    public static function safePopulateArrayWithModels(array $array, $class): array
+    public static function safePopulateArrayWithModels(array $array, string $class): array
     {
         foreach ($array as &$item) {
             $item = self::safePopulateModel($item, $class);
         }
-
         return $array;
     }
 
@@ -73,10 +72,10 @@ class ModelHelper
      * @param object $data   Object with data, like a webhook payload.
      * @param string $class  Model to be populated, which can't receive any
      *                       unknown attributes.
-     * @return object
+     * @return array
      * @throws
      */
-    public static function stripUnknownProperties($data, $class): object
+    public static function stripUnknownProperties($data, $class): array
     {
         // instantiate the model so we can poke at it
         $model = new $class;
@@ -109,7 +108,8 @@ class ModelHelper
                 $removed[] = $key;
             }
         }
-
+        
+        
         return $data;
     }
 }

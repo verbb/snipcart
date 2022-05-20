@@ -507,6 +507,7 @@ class Order extends \craft\base\Model
      */
     public function setUser($user): mixed
     {
+        \Craft::dd($user);
         return $this->_user = $user;
     }
 

@@ -28,7 +28,7 @@ class OverviewController extends \craft\web\Controller
         if (! Snipcart::$plugin->getSettings()->isConfigured()) {
             return $this->renderTemplate('snipcart/cp/welcome');
         }
-
+        
         return $this->renderTemplate(
             'snipcart/cp/index',
             $this->getOrderAndCustomerSummary()
@@ -110,7 +110,7 @@ class OverviewController extends \craft\web\Controller
         $customers = Snipcart::$plugin->customers->listCustomers(1, 10, [
             'orderBy' => 'ordersValue'
         ]);
-
+        
         if ($preFormat) {
             foreach ($orders->items as &$item) {
                 // TODO: see if there's a better way to attach dynamic fields
