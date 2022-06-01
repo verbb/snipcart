@@ -506,8 +506,11 @@ class Order extends \craft\base\Model
      * @param $user
      * @return mixed
      */
-    public function setUser(array|object $user): mixed
+    public function setUser(mixed $user): mixed
     {   
+        if($user === null){
+            return null;
+        }
         if(gettype($user) == 'object'){
             $user = (array) $user;
         }

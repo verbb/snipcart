@@ -82,7 +82,8 @@ class Customers extends \craft\base\Component
      * @throws \Exception if our API key is missing.
      */
     public function getCustomerOrders($customerId): array
-    {
+    {   
+        
         $orders = ModelHelper::safePopulateArrayWithModels(
             (array)Snipcart::$plugin->api->get(sprintf(
                 'customers/%s/orders',
@@ -90,6 +91,7 @@ class Customers extends \craft\base\Component
             ), ['orderBy' => 'creationDate']),
             Order::class
         );
+       
 
         usort($orders, [$this, 'sortOrdersByDateDescending']);
 
