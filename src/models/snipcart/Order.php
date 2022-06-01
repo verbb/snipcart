@@ -506,8 +506,11 @@ class Order extends \craft\base\Model
      * @param $user
      * @return mixed
      */
-    public function setUser(array $user): mixed
+    public function setUser(array|object $user): mixed
     {   
+        if(gettype($user) == 'object'){
+            $user = (array) $user;
+        }
        // added a bit to get a user element based on the email passed in from $user as it is an array
         $craftUser = \Craft::$app->users->getUserByUsernameOrEmail($user['email']);
         return $this->_user = $craftUser;
@@ -530,7 +533,7 @@ class Order extends \craft\base\Model
                 Address::class
             );
 
-            $address = new Address($addrData);
+            $address = new Address((array)$addrData);
         }
 
         return $this->_billingAddress = $address;
@@ -550,7 +553,7 @@ class Order extends \craft\base\Model
                 $address,
                 Address::class
             );
-            $addressModel = new Address($addrData);
+            $addressModel = new Address((array)$addrData);
         }
     
       

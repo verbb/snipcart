@@ -60,7 +60,7 @@ class Orders extends \craft\base\Component
             'orders/%s',
             $orderId
         ))) {
-            
+          
             return ModelHelper::safePopulateModel(
                 (array)$orderData,
                 Order::class

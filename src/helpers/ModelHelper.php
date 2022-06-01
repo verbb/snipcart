@@ -44,7 +44,7 @@ class ModelHelper
      */
     public static function safePopulateModel(mixed $data, string $class)
     {
-       
+       //\Craft::dd((object)$data);
         $cleanData = self::stripUnknownProperties($data, $class);
       
         return new $class($cleanData);
@@ -84,10 +84,10 @@ class ModelHelper
         
         // instantiate the model so we can poke at it
         $model = new $class;
-
+       
         // get normal model attributes
         $fields = array_keys($model->fields());
-
+        
         // sometimes models specify dynamic getters and setters that should be treated as normal attributes
         $extraFields = $model->extraFields();
 
@@ -101,7 +101,7 @@ class ModelHelper
             // don’t attempt to loop the un-loopable
             return $data;
         }
-
+       
         foreach ($data as $key => $value) {
             if (is_string($key) && ! in_array($key, $modelAttributes, false)) {
                 if (is_object($data)) {
@@ -111,10 +111,9 @@ class ModelHelper
                 }
 
                 $removed[] = $key;
+               
             }
         }
-        
-        
         return $data;
     }
 }
