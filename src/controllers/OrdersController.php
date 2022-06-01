@@ -61,8 +61,8 @@ class OrdersController extends \craft\web\Controller
     public function actionOrderDetail(string $orderId): \yii\web\Response
     {
         $order = Snipcart::$plugin->orders->getOrder($orderId);
-        $orderRefunds = Snipcart::$plugin->orders->getOrderRefunds($orderId);
-
+        //$orderRefunds = Snipcart::$plugin->orders->getOrderRefunds($orderId);
+       
         return $this->renderTemplate(
             'snipcart/cp/orders/detail',
             [

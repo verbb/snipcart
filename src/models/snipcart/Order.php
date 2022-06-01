@@ -8,6 +8,7 @@
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use fostercommerce\snipcart\Snipcart;
 use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
 use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
 use fostercommerce\snipcart\helpers\ModelHelper;
@@ -117,7 +118,7 @@ class Order extends \craft\base\Model
     /**
      * @var Customer|null
      */
-    private ?Customer $_user;
+    private mixed $_user;
 
     /**
      * @var string
@@ -496,7 +497,7 @@ class Order extends \craft\base\Model
     /**
      * @return Customer|null
      */
-    public function getUser(): ?Customer
+    public function getUser(): Customer
     {
         return $this->_user;
     }
@@ -505,10 +506,11 @@ class Order extends \craft\base\Model
      * @param $user
      * @return mixed
      */
-    public function setUser($user): mixed
-    {
-        \Craft::dd($user);
-        return $this->_user = $user;
+    public function setUser(array $user): mixed
+    {   
+       // added a bit to get a user element based on the email passed in from $user as it is an array
+        $craftUser = \Craft::$app->users->getUserByUsernameOrEmail($user['email']);
+        return $this->_user = $craftUser;
     }
 
 
@@ -516,9 +518,13 @@ class Order extends \craft\base\Model
      * @param Address|array $address
      * @return Address
      */
-    public function setBillingAddress($address): Address
+    public function setBillingAddress($address): ?Address
     {
+       
         if (! $address instanceof Address) {
+            if($address === null){
+                $address = [];
+            }
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
@@ -534,18 +540,21 @@ class Order extends \craft\base\Model
      * @param Address|array $address
      * @return Address
      */
-    public function setShippingAddress($address): Address
-    {
+    public function setShippingAddress($address): ?Address
+    {    
         if (! $address instanceof Address) {
+            if($address === null){
+                $address = [];
+            }
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
             );
-
-            $address = new Address($addrData);
+            $addressModel = new Address($addrData);
         }
-
-        return $this->_shippingAddress = $address;
+    
+      
+        return $this->_shippingAddress = $addressModel;
     }
 
     /**

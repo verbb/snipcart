@@ -8,6 +8,8 @@
 
 namespace fostercommerce\snipcart\helpers;
 use craft;
+use fostercommerce\snipcart\Snipcart;
+
 /**
  * Model utility methods.
  */
@@ -40,10 +42,11 @@ class ModelHelper
      *
      * @return mixed
      */
-    public static function safePopulateModel($data, $class)
+    public static function safePopulateModel(mixed $data, string $class)
     {
+       
         $cleanData = self::stripUnknownProperties($data, $class);
-        
+      
         return new $class($cleanData);
     }
 
@@ -58,9 +61,10 @@ class ModelHelper
      * @return array
      */
     public static function safePopulateArrayWithModels(array $array, string $class): array
-    {
+    {   
         foreach ($array as &$item) {
-            $item = self::safePopulateModel($item, $class);
+            Snipcart::$plugin->log( json_encode($item));
+            $item = self::safePopulateModel((array)$item, $class);
         }
         return $array;
     }
@@ -75,8 +79,9 @@ class ModelHelper
      * @return array
      * @throws
      */
-    public static function stripUnknownProperties($data, $class): array
+    public static function stripUnknownProperties(mixed $data, string $class): mixed
     {
+        
         // instantiate the model so we can poke at it
         $model = new $class;
 
@@ -91,7 +96,7 @@ class ModelHelper
 
         // keep a reference of removed properties
         $removed = [];
-
+      
         if (! is_array($data) && ! is_object($data)) {
             // don’t attempt to loop the un-loopable
             return $data;

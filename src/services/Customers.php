@@ -42,7 +42,6 @@ class Customers extends \craft\base\Component
         $params['limit']  = $limit;
 
         $customerData = Snipcart::$plugin->api->get('customers', $params);
-
         $customerData->items = ModelHelper::safePopulateArrayWithModels(
             (array)$customerData->items,
             Customer::class

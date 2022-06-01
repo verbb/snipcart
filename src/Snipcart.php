@@ -43,6 +43,7 @@ use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\console\Application as ConsoleApplication;
 use craft\services\Dashboard;
+use craft\helpers\FileHelper;
 use yii\base\Event;
 
 /**
@@ -257,6 +258,15 @@ class Snipcart extends Plugin
 
             $pluginSettings->addProvider($instance->refHandle(), $instance);
         }
+    }
+    
+    
+    static function log($message)
+    {
+        $file = Craft::getAlias('@storage') . '/logs/craft-snipcart.log';
+        $log = date('Y-m-d H:i:s').' '.$message."\n";
+
+        FileHelper::writeToFile($file, $log, ['append' => true]);
     }
 
 }

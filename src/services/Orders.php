@@ -54,12 +54,13 @@ class Orders extends \craft\base\Component
      * @return Order|null
      * @throws \Exception if our API key is missing.
      */
-    public function getOrder($orderId)
+    public function getOrder(String $orderId)
     {
         if ($orderData = Snipcart::$plugin->api->get(sprintf(
             'orders/%s',
             $orderId
         ))) {
+            
             return ModelHelper::safePopulateModel(
                 (array)$orderData,
                 Order::class
@@ -190,10 +191,10 @@ class Orders extends \craft\base\Component
         $params['limit']  = $limit;
 
         $response = $this->fetchOrders($params);
-        
+       
         // convert the data from an stdClass to an array
         $items = json_decode(json_encode($response->items), true);
-        
+       
         return (object) [
             'items' => ModelHelper::safePopulateArrayWithModels(
                 $items,

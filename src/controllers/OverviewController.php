@@ -28,7 +28,7 @@ class OverviewController extends \craft\web\Controller
         if (! Snipcart::$plugin->getSettings()->isConfigured()) {
             return $this->renderTemplate('snipcart/cp/welcome');
         }
-        
+       
         return $this->renderTemplate(
             'snipcart/cp/index',
             $this->getOrderAndCustomerSummary()
@@ -106,10 +106,14 @@ class OverviewController extends \craft\web\Controller
     {
         $startDate = $this->getStartDate();
         $endDate   = $this->getEndDate();
+         
         $orders    = Snipcart::$plugin->orders->listOrders(1, 10);
+        
         $customers = Snipcart::$plugin->customers->listCustomers(1, 10, [
             'orderBy' => 'ordersValue'
         ]);
+    
+     
         
         if ($preFormat) {
             foreach ($orders->items as &$item) {
