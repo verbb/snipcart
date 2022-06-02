@@ -40,7 +40,7 @@ class ProductDetailsValidator extends Validator
 			$this->addError($model, $attribute, 'SKU cannot be blank');
 		}
 		// test for empty inventory
-		if($value['inventory'] < 0){
+		if($value['inventory'] !== null && $value['inventory'] < 0){
 			$this->addError($model, $attribute, 'Inventory cannot be less than 0');
 		}
 		// test for empty price
