@@ -14,8 +14,10 @@ use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\Snipcart;
 use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
 use fostercommerce\snipcart\assetbundles\ProductDetailsFieldAsset;
+use fostercommerce\snipcart\validators\ProductDetailsValidator;
 use Craft;
 use craft\base\ElementInterface;
+use craft\base\Field;
 use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Db;
@@ -24,13 +26,15 @@ use craft\gql\TypeLoader;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ObjectType;
 use yii\base\UnknownPropertyException;
+use yii\db\Schema;
+use LitEmoji\LitEmoji;
 
 /**
  * ProductDetails
  *
  * @property ProductDetails $value
  */
-class ProductDetails extends \craft\base\Field
+class ProductDetails extends Field
 {
     /**
      * @inheritdoc
@@ -40,106 +44,123 @@ class ProductDetails extends \craft\base\Field
         return Craft::t('snipcart', 'Snipcart Product Details');
     }
 
+    
     /**
      * @return bool
      */
     public static function hasContentColumn(): bool
     {
-        return false;
+        return true;
     }
+    
+    
+     /**
+     * @var string The type of database column the field should have in the content table
+     */
+    public $columnType = [
+        'sku' => Schema::TYPE_STRING,
+        'inventory' => Schema::TYPE_INTEGER,
+        'price' => Schema::TYPE_MONEY,
+        'taxable' => Schema::TYPE_BOOLEAN,
+        'shippable' => Schema::TYPE_BOOLEAN,
+        'weight' => Schema::TYPE_FLOAT,
+        'weightUnit' => Schema::TYPE_STRING,
+        'length' => Schema::TYPE_FLOAT,
+        'width' => Schema::TYPE_FLOAT,
+        'height' => Schema::TYPE_FLOAT,
+        'dimensionsUnit' => Schema::TYPE_STRING
+    ];
 
     /**
      * @var bool Whether to display "shippable" option for this field instance
      *           and allow it to be set per entry.
      */
-    public bool $displayShippableSwitch = false;
+    public $displayShippableSwitch = false;
 
     /**
      * @var bool Whether to display "taxable" option for this field instance
      *           and allow it to be set per entry.
      *
      */
-    public bool $displayTaxableSwitch = false;
+    public $displayTaxableSwitch = false;
 
     /**
      * @var bool Whether to display "inventory" option for this field instance.
      */
-    public bool $displayInventory = false;
+    public $displayInventory = false;
 
     /**
      * @var bool Default "shippable" value.
      */
-    public bool $defaultShippable = false;
+    public $defaultShippable = false;
 
     /**
      * @var bool Default "taxable" value.
      */
-    public bool $defaultTaxable = false;
+    public $defaultTaxable = false;
 
     /**
      * @var
      */
-    public float $defaultWeight = 0;
+    public $defaultWeight;
 
     /**
      * @var
      */
-    public string $defaultWeightUnit = "grams";
+    public $defaultWeightUnit;
 
     /**
      * @var
      */
-    public float $defaultLength = 0;
+    public $defaultLength;
 
     /**
      * @var
      */
-    public float $defaultWidth = 0;
+    public $defaultWidth;
 
     /**
      * @var
      */
-    public float $defaultHeight = 0;
+    public $defaultHeight;
 
     /**
      * @var
      */
-    public string $defaultDimensionsUnit = "centimeters";
+    public $defaultDimensionsUnit;
 
     /**
      * @var string
      */
-    public string $skuDefault = '';
-
+    public $skuDefault = '';
+    
+    
+    public function init(): void
+    {
+        parent::init();
+        
+    }
+    
     /**
-     * Saves the Product Details data to table after element save.
-     *
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $element, bool $isNew): void
-    {
-        Snipcart::$plugin->fields->saveProductDetailsField(
-            $this,
-            $element
-        );
-
-        parent::afterElementSave($element, $isNew);
+    protected function defineRules(): array
+    {   
+        $rules = parent::defineRules();
+        //$rules[] = ['sku', 'required'];
+        //$rules[] = [['field:inventory'], 'integer', 'min' => 0];
+        return $rules;
     }
-
+    
     /**
-     * Saves the Product Details data to table after element propagation.
-     *
      * @inheritdoc
      */
-    public function afterElementPropagate(ElementInterface $element, bool $isNew): void
+    public function getContentColumnType(): array|string
     {
-        Snipcart::$plugin->fields->saveProductDetailsField(
-            $this,
-            $element
-        );
-
-        parent::afterElementPropagate($element, $isNew);
+        return $this->columnType;
     }
+    
+    
 
     /**
      * Standardizes field values from several potential formats.
@@ -148,73 +169,37 @@ class ProductDetails extends \craft\base\Field
      */
     public function normalizeValue($value, ElementInterface $element = null): mixed
     {
+        /*
         return Snipcart::$plugin->fields->getProductDetailsField(
             $this,
             $element,
             $value
         );
+        */
+        return $value;
     }
-
-    /**
+    
+    
+   /**
      * @inheritdoc
      */
-    public function modifyElementsQuery(ElementQueryInterface $query, $value): void
+    public function serializeValue($value, ElementInterface $element = null): mixed
     {
-        $queryable = [
-            'sku',
-            'price',
-            'shippable',
-            'taxable',
-            'weight',
-            'length',
-            'width',
-            'height',
-            'inventory'
-        ];
-
-        $subQueries = [];
-
         if ($value !== null) {
-            if (! is_array($value)) {
-                //return false; // replaced with exit as this base class must return void
-                exit;
-            }
-
-            foreach ($value as $key => $val) {
-                if (! in_array($key, $queryable, false)) {
-                    throw new UnknownPropertyException(
-                        'Setting unknown property: ' . get_class($this) . '::' . $key
-                    );
-                }
-
-                $subQueries['snipcart_product_details.' . $key] = $value;
-            }
-
-            if (count($subQueries) > 0) {
-                /** @var ElementQuery $query */
-                $query->subQuery->innerJoin(
-                    Table::PRODUCT_DETAILS . ' snipcart_product_details',
-                    '[[snipcart_product_details.elementId]] = [[elements.id]]'
-                );
-
-                $query->subQuery->andWhere(
-                    Db::parseParam('snipcart_product_details.fieldId', $this->id)
-                );
-
-                foreach ($subQueries as $column => $val) {
-                    $query->subQuery->andWhere(Db::parseParam($column, $val));
-                }
+            foreach($value as $k => $v){
+                $value[$k] = LitEmoji::unicodeToShortcode($v);
             }
         }
-
-        //return false; // commented out because base class must return void
+        return $value;
     }
+
+   
 
     /**
      * @inheritdoc
      * @since 3.3.0
      */
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array
     {
         $typeName = $this->handle.'_SnipcartField';
 
@@ -256,7 +241,8 @@ class ProductDetails extends \craft\base\Field
         Craft::$app->getView()->registerAssetBundle(
             ProductDetailsFieldAsset::class
         );
-
+        
+                
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/field',
             [
@@ -280,7 +266,7 @@ class ProductDetails extends \craft\base\Field
         Craft::$app->getView()->registerAssetBundle(
             ProductDetailsFieldAsset::class
         );
-
+                
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/settings',
             [
@@ -290,17 +276,23 @@ class ProductDetails extends \craft\base\Field
             ]
         );
     }
-
+    
     /**
      * Adds a validation rule for the element for validating each of the
      * "sub-fields" we’re working with.
      *
      * @inheritdoc
      */
+    /**
+     * @inheritdoc
+     */
     public function getElementValidationRules(): array
     {
+      
         return [
-            'validateProductDetails',
+            [
+                ProductDetailsValidator::class
+            ],
         ];
     }
 
@@ -310,16 +302,24 @@ class ProductDetails extends \craft\base\Field
      * @param  ElementInterface  $element
      */
     public function validateProductDetails(ElementInterface $element): void
-    {
+    {   
         $productDetails = $element->getFieldValue($this->handle);
-
+    
+        
+        /*
+        $productDetails = $element->getFieldValue($this->handle);
+        
         if ($element->isFieldDirty($this->handle)) {
             // first normalize a new value that came from the control panel
             $productDetails->price = Localization::normalizeNumber($productDetails->price);
         }
-
-        $productDetails->validate();
-
+        
+        //$productDetails->validate();
+       foreach($productDetails as $k => $v){
+            $this->_validateSubField($k, $v);
+        }
+        
+        
         $errors = $productDetails->getErrors();
 
         if (count($errors) > 0) {
@@ -332,7 +332,35 @@ class ProductDetails extends \craft\base\Field
                 }
             }
         }
+        */
     }
+    
+    
+    private function _validateSubField(string $type, $value, string &$error = null): bool
+    {
+        
+        if ($value === null || $value === '') {
+            return true;
+        }
+        
+        /*
+        switch ($type) {
+            case 'sku':
+                $validator = new skuValidator();
+                break;
+            case 'inventory':
+                $validator = new inventoryValidator();
+                break;
+            default:
+                return true;
+        }
+        */
+        
+        $validator->message = str_replace('{attribute}', '{value}', $validator->message);
+        return $validator->validate($value, $error);
+    }
+
+    
 }
 
 class_alias(ProductDetails::class, \workingconcept\snipcart\fields\ProductDetails::class);
