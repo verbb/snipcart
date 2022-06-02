@@ -43,10 +43,6 @@ class ProductDetailsValidator extends Validator
 		if($value['inventory'] < 0){
 			$this->addError($model, $attribute, 'Inventory cannot be less than 0');
 		}
-		// test for non integer inventory
-		if(!is_int($value['inventory'])){
-			$this->addError($model, $attribute, 'Inventory must be a whole number');
-		}
 		// test for empty price
 		if($value['price'] === null || $value['price'] ===''){
 			$this->addError($model, $attribute, 'Price cannot be blank');

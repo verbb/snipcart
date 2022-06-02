@@ -242,7 +242,6 @@ class ProductDetails extends Field
             ProductDetailsFieldAsset::class
         );
         
-                
         return Craft::$app->getView()->renderTemplate(
             'snipcart/fields/product-details/field',
             [
@@ -288,76 +287,11 @@ class ProductDetails extends Field
      */
     public function getElementValidationRules(): array
     {
-      
         return [
             [
                 ProductDetailsValidator::class
             ],
         ];
-    }
-
-    /**
-     * Validates the ProductDetails model, adding errors to the Element.
-     *
-     * @param  ElementInterface  $element
-     */
-    public function validateProductDetails(ElementInterface $element): void
-    {   
-        $productDetails = $element->getFieldValue($this->handle);
-    
-        
-        /*
-        $productDetails = $element->getFieldValue($this->handle);
-        
-        if ($element->isFieldDirty($this->handle)) {
-            // first normalize a new value that came from the control panel
-            $productDetails->price = Localization::normalizeNumber($productDetails->price);
-        }
-        
-        //$productDetails->validate();
-       foreach($productDetails as $k => $v){
-            $this->_validateSubField($k, $v);
-        }
-        
-        
-        $errors = $productDetails->getErrors();
-
-        if (count($errors) > 0) {
-            foreach ($errors as $subfield => $subErrors) {
-                foreach ($subErrors as $message) {
-                    $element->addError(
-                        $this->handle.'['.$subfield.']',
-                        $message
-                    );
-                }
-            }
-        }
-        */
-    }
-    
-    
-    private function _validateSubField(string $type, $value, string &$error = null): bool
-    {
-        
-        if ($value === null || $value === '') {
-            return true;
-        }
-        
-        /*
-        switch ($type) {
-            case 'sku':
-                $validator = new skuValidator();
-                break;
-            case 'inventory':
-                $validator = new inventoryValidator();
-                break;
-            default:
-                return true;
-        }
-        */
-        
-        $validator->message = str_replace('{attribute}', '{value}', $validator->message);
-        return $validator->validate($value, $error);
     }
 
     
