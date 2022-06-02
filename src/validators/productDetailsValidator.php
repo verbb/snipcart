@@ -51,6 +51,10 @@ class ProductDetailsValidator extends Validator
 		if($value['price'] < 0){
 			$this->addError($model, $attribute, 'Price cannot be negative');
 		}
+		// test for non numeric price
+		if($value['price'] !== null && !is_numeric($value['price'])){
+			$this->addError($model, $attribute, 'Price must be numeric');
+		}
 	}
 
     public function isEmpty($value): bool
