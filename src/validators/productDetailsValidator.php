@@ -34,27 +34,51 @@ class ProductDetailsValidator extends Validator
      */
     public function validateAttribute($model, $attribute): void
     {
+		
+		
         $value = $model->$attribute;
+		
+		
+		$sectionHandle = $model->section->handle;
+		
+		// Remove prefix from field handle
+        //$fieldHandle = preg_replace('/^field:/', '', $attribute);  
+		
+
+	
+		
+		/* SKU field validations */
 		// test for empty SKU
-		if($value['sku'] === null || $value['sku'] ===''){
+		if($value['sku'] === null || trim($value['sku']) ===''){
 			$this->addError($model, $attribute, 'SKU cannot be blank');
 		}
-		// test for empty inventory
-		if($value['inventory'] !== null && $value['inventory'] < 0){
-			$this->addError($model, $attribute, 'Inventory cannot be less than 0');
+		// test for unique SKU
+		// query for all product details SKU fields
+		
+		if(!$model->$attribute->validateSku('sku')){
+			$this->addError($model, $attribute, 'SKU must be unique');
 		}
-		// test for empty price
-		if($value['price'] === null || $value['price'] ===''){
+		
+		
+		/* Inventory field validations */
+		if($value['inventory'] !== null){
+			if($value['inventory'] < 0){
+				$this->addError($model, $attribute, 'Inventory cannot be less than 0');
+			} elseif(!is_numeric($value['inventory'])){
+				$this->addError($model, $attribute, 'Inventory must be a number');
+			}
+		}
+	
+	
+		/* Price field validations */
+		if($value['price'] === null || trim($value['price'] ==='')){
 			$this->addError($model, $attribute, 'Price cannot be blank');
-		}
-		// test for negative price
-		if($value['price'] < 0){
+		} elseif($value['price'] !== null && $value['price'] < 0){
 			$this->addError($model, $attribute, 'Price cannot be negative');
-		}
-		// test for non numeric price
-		if($value['price'] !== null && !is_numeric($value['price'])){
+		} elseif($value['price'] !== null && !is_numeric($value['price'])){
 			$this->addError($model, $attribute, 'Price must be numeric');
 		}
+		
 	}
 
     public function isEmpty($value): bool
@@ -66,14 +90,27 @@ class ProductDetailsValidator extends Validator
         return empty($value);
     }
 	
-	public function isNegative($value): bool
-	{
-		return $value < 0;
-	}
 	
-	public function isInteger($value): bool
+	public function skuIsUnique($sku, $sectionHandle, $fieldHandle): bool
 	{
-		return is_int($value);
+		
+		
+		/*
+		$entryQuery = craft\elements\Entry::find()
+			->section($sectionHandle)
+			->where(["field_${fieldHandle}_mduolzrl" => $sku]);
+			
+		$entries = $entryQuery->count();
+		*/
+		
+		$entryQuery = craft\elements\Entry::find()
+			->section($sectionHandle);
+			
+		$entryQuery->subQuery->andWhere(Db::parseParam($fieldHandle, $sku));
+			
+		$entries = $entryQuery->count();
+		
+		return !$entries;
 	}
 }
 

@@ -207,6 +207,7 @@ class ProductDetails extends \craft\base\Model
      */
     public function validateSku($attribute): bool
     {
+        
         if (VersionHelper::isCraft32()) {
             $isUnique = $this->skuIsUniqueElementAttribute($attribute);
         } else {
@@ -481,10 +482,12 @@ class ProductDetails extends \craft\base\Model
     private function skuIsUniqueElementAttribute($attribute): bool
     {
         $hasConflict = false;
-
+        $currentElement = $this->getElement();
+        
         /**
          * Get product details with matching SKUs on published Elements.
          */
+        /*
         $potentialDuplicates = ProductDetailsRecord::find()
             ->leftJoin('{{%elements}} elements', '[[elements.id]] = {{%snipcart_product_details.elementId}}')
             ->where([$attribute => $this->{$attribute}])
@@ -496,12 +499,20 @@ class ProductDetails extends \craft\base\Model
                 'elements.dateDeleted' => null,
             ])
             ->all();
+        */
+        $potentialDuplicates = Entry::find()
+        ->id(['not', $currentElement->id])
+        ->sectionId($currentElement->section->id)
+        ->all();
+        
+        
 
         /**
          * Check each published Element to see if it’s a variation of the current
          * one or a totally separate one with a clashing SKU.
          */
-        $currentElement = $this->getElement();
+        
+        
 
         foreach ($potentialDuplicates as $record) {
             $duplicateElement = Craft::$app->elements->getElementById($record->elementId);

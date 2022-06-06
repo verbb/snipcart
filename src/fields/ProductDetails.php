@@ -147,8 +147,10 @@ class ProductDetails extends Field
     protected function defineRules(): array
     {   
         $rules = parent::defineRules();
-        //$rules[] = ['sku', 'required'];
+        //$rules[] = [['field:sku'], 'required'];
         //$rules[] = [['field:inventory'], 'integer', 'min' => 0];
+       //$rules[] = [['field:sku'], UniqueValidator::class, 'targetClass' => ProductDetails::class, 'targetAttribute' => ['sku'], 'message' => 'Not Unique'];
+        
         return $rules;
     }
     
@@ -169,14 +171,13 @@ class ProductDetails extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null): mixed
     {
-        /*
+            
         return Snipcart::$plugin->fields->getProductDetailsField(
             $this,
             $element,
             $value
         );
-        */
-        return $value;
+        
     }
     
     
@@ -185,11 +186,16 @@ class ProductDetails extends Field
      */
     public function serializeValue($value, ElementInterface $element = null): mixed
     {
+        
         if ($value !== null) {
+           
             foreach($value as $k => $v){
-                $value[$k] = LitEmoji::unicodeToShortcode($v);
+                if(!is_array($v)){
+                    $value[$k] = LitEmoji::unicodeToShortcode($v);
+                }
             }
         }
+        
         return $value;
     }
 
@@ -282,17 +288,16 @@ class ProductDetails extends Field
      *
      * @inheritdoc
      */
-    /**
-     * @inheritdoc
-     */
-    public function getElementValidationRules(): array
+     public function getElementValidationRules(): array
     {
         return [
-            [
+            [   
                 ProductDetailsValidator::class
             ],
         ];
     }
+
+
 
     
 }

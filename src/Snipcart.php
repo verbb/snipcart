@@ -131,6 +131,7 @@ class Snipcart extends Plugin
                 $event->types[] = ProductDetails::class;
             }
         );
+        
 
         Event::on(
             ClearCaches::class,
