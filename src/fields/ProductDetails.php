@@ -141,19 +141,7 @@ class ProductDetails extends Field
         
     }
     
-    /**
-     * @inheritdoc
-     */
-    protected function defineRules(): array
-    {   
-        $rules = parent::defineRules();
-        //$rules[] = [['field:sku'], 'required'];
-        //$rules[] = [['field:inventory'], 'integer', 'min' => 0];
-       //$rules[] = [['field:sku'], UniqueValidator::class, 'targetClass' => ProductDetails::class, 'targetAttribute' => ['sku'], 'message' => 'Not Unique'];
-        
-        return $rules;
-    }
-    
+ 
     /**
      * @inheritdoc
      */

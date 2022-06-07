@@ -34,7 +34,7 @@ class ProductDetailsValidator extends Validator
      */
     public function validateAttribute($model, $attribute): void
     {
-		
+
 		
         $value = $model->$attribute;
 		
@@ -55,12 +55,15 @@ class ProductDetailsValidator extends Validator
 		// test for unique SKU
 		// query for all product details SKU fields
 		
+		/*
 		if(!$model->$attribute->validateSku('sku')){
 			$this->addError($model, $attribute, 'SKU must be unique');
 		}
+		*/
 		
 		
 		/* Inventory field validations */
+		
 		if($value['inventory'] !== null){
 			if($value['inventory'] < 0){
 				$this->addError($model, $attribute, 'Inventory cannot be less than 0');
