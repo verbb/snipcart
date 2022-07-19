@@ -61,6 +61,11 @@ class ProductDetailsValidator extends Validator
 		}
 		*/
 		
+		if(!$this->skuIsUnique($value['sku'], $sectionHandle, 'field_productDetails_xetherfd')){
+			$this->addError($model, $attribute, 'SKU must be unique');
+		}
+
+		
 		
 		/* Inventory field validations */
 		
@@ -109,9 +114,12 @@ class ProductDetailsValidator extends Validator
 		$entryQuery = craft\elements\Entry::find()
 			->section($sectionHandle);
 			
-		$entryQuery->subQuery->andWhere(Db::parseParam($fieldHandle, $sku));
-			
+		//$entryQuery->subQuery->andWhere(Db::parseParam($fieldHandle, $sku));
+		$entryQuery->andWhere("${fieldHandle} = '${sku}'");	
+		//$entryQuery->andWhere("'elementId' = 352");
+		
 		$entries = $entryQuery->count();
+		
 		
 		return !$entries;
 	}
