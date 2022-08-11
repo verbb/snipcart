@@ -116,7 +116,7 @@ class Fields extends \craft\base\Component
              */
             $model->fieldId = $field->id;
             $model->populateDefaults();
-
+            
             return $model;
         }
 
@@ -130,6 +130,7 @@ class Fields extends \craft\base\Component
         }
 
         $model->populateDefaults();
+        
 
         return $model;
     }
@@ -183,7 +184,8 @@ class Fields extends \craft\base\Component
             'dimensionsUnit' => $data->dimensionsUnit,
             'customOptions'  => $data->customOptions,
         ], false);
-
+        
+      
         return $record->save();
     }
 

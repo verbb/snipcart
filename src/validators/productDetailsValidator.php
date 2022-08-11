@@ -6,6 +6,8 @@ namespace fostercommerce\snipcart\validators;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\i18n\Locale;
+use craft\elements\Entry;
+use craft\helpers\ElementHelper;
 use yii\base\InvalidConfigException;
 use yii\validators\Validator;
 
@@ -42,10 +44,15 @@ class ProductDetailsValidator extends Validator
 		$sectionHandle = $model->section->handle;
 		
 		// Remove prefix from field handle
-        //$fieldHandle = preg_replace('/^field:/', '', $attribute);  
-		
-
-	
+        $fieldHandle = preg_replace('/^field:/', '', $attribute);  
+			
+		// don't like this but...
+		// we are using a money field so when we try to save the value
+		// there is an issue with the column type in the database (DECIMAL)
+		// and it doesn't like the value being passed to it
+		// so we remove the comma from the value
+		// there's definitely a better way to do this ¯\_(ツ)_/¯
+		$value['price'] = str_replace(',','',$value['price']);
 		
 		/* SKU field validations */
 		// test for empty SKU
@@ -61,7 +68,7 @@ class ProductDetailsValidator extends Validator
 		}
 		*/
 		
-		if(!$this->skuIsUnique($value['sku'], $sectionHandle, 'field_productDetails_xetherfd')){
+		if(!$this->skuIsUnique($value['sku'], $sectionHandle, $fieldHandle)){
 			$this->addError($model, $attribute, 'SKU must be unique');
 		}
 
@@ -111,6 +118,7 @@ class ProductDetailsValidator extends Validator
 		$entries = $entryQuery->count();
 		*/
 		
+		/*
 		$entryQuery = craft\elements\Entry::find()
 			->section($sectionHandle);
 			
@@ -119,9 +127,30 @@ class ProductDetailsValidator extends Validator
 		//$entryQuery->andWhere("'elementId' = 352");
 		
 		$entries = $entryQuery->count();
+		*/
 		
+		$entries = craft\elements\Entry::find()
+		->section($sectionHandle)->all();
 		
-		return !$entries;
+		foreach ($entries as $entry) {
+			if (
+				// Make sure it's not a draft.
+				!ElementHelper::isDraft($entry) &&
+				// Make sure it's enabled globally and for the current site.
+				($entry->enabled && $entry->getEnabledForSite()) &&
+				// Make sure it's not a provisional draft
+				!ElementHelper::rootElement($entry)->isProvisionalDraft &&
+				// Make sure it's not a revision
+				!ElementHelper::isRevision($entry)
+			) 
+				{
+				if ($entry->$fieldHandle->sku == $sku) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }
 
