@@ -68,7 +68,7 @@ class ProductDetailsValidator extends Validator
 		}
 		*/
 		
-		if(!$this->skuIsUnique($value['sku'], $sectionHandle, $fieldHandle)){
+		if(!$this->skuIsUnique($model, $value['sku'], $sectionHandle, $fieldHandle)){
 			$this->addError($model, $attribute, 'SKU must be unique');
 		}
 
@@ -106,9 +106,8 @@ class ProductDetailsValidator extends Validator
     }
 	
 	
-	public function skuIsUnique($sku, $sectionHandle, $fieldHandle): bool
+	public function skuIsUnique($model, $sku, $sectionHandle, $fieldHandle): bool
 	{
-		
 		
 		/*
 		$entryQuery = craft\elements\Entry::find()
@@ -130,7 +129,7 @@ class ProductDetailsValidator extends Validator
 		*/
 		
 		$entries = craft\elements\Entry::find()
-		->section($sectionHandle)->all();
+		->section($sectionHandle)->id(['not', $model->id])->all();
 		
 		foreach ($entries as $entry) {
 			if (
@@ -144,7 +143,9 @@ class ProductDetailsValidator extends Validator
 				!ElementHelper::isRevision($entry)
 			) 
 				{
-				if ($entry->$fieldHandle->sku == $sku) {
+					
+					
+				if ($entry->$fieldHandle->sku == $model->$fieldHandle->sku) {
 					return false;
 				}
 			}
