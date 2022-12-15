@@ -8,13 +8,14 @@
 
 namespace fostercommerce\snipcart\controllers;
 
+use craft;
 use craft\web\Controller;
 
 class TestController extends Controller
 {
     public $enableCsrfValidation = false; // disable CSRF for this controller
 
-    protected $allowAnonymous = true;
+    protected array|int|bool $allowAnonymous = true;
     
     /**
      * Provides a simple webhook that makes sure the plugin is alive
@@ -29,6 +30,16 @@ class TestController extends Controller
         return $this->asJson([
             'status' => 'healthy'
         ]);
+    }
+    
+    
+    public function actionMigrationTest(): mixed
+    {
+        $fields = Craft::$app->fields->getFieldTypesWithContent();
+        
+        Craft::dd($fields);
+        
+        return true;
     }
 
 }
