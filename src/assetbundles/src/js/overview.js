@@ -26,8 +26,8 @@ function fetchStatPanels()
     const ordersCount = document.getElementById('stat-ordersCount');
     const ordersSales = document.getElementById('stat-ordersSales');
     const averageOrdersValue = document.getElementById('stat-averageOrdersValue');
-    const newCustomers = document.getElementById('stat-newCustomers');
-    const returningCustomers = document.getElementById('stat-returningCustomers');
+    const newCustomers = document.getElementById('stat-newCustomers') ?? 0;
+    const returningCustomers = document.getElementById('stat-returningCustomers') ?? 0;
     const averageCustomerValue = document.getElementById('stat-averageCustomerValue');
 
     const spinnerMarkup = '<div class="spinner"></div>';
@@ -50,8 +50,8 @@ function fetchStatPanels()
                 ordersCount.innerHTML = response.stats.ordersCount;
                 ordersSales.innerHTML = response.stats.ordersSales;
                 averageOrdersValue.innerHTML = response.stats.averageOrdersValue;
-                newCustomers.innerHTML = response.stats.customers.newCustomers;
-                returningCustomers.innerHTML = response.stats.customers.returningCustomers;
+                newCustomers.innerHTML = response.stats.customers.newCustomersCount;
+                returningCustomers.innerHTML = response.stats.customers.returningCustomersCount;
                 averageCustomerValue.innerHTML = response.stats.averageCustomerValue;
             }
         }
