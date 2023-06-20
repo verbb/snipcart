@@ -2,7 +2,7 @@
     "name": "fostercommerce/craft-snipcart",
     "description": "Craft CMS e-commerce in a day.",
     "type": "craft-plugin",
-    "version": "1.5.7",
+    "version": "1.6.0",
     "keywords": [
         "craft",
         "cms",
@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "php": "^7.0.0",
+        "php": "^8.0",
         "craftcms/cms": "^3.3.0",
         "pelago/emogrifier": "*"
     },

@@ -1,5 +1,15 @@
 # Snipcart Changelog
 
+## 1.6.0 - 2023-06-20
+
+### Added
+
+- Add compatibility with PHP 8.0
+
+### Fixed
+
+- Fixed customer counts in overview
+
 ## 1.5.7 - 2022-01-11
 
 ### Fixed
