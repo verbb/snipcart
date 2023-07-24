@@ -12,5 +12,5 @@ abstract class Table
 {
     const WEBHOOK_LOG = '{{%snipcart_webhook_log}}';
     const SHIPPING_QUOTES = '{{%snipcart_shipping_quotes}}';
-    const PRODUCT_DETAILS = '{{%snipcart_product_details}}';
+    const PRODUCT_DETAILS = '{{%content}}';
 }
