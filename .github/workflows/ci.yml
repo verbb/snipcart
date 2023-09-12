@@ -1,4 +1,4 @@
-name: Codeception
+name: CI
 
 on:
   workflow_dispatch:
@@ -12,10 +12,51 @@ on:
       - main
 
 jobs:
+  ecs:
+    name: ECS Check
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run ecs check
+        run: |
+          composer run-script ecs-check
+  rector:
+    name: Rector dry-run
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run rector --dry-run
+        run: |
+          composer run-script rector-dry-run
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run phpstan
+        run: |
+          composer run-script phpstan
   test:
     name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
-
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
