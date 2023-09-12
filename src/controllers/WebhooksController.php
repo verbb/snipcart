@@ -74,7 +74,7 @@ class WebhooksController extends Controller
     /**
      * @var bool Disable CSRF for this controller
      */
-    // public bool $enableCsrfValidation = false;
+    public $enableCsrfValidation = false;
 
     /**
      * @var bool allow all endpoints in this controller to be used publicly
