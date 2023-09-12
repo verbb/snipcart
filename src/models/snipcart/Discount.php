@@ -10,6 +10,7 @@ namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+
 /**
  * https://docs.snipcart.com/v2/api-reference/discounts
  */

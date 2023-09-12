@@ -8,13 +8,13 @@
 
 namespace fostercommerce\snipcart\services;
 
-use craft\base\Component;
-use yii\base\Exception;
 use Craft;
+use craft\base\Component;
 use craft\mail\Message;
 use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\Snipcart;
 use Pelago\Emogrifier\CssInliner;
+use yii\base\Exception;
 
 /**
  * Sends notifications as things happen. Currently just email.

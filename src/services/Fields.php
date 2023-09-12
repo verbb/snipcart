@@ -8,8 +8,8 @@
 
 namespace fostercommerce\snipcart\services;
 
-use craft\base\Component;
 use Craft;
+use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\elements\Entry;
 use fostercommerce\snipcart\fields\ProductDetails;

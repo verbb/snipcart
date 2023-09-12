@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\services;
 
 use craft\base\Component;
+
 /**
  * These exist but aren't yet documented.
  *

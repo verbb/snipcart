@@ -8,14 +8,14 @@
 
 namespace fostercommerce\snipcart\controllers;
 
-use craft\web\Controller;
-use yii\web\Response;
-use craft\errors\MissingComponentException;
-use yii\web\BadRequestHttpException;
 use Craft;
+use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
+use craft\web\Controller;
 use DateTime;
 use fostercommerce\snipcart\Snipcart;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 class OrdersController extends Controller
 {

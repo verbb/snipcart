@@ -8,13 +8,8 @@
 
 namespace fostercommerce\snipcart\variables;
 
-use craft\base\Element;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use yii\base\Exception;
-use Twig\Markup;
 use Craft;
+use craft\base\Element;
 use craft\helpers\Template as TemplateHelper;
 use fostercommerce\snipcart\fields\ProductDetails;
 use fostercommerce\snipcart\helpers\FieldHelper;
@@ -24,6 +19,11 @@ use fostercommerce\snipcart\models\snipcart\Customer;
 use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\models\snipcart\Subscription;
 use fostercommerce\snipcart\Snipcart;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Markup;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
 class SnipcartVariable

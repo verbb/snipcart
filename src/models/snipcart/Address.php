@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
+
 /**
  * Class Address
  *

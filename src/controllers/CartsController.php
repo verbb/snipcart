@@ -8,10 +8,10 @@
 
 namespace fostercommerce\snipcart\controllers;
 
-use craft\web\Controller;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
+use craft\web\Controller;
 use fostercommerce\snipcart\Snipcart;
 use yii\web\Response;
 

@@ -8,15 +8,15 @@
 
 namespace fostercommerce\snipcart\widgets;
 
+use Craft;
+use craft\base\Widget;
+use fostercommerce\snipcart\assetbundles\OrdersWidgetAsset;
+use fostercommerce\snipcart\Snipcart;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use Craft;
-use craft\base\Widget;
-use fostercommerce\snipcart\assetbundles\OrdersWidgetAsset;
-use fostercommerce\snipcart\Snipcart;
 
 /**
  * Orders Widget

@@ -8,8 +8,6 @@
 
 namespace fostercommerce\snipcart\base;
 
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\StreamInterface;
 use Craft;
 use craft\base\Component;
 use craft\base\Model;
@@ -19,6 +17,8 @@ use fostercommerce\snipcart\models\snipcart\Package;
 use fostercommerce\snipcart\Snipcart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\StreamInterface;
 
 class ShippingProvider extends Component implements ShippingProviderInterface
 {
@@ -33,7 +33,7 @@ class ShippingProvider extends Component implements ShippingProviderInterface
      */
     private $settingsModel;
 
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return '';
     }

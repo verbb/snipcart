@@ -8,11 +8,10 @@
 
 namespace fostercommerce\snipcart\providers\shipstation;
 
-use GuzzleHttp\Client;
-use fostercommerce\snipcart\errors\ShippingRateException;
 use Craft;
 use craft\helpers\Json;
 use fostercommerce\snipcart\base\ShippingProvider;
+use fostercommerce\snipcart\errors\ShippingRateException;
 use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\models\shipstation\Dimensions;
@@ -25,6 +24,7 @@ use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
 use fostercommerce\snipcart\providers\shipstation\events\OrderEvent;
 use fostercommerce\snipcart\providers\shipstation\Settings as ShipStationSettings;
 use fostercommerce\snipcart\Snipcart;
+use GuzzleHttp\Client;
 
 /**
  * Class ShipStation

@@ -8,9 +8,9 @@
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\elements\MatrixBlock;
-use craft\base\ElementInterface;
 use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 

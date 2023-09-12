@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\shipstation;
 
 use craft\base\Model;
+
 /**
  * ShipStation CustomsItem Model
  * https://www.shipstation.com/developer-api/#/reference/model-customsitem

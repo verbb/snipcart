@@ -8,8 +8,8 @@
 
 namespace fostercommerce\snipcart\services;
 
-use craft\base\Component;
 use Craft;
+use craft\base\Component;
 use fostercommerce\snipcart\events\CustomerEvent;
 use fostercommerce\snipcart\events\OrderEvent;
 use fostercommerce\snipcart\events\OrderNotificationEvent;

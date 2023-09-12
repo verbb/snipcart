@@ -8,8 +8,8 @@
 
 namespace fostercommerce\snipcart\fields;
 
-use craft\base\ElementInterface;
 use Craft;
+use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;

@@ -8,17 +8,17 @@
 
 namespace fostercommerce\snipcart\services;
 
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\ResponseInterface;
 use Craft;
 use craft\base\Component;
 use craft\helpers\Json;
-
 use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\Snipcart;
 use GuzzleHttp\Client;
+
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use yii\base\Exception;
 use yii\caching\TagDependency;
 

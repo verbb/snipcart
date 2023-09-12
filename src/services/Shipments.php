@@ -8,15 +8,15 @@
 
 namespace fostercommerce\snipcart\services;
 
-use craft\base\Component;
-use yii\db\ActiveRecord;
 use Craft;
+use craft\base\Component;
 use fostercommerce\snipcart\errors\ShippingRateException;
 use fostercommerce\snipcart\events\ShippingRateEvent;
 use fostercommerce\snipcart\models\snipcart\Order;
 use fostercommerce\snipcart\providers\shipstation\ShipStation;
 use fostercommerce\snipcart\records\ShippingQuoteLog;
 use fostercommerce\snipcart\Snipcart;
+use yii\db\ActiveRecord;
 
 /**
  * Class Shipments

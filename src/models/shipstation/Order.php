@@ -225,8 +225,6 @@ class Order extends Model
 
     /**
      * Gets the order’s billing address.
-     *
-     * @return Address|null
      */
     public function getBillTo(): ?Address
     {
@@ -249,8 +247,6 @@ class Order extends Model
 
     /**
      * Gets the order’s shipping address.
-     *
-     * @return Address|null
      */
     public function getShipTo(): ?Address
     {
@@ -299,8 +295,6 @@ class Order extends Model
 
     /**
      * Gets the order’s weight.
-     *
-     * @return Weight|null
      */
     public function getWeight(): ?Weight
     {
@@ -325,8 +319,6 @@ class Order extends Model
 
     /**
      * Gets the order’s dimensions.
-     *
-     * @return Dimensions|null
      */
     public function getDimensions(): ?Dimensions
     {
@@ -351,8 +343,6 @@ class Order extends Model
 
     /**
      * Gets the order’s insurance options.
-     *
-     * @return InsuranceOptions|null
      */
     public function getInsuranceOptions(): ?InsuranceOptions
     {
@@ -377,8 +367,6 @@ class Order extends Model
 
     /**
      * Gets the order’s international options.
-     *
-     * @return InternationalOptions|null
      */
     public function getInternationalOptions(): ?InternationalOptions
     {
@@ -403,8 +391,6 @@ class Order extends Model
 
     /**
      * Gets the order’s advanced options.
-     *
-     * @return AdvancedOptions|null
      */
     public function getAdvancedOptions(): ?AdvancedOptions
     {

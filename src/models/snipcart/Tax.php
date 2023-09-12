@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
+
 /**
  * Class Tax
  * https://docs.snipcart.com/v2/webhooks/taxes

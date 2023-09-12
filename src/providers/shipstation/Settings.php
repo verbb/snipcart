@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\providers\shipstation;
 
 use craft\base\Model;
+
 class Settings extends Model
 {
     public const ORDER_CONFIRMATION_DELIVERY = 'delivery';

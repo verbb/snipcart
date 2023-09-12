@@ -8,24 +8,24 @@
 
 namespace fostercommerce\snipcart\models;
 
-use craft\base\Model;
-use craft\base\ElementInterface;
-use craft\elements\MatrixBlock;
-use craft\base\FieldInterface;
-use yii\base\InvalidConfigException;
-use yii\base\ExitException;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use yii\base\Exception;
 use Craft;
+use craft\base\ElementInterface;
+use craft\base\FieldInterface;
+use craft\base\Model;
 use craft\elements\Entry;
+use craft\elements\MatrixBlock;
 use craft\helpers\Template as TemplateHelper;
 use fostercommerce\snipcart\fields\ProductDetails as ProductDetailsField;
 use fostercommerce\snipcart\helpers\MeasurementHelper;
 use fostercommerce\snipcart\helpers\VersionHelper;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Markup;
+use yii\base\Exception;
+use yii\base\ExitException;
+use yii\base\InvalidConfigException;
 
 /**
  * This model is used explicitly for storing Product Details field data and

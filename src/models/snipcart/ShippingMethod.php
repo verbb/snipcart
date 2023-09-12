@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
+
 /**
  * https://docs.snipcart.com/v2/api-reference/custom-shipping-methods
  */

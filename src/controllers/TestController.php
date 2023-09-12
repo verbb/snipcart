@@ -8,8 +8,8 @@
 
 namespace fostercommerce\snipcart\controllers;
 
-use yii\web\Response;
 use craft\web\Controller;
+use yii\web\Response;
 
 class TestController extends Controller
 {

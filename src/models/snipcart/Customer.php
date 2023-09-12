@@ -10,6 +10,7 @@ namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+
 /**
  * Snipcart Customer model
  * https://docs.snipcart.com/v2/api-reference/customers

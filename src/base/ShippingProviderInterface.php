@@ -8,8 +8,8 @@
 
 namespace fostercommerce\snipcart\base;
 
-use craft\base\Model;
 use craft\base\ComponentInterface;
+use craft\base\Model;
 use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
 use fostercommerce\snipcart\models\snipcart\Package;
 use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
@@ -19,10 +19,8 @@ interface ShippingProviderInterface extends ComponentInterface
 {
     /**
      * Gets the "camelCase" name of the provider.
-     *
-     * @return string|null
      */
-    public static function refHandle();
+    public static function refHandle(): ?string;
 
     /**
      * Gets the base URL for the provider's REST API, used by client.

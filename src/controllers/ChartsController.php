@@ -8,14 +8,14 @@
 
 namespace fostercommerce\snipcart\controllers;
 
-use craft\web\Controller;
-use yii\web\BadRequestHttpException;
 use Craft;
 use craft\helpers\DateTimeHelper;
+use craft\web\Controller;
 use DateTime;
 use DateTimeZone;
 use fostercommerce\snipcart\Snipcart;
 use yii\base\Response;
+use yii\web\BadRequestHttpException;
 
 class ChartsController extends Controller
 {

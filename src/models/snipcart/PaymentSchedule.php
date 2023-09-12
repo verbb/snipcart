@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
+
 class PaymentSchedule extends Model
 {
     /**

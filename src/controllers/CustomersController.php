@@ -8,11 +8,11 @@
 
 namespace fostercommerce\snipcart\controllers;
 
-use craft\web\Controller;
-use yii\web\Response;
-use craft\errors\MissingComponentException;
 use Craft;
+use craft\errors\MissingComponentException;
+use craft\web\Controller;
 use fostercommerce\snipcart\Snipcart;
+use yii\web\Response;
 
 class CustomersController extends Controller
 {

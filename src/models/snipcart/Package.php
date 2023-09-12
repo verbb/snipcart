@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\Model;
+
 class Package extends Model
 {
     public const WEIGHT_UNIT_GRAM = 'gram';

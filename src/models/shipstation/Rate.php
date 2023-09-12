@@ -9,6 +9,7 @@
 namespace fostercommerce\snipcart\models\shipstation;
 
 use craft\base\Model;
+
 /**
  * ShipStation Rate Model
  * https://www.shipstation.com/developer-api/#/reference/shipments/get-rates/get-rates
