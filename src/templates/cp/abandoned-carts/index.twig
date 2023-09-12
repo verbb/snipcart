@@ -17,19 +17,19 @@
 
             <table id="carts" class="data w-full">
                 <thead>
-                    <th scope="col">{{ "Name"|t }}</th>
                     <th scope="col">{{ "Email"|t }}</th>
                     <th scope="col">{{ "Status"|t }}</th>
                     <th scope="col">{{ "Date"|t }}</th>
+                    <th scope="col">{{ "Total Items"|t }}</th>
                     <th scope="col">{{ "Total"|t }}</th>
                 </thead>
                 <tbody>
                     {% for cart in carts %}
                         <tr data-id="{{ cart.token }}" data-name="{{ cart.email }}">
-                            <td><a href="{{ cart.cpUrl }}">{{ cart.billingAddress.name }}</a></td>
-                            <td>{{ cart.email }}</td>
+                            <td><a href="{{ cart.cpUrl }}">{{ cart.email }}</a></td>
                             <td>{{ cart.status }}</td>
                             <td>{{ cart.modificationDate | date('short') }}</td>
+                            <td>{{ cart.items|length }}</td>
                             <td>{{ craft.snipcart.formatCurrency(cart.total, cart.currency) }}</td>
                         </tr>
                     {% endfor %}

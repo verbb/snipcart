@@ -70,10 +70,9 @@ class Carts extends Component
      *
      * @param string $cartId
      *
-     * @return AbandonedCart|null
      * @throws \Exception if our API key is missing.
      */
-    public function getAbandonedCart($cartId)
+    public function getAbandonedCart($cartId): ?AbandonedCart
     {
         if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
             'carts/abandoned/%s',

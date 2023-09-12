@@ -3,7 +3,7 @@
 
 <h3>{{ firstHeading|t }}</h3>
 
-<p> 
+<p>
     {{- order.billingAddress.name }}<br>
     {% if order.billingAddress.companyName is defined and order.billingAddress.companyName is not empty %}
         {{ order.billingAddress.companyName }}<br>
