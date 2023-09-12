@@ -44,7 +44,7 @@ class Products extends Component
      *
      * @throws
      */
-    public function reduceInventory($orderItem): void
+    public function reduceInventory(Item $orderItem): void
     {
         // subtract the order quantity
         $quantityToAdjust = -$orderItem->quantity;
@@ -80,11 +80,13 @@ class Products extends Component
         }
 
         if ($fieldHandle !== '' && $fieldHandle !== '0') {
-            $originalQuantity = $element->{$fieldHandle}->inventory;
+            $field = $element->{$fieldHandle};
+            $originalQuantity = $field->inventory;
             $newQuantity = $originalQuantity + $quantityToAdjust;
 
             if ($originalQuantity > 0 && $originalQuantity !== $newQuantity) {
-                $element->{$fieldHandle}->inventory = $newQuantity;
+                $field->inventory = $newQuantity;
+                $element->setFieldValue($fieldHandle, $field);
                 Craft::$app->getElements()->saveElement($element);
             }
         }

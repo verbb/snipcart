@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use craft\ecs\SetList as CraftSetList;
+use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
@@ -17,7 +18,7 @@ return static function(ECSConfig $ecsConfig): void {
     $ecsConfig->sets([
         SetList::ARRAY,
         SetList::COMMENTS,
-        // SetList::CONTROL_STRUCTURES,
+        SetList::CONTROL_STRUCTURES,
         SetList::DOCBLOCK,
         SetList::NAMESPACES,
         SetList::PHPUNIT,
@@ -28,5 +29,7 @@ return static function(ECSConfig $ecsConfig): void {
         CraftSetList::CRAFT_CMS_4,
     ]);
 
-    $ecsConfig->services()->remove(DeclareStrictTypesFixer::class);
+    $ecsServices = $ecsConfig->services();
+    $ecsServices->remove(DeclareStrictTypesFixer::class);
+    $ecsServices->remove(AssignmentInConditionSniff::class);
 };
