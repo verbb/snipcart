@@ -35,13 +35,10 @@ class ModelHelper
      *
      * @param mixed   $data   Data to be used to populate the model.
      * @param string  $class  Model to be populated.
-     *
-     * @return mixed
      */
-    public static function safePopulateModel(mixed $data, string $class)
+    public static function safePopulateModel(mixed $data, string $class): mixed
     {
-        //\Craft::dd((object)$data);
-        $cleanData = self::stripUnknownProperties($data, $class);
+        $cleanData = (array) self::stripUnknownProperties($data, $class);
 
         return new $class($cleanData);
     }
