@@ -1,5 +1,11 @@
 # Snipcart Changelog
 
+## 1.6.1 - 2023-09-14
+
+### Changed
+
+- Added back PHP 7.4 compatibility
+
 ## 1.6.0 - 2023-06-20
 
 ### Added
