@@ -82,14 +82,14 @@ class Order extends Model
     public \DateTime $creationDate;
 
     /**
-     * @var \DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
+     * @var ?\DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
      */
-    public \DateTime $modificationDate;
+    public ?\DateTime $modificationDate = null;
 
     /**
-     * @var \DateTime Date the order was completed.
+     * @var ?\DateTime Date the order was completed.
      */
-    public \DateTime $completionDate;
+    public ?\DateTime $completionDate = null;
 
     /**
      * @var string Order status.
