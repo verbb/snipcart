@@ -36,8 +36,12 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
                 continue;
             }
 
-            if (! $fieldsService->saveField($field)) {
-                throw new \RuntimeException(Json::encode($field->getErrors()));
+            if (! $fieldsService->saveField($field, false)) {
+                throw new \RuntimeException(Json::encode([
+                    'field' => $field->handle,
+                    'type' => $field::class,
+                    'errors' => $field->getErrors(),
+                ]));
             }
         }
     }
