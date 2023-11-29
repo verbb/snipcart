@@ -2,17 +2,19 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
+
 /**
  * ShipStation Product Model
  * https://www.shipstation.com/developer-api/#/reference/model-product
  */
-class Product extends \craft\base\Model
+class Product extends Model
 {
     /**
      * @var int|null The system generated identifier for the product.
@@ -195,25 +197,24 @@ class Product extends \craft\base\Model
     // Public Methods
     // =========================================================================
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['createDate', 'modifyDate'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             [['sku', 'name', 'internalNotes', 'fulfillmentSku', 'createDate', 'modifyDate', 'productType', 'warehouseLocation', 'defaultCarrierCode', 'defaultServiceCode', 'defaultPackageCode', 'defaultIntlCarrierCode', 'defaultIntlServiceCode', 'defaultIntlPackageCode', 'defaultConfirmation', 'defaultIntlConfirmation', 'customsDescription', 'customsTariffNo', 'customsCountryCode'], 'string'],
-            [['productId', 'length', 'width', 'height', 'weightOz'], 'number', 'integerOnly' => true],
-            [['price', 'defaultCost', 'customsValue'], 'number', 'integerOnly' => false],
+            [['productId', 'length', 'width', 'height', 'weightOz'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [['price', 'defaultCost', 'customsValue'],
+                'number',
+                'integerOnly' => false,
+            ],
             [['active', 'noCustoms'], 'boolean'],
         ];
     }
-
 }

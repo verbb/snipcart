@@ -10,26 +10,24 @@ use craft\db\Table;
  */
 class m210122_204103_update_namespace extends Migration
 {
-    /**
-     * @inheritdoc
-     */
     public function safeUp(): bool
     {
         // update namespace for existing fields: `workingconcept/...` → `fostercommerce/...`
         \Craft::$app->db->createCommand()
             ->update(
                 Table::FIELDS,
-                ['type' => 'fostercommerce\snipcart\fields\ProductDetails'],
-                ['type' => 'workingconcept\snipcart\fields\ProductDetails']
+                [
+                    'type' => 'fostercommerce\snipcart\fields\ProductDetails',
+                ],
+                [
+                    'type' => 'workingconcept\snipcart\fields\ProductDetails',
+                ]
             )
             ->execute();
 
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown(): bool
     {
         echo "m210122_204103_update_namespace cannot be reverted.\n";

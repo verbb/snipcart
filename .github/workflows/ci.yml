@@ -1,23 +1,66 @@
-name: Codeception
+name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - master
+      - main
       - develop
+      - craft4
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
+  ecs:
+    name: ECS Check
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run ecs check
+        run: |
+          composer run-script ecs-check
+  rector:
+    name: Rector dry-run
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run rector --dry-run
+        run: |
+          composer run-script rector-dry-run
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@2.25.5
+        with:
+          php-version: 8.1
+      - run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Run phpstan
+        run: |
+          composer run-script phpstan
   test:
     name: PHP ${{ matrix.php-versions }} + ${{ matrix.db }} on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
-
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ["7.1", "7.2", "7.3", "7.4"]
+        php-versions: ["8.0", "8.1"]
         db: ["mysql", "pgsql"]
     env:
       DEFAULT_COMPOSER_FLAGS: "--no-interaction --no-ansi --no-progress --no-suggest"
@@ -50,7 +93,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup PHP Action
-        uses: shivammathur/setup-php@2.5.0
+        uses: shivammathur/setup-php@2.25.5
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, intl, gd, imagick, zip, dom, pdo_mysql, pdo_pgsql, fileinfo

@@ -2,17 +2,19 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
+
 /**
  * ShipStation CustomsItem Model
  * https://www.shipstation.com/developer-api/#/reference/model-customsitem
  */
-class CustomsItem extends \craft\base\Model
+class CustomsItem extends Model
 {
     /**
      * @var string Read Only field. When this field is not submitted in the
@@ -48,17 +50,22 @@ class CustomsItem extends \craft\base\Model
      */
     public $countryOfOrigin;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             [['customsItemId', 'description', 'harmonizedTariffCode', 'countryOfOrigin'], 'string'],
-            [['quantity'], 'number', 'integerOnly' => true],
-            [['value'], 'number', 'integerOnly' => false],
-            [['countryOfOrigin'], 'string', 'length' => 2],
+            [['quantity'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [['value'],
+                'number',
+                'integerOnly' => false,
+            ],
+            [['countryOfOrigin'],
+                'string',
+                'length' => 2,
+            ],
         ];
     }
-
 }

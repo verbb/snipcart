@@ -2,15 +2,16 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\snipcart\AbandonedCart;
+use craft\base\Component;
 use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\models\snipcart\AbandonedCart;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Carts
@@ -19,7 +20,7 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  *
  * @package fostercommerce\snipcart\services
  */
-class Carts extends \craft\base\Component
+class Carts extends Component
 {
     /**
      * Lists abandoned carts.
@@ -40,13 +41,13 @@ class Carts extends \craft\base\Component
      *              ->hasMoreResults (boolean)
      * @throws \Exception if our API key is missing.
      */
-    public function listAbandonedCarts($page = 1, $limit = 20, $params = []): \stdClass
+    public function listAbandonedCarts($page = 1, $limit = 20, array $params = []): \stdClass
     {
         /**
          * Define offset and limit since that's pretty much all we're doing here.
          */
         $params['offset'] = ($page - 1) * $limit;
-        $params['limit']  = $limit;
+        $params['limit'] = $limit;
 
         $response = Snipcart::$plugin->api->get(
             'carts/abandoned',
@@ -59,8 +60,8 @@ class Carts extends \craft\base\Component
                 AbandonedCart::class
             ),
             'continuationToken' => $response->continuationToken ?? null,
-            'hasMoreResults'    => $response->hasMoreResults ?? false,
-            'limit'             => $limit
+            'hasMoreResults' => $response->hasMoreResults ?? false,
+            'limit' => $limit,
         ];
     }
 
@@ -69,17 +70,16 @@ class Carts extends \craft\base\Component
      *
      * @param string $cartId
      *
-     * @return AbandonedCart|null
      * @throws \Exception if our API key is missing.
      */
-    public function getAbandonedCart($cartId)
+    public function getAbandonedCart($cartId): ?AbandonedCart
     {
         if ($abandonedCartData = Snipcart::$plugin->api->get(sprintf(
             'carts/abandoned/%s',
             $cartId
         ))) {
             return ModelHelper::safePopulateModel(
-                (array)$abandonedCartData,
+                (array) $abandonedCartData,
                 AbandonedCart::class
             );
         }

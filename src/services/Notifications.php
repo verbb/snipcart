@@ -2,17 +2,19 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
 use Craft;
+use craft\base\Component;
 use craft\mail\Message;
-use Pelago\Emogrifier\CssInliner;
-use fostercommerce\snipcart\Snipcart;
 use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\Snipcart;
+use Pelago\Emogrifier\CssInliner;
+use yii\base\Exception;
 
 /**
  * Sends notifications as things happen. Currently just email.
@@ -20,7 +22,7 @@ use fostercommerce\snipcart\helpers\VersionHelper;
  * @package fostercommerce\snipcart\services
  * @todo Make a proper Notification model
  */
-class Notifications extends \craft\base\Component
+class Notifications extends Component
 {
     /**
      * @var string Path to Twig template for HTML email.
@@ -52,15 +54,13 @@ class Notifications extends \craft\base\Component
     /**
      * @var array Error strings accumulated during notification setup+attempt.
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Sets template variables for the notification.
      * Should be called before `sendEmail()`.
-     *
-     * @param mixed $data
      */
-    public function setNotificationVars($data)
+    public function setNotificationVars(mixed $data): void
     {
         $this->notificationVars = $data;
     }
@@ -80,7 +80,7 @@ class Notifications extends \craft\base\Component
      *
      * @param $errors
      */
-    public function setErrors($errors)
+    public function setErrors(array $errors): void
     {
         $this->errors = $errors;
     }
@@ -96,7 +96,7 @@ class Notifications extends \craft\base\Component
      *                             (site) end or the back (plugin) end, which
      *                             matters for setting the template mode.
      */
-    public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false)
+    public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false): void
     {
         $this->htmlEmailTemplate = $htmlTemplate;
         $this->textEmailTemplate = $textTemplate;
@@ -108,7 +108,7 @@ class Notifications extends \craft\base\Component
      *
      * @param string $url
      */
-    public function setSlackWebhook($url)
+    public function setSlackWebhook($url): void
     {
         $this->slackWebhook = $url;
     }
@@ -124,10 +124,10 @@ class Notifications extends \craft\base\Component
      */
     public function sendEmail($to, $subject): bool
     {
-        $pluginSettings = Snipcart::$plugin->getSettings();
+        $model = Snipcart::$plugin->getSettings();
 
         // Bail if we’re in test mode and don’t want to send emails.
-        if ($pluginSettings->testMode && ! $pluginSettings->sendTestModeEmail) {
+        if ($model->testMode && ! $model->sendTestModeEmail) {
             // pretend it went well
             return true;
         }
@@ -164,7 +164,7 @@ class Notifications extends \craft\base\Component
          * switched the view mode.
          */
         if (! $this->ensureTemplatesExist()) {
-            $this->setErrors([ 'Email template(s) are missing.' ]);
+            $this->setErrors(['Email template(s) are missing.']);
             return false;
         }
 
@@ -179,7 +179,7 @@ class Notifications extends \craft\base\Component
 
         $messageText = '';
 
-        if ($this->textEmailTemplate) {
+        if ($this->textEmailTemplate !== '' && $this->textEmailTemplate !== '0') {
             $messageText = $view->renderPageTemplate(
                 $this->textEmailTemplate,
                 $this->getNotificationVars()
@@ -190,7 +190,7 @@ class Notifications extends \craft\base\Component
             $message = new Message();
 
             $message->setFrom([
-                $emailSettings['fromEmail'] => $emailSettings['fromName']
+                $emailSettings['fromEmail'] => $emailSettings['fromName'],
             ]);
 
             $message->setTo($address);
@@ -202,7 +202,7 @@ class Notifications extends \craft\base\Component
             }
 
             if (! Craft::$app->getMailer()->send($message)) {
-                $problem = "Notification failed to send to {$address}!";
+                $problem = sprintf('Notification failed to send to %s!', $address);
                 Craft::warning($problem, 'snipcart');
                 $errors[] = $problem;
             }
@@ -216,15 +216,14 @@ class Notifications extends \craft\base\Component
 
         $this->setErrors($errors);
 
-        return count($errors) === 0;
+        return $errors === [];
     }
 
     /**
      * Makes sure that the HTML email template exists at the specified path,
      * and that the text template exists if it was provided.
      *
-     * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     private function ensureTemplatesExist(): bool
     {
@@ -232,7 +231,7 @@ class Notifications extends \craft\base\Component
             return false;
         }
 
-        if ($this->textEmailTemplate) {
+        if ($this->textEmailTemplate !== '' && $this->textEmailTemplate !== '0') {
             $this->ensureTemplateExists($this->textEmailTemplate);
 
             return false;
@@ -246,8 +245,7 @@ class Notifications extends \craft\base\Component
      *
      * @param $path
      *
-     * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     private function ensureTemplateExists($path): bool
     {

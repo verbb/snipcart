@@ -2,12 +2,13 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 use fostercommerce\snipcart\models\snipcart\CustomField;
 
 /**
@@ -15,7 +16,7 @@ use fostercommerce\snipcart\models\snipcart\CustomField;
  * https://www.shipstation.com/developer-api/#/reference/model-itemoption
  */
 
-class ItemOption extends \craft\base\Model
+class ItemOption extends Model
 {
     /**
      * @var string|null Name of item option. Example: "Size"
@@ -27,9 +28,6 @@ class ItemOption extends \craft\base\Model
      */
     public $value;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
@@ -43,20 +41,19 @@ class ItemOption extends \craft\base\Model
      * @return ItemOption|null
      * @todo strictly use CustomField as param
      */
-    public static function populateFromSnipcartCustomField($item)
+    public static function populateFromSnipcartCustomField($item): ?self
     {
         if (is_array($item)) {
-            $item = (object)$item;
+            $item = (object) $item;
         }
 
         if (isset($item->name, $item->value)) {
             return new self([
-                'name'  => $item->name,
+                'name' => $item->name,
                 'value' => $item->value,
             ]);
         }
 
         return null;
     }
-
 }

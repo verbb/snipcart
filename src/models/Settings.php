@@ -2,16 +2,16 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models;
 
-use fostercommerce\snipcart\models\snipcart\Address;
 use Craft;
 use craft\base\Model;
 use fostercommerce\snipcart\helpers\VersionHelper;
+use fostercommerce\snipcart\models\snipcart\Address;
 
 /**
  * Settings model
@@ -21,11 +21,15 @@ use fostercommerce\snipcart\helpers\VersionHelper;
  */
 class Settings extends Model
 {
-    const CURRENCY_USD = 'usd';
-    const CURRENCY_CAD = 'cad';
-    const CURRENCY_EUR = 'eur';
-    const CURRENCY_GBP = 'gbp';
-    const CURRENCY_CHF = 'chf';
+    public const CURRENCY_USD = 'usd';
+
+    public const CURRENCY_CAD = 'cad';
+
+    public const CURRENCY_EUR = 'eur';
+
+    public const CURRENCY_GBP = 'gbp';
+
+    public const CURRENCY_CHF = 'chf';
 
     /**
      * @var string Snipcart public API key
@@ -52,7 +56,7 @@ class Settings extends Model
      *           order is completed and email addresses are specified
      */
     public $sendOrderNotificationEmail = false;
-    
+
     /**
      * @var array Valid email addresses
      */
@@ -85,7 +89,7 @@ class Settings extends Model
     /**
      * @var array
      */
-    public $enabledCurrencies = [ self::CURRENCY_USD ];
+    public $enabledCurrencies = [self::CURRENCY_USD];
 
     /**
      * @var string Name of custom field sent to Snipcart for order gift notes
@@ -126,7 +130,7 @@ class Settings extends Model
     public $logWebhookRequests = false;
 
     /**
-     * @var array Used for storage of $_shipFrom
+     * @var array Used for storage of
      */
     public $shipFromAddress = [];
 
@@ -163,18 +167,16 @@ class Settings extends Model
     /**
      * @var Address Origin shipping address
      */
-    private $_shipFrom;
+    private ?Address $_shipFrom = null;
 
     /**
      * @var array Key-value array of refHandle => instance of each
      *            registered provider
      */
-    private $_providers = [];
+    private array $_providers = [];
 
     /**
      * Returns an indexed array of store currency options.
-     *
-     * @return array
      */
     public static function getCurrencyOptions(): array
     {
@@ -189,8 +191,6 @@ class Settings extends Model
 
     /**
      * Returns an indexed array of store currency options.
-     *
-     * @return array
      */
     public static function getCurrencySymbols(): array
     {
@@ -205,8 +205,6 @@ class Settings extends Model
 
     /**
      * Returns the stored public API key value depending on testMode.
-     *
-     * @return string
      */
     public function publicKey(): string
     {
@@ -215,8 +213,6 @@ class Settings extends Model
 
     /**
      * Returns the stored secret API key value depending on testMode.
-     *
-     * @return string
      */
     public function secretKey(): string
     {
@@ -226,8 +222,6 @@ class Settings extends Model
     /**
      * Is the plugin ready to attempt Snipcart REST API requests with
      * honoring our `testMode` setting?
-     *
-     * @return bool
      */
     public function isConfigured(): bool
     {
@@ -240,16 +234,20 @@ class Settings extends Model
             $this->hasNonEmptyEnvValue('secretApiKey');
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return array_merge(parent::rules(), [
             [['publicApiKey', 'secretApiKey', 'publicTestApiKey', 'secretTestApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
             [['publicApiKey', 'secretApiKey'], 'required'],
-            [['cacheDurationLimit'], 'number', 'integerOnly' => true],
-            ['notificationEmails', 'each', 'rule' => ['email']],
+            [['cacheDurationLimit'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [
+                'notificationEmails',
+                'each',
+                'rule' => ['email'],
+            ],
         ]);
     }
 
@@ -278,8 +276,6 @@ class Settings extends Model
 
     /**
      * Requires valid ship from Address if we're using any shipping providers.
-     *
-     * @return bool
      */
     public function validateShipFrom(): bool
     {
@@ -294,8 +290,6 @@ class Settings extends Model
     /**
      * Validates shipping provider settings, which are basically like
      * sub-plugins with their own settings models.
-     *
-     * @return bool
      */
     public function validateProviderSettings(): bool
     {
@@ -303,15 +297,12 @@ class Settings extends Model
 
         if ($this->hasEnabledProviders()) {
             foreach ($this->getProviders() as $provider) {
-                if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled']) {
-                    if (! $provider->getSettings()->validate()) {
-                        $this->addError(
-                            'providerSettings',
-                            'Provider settings are missing.'
-                        );
-
-                        return false;
-                    }
+                if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled'] && ! $provider->getSettings()->validate()) {
+                    $this->addError(
+                        'providerSettings',
+                        'Provider settings are missing.'
+                    );
+                    return false;
                 }
             }
         }
@@ -322,8 +313,6 @@ class Settings extends Model
     /**
      * Grabs email addresses posted from a table input and reformat them before
      * this model is validated.
-     *
-     * @return bool
      */
     public function beforeValidate(): bool
     {
@@ -335,8 +324,6 @@ class Settings extends Model
      * Formats an array of email addresses
      * (`['gob@bluth.com', 'george@bluth.com']`) for a control panel table input
      * (`[[0 => 'gob@bluth.com'], [0 => 'george@bluth.com']]`).
-     *
-     * @return array
      */
     public function getNotificationEmailsForTable(): array
     {
@@ -346,9 +333,9 @@ class Settings extends Model
             return $rows;
         }
 
-        foreach ($this->notificationEmails as $email) {
+        foreach ($this->notificationEmails as $notificationEmail) {
             $rows[] = [
-                0 => $email,
+                0 => $notificationEmail,
             ];
         }
 
@@ -357,12 +344,10 @@ class Settings extends Model
 
     /**
      * Gets the ship from address.
-     *
-     * @return Address|null
      */
-    public function getShipFrom()
+    public function getShipFrom(): ?Address
     {
-        if (! empty($this->shipFromAddress)) {
+        if ($this->shipFromAddress !== []) {
             $this->setShipFrom($this->shipFromAddress);
         }
 
@@ -373,8 +358,6 @@ class Settings extends Model
      * Sets the ship from address.
      *
      * @param $address
-     *
-     * @return Address
      */
     public function setShipFrom($address): Address
     {
@@ -383,8 +366,6 @@ class Settings extends Model
 
     /**
      * Gets the default (first listed) currency.
-     *
-     * @return string
      */
     public function getDefaultCurrency(): string
     {
@@ -397,18 +378,16 @@ class Settings extends Model
 
     /**
      * Gets the symbol for the default currency.
-     *
-     * @return string
      */
     public function getDefaultCurrencySymbol(): string
     {
-        $currency = $this->getDefaultCurrency();
+        $defaultCurrency = $this->getDefaultCurrency();
 
-        if ( ! array_key_exists($currency, self::getCurrencySymbols())) {
+        if (! array_key_exists($defaultCurrency, self::getCurrencySymbols())) {
             return '';
         }
 
-        return self::getCurrencySymbols()[$currency];
+        return self::getCurrencySymbols()[$defaultCurrency];
     }
 
     /**
@@ -416,14 +395,13 @@ class Settings extends Model
      * don’t yet support setting multiple currencies.
      *
      * @param $value
-     * @return array
      */
     public function setCurrency($value): array
     {
-        return $this->enabledCurrencies = [ $value ];
+        return $this->enabledCurrencies = [$value];
     }
 
-    public function addProvider($handle, $instance)
+    public function addProvider($handle, $instance): void
     {
         $this->_providers[$handle] = $instance;
     }
@@ -443,9 +421,8 @@ class Settings extends Model
      * simply an unparsed environment variable.
      *
      * @param $property
-     * @return bool
      */
-    private function hasNonEmptyEnvValue($property): bool
+    private function hasNonEmptyEnvValue(string $property): bool
     {
         // value stored on the model
         $settingValue = $this->{$property};
@@ -487,7 +464,7 @@ class Settings extends Model
      * Takes email addresses posted from a table input and formats them into a
      * clean, one-dimensional array.
      */
-    private function getNotificationEmailsFromTable()
+    private function getNotificationEmailsFromTable(): void
     {
         if (is_array($this->notificationEmails) &&
             count($this->notificationEmails) &&
@@ -495,8 +472,8 @@ class Settings extends Model
         ) {
             $arrayFromTableData = [];
 
-            foreach ($this->notificationEmails as $row) {
-                $arrayFromTableData[] = trim($row[0]);
+            foreach ($this->notificationEmails as $notificationEmail) {
+                $arrayFromTableData[] = trim($notificationEmail[0]);
             }
 
             $this->notificationEmails = $arrayFromTableData;
@@ -505,8 +482,6 @@ class Settings extends Model
 
     /**
      * Did the posted settings include any enabled shipping providers?
-     *
-     * @return bool
      */
     private function hasEnabledProviders(): bool
     {
@@ -523,4 +498,3 @@ class Settings extends Model
         return false;
     }
 }
-

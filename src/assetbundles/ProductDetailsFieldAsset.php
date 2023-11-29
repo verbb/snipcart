@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
@@ -17,10 +17,7 @@ use craft\web\AssetBundle;
  */
 class ProductDetailsFieldAsset extends AssetBundle
 {
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
         $this->depends = [SnipcartAsset::class];

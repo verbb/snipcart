@@ -2,17 +2,19 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
+
 /**
  * ShipStation Advanced Options Model
  * https://www.shipstation.com/developer-api/#/reference/model-advancedoptions
  */
-class AdvancedOptions extends \craft\base\Model
+class AdvancedOptions extends Model
 {
     /**
      * @var int|null Specifies the warehouse where to the order is to ship from.
@@ -79,7 +81,7 @@ class AdvancedOptions extends \craft\base\Model
      * @var int[] Read-Only: Array of orderIds. Each orderId identifies an order
      *            that was merged with the associated order.
      */
-    public $mergedIds;
+    public $mergedIds = [];
 
     /**
      * @var int Read-Only: If an order has been split, it will return the
@@ -117,18 +119,24 @@ class AdvancedOptions extends \craft\base\Model
      */
     public $billToMyOtherAccount;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true],
+            [['warehouseId', 'storeId', 'parentId'],
+                'number',
+                'integerOnly' => true,
+            ],
             [['customField1', 'customField2', 'customField3', 'source', 'billToParty', 'billToAccount', 'billToPostalCode', 'billToCountryCode', 'billToMyOtherAccount'], 'string'],
             [['nonMachinable', 'saturdayDelivery', 'containsAlcohol', 'mergedOrSplit'], 'boolean'],
-            ['mergedIds', 'each', 'rule' => ['integer']],
-            [['billToCountryCode'], 'string', 'length' => 2],
+            [
+                'mergedIds',
+                'each',
+                'rule' => ['integer'],
+            ],
+            [['billToCountryCode'],
+                'string',
+                'length' => 2,
+            ],
         ];
     }
-
 }

@@ -2,12 +2,14 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\helpers;
 
+use craft\base\Element;
+use craft\models\FieldLayout;
 use fostercommerce\snipcart\fields\ProductDetails;
 
 /**
@@ -19,7 +21,7 @@ class FieldHelper
      * Returns product info for the provided Element regardless of the
      * field handle.
      *
-     * @param \craft\base\Element $element
+     * @param Element $element
      *
      * @return ProductDetails|null
      */
@@ -30,13 +32,17 @@ class FieldHelper
             return null;
         }
 
-        if (($fieldLayout = $element->getFieldLayout())
-            && $fields = $fieldLayout->getFields()
-        ) {
-            foreach ($fields as $field) {
-                if ($field instanceof ProductDetails) {
-                    return $element->getFieldValue($field->handle);
-                }
+        if (! ($fieldLayout = $element->getFieldLayout()) instanceof FieldLayout) {
+            return null;
+        }
+
+        if (($fields = $fieldLayout->getCustomFields()) === []) {
+            return null;
+        }
+
+        foreach ($fields as $field) {
+            if ($field instanceof ProductDetails) {
+                return $element->getFieldValue($field->handle);
             }
         }
 
@@ -47,19 +53,17 @@ class FieldHelper
      * Returns the field handle for the Element’s Product Details field,
      * if it exists.
      *
-     * @param \craft\base\Element $element
-     *
-     * @return string|null
+     * @param Element $element
      */
-    public static function getProductInfoFieldHandle($element)
+    public static function getProductInfoFieldHandle($element): ?string
     {
         // if we don't have an Element, there's nothing to get
         if (! isset($element)) {
             return null;
         }
 
-        if ($fieldLayout = $element->getFieldLayout()) {
-            $fields = $fieldLayout->getFields();
+        if (($fieldLayout = $element->getFieldLayout()) instanceof FieldLayout) {
+            $fields = $fieldLayout->getCustomFields();
 
             foreach ($fields as $field) {
                 if ($field instanceof ProductDetails) {

@@ -2,12 +2,14 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
 use fostercommerce\snipcart\Snipcart;
 
 /**
@@ -16,11 +18,13 @@ use fostercommerce\snipcart\Snipcart;
  *
  * @package fostercommerce\snipcart\models
  */
-class Subscription extends \craft\base\Model
+class Subscription extends Model
 {
-    const STATUS_ACTIVE   = 'Active';
-    const STATUS_PAUSED   = 'Paused';
-    const STATUS_CANCELED = 'Canceled';
+    public const STATUS_ACTIVE = 'Active';
+
+    public const STATUS_PAUSED = 'Paused';
+
+    public const STATUS_CANCELED = 'Canceled';
 
     /**
      * @var
@@ -137,9 +141,6 @@ class Subscription extends \craft\base\Model
      */
     public $invoiceNumber;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['creationDate', 'modificationDate', 'cancelledOn', 'nextBillingDate', 'firstInvoiceReceivedOn'];
@@ -147,7 +148,7 @@ class Subscription extends \craft\base\Model
 
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/subscription/' . $this->id);
+        return UrlHelper::cpUrl('snipcart/subscription/' . $this->id);
     }
 
     public function getDashboardUrl(): string

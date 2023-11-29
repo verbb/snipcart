@@ -2,15 +2,17 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\providers\shipstation;
 
-class Settings extends \craft\base\Model
+use craft\base\Model;
+
+class Settings extends Model
 {
-    const ORDER_CONFIRMATION_DELIVERY = 'delivery';
+    public const ORDER_CONFIRMATION_DELIVERY = 'delivery';
 
     /**
      * @var string
@@ -57,18 +59,20 @@ class Settings extends \craft\base\Model
      */
     public $sendCompletedOrders = false;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'],
             [['apiKey', 'apiSecret', 'defaultCarrierCode', 'defaultPackageCode', 'defaultOrderConfirmation'], 'string'],
-            [['defaultWarehouseId'], 'number', 'integerOnly' => true],
+            [['defaultWarehouseId'],
+                'number',
+                'integerOnly' => true,
+            ],
             [['enableShippingRates', 'sendCompletedOrders'], 'boolean'],
-            [['defaultCountry'], 'string', 'length' => 2],
+            [['defaultCountry'],
+                'string',
+                'length' => 2,
+            ],
         ];
     }
-
 }

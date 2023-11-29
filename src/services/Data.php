@@ -2,12 +2,13 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
+use craft\base\Component;
 use fostercommerce\snipcart\Snipcart;
 
 /**
@@ -15,7 +16,7 @@ use fostercommerce\snipcart\Snipcart;
  *
  * @package fostercommerce\snipcart\services
  */
-class Data extends \craft\base\Component
+class Data extends Component
 {
     /**
      * Gets number of orders, by date, between two dates.
@@ -54,7 +55,7 @@ class Data extends \craft\base\Component
             'data/orders/count',
             [
                 'from' => $this->prepDate($from),
-                'to'   => $this->prepDate($to),
+                'to' => $this->prepDate($to),
             ]
         );
     }
@@ -93,7 +94,7 @@ class Data extends \craft\base\Component
             'data/performance',
             [
                 'from' => $this->prepDate($from),
-                'to'   => $this->prepDate($to),
+                'to' => $this->prepDate($to),
             ]
         );
     }
@@ -135,7 +136,7 @@ class Data extends \craft\base\Component
             'data/orders/sales',
             [
                 'from' => $this->prepDate($from),
-                'to'   => $this->prepDate($to),
+                'to' => $this->prepDate($to),
             ]
         );
     }
@@ -145,7 +146,6 @@ class Data extends \craft\base\Component
      * string for the REST API request.
      *
      * @param int|\DateTime $date
-     * @return string
      */
     private function prepDate($date): string
     {

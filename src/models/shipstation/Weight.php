@@ -2,12 +2,13 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
@@ -15,11 +16,13 @@ use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
  * https://www.shipstation.com/developer-api/#/reference/model-weight
  */
 
-class Weight extends \craft\base\Model
+class Weight extends Model
 {
-    const UNIT_POUNDS = 'pounds';
-    const UNIT_OUNCES = 'ounces';
-    const UNIT_GRAMS  = 'grams';
+    public const UNIT_POUNDS = 'pounds';
+
+    public const UNIT_OUNCES = 'ounces';
+
+    public const UNIT_GRAMS = 'grams';
 
     /**
      * @var int Weight value.
@@ -38,9 +41,8 @@ class Weight extends \craft\base\Model
 
     /**
      * @param SnipcartItem|\stdClass $item
-     * @return Weight
      */
-    public static function populateFromSnipcartItem($item): Weight
+    public static function populateFromSnipcartItem($item): self
     {
         return new self([
             'value' => $item->weight ?? 0,
@@ -48,16 +50,18 @@ class Weight extends \craft\base\Model
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['value'], 'number', 'integerOnly' => true],
+            [['value'],
+                'number',
+                'integerOnly' => true,
+            ],
             [['units'], 'string'],
-            [['units'], 'in', 'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS]],
+            [['units'],
+                'in',
+                'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS],
+            ],
         ];
     }
-
 }

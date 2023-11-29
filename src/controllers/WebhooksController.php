@@ -2,83 +2,88 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\controllers;
 
+use Craft;
 use craft\helpers\Json;
+use craft\web\Controller;
+
 use fostercommerce\snipcart\services\Webhooks;
 use fostercommerce\snipcart\Snipcart;
-
-use Craft;
-use craft\web\Controller;
-use yii\web\Response;
-use yii\web\BadRequestHttpException;
 use yii\base\Exception;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 class WebhooksController extends Controller
 {
     /**
      * Snipcart's available webhook events
      */
-    const WEBHOOK_ORDER_COMPLETED               = 'order.completed';
-    const WEBHOOK_SHIPPINGRATES_FETCH           = 'shippingrates.fetch';
-    const WEBHOOK_ORDER_STATUS_CHANGED          = 'order.status.changed';
-    const WEBHOOK_ORDER_PAYMENT_STATUS_CHANGED  = 'order.paymentStatus.changed';
-    const WEBHOOK_ORDER_TRACKING_NUMBER_CHANGED = 'order.trackingNumber.changed';
-    const WEBHOOK_SUBSCRIPTION_CREATED          = 'subscription.created';
-    const WEBHOOK_SUBSCRIPTION_CANCELLED        = 'subscription.cancelled';
-    const WEBHOOK_SUBSCRIPTION_PAUSED           = 'subscription.paused';
-    const WEBHOOK_SUBSCRIPTION_RESUMED          = 'subscription.resumed';
-    const WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  = 'subscription.invoice.created';
-    const WEBHOOK_TAXES_CALCULATE               = 'taxes.calculate';
-    const WEBHOOK_CUSTOMER_UPDATED              = 'customauth:customer_updated';
-    const WEBHOOK_REFUND_CREATED                = 'order.refund.created';
-    const WEBHOOK_NOTIFICATION_CREATED          = 'order.notification.created';
+    public const WEBHOOK_ORDER_COMPLETED = 'order.completed';
+
+    public const WEBHOOK_SHIPPINGRATES_FETCH = 'shippingrates.fetch';
+
+    public const WEBHOOK_ORDER_STATUS_CHANGED = 'order.status.changed';
+
+    public const WEBHOOK_ORDER_PAYMENT_STATUS_CHANGED = 'order.paymentStatus.changed';
+
+    public const WEBHOOK_ORDER_TRACKING_NUMBER_CHANGED = 'order.trackingNumber.changed';
+
+    public const WEBHOOK_SUBSCRIPTION_CREATED = 'subscription.created';
+
+    public const WEBHOOK_SUBSCRIPTION_CANCELLED = 'subscription.cancelled';
+
+    public const WEBHOOK_SUBSCRIPTION_PAUSED = 'subscription.paused';
+
+    public const WEBHOOK_SUBSCRIPTION_RESUMED = 'subscription.resumed';
+
+    public const WEBHOOK_SUBSCRIPTION_INVOICE_CREATED = 'subscription.invoice.created';
+
+    public const WEBHOOK_TAXES_CALCULATE = 'taxes.calculate';
+
+    public const WEBHOOK_CUSTOMER_UPDATED = 'customauth:customer_updated';
+
+    public const WEBHOOK_REFUND_CREATED = 'order.refund.created';
+
+    public const WEBHOOK_NOTIFICATION_CREATED = 'order.notification.created';
 
     /**
      * What we call to handle each event
      */
-    const WEBHOOK_EVENT_MAP = [
-        self::WEBHOOK_ORDER_COMPLETED               => 'handleOrderCompleted',
-        self::WEBHOOK_SHIPPINGRATES_FETCH           => 'handleShippingRatesFetch',
-        self::WEBHOOK_ORDER_STATUS_CHANGED          => 'handleOrderStatusChange',
-        self::WEBHOOK_ORDER_PAYMENT_STATUS_CHANGED  => 'handleOrderPaymentStatusChange',
+    public const WEBHOOK_EVENT_MAP = [
+        self::WEBHOOK_ORDER_COMPLETED => 'handleOrderCompleted',
+        self::WEBHOOK_SHIPPINGRATES_FETCH => 'handleShippingRatesFetch',
+        self::WEBHOOK_ORDER_STATUS_CHANGED => 'handleOrderStatusChange',
+        self::WEBHOOK_ORDER_PAYMENT_STATUS_CHANGED => 'handleOrderPaymentStatusChange',
         self::WEBHOOK_ORDER_TRACKING_NUMBER_CHANGED => 'handleOrderTrackingNumberChange',
-        self::WEBHOOK_SUBSCRIPTION_CREATED          => 'handleSubscriptionCreated',
-        self::WEBHOOK_SUBSCRIPTION_CANCELLED        => 'handleSubscriptionCancelled',
-        self::WEBHOOK_SUBSCRIPTION_PAUSED           => 'handleSubscriptionPaused',
-        self::WEBHOOK_SUBSCRIPTION_RESUMED          => 'handleSubscriptionResumed',
-        self::WEBHOOK_SUBSCRIPTION_INVOICE_CREATED  => 'handleSubscriptionInvoiceCreated',
-        self::WEBHOOK_TAXES_CALCULATE               => 'handleTaxesCalculate',
-        self::WEBHOOK_CUSTOMER_UPDATED              => 'handleCustomerUpdated',
-        self::WEBHOOK_REFUND_CREATED                => 'handleRefundCreated',
-        self::WEBHOOK_NOTIFICATION_CREATED          => 'handleNotificationCreated',
+        self::WEBHOOK_SUBSCRIPTION_CREATED => 'handleSubscriptionCreated',
+        self::WEBHOOK_SUBSCRIPTION_CANCELLED => 'handleSubscriptionCancelled',
+        self::WEBHOOK_SUBSCRIPTION_PAUSED => 'handleSubscriptionPaused',
+        self::WEBHOOK_SUBSCRIPTION_RESUMED => 'handleSubscriptionResumed',
+        self::WEBHOOK_SUBSCRIPTION_INVOICE_CREATED => 'handleSubscriptionInvoiceCreated',
+        self::WEBHOOK_TAXES_CALCULATE => 'handleTaxesCalculate',
+        self::WEBHOOK_CUSTOMER_UPDATED => 'handleCustomerUpdated',
+        self::WEBHOOK_REFUND_CREATED => 'handleRefundCreated',
+        self::WEBHOOK_NOTIFICATION_CREATED => 'handleNotificationCreated',
     ];
 
     /**
-     * @inheritdoc
      * @var bool Disable CSRF for this controller
      */
     public $enableCsrfValidation = false;
 
     /**
-     * @inheritdoc
      * @var bool allow all endpoints in this controller to be used publicly
      */
-    protected $allowAnonymous = true;
+    protected array|int|bool $allowAnonymous = true;
 
-    /**
-     * @var bool
-     */
-    private static $validateWebhook = true;
+    private static bool $validateWebhook = true;
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -91,7 +96,6 @@ class WebhooksController extends Controller
     /**
      * Validates and responds to the post request.
      *
-     * @return Response
      * @throws BadRequestHttpException if method isn't post or if something's
      *                                 wrong with the post itself.
      * @throws Exception if the mapped handler method doesn't exist.
@@ -104,7 +108,9 @@ class WebhooksController extends Controller
         $payload = Json::decode($requestBody, false);
 
         if ($reason = $this->hasInvalidRequestData($payload)) {
-            return $this->badRequestResponse(['reason' => $reason ]);
+            return $this->badRequestResponse([
+                'reason' => $reason,
+            ]);
         }
 
         Snipcart::$plugin->webhooks->setData($payload);
@@ -116,7 +122,6 @@ class WebhooksController extends Controller
      * Sends the webhook’s POST payload to the appropriate handler method.
      *
      * @param string $eventName    Event name from `WEBHOOK_EVENT_MAP`.
-     * @return Response
      * @throws Exception if the mapped handler method doesn’t exist.
      */
     private function handleWebhookData($eventName): Response
@@ -145,18 +150,16 @@ class WebhooksController extends Controller
      * Returns a 400 response with an optional JSON error array.
      *
      * @param  array  $errors Array of errors that explain the 400 response
-     *
-     * @return Response
      */
     private function badRequestResponse(array $errors): Response
     {
         $response = Craft::$app->getResponse();
 
-        $response->format  = Response::FORMAT_JSON;
+        $response->format = Response::FORMAT_JSON;
         $response->content = json_encode([
             'success' => false,
-            'errors' => $errors
-        ]);
+            'errors' => $errors,
+        ], JSON_THROW_ON_ERROR);
 
         $response->setStatusCode(400, 'Bad Request');
 
@@ -167,10 +170,9 @@ class WebhooksController extends Controller
      * Make sure we don’t have invalid data, or return a reason if we do.
      *
      * @param mixed $payload Decoded post payload to be checked.
-     * @return bool|string
      * @throws BadRequestHttpException if there's a problem with the token.
      */
-    private function hasInvalidRequestData($payload)
+    private function hasInvalidRequestData(mixed $payload): bool|string
     {
         /**
          * Reject requests that can’t be validated.
@@ -183,7 +185,7 @@ class WebhooksController extends Controller
          * Every Snipcart post should have an eventName, so we’ve got
          * missing data or a bad format.
          */
-        if ($payload === null || !isset($payload->eventName)) {
+        if ($payload === null || ! isset($payload->eventName)) {
             return 'NULL request body or missing eventName.';
         }
 
@@ -236,7 +238,7 @@ class WebhooksController extends Controller
      */
     private function requestIsValid(): bool
     {
-        $key     = 'x-snipcart-requesttoken';
+        $key = 'x-snipcart-requesttoken';
         $headers = Craft::$app->getRequest()->getHeaders();
         $devMode = Craft::$app->getConfig()->general->devMode;
 
@@ -261,5 +263,4 @@ class WebhooksController extends Controller
 
         return Snipcart::$plugin->api->tokenIsValid($token);
     }
-
 }

@@ -2,13 +2,15 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
-class PaymentSchedule extends \craft\base\Model
+use craft\base\Model;
+
+class PaymentSchedule extends Model
 {
     /**
      * @var string|bool
@@ -30,9 +32,6 @@ class PaymentSchedule extends \craft\base\Model
      */
     public $startsOn;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['startsOn'];
@@ -50,25 +49,23 @@ class PaymentSchedule extends \craft\base\Model
      * - `2 weeks`
      * - `3 months`
      * - `year`
-     *
-     * @return string
      */
     public function getIntervalLabel(): string
     {
-        if (!$this->intervalCount) {
-            return "";
+        if ($this->intervalCount === 0) {
+            return '';
         }
 
-        $label = "";
+        $label = '';
 
         if ($this->intervalCount > 1) {
-            $label .= $this->intervalCount . " ";
+            $label .= $this->intervalCount . ' ';
         }
 
         $label .= strtolower($this->interval);
 
         if ($this->intervalCount !== 1) {
-            $label .= "s";
+            $label .= 's';
         }
 
         return $label;

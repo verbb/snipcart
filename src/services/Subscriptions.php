@@ -2,15 +2,16 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\services;
 
-use fostercommerce\snipcart\Snipcart;
+use craft\base\Component;
 use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\models\snipcart\Subscription;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Class Subscriptions
@@ -19,7 +20,7 @@ use fostercommerce\snipcart\models\snipcart\Subscription;
  *
  * @package fostercommerce\snipcart\services
  */
-class Subscriptions extends \craft\base\Component
+class Subscriptions extends Component
 {
     /**
      * Lists subscriptions.
@@ -35,13 +36,13 @@ class Subscriptions extends \craft\base\Component
      *              ->limit (int)
      * @throws \Exception when there isn't an API key to authenticate requests.
      */
-    public function listSubscriptions($page = 1, $limit = 20, $params = []): \stdClass
+    public function listSubscriptions($page = 1, $limit = 20, array $params = []): \stdClass
     {
         /**
          * Define offset and limit since that's pretty much all we're doing here.
          */
         $params['offset'] = ($page - 1) * $limit;
-        $params['limit']  = $limit;
+        $params['limit'] = $limit;
 
         $response = Snipcart::$plugin->api->get(
             'subscriptions',
@@ -54,8 +55,8 @@ class Subscriptions extends \craft\base\Component
                 Subscription::class
             ),
             'totalItems' => $response->totalItems,
-            'offset'     => $response->offset,
-            'limit'      => $limit
+            'offset' => $response->offset,
+            'limit' => $limit,
         ];
     }
 
@@ -74,7 +75,7 @@ class Subscriptions extends \craft\base\Component
             $subscriptionId
         ))) {
             return ModelHelper::safePopulateModel(
-                (array)$subscriptionData,
+                (array) $subscriptionData,
                 Subscription::class
             );
         }
@@ -87,7 +88,6 @@ class Subscriptions extends \craft\base\Component
      *
      * @param $subscriptionId
      *
-     * @return array
      * @throws \Exception
      */
     public function getSubscriptionInvoices($subscriptionId): array

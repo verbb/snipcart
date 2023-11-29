@@ -2,27 +2,35 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
+
 /**
  * https://docs.snipcart.com/v2/api-reference/discounts
  */
-
-class Discount extends \craft\base\Model
+class Discount extends Model
 {
-    const TRIGGER_CODE = 'Code';
-    const TRIGGER_TOTAL = 'Total';
-    const TRIGGER_PRODUCT = 'Product';
+    public const TRIGGER_CODE = 'Code';
 
-    const TYPE_FIXED_AMOUNT = 'FixedAmount';
-    const TYPE_FIXED_AMOUNT_ON_ITEMS = 'FixedAmountOnItems';
-    const TYPE_RATE = 'Rate';
-    const TYPE_ALTERNATE_PRICE = 'AlternatePrice';
-    const TYPE_ALTERNATE_SHIPPING = 'Shipping';
+    public const TRIGGER_TOTAL = 'Total';
+
+    public const TRIGGER_PRODUCT = 'Product';
+
+    public const TYPE_FIXED_AMOUNT = 'FixedAmount';
+
+    public const TYPE_FIXED_AMOUNT_ON_ITEMS = 'FixedAmountOnItems';
+
+    public const TYPE_RATE = 'Rate';
+
+    public const TYPE_ALTERNATE_PRICE = 'AlternatePrice';
+
+    public const TYPE_ALTERNATE_SHIPPING = 'Shipping';
 
     /**
      * @var string "2223490d-84c1-480c-b713-50cb0b819313"
@@ -263,30 +271,30 @@ class Discount extends \craft\base\Model
      */
     public $savedAmount;
 
-    private $_triggerOptionFieldMap = [
+    private array $_triggerOptionFieldMap = [
         self::TRIGGER_CODE => [
-            'code'
+            'code',
         ],
         self::TRIGGER_TOTAL => [
-            'totalToReach'
+            'totalToReach',
         ],
         self::TRIGGER_PRODUCT => [
-            'itemId'
+            'itemId',
         ],
     ];
 
-    private $_typeOptionFieldMap = [
+    private array $_typeOptionFieldMap = [
         self::TYPE_FIXED_AMOUNT => [
-            'amount'
+            'amount',
         ],
         self::TYPE_FIXED_AMOUNT_ON_ITEMS => [
-            'productIds'
+            'productIds',
         ],
         self::TYPE_RATE => [
-            'rate'
+            'rate',
         ],
         self::TYPE_ALTERNATE_PRICE => [
-            'alternatePrice'
+            'alternatePrice',
         ],
         self::TYPE_ALTERNATE_SHIPPING => [
             'shippingDescription',
@@ -295,24 +303,24 @@ class Discount extends \craft\base\Model
         ],
     ];
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['expires'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
             [['name', 'trigger', 'code', 'itemId', 'type', 'productIds', 'shippingDescription'], 'string'],
             [['name', 'trigger', 'type'], 'required'],
-            [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'], 'number', 'integerOnly' => true],
-            [['totalToReach', 'amount', 'amountSaved', 'rate', 'alternatePrice', 'shippingCost'], 'number', 'integerOnly' => false],
+            [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [['totalToReach', 'amount', 'amountSaved', 'rate', 'alternatePrice', 'shippingCost'],
+                'number',
+                'integerOnly' => false,
+            ],
         ];
     }
 
@@ -321,8 +329,6 @@ class Discount extends \craft\base\Model
      * once it's clear how to get them working.
      *
      * @param bool $isNew  true if this is a new Discount record
-     *
-     * @return array
      */
     public function getPayloadForPost($isNew = true): array
     {
@@ -354,8 +360,6 @@ class Discount extends \craft\base\Model
 
     /**
      * Gets a list of field options relevant to the selected trigger.
-     *
-     * @return array
      */
     public function getTriggerOptionFields(): array
     {
@@ -364,8 +368,6 @@ class Discount extends \craft\base\Model
 
     /**
      * Gets a list of discount field options relevant to the selected type.
-     *
-     * @return array
      */
     public function getTypeOptionFields(): array
     {
@@ -374,22 +376,17 @@ class Discount extends \craft\base\Model
 
     /**
      * Returns the Craft control panel URL for the detail page.
-     *
-     * @return string
      */
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/discount/' . $this->id);
+        return UrlHelper::cpUrl('snipcart/discount/' . $this->id);
     }
 
     /**
      * Returns the Snipcart dashboard URL for the discount.
-     *
-     * @return string
      */
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;
     }
-
 }

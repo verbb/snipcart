@@ -11,10 +11,7 @@ use fostercommerce\snipcart\db\Table;
  */
 class m200921_165936_webhook_types extends Migration
 {
-    /**
-     * @inheritdoc
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         if ($this->getDb()->tableExists(Table::WEBHOOK_LOG)) {
             /**
@@ -29,10 +26,7 @@ class m200921_165936_webhook_types extends Migration
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200921_165936_webhook_types cannot be reverted.\n";
         return false;

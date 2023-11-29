@@ -2,7 +2,7 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2019 Working Concept Inc.
  */
 
@@ -23,10 +23,9 @@ class FormatHelper
      * @param string $currencyType Optional string representing desired currency
      *                             to be explicitly set.
      *
-     * @return string
      * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
      */
-    public static function formatCurrency($value, $currencyType = null): string
+    public static function formatCurrency(mixed $value, $currencyType = null): string
     {
         if (is_string($value)) {
             $includesSymbol = self::containsSupportedCurrencySymbol($value);
@@ -57,23 +56,21 @@ class FormatHelper
      *
      * @param  string       $value
      * @param  string|null  $currencyType
-     *
-     * @return bool
      */
     public static function containsSupportedCurrencySymbol($value, $currencyType = null): bool
     {
         $supportedSymbols = Settings::getCurrencySymbols();
 
         if ($currencyType) {
-            if ( ! array_key_exists($currencyType, $supportedSymbols)) {
+            if (! array_key_exists($currencyType, $supportedSymbols)) {
                 return false;
             }
 
-            return strpos($value, $supportedSymbols[$currencyType]) !== false;
+            return str_contains($value, $supportedSymbols[$currencyType]);
         }
 
         foreach ($supportedSymbols as $currency => $symbol) {
-            if (strpos($value, $symbol) !== false) {
+            if (str_contains($value, $symbol)) {
                 return true;
             }
         }
@@ -90,15 +87,11 @@ class FormatHelper
      * - `12d`
      * - `2h` or `1h`
      * - `<1h` (no minutes or seconds)
-     *
-     * @param  \DateTime  $date
-     *
-     * @return string
      */
-    public static function tinyDateInterval(\DateTime $date): string
+    public static function tinyDateInterval(\DateTime $dateTime): string
     {
-        $now = new DateTimeImmutable();
-        $interval = $now->diff($date);
+        $dateTimeImmutable = new DateTimeImmutable();
+        $interval = $dateTimeImmutable->diff($dateTime);
 
         if ($interval->y > 0) {
             return $interval->y . 'y';
@@ -126,10 +119,11 @@ class FormatHelper
      *
      * @return string|string[]|null
      */
-    private static function normalizeCurrencyValue($value) {
+    private static function normalizeCurrencyValue($value): string|array|null
+    {
         return preg_replace(
             "/[^0-9\.]/",
-            "",
+            '',
             $value
         );
     }

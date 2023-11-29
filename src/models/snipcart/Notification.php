@@ -2,34 +2,48 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+
 /**
  * https://docs.snipcart.com/v2/api-reference/notifications
  */
-
-class Notification extends \craft\base\Model
+class Notification extends Model
 {
-    const TYPE_INVOICE               = 'Invoice';
-    const TYPE_COMMENT               = 'Comment';
-    const TYPE_TRACKING_NUMBER       = 'TrackingNumber';
-    const TYPE_ORDER_CANCELLED       = 'OrderCancelled';
-    const TYPE_REFUND                = 'Refund';
-    const TYPE_ORDER_SHIPPED         = 'OrderShipped';
-    const TYPE_ORDER_RECEIVED        = 'OrderReceived';
-    const TYPE_ORDER_PAYMENT_EXPIRED = 'OrderPaymentExpired';
-    const TYPE_ORDER_STATUS_CHANGED  = 'OrderStatusChanged';
-    const TYPE_RECOVERY_CAMPAIGN     = 'RecoveryCampaign';
-    const TYPE_DIGITAL_DOWNLOAD      = 'DigitalDownload';
-    const TYPE_LOGS                  = 'Logs';
-    const TYPE_OTHER                 = 'Other';
+    public const TYPE_INVOICE = 'Invoice';
 
-    const DELIVERY_METHOD_EMAIL = 'Email';
-    const DELIVERY_METHOD_NONE  = 'None';
+    public const TYPE_COMMENT = 'Comment';
+
+    public const TYPE_TRACKING_NUMBER = 'TrackingNumber';
+
+    public const TYPE_ORDER_CANCELLED = 'OrderCancelled';
+
+    public const TYPE_REFUND = 'Refund';
+
+    public const TYPE_ORDER_SHIPPED = 'OrderShipped';
+
+    public const TYPE_ORDER_RECEIVED = 'OrderReceived';
+
+    public const TYPE_ORDER_PAYMENT_EXPIRED = 'OrderPaymentExpired';
+
+    public const TYPE_ORDER_STATUS_CHANGED = 'OrderStatusChanged';
+
+    public const TYPE_RECOVERY_CAMPAIGN = 'RecoveryCampaign';
+
+    public const TYPE_DIGITAL_DOWNLOAD = 'DigitalDownload';
+
+    public const TYPE_LOGS = 'Logs';
+
+    public const TYPE_OTHER = 'Other';
+
+    public const DELIVERY_METHOD_EMAIL = 'Email';
+
+    public const DELIVERY_METHOD_NONE = 'None';
 
     /**
      * @var string "0c3ac0bb-a94a-45c5-a4d8-a7934a7f180a"
@@ -98,9 +112,6 @@ class Notification extends \craft\base\Model
      */
     public $resourceUrl;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['creationDate', 'sentByEmailOn', 'sentOn'];
@@ -128,5 +139,4 @@ class Notification extends \craft\base\Model
             self::TYPE_OTHER,
         ];
     }
-
 }

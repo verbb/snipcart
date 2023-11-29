@@ -141,14 +141,20 @@
                                 <th scope="col">{{ "Total"|t }}</th>
                             </thead>
                             <tbody>
-                                {% for order in orders.items %}
-                                    <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
-                                        <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
-                                        <td>{{ craft.snipcart.tinyDateInterval(order.completionDate) }} {{ "ago"|t }}</td>
-                                        <td>{{ order.billingAddress.name }}</td>
-                                        <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
+                                {% if orders %}
+                                    {% for order in orders.items %}
+                                        <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
+                                            <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
+                                            <td>{{ craft.snipcart.tinyDateInterval(order.completionDate) }} {{ "ago"|t }}</td>
+                                            <td>{{ order.billingAddress.name }}</td>
+                                            <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4">{{ "No orders found."|t }}</td>
                                     </tr>
-                                {% endfor %}
+                                {% endif %}
                             </tbody>
                         </table>
 
@@ -166,13 +172,19 @@
                                 <th scope="col">{{ "Total Spent"|t }}</th>
                             </thead>
                             <tbody>
-                            {% for customer in customers.items %}
-                                <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
-                                    <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
-                                    <td>{{ customer.statistics.ordersCount }}</td>
-                                    <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount, craft.snipcart.defaultCurrency) }}</td>
+                            {% if customers %}
+                                {% for customer in customers.items %}
+                                    <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
+                                        <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
+                                        <td>{{ customer.statistics.ordersCount }}</td>
+                                        <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount, craft.snipcart.defaultCurrency) }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3">{{ "No customers found."|t }}</td>
                                 </tr>
-                            {% endfor %}
+                            {% endif %}
                             </tbody>
                         </table>
 

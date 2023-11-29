@@ -10,10 +10,7 @@ use fostercommerce\snipcart\db\Table;
  */
 class m190304_034411_allow_null_sku extends Migration
 {
-    /**
-     * @inheritdoc
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         if ($this->getDb()->tableExists(Table::PRODUCT_DETAILS)) {
             /**
@@ -29,9 +26,6 @@ class m190304_034411_allow_null_sku extends Migration
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown(): bool
     {
         echo "m190304_034411_allow_null_sku cannot be reverted.\n";

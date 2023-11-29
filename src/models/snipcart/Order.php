@@ -2,15 +2,18 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
 use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
 use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
 use fostercommerce\snipcart\helpers\ModelHelper;
+use fostercommerce\snipcart\Snipcart;
 
 /**
  * Snipcart Order model
@@ -46,153 +49,83 @@ use fostercommerce\snipcart\helpers\ModelHelper;
  * @property string $shippingAddressPhone
  * @property string $dashboardUrl
  */
-class Order extends \craft\base\Model
+class Order extends Model
 {
-    const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
-    const PAYMENT_STATUS_PAID = 'Paid';
+    public const PAYMENT_METHOD_CREDIT_CARD = 'CreditCard';
 
-    const STATUS_IN_PROGRESS = 'InProgress';
-    const STATUS_PROCESSED = 'Processed';
-    const STATUS_DISPUTED = 'Disputed';
-    const STATUS_SHIPPPED = 'Shipped';
-    const STATUS_DELIVERED = 'Delivered';
-    const STATUS_PENDING = 'Pending';
-    const STATUS_CANCELLED = 'Cancelled';
+    public const PAYMENT_STATUS_PAID = 'Paid';
 
-    /**
-     * @var string
-     */
-    public $token;
+    public const STATUS_IN_PROGRESS = 'InProgress';
+
+    public const STATUS_PROCESSED = 'Processed';
+
+    public const STATUS_DISPUTED = 'Disputed';
+
+    public const STATUS_SHIPPPED = 'Shipped';
+
+    public const STATUS_DELIVERED = 'Delivered';
+
+    public const STATUS_PENDING = 'Pending';
+
+    public const STATUS_CANCELLED = 'Cancelled';
+
+    public string $token;
 
     /**
      * @var string|null
      */
-    public $parentToken;
+    public string $parentToken;
 
     /**
      * @var \DateTime Date order was created. ("2018-12-05T18:37:19Z")
      */
-    public $creationDate;
+    public \DateTime $creationDate;
 
     /**
-     * @var \DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
+     * @var ?\DateTime Date order was last modified. ("2018-12-05T18:37:19Z")
      */
-    public $modificationDate;
+    public ?\DateTime $modificationDate = null;
 
     /**
-     * @var \DateTime Date the order was completed.
+     * @var ?\DateTime Date the order was completed.
      */
-    public $completionDate;
+    public ?\DateTime $completionDate = null;
 
     /**
      * @var string Order status.
      */
-    public $status;
+    public string $status;
 
-    /**
-     * @var string
-     */
-    public $paymentStatus;
+    public string $paymentStatus;
 
-    /**
-     * @var string
-     */
-    public $paymentMethod;
+    public string $paymentMethod;
 
-    /**
-     * @var string
-     */
-    public $invoiceNumber;
+    public string $invoiceNumber;
 
-    /**
-     * @var string
-     */
-    public $parentInvoiceNumber;
+    public string $parentInvoiceNumber;
 
-    /**
-     * @var string
-     */
-    public $email;
+    public string $email;
 
-    /**
-     * @var Customer|null
-     */
-    private $_user;
-
-    /**
-     * @var string
-     */
-    public $cardHolderName;
+    public string $cardHolderName;
 
     /**
      * @var
      */
-    public $creditCardLast4Digits;
+    public string $creditCardLast4Digits;
 
-    /**
-     * @var Address
-     */
-    private $_billingAddress;
+    public string $notes;
 
-    /**
-     * @var Address
-     */
-    private $_shippingAddress;
+    public bool $shippingAddressSameAsBilling;
 
-    /**
-     * @var string
-     */
-    public $notes;
+    public bool $isRecurringOrder;
 
-    /**
-     * @var bool
-     */
-    public $shippingAddressSameAsBilling;
+    public float $finalGrandTotal;
 
-    /**
-     * @var bool
-     */
-    public $isRecurringOrder;
+    public float $shippingFees;
 
-    /**
-     * @var float
-     */
-    public $finalGrandTotal;
+    public string $shippingMethod;
 
-    /**
-     * @var float
-     */
-    public $shippingFees;
-
-    /**
-     * @var string
-     */
-    public $shippingMethod;
-
-    /**
-     * @var Discount[]
-     */
-    private $_discounts = [];
-
-    /**
-     * @var Plan[]
-     */
-    private $_plans = [];
-
-    /**
-     * @var Item[]
-     */
-    private $_items = [];
-
-    /**
-     * @var Refund[]
-     */
-    private $_refunds = [];
-
-    /**
-     * @var array
-     */
-    public $taxes;
+    public array $taxes = [];
 
     /**
      * @var
@@ -415,8 +348,34 @@ class Order extends \craft\base\Model
     public $paymentDetails;
 
     /**
-     * @return array
+     * @var Customer|null
      */
+    private mixed $_user;
+
+    private Address $_billingAddress;
+
+    private Address $_shippingAddress;
+
+    /**
+     * @var Discount[]
+     */
+    private array $_discounts = [];
+
+    /**
+     * @var Plan[]
+     */
+    private array $_plans = [];
+
+    /**
+     * @var Item[]
+     */
+    private array $_items = [];
+
+    /**
+     * @var Refund[]
+     */
+    private array $_refunds = [];
+
     public function getDiscounts(): array
     {
         return $this->_discounts;
@@ -424,16 +383,12 @@ class Order extends \craft\base\Model
 
     /**
      * @param $discounts
-     * @return mixed
      */
-    public function setDiscounts($discounts)
+    public function setDiscounts(array $discounts): mixed
     {
         return $this->_discounts = $discounts;
     }
 
-    /**
-     * @return array
-     */
     public function getItems(): array
     {
         return $this->_items;
@@ -441,9 +396,8 @@ class Order extends \craft\base\Model
 
     /**
      * @param mixed[] $items
-     * @return array|null
      */
-    public function setItems($items)
+    public function setItems(array $items): ?array
     {
         foreach ($items as &$item) {
             if (! $item instanceof Item) {
@@ -459,9 +413,6 @@ class Order extends \craft\base\Model
         return $this->_items = $items;
     }
 
-    /**
-     * @return array
-     */
     public function getPlans(): array
     {
         return $this->_plans;
@@ -469,16 +420,12 @@ class Order extends \craft\base\Model
 
     /**
      * @param $plans
-     * @return mixed
      */
-    public function setPlans($plans)
+    public function setPlans(array $plans): mixed
     {
         return $this->_plans = $plans;
     }
 
-    /**
-     * @return array
-     */
     public function getRefunds(): array
     {
         return $this->_refunds;
@@ -486,9 +433,8 @@ class Order extends \craft\base\Model
 
     /**
      * @param $refunds
-     * @return mixed
      */
-    public function setRefunds($refunds)
+    public function setRefunds(array $refunds): mixed
     {
         return $this->_refunds = $refunds;
     }
@@ -496,34 +442,46 @@ class Order extends \craft\base\Model
     /**
      * @return Customer|null
      */
-    public function getUser()
+    public function getUser(): Customer
     {
         return $this->_user;
     }
 
     /**
      * @param $user
-     * @return mixed
      */
-    public function setUser($user)
+    public function setUser(mixed $user): mixed
     {
-        return $this->_user = $user;
-    }
+        if ($user === null) {
+            return null;
+        }
 
+        if (gettype($user) === 'object') {
+            $user = (array) $user;
+        }
+
+        // added a bit to get a user element based on the email passed in from $user as it is an array
+        $craftUser = \Craft::$app->users->getUserByUsernameOrEmail($user['email']);
+        return $this->_user = $craftUser;
+    }
 
     /**
      * @param Address|array $address
      * @return Address
      */
-    public function setBillingAddress($address): Address
+    public function setBillingAddress($address): ?Address
     {
         if (! $address instanceof Address) {
+            if ($address === null) {
+                $address = [];
+            }
+
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
             );
 
-            $address = new Address($addrData);
+            $address = new Address((array) $addrData);
         }
 
         return $this->_billingAddress = $address;
@@ -533,36 +491,35 @@ class Order extends \craft\base\Model
      * @param Address|array $address
      * @return Address
      */
-    public function setShippingAddress($address): Address
+    public function setShippingAddress($address): ?Address
     {
         if (! $address instanceof Address) {
+            if ($address === null) {
+                $address = [];
+            }
+
             $addrData = ModelHelper::stripUnknownProperties(
                 $address,
                 Address::class
             );
-
-            $address = new Address($addrData);
+            $addressModel = new Address((array) $addrData);
         }
 
-        return $this->_shippingAddress = $address;
+        return $this->_shippingAddress = $addressModel;
     }
 
     /**
      * Returns the Craft control panel URL for the detail page.
-     *
-     * @return string
      */
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/order/' . $this->token);
+        return UrlHelper::cpUrl('snipcart/order/' . $this->token);
     }
 
     /**
      * Returns the URL for the order in the Snipcart customer dashboard.
-     *
-     * @return string|null
      */
-    public function getDashboardUrl()
+    public function getDashboardUrl(): ?string
     {
         if (! isset($this->token)) {
             return null;
@@ -574,8 +531,6 @@ class Order extends \craft\base\Model
     /**
      * Returns `true` if order items contain at least one OrderItem with
      * a `shippable` property that's `true.
-     *
-     * @return bool
      */
     public function hasShippableItems(): bool
     {
@@ -588,9 +543,6 @@ class Order extends \craft\base\Model
         return false;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['creationDate', 'modificationDate', 'completionDate'];
@@ -607,19 +559,16 @@ class Order extends \craft\base\Model
         $behaviors = parent::behaviors();
 
         $behaviors['billingAddress'] = [
-            'class' => BillingAddressBehavior::class
+            'class' => BillingAddressBehavior::class,
         ];
 
         $behaviors['shippingAddress'] = [
-            'class' => ShippingAddressBehavior::class
+            'class' => ShippingAddressBehavior::class,
         ];
 
         return $behaviors;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
@@ -650,23 +599,23 @@ class Order extends \craft\base\Model
                 'recoveredFromCampaignId',
                 'trackingNumber',
                 'trackingUrl',
-             ], 'string'],
+            ], 'string'],
             [[
                 'shippingAddressSameAsBilling',
                 'willBePaidLater',
                 'billingAddressComplete',
                 'shippingAddressComplete',
                 'shippingMethodComplete',
-                'isRecurringOrder'
-             ], 'boolean'],
+                'isRecurringOrder',
+            ], 'boolean'],
             //[['creationDate', 'modificationDate', 'completionDate'], 'date', 'format' => 'php:c'],
-            [['finalGrandTotal', 'shippingFees', 'rebateAmount'], 'number', 'integerOnly' => false],
+            [['finalGrandTotal', 'shippingFees', 'rebateAmount'],
+                'number',
+                'integerOnly' => false,
+            ],
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function extraFields(): array
     {
         return [
@@ -697,8 +646,7 @@ class Order extends \craft\base\Model
             'shippingAddressProvince',
             'shippingAddressPostalCode',
             'shippingAddressPhone',
-            'cpUrl'
+            'cpUrl',
         ];
     }
-
 }

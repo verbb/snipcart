@@ -2,12 +2,13 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\shipstation;
 
+use craft\base\Model;
 use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
@@ -19,7 +20,7 @@ use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
  * @property Weight|null $weight
  * @property ItemOption[]|null $options
  */
-class OrderItem extends \craft\base\Model
+class OrderItem extends Model
 {
     /**
      * @var int|null The system generated identifier for the OrderItem. This is a read-only field.
@@ -47,11 +48,6 @@ class OrderItem extends \craft\base\Model
     public $imageUrl;
 
     /**
-     * @var Weight|null
-     */
-    private $_weight;
-
-    /**
      * @var int|null The quantity of product ordered.
      */
     public $quantity;
@@ -75,11 +71,6 @@ class OrderItem extends \craft\base\Model
      * @var string|null The location of the product within the seller's warehouse (e.g. Aisle 3, Shelf A, Bin 5)
      */
     public $warehouseLocation;
-
-    /**
-     * @var ItemOption[]|null
-     */
-    private $_options;
 
     /**
      * @var int|null The identifier for the Product Resource associated with this OrderItem.
@@ -113,6 +104,16 @@ class OrderItem extends \craft\base\Model
      * `modifyDate` will equal `createDate` until a modification is made. Read-Only.
      */
     public $modifyDate;
+
+    /**
+     * @var Weight|null
+     */
+    private $_weight;
+
+    /**
+     * @var ItemOption[]|null
+     */
+    private $_options;
 
     /**
      * Returns the item’s weight.
@@ -160,7 +161,7 @@ class OrderItem extends \craft\base\Model
      *
      * @param ItemOption[]|null $options The item’s options.
      */
-    public function setOptions($options)
+    public function setOptions($options): void
     {
         $this->_options = $options ?? [];
     }
@@ -169,10 +170,8 @@ class OrderItem extends \craft\base\Model
      * Populate model from Item.
      *
      * @param SnipcartItem $item
-     *
-     * @return OrderItem
      */
-    public static function populateFromSnipcartItem($item): OrderItem
+    public static function populateFromSnipcartItem($item): self
     {
         if (! empty($item->customFields)) {
             $itemOptions = [];
@@ -188,41 +187,40 @@ class OrderItem extends \craft\base\Model
             'quantity' => $item->quantity,
             'unitPrice' => $item->unitPrice,
             'weight' => Weight::populateFromSnipcartItem($item),
-            'options' => $itemOptions ?? null
+            'options' => $itemOptions ?? null,
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['createDate', 'modifyDate'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function fields(): array
     {
         $fields = array_keys(\Yii::getObjectVars($this));
-        $fields = array_merge($fields, ['weight', 'options']);
+        $fields = [...$fields, 'weight', 'options'];
         return array_combine($fields, $fields);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['orderItemId', 'quantity', 'productId'], 'number', 'integerOnly' => true],
-            [['unitPrice', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
-            [['lineItemKey', 'sku', 'name', 'warehouseLocation', 'fulfillmentSku', 'upc', 'createDate', 'modifyDate'], 'string', 'max' => 255],
+            [['orderItemId', 'quantity', 'productId'],
+                'number',
+                'integerOnly' => true,
+            ],
+            [['unitPrice', 'taxAmount', 'shippingAmount'],
+                'number',
+                'integerOnly' => false,
+            ],
+            [['lineItemKey', 'sku', 'name', 'warehouseLocation', 'fulfillmentSku', 'upc', 'createDate', 'modifyDate'],
+                'string',
+                'max' => 255,
+            ],
             [['name'], 'required'],
             [['imageUrl'], 'url'],
             [['adjustment'], 'boolean'],
         ];
     }
-
 }

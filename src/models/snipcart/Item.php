@@ -2,17 +2,17 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
-use fostercommerce\snipcart\models\snipcart\PaymentSchedule;
+use craft\base\Model;
+use craft\elements\MatrixBlock;
 use fostercommerce\snipcart\helpers\ModelHelper;
 use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
-use craft\elements\MatrixBlock;
 
 /**
  * Class Item
@@ -21,7 +21,7 @@ use craft\elements\MatrixBlock;
  *
  * @property PaymentSchedule|null $paymentSchedule
  */
-class Item extends \craft\base\Model
+class Item extends Model
 {
     /**
      * @var string Snipcart's own unique ID for the item.
@@ -212,7 +212,7 @@ class Item extends \craft\base\Model
      * @var
      */
     public $hasTaxesIncluded;
-    
+
     /**
      * @var
      */
@@ -233,22 +233,13 @@ class Item extends \craft\base\Model
      */
     public $cancellationAction;
 
-    /**
-     * @var PaymentSchedule
-     */
-    private $paymentSchedule;
+    private ?PaymentSchedule $paymentSchedule = null;
 
-    /**
-     * @inheritdoc
-     */
     public function datetimeAttributes(): array
     {
         return ['modificationDate'];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function extraFields(): array
     {
         return ['paymentSchedule'];
@@ -265,14 +256,16 @@ class Item extends \craft\base\Model
     public function getRelatedElement($entryOnly = false)
     {
         // get related record by SKU
-        if (! $record = ProductDetailsRecord::findOne([ 'sku' => $this->id ])) {
+        if (! ($record = ProductDetailsRecord::findOne([
+            'sku' => $this->id,
+        ])) instanceof ProductDetailsRecord) {
             // bail without a Record, which can happen if the product's details
             // aren't stored in our Product Details field type
             return null;
         }
 
         if ($element = \Craft::$app->getElements()->getElementById($record->elementId)) {
-            $isMatrix = $element && get_class($element) === MatrixBlock::class;
+            $isMatrix = $element && $element instanceof MatrixBlock;
 
             if ($isMatrix && $entryOnly) {
                 return $element->getOwner();
@@ -295,14 +288,12 @@ class Item extends \craft\base\Model
 
     /**
      * @param PaymentSchedule|array|null $paymentSchedule
-     * @return PaymentSchedule|null
      */
-    public function setPaymentSchedule($paymentSchedule)
+    public function setPaymentSchedule($paymentSchedule): ?PaymentSchedule
     {
         if ($paymentSchedule === null) {
             return $this->paymentSchedule = null;
         }
-
 
         if (! $paymentSchedule instanceof PaymentSchedule) {
             $paymentScheduleData = ModelHelper::stripUnknownProperties(

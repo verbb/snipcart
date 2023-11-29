@@ -1,3 +1,7 @@
 <p>
+  {% if order.billingAddress is null %}
+    <a href="mailto:{{ order.email }}">{{ order.email }}</a>
+  {% else %}
     {{ order.billingAddress.name }} (<a href="mailto:{{ order.email }}">{{ order.email }}</a>)
+  {% endif %}
 </p>

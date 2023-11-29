@@ -2,19 +2,26 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
+use craft\base\Model;
+use craft\helpers\UrlHelper;
+use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
+use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
+use fostercommerce\snipcart\helpers\ModelHelper;
+
 /**
  * https://docs.snipcart.com/v2/api-reference/abandoned-carts
- */
-
-class AbandonedCart extends \craft\base\Model
+ *
+ * @property Address $billingAddress
+ * @property Address $shippingAddress */
+class AbandonedCart extends Model
 {
-    const STATUS_IN_PROGRESS = 'InProgress';
+    public const STATUS_IN_PROGRESS = 'InProgress';
 
     /**
      * @var
@@ -57,19 +64,9 @@ class AbandonedCart extends \craft\base\Model
     public $shipToBillingAddress;
 
     /**
-     * @var
-     */
-    public $billingAddress;
-
-    /**
      * @var \DateTime
      */
     public $modificationDate;
-
-    /**
-     * @var
-     */
-    public $shippingAddress;
 
     /**
      * @var \DateTime
@@ -82,6 +79,7 @@ class AbandonedCart extends \craft\base\Model
     public $invoiceNumber;
 
     public $shippingInformation;
+
     /*
     "shippingInformation": {
       "provider": null,
@@ -93,6 +91,7 @@ class AbandonedCart extends \craft\base\Model
     public $paymentMethod;
 
     public $summary;
+
     /*
     summary": {
       "subtotal": 20,
@@ -304,21 +303,95 @@ class AbandonedCart extends \craft\base\Model
      */
     public $totalPriceWithoutDiscountsAndTaxes;
 
+    private ?Address $_billingAddress = null;
+
+    private ?Address $_shippingAddress = null;
+
+    public function getBillingAddress(): ?Address
+    {
+        return $this->_billingAddress;
+    }
+
+    public function getShippingAddress(): ?Address
+    {
+        return $this->_shippingAddress;
+    }
+
     /**
-     * @inheritdoc
+     * @param Address|array $address
+     * @return Address
      */
+    public function setBillingAddress($address): ?Address
+    {
+        if (! $address instanceof Address) {
+            if ($address === null) {
+                $address = [];
+            }
+
+            $addrData = ModelHelper::stripUnknownProperties(
+                $address,
+                Address::class
+            );
+
+            $address = new Address((array) $addrData);
+        }
+
+        return $this->_billingAddress = $address;
+    }
+
+    /**
+     * @param Address|array $address
+     * @return Address
+     */
+    public function setShippingAddress($address): ?Address
+    {
+        if (! $address instanceof Address) {
+            if ($address === null) {
+                $address = [];
+            }
+
+            $addrData = ModelHelper::stripUnknownProperties(
+                $address,
+                Address::class
+            );
+            $addressModel = new Address((array) $addrData);
+        }
+
+        return $this->_shippingAddress = $addressModel;
+    }
+
     public function datetimeAttributes(): array
     {
         return ['modificationDate', 'completionDate'];
     }
 
     /**
+     * @inheritdoc
+     *
+     * Proxy all our billingAddress* and shippingAddress* fields without having
+     * to use a whole bunch of getters and setters on this model.
+     */
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['billingAddress'] = [
+            'class' => BillingAddressBehavior::class,
+        ];
+
+        $behaviors['shippingAddress'] = [
+            'class' => ShippingAddressBehavior::class,
+        ];
+
+        return $behaviors;
+    }
+
+    /**
      * Returns the Craft control panel URL for the detail page.
-     * @return string
      */
     public function getCpUrl(): string
     {
-        return \craft\helpers\UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
+        return UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
     }
 
     public function getDashboardUrl(): string
@@ -326,4 +399,11 @@ class AbandonedCart extends \craft\base\Model
         return 'https://app.snipcart.com/dashboard/abandoned/' . $this->token;
     }
 
+    public function extraFields(): array
+    {
+        return [
+            'billingAddress',
+            'shippingAddress',
+        ];
+    }
 }

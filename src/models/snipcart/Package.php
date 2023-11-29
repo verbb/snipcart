@@ -2,20 +2,25 @@
 /**
  * Snipcart plugin for Craft CMS 3.x
  *
- * @link      https://workingconcept.com
+ * @link      https://fostercommerce.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
 
 namespace fostercommerce\snipcart\models\snipcart;
 
-class Package extends \craft\base\Model
-{
-    const WEIGHT_UNIT_GRAM = 'gram';
-    const WEIGHT_UNIT_POUND = 'pound';
-    const WEIGHT_UNIT_OUNCE = 'ounce';
+use craft\base\Model;
 
-    const DIMENSION_UNIT_INCH = 'inch';
-    const DIMENSION_UNIT_CENTIMETER = 'centimeter';
+class Package extends Model
+{
+    public const WEIGHT_UNIT_GRAM = 'gram';
+
+    public const WEIGHT_UNIT_POUND = 'pound';
+
+    public const WEIGHT_UNIT_OUNCE = 'ounce';
+
+    public const DIMENSION_UNIT_INCH = 'inch';
+
+    public const DIMENSION_UNIT_CENTIMETER = 'centimeter';
 
     /**
      * @var string Friendly slug for this packaging type.
@@ -52,24 +57,28 @@ class Package extends \craft\base\Model
      */
     public $dimensionUnit = self::DIMENSION_UNIT_INCH;
 
-    /**
-     * @inheritdoc
-     */
     public function rules(): array
     {
         return [
-            [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false],
+            [['length', 'width', 'height', 'weight'],
+                'number',
+                'integerOnly' => false,
+            ],
             [['name'], 'string'],
             [['name', 'length', 'width', 'height', 'weight'], 'required'],
-            [['weightUnit'], 'in', 'range' => [self::WEIGHT_UNIT_GRAM, self::WEIGHT_UNIT_POUND, self::WEIGHT_UNIT_OUNCE]],
-            [['dimensionUnit'], 'in', 'range' => [self::DIMENSION_UNIT_INCH, self::DIMENSION_UNIT_CENTIMETER]],
+            [['weightUnit'],
+                'in',
+                'range' => [self::WEIGHT_UNIT_GRAM, self::WEIGHT_UNIT_POUND, self::WEIGHT_UNIT_OUNCE],
+            ],
+            [['dimensionUnit'],
+                'in',
+                'range' => [self::DIMENSION_UNIT_INCH, self::DIMENSION_UNIT_CENTIMETER],
+            ],
         ];
     }
 
     /**
      * True if valid, non-zero length, width, and height are all present.
-     *
-     * @return bool
      */
     public function hasPhysicalDimensions(): bool
     {
@@ -77,5 +86,4 @@ class Package extends \craft\base\Model
             $this->width !== null && $this->width > 0 &&
             $this->height !== null && $this->height > 0;
     }
-
 }
