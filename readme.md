@@ -1,3 +1,19 @@
+> **🚨 End of Life for Snipcart for Craft CMS Plugin 🚨**
+>
+> _Posted: Dec 1, 2023_
+>
+> As of April 30, 2024, we will no longer be supporting the Snipcart for Craft CMS plugin. Additionally, from now until then, we have no further plans on improvements or changes.
+>
+> We have made the plugin free in the Craft plugin store as of today so you will not be charged for renewal fees.
+>
+> I know some of you rely on this plugin for your sites (or client's sites), so feel free to fork it and make the changes you need moving forward. If you are interested in taking it over commercially, please contact me at stephen [at] fostercommerce [dot] com.
+>
+> Thank you for using the plugin.
+> 
+> Stephen
+
+-----
+
 ![Snipcart](resources/new-plugin-header.png)
 
 <h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
