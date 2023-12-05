@@ -1,4 +1,4 @@
-<h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
+<h1 align="center">Snipcart Craft CMS Plugin</h1>
 
 <h4 align="center">Custom e-commerce in a day with <a href="https://snipcart.com/">Snipcart</a> and <a href="https://craftcms.com/">Craft CMS</a>.</h4>
 
