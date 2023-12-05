@@ -1,21 +1,3 @@
-> **🚨 End of Life for Snipcart for Craft CMS Plugin 🚨**
->
-> _Posted: Dec 1, 2023_
->
-> As of April 30, 2024, we will no longer be supporting the Snipcart for Craft CMS plugin. Additionally, from now until then, we have no further plans on improvements or changes.
->
-> We have made the plugin free in the Craft plugin store as of today so you will not be charged for renewal fees.
->
-> I know some of you rely on this plugin for your sites (or client's sites), so feel free to fork it and make the changes you need moving forward. If you are interested in taking it over commercially, please contact me at stephen [at] fostercommerce [dot] com.
->
-> Thank you for using the plugin.
-> 
-> Stephen
-
------
-
-![Snipcart](resources/new-plugin-header.png)
-
 <h1 align="center">Snipcart Craft CMS 3 Plugin</h1>
 
 <h4 align="center">Custom e-commerce in a day with <a href="https://snipcart.com/">Snipcart</a> and <a href="https://craftcms.com/">Craft CMS</a>.</h4>
@@ -34,14 +16,6 @@ Quickly turn a Craft CMS website into a fully functioning store.
 -   Included ShipStation integration for fetching shipping rates and forwarding completed Snipcart orders for processing.
 
 If Commerce Pro is too complex for your project and Commerce Lite is too limiting, Snipcart will be a great fit.
-
-<hr>
-
-<p align="center">
-    <br>
-    <img src="https://github.com/FosterCommerce/snipcart-craft-plugin/raw/main/resources/commerce-comparison.png" width="750" alt="Snipcart vs. Craft Commerce comparison chart" />
-    <br>
-</p>
 
 <hr>
 
