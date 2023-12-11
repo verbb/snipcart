@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.0 - 2023-12-12
+> {note} The plugin’s package name has changed to `verbb/snipcart`. Snipcart will need be updated to 1.7.0 from a terminal, by running `composer require verbb/snipcart && composer remove fostercommerce//craft-snipcart`.
+
+### Changed
+- Migration to `verbb/snipcart`.
+- Now requires Craft 4.5+.
+
 ## 2.0.0 - 2023-09-11
 
 ### Added
