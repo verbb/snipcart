@@ -7,7 +7,7 @@
 
     {% for upcomingPayment in upcomingPayments %}
         <p class="no-top-margin">
-            {{ upcomingPayment.name }} on {{ upcomingPayment.date  |date('short') }}
+            {{ upcomingPayment.name }} on {{ upcomingPayment.date | date('short') }}
         </p>
     {% endfor %}
 {% endif %}

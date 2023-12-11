@@ -10,7 +10,7 @@
 
 {% if providerOrders.shipStation.orderId is defined %}
     {% set primaryDetails = primaryDetails | merge({
-        'ShipStation #': providerOrders.shipStation.orderId
+        'ShipStation #': providerOrders.shipStation.orderId,
     }) %}
 {% endif %}
 
@@ -22,7 +22,7 @@
 
 {% block content %}
     {% include 'snipcart/email/_parts/heading' with {
-        heading: order.billingAddressName ~ ' ' ~ ('just placed an order' | t('snipcart')) ~ '.',
+        heading: '{name} just placed an order.' | t('snipcart', { name: order.billingAddressName }),
     } only %}
 
     {% include 'snipcart/email/_parts/primary-details' with {

@@ -1,12 +1,5 @@
-{#
-
-Important, broad order details like order number and primary email address.
-
-@param  array  primaryDetails  Key-value array of important order details.
-                               Should be { label: value }
-
-#}
 {% for label, value in primaryDetails %}
-    {% set pClass = loop.last ? "no-top-margin large-bottom-margin" : "no-margin" %}
+    {% set pClass = loop.last ? 'no-top-margin large-bottom-margin' : 'no-margin' %}
+
     <p class="primary-detail {{ pClass }}"><b>{{ label }}:</b> {{ value }}</p>
 {% endfor %}
