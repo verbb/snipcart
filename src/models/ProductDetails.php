@@ -11,6 +11,7 @@ use craft\base\FieldInterface;
 use craft\base\Model;
 use craft\elements\Entry;
 use craft\elements\MatrixBlock;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Template as TemplateHelper;
 
 use Twig\Error\LoaderError;
@@ -228,7 +229,7 @@ class ProductDetails extends Model
 
         return TemplateHelper::raw($this->renderFieldTemplate('snipcart/fields/front-end/buy-now', [
             'fieldData' => $this,
-            'templateParams' => $params,
+            'params' => $params,
         ]));
     }
 
@@ -238,43 +239,38 @@ class ProductDetails extends Model
 
     private function getBuyButtonParams(array $params = []): array
     {
-        $defaults = [
+        $element = $this->getElement(true);
+
+        // Provide some options as top-level for good DX and backwards-compatibility
+        $price = ArrayHelper::remove($params, 'price', $this->price);
+        $class = ArrayHelper::remove($params, 'classes', []);
+        $image = ArrayHelper::remove($params, 'image');
+        $name = ArrayHelper::remove($params, 'name', ($element->title ?? $this->sku));
+        $url = ArrayHelper::remove($url, 'image', ($element->url ?? ''));
+        $quantity = ArrayHelper::remove($params, 'quantity', 1);
+
+        $options = [
             'href' => '#',
-            'target' => null,
-            'rel' => null,
-            'title' => null,
-            'image' => null,
-            'text' => 'Buy Now',
-            'quantity' => 1,
-            'classes' => ['btn'],
-            'customOptions' => [],
+            'text' => Craft::t('snipcart', 'Buy Now'),
+            'class' => array_merge(['snipcart-add-item'], $class),
+            'data-item-image' => $image,
+            'data-item-id' => $this->sku,
+            'data-item-name' => $name,
+            'data-item-price' => $price,
+            'data-item-url' => $url,
+            'data-item-quantity' => $quantity,
+            'data-item-taxable' => $this->taxable ? true : false,
+            'data-item-shippable' => $this->shippable ? true : false,
         ];
 
-        $params = array_merge($defaults, $params);
-
-        // If we have a simple array without pricing, reformat it for consistency and set all prices to 0.
-        if (is_array($params['customOptions']) && $params['customOptions'] !== []) {
-            foreach ($params['customOptions'] as &$customOption) {
-                $customOptionOptions = [];
-
-                if (isset($customOption['options'])) {
-                    foreach ($customOption['options'] as $option) {
-                        if (!isset($option['name']) && ! isset($option['price'])) {
-                            $customOptionOptions[] = [
-                                'name' => $option,
-                                'price' => 0,
-                            ];
-                        } else {
-                            $customOptionOptions[] = $option;
-                        }
-                    }
-
-                    $customOption['options'] = $customOptionOptions;
-                }
-            }
+        if ($this->shippable) {
+            $options['data-item-width'] = round($this->getDimensionInCentimeters('width'));
+            $options['data-item-length'] = round($this->getDimensionInCentimeters('length'));
+            $options['data-item-height'] = round($this->getDimensionInCentimeters('height'));
+            $options['data-item-weight'] = $this->getWeightInGrams();
         }
 
-        return $params;
+        return array_replace_recursive($options, $params);
     }
 
     private function skuIsUniqueRecordAttribute($attribute): bool
