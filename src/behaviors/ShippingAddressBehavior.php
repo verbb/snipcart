@@ -26,7 +26,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->name;
     }
 
-    public function setShippingAddressName(string $name): ?string
+    public function setShippingAddressName(?string $name): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -40,7 +40,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->firstName;
     }
 
-    public function setShippingAddressFirstName(string $firstName): ?string
+    public function setShippingAddressFirstName(?string $firstName): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -54,7 +54,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->companyName;
     }
 
-    public function setShippingAddressCompanyName(string $companyName): ?string
+    public function setShippingAddressCompanyName(?string $companyName): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -68,7 +68,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->address1;
     }
 
-    public function setShippingAddressAddress1(string $address1): ?string
+    public function setShippingAddressAddress1(?string $address1): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -82,7 +82,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->address2;
     }
 
-    public function setShippingAddressAddress2(string $address2): ?string
+    public function setShippingAddressAddress2(?string $address2): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -96,7 +96,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->city;
     }
 
-    public function setShippingAddressCity(string $city): ?string
+    public function setShippingAddressCity(?string $city): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -110,7 +110,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->country;
     }
 
-    public function setShippingAddressCountry(string $country): ?string
+    public function setShippingAddressCountry(?string $country): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -124,7 +124,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->province;
     }
 
-    public function setShippingAddressProvince(string $province): ?string
+    public function setShippingAddressProvince(?string $province): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -138,7 +138,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->postalCode;
     }
 
-    public function setShippingAddressPostalCode(string $postalCode): ?string
+    public function setShippingAddressPostalCode(?string $postalCode): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
@@ -152,7 +152,7 @@ class ShippingAddressBehavior extends Behavior
         return $this->getShippingAddress()->phone;
     }
 
-    public function setShippingAddressPhone(string $phone): ?string
+    public function setShippingAddressPhone(?string $phone): ?string
     {
         if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();

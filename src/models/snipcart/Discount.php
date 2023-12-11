@@ -46,20 +46,20 @@ class Discount extends Model
     public ?int $numberOfUsagesUncompleted = null;
     public ?bool $isForARecoveryCampaign = null;
     public ?bool $archived = null;
-    public ?string $combinable = null;
+    public ?bool $combinable = null;
     public ?string $maxAmountToReach = null;
     public ?string $maxDiscountsPerItem = null;
-    public ?string $appliesOnAllRecurringOrders = null;
+    public ?bool $appliesOnAllRecurringOrders = null;
     public ?string $quantityOfAProduct = null;
     public ?string $quantityOfProductIds = null;
-    public ?string $onlyOnSameProducts = null;
+    public ?bool $onlyOnSameProducts = null;
     public ?string $quantityInterval = null;
     public ?string $maxQuantityOfAProduct = null;
-    public ?string $numberOfItemsRequired = null;
-    public ?string $numberOfFreeItems = null;
+    public ?int $numberOfItemsRequired = null;
+    public ?int $numberOfFreeItems = null;
     public array $affectedItems = [];
     public ?string $dataAttribute = null;
-    public ?string $hasSavedAmount = null;
+    public ?bool $hasSavedAmount = null;
     public array $products = [];
     public ?string $currency = null;
     public ?DateTime $creationDate = null;
@@ -67,7 +67,7 @@ class Discount extends Model
     public array $categories = [];
     public array $categoryNames = [];
     public array $refunds = [];
-    public ?string $savedAmount; = null
+    public ?string $savedAmount = null;
 
     private array $_triggerOptionFieldMap = [
         self::TRIGGER_CODE => [

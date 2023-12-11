@@ -26,7 +26,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->name;
     }
 
-    public function setBillingAddressName(string $name): ?string
+    public function setBillingAddressName(?string $name): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -40,7 +40,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->firstName;
     }
 
-    public function setBillingAddressFirstName(string $firstName): ?string
+    public function setBillingAddressFirstName(?string $firstName): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -54,7 +54,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->companyName;
     }
 
-    public function setBillingAddressCompanyName(string $companyName): ?string
+    public function setBillingAddressCompanyName(?string $companyName): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -68,7 +68,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->address1;
     }
 
-    public function setBillingAddressAddress1(string $address1): ?string
+    public function setBillingAddressAddress1(?string $address1): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -82,7 +82,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->address2;
     }
 
-    public function setBillingAddressAddress2(string $address2): ?string
+    public function setBillingAddressAddress2(?string $address2): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -96,7 +96,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->city;
     }
 
-    public function setBillingAddressCity(string $city): ?string
+    public function setBillingAddressCity(?string $city): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -110,7 +110,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->country;
     }
 
-    public function setBillingAddressCountry(string $country): ?string
+    public function setBillingAddressCountry(?string $country): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -124,7 +124,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->province;
     }
 
-    public function setBillingAddressProvince(string $province): ?string
+    public function setBillingAddressProvince(?string $province): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -138,7 +138,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->postalCode;
     }
 
-    public function setBillingAddressPostalCode(string $postalCode): ?string
+    public function setBillingAddressPostalCode(?string $postalCode): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
@@ -152,7 +152,7 @@ class BillingAddressBehavior extends Behavior
         return $this->getBillingAddress()->phone;
     }
 
-    public function setBillingAddressPhone(string $phone): ?string
+    public function setBillingAddressPhone(?string $phone): ?string
     {
         if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();

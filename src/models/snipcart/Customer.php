@@ -3,7 +3,9 @@ namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+
 use DateTime;
+use stdClass;
 
 class Customer extends Model
 {
@@ -42,7 +44,7 @@ class Customer extends Model
     public ?bool $shippingAddressSameAsBilling = null;
     public ?string $sessionToken = null;
     public ?string $status = null;
-    public ?CustomerStatistics $statistics = null;
+    public CustomerStatistics|stdClass|null $statistics = null;
     public ?string $gravatarUrl = null;
     public ?string $mode = null;
     public ?DateTime $creationDate = null;

@@ -4,11 +4,13 @@ namespace verbb\snipcart\models\snipcart;
 use verbb\snipcart\helpers\ModelHelper;
 use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
 
+use Craft;
 use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\elements\MatrixBlock;
-use Craft;
+
 use DateTime;
+use stdClass;
 
 class Item extends Model
 {
@@ -25,7 +27,7 @@ class Item extends Model
     public ?string $description = null;
     public ?string $fileGuid = null;
     public ?string $initialData = null;
-    public ?string $categories = null;
+    public array $categories = [];
     public ?string $url = null;
     public ?int $weight = null;
     public ?string $image = null;
@@ -39,7 +41,7 @@ class Item extends Model
     public array $customFields = [];
     public ?string $customFieldsJson = null;
     public ?bool $duplicatable = null;
-    public ?string $alternatePrices = null;
+    public stdClass|array|null $alternatePrices = null;
     public ?bool $hasDimensions = null;
     public ?float $unitPrice = null;
     public ?float $totalPrice = null;
@@ -99,7 +101,7 @@ class Item extends Model
         return $this->paymentSchedule;
     }
 
-    public function setPaymentSchedule(PaymentSchedule|array|null $paymentSchedule): ?PaymentSchedule
+    public function setPaymentSchedule(PaymentSchedule|stdClass|array|null $paymentSchedule): ?PaymentSchedule
     {
         if ($paymentSchedule === null) {
             return $this->paymentSchedule = null;

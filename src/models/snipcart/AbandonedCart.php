@@ -9,6 +9,7 @@ use craft\base\Model;
 use craft\helpers\UrlHelper;
 
 use DateTime;
+use stdClass;
 
 class AbandonedCart extends Model
 {
@@ -25,22 +26,22 @@ class AbandonedCart extends Model
     public ?string $token = null;
     public ?string $accountId = null;
     public ?string $location = null;
-    public string $email = null;
+    public ?string $email = null;
     public ?string $mode = null;
     public ?string $status = null;
     public ?string $shipToBillingAddress = null;
     public ?DateTime $modificationDate = null;
     public ?DateTime $completionDate = null;
     public ?string $invoiceNumber = null;
-    public ?string $shippingInformation = null;
+    public ?stdClass $shippingInformation = null;
     public ?string $paymentMethod = null;
-    public ?string $summary = null;
+    public ?stdClass $summary = null;
     public ?string $metadata = null;
-    public ?string $items = null;
-    public ?string $discounts = null;
-    public ?string $customFields = null;
+    public array $items = [];
+    public array $discounts = [];
+    public array $customFields = [];
     public ?string $plans = null;
-    public ?string $refunds = null;
+    public array $refunds = [];
     public ?string $currency = null;
     public ?string $totalWeight = null;
     public ?string $total = null;
@@ -48,7 +49,7 @@ class AbandonedCart extends Model
     public ?string $userAgent = null;
     public ?string $lang = null;
     public ?string $version = null;
-    public ?string $recoveryCampaignStatus = null;
+    public ?stdClass $recoveryCampaignStatus = null;
     public ?bool $hasItemsShippable = null;
     public array $taxes = [];
     public array $defaultTaxes = [];
@@ -72,8 +73,8 @@ class AbandonedCart extends Model
     public ?string $_etag = null;
     public ?string $userId = null;
     public ?string $user = null;
-    public ?string $compatibilitySwitches = null;
-    public array $notifications = [] = null;
+    public ?stdClass $compatibilitySwitches = null;
+    public array $notifications = [];
     public ?string $totalPriceWithoutDiscountsAndTaxes = null;
 
     private ?Address $_billingAddress = null;
@@ -93,7 +94,7 @@ class AbandonedCart extends Model
         return $this->_shippingAddress;
     }
 
-    public function setBillingAddress(array|Address $address): ?Address
+    public function setBillingAddress(array|stdClass|Address $address): ?Address
     {
         if (!$address instanceof Address) {
             if ($address === null) {
@@ -108,7 +109,7 @@ class AbandonedCart extends Model
         return $this->_billingAddress = $address;
     }
 
-    public function setShippingAddress(array|Address $address): ?Address
+    public function setShippingAddress(array|stdClass|Address $address): ?Address
     {
         if (!$address instanceof Address) {
             if ($address === null) {

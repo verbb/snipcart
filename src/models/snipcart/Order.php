@@ -1,13 +1,16 @@
 <?php
 namespace verbb\snipcart\models\snipcart;
 
-use craft\base\Model;
-use craft\helpers\UrlHelper;
 use verbb\snipcart\behaviors\BillingAddressBehavior;
 use verbb\snipcart\behaviors\ShippingAddressBehavior;
 use verbb\snipcart\helpers\ModelHelper;
+
 use Craft;
+use craft\base\Model;
+use craft\helpers\UrlHelper;
+
 use DateTime;
+use stdClass;
 
 class Order extends Model
 {
@@ -85,13 +88,13 @@ class Order extends Model
     public ?string $metadata = null;
     public ?string $taxesTotal = null;
     public ?string $itemsCount = null;
-    public ?string $summary = null;
+    public stdClass|array|null $summary = null;
     public ?string $ipAddress = null;
     public ?string $userAgent = null;
-    public bool $hasSubscriptions = null;
+    public ?bool $hasSubscriptions = null;
     public ?string $compatibilitySwitches = null;
     public ?string $totalPriceWithoutDiscountsAndTaxes = null;
-    public ?string $paymentDetails = null;
+    public stdClass|array|null $paymentDetails = null;
 
     private mixed $_user = null;
     private ?Address $_billingAddress = null;
@@ -174,7 +177,7 @@ class Order extends Model
         return $this->_user = $craftUser;
     }
 
-    public function setBillingAddress(array|Address $address): ?Address
+    public function setBillingAddress(array|stdClass|Address $address): ?Address
     {
         if (!$address instanceof Address) {
             if ($address === null) {
@@ -183,13 +186,14 @@ class Order extends Model
 
             $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
 
-            $address = new Address((array) $addrData);
+            $address = new Address((array)$addrData);
+        Craft::dd($address);
         }
 
         return $this->_billingAddress = $address;
     }
 
-    public function setShippingAddress(array|Address $address): ?Address
+    public function setShippingAddress(array|stdClass|Address $address): ?Address
     {
         if (!$address instanceof Address) {
             if ($address === null) {
@@ -197,7 +201,7 @@ class Order extends Model
             }
 
             $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
-            $addressModel = new Address((array) $addrData);
+            $addressModel = new Address((array)$addrData);
         }
 
         return $this->_shippingAddress = $addressModel;

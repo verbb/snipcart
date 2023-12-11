@@ -17,7 +17,7 @@ class ModelHelper
 
     public static function safePopulateModel(mixed $data, string $class): mixed
     {
-        $cleanData = (array) self::stripUnknownProperties($data, $class);
+        $cleanData = (array)self::stripUnknownProperties($data, $class);
 
         return new $class($cleanData);
     }
