@@ -187,7 +187,6 @@ class Order extends Model
             $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
 
             $address = new Address((array)$addrData);
-        Craft::dd($address);
         }
 
         return $this->_billingAddress = $address;
