@@ -1,23 +1,16 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\models\snipcart\Subscription;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\models\snipcart\Subscription;
 
 /**
  * Class Subscriptions
  *
  * For interacting with Snipcart subscriptions.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  */
 class Subscriptions extends \craft\base\Component
 {

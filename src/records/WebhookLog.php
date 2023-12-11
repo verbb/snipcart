@@ -1,20 +1,13 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\records;
+namespace verbb\snipcart\records;
 
 use craft\db\ActiveRecord;
-use fostercommerce\snipcart\db\Table;
+use verbb\snipcart\db\Table;
 
 /**
  * Class WebhookLog
  *
- * @package fostercommerce\snipcart\records
+ * @package verbb\snipcart\records
  *
  * @property int    $id
  * @property int    $siteId

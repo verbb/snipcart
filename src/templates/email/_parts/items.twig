@@ -1,6 +1,6 @@
-{# @var order \fostercommerce\snipcart\models\snipcart\Order #}
+{# @var order \verbb\snipcart\models\snipcart\Order #}
 {# @var craft \Craft #}
-{# @var shipStationOrder \fostercommerce\snipcart\models\shipstation\Order as ShipStationOrder #}
+{# @var shipStationOrder \verbb\snipcart\models\shipstation\Order as ShipStationOrder #}
 {#
 
 Order table with items, shipping, and tax details.
@@ -32,7 +32,7 @@ Order table with items, shipping, and tax details.
     </thead>
     <tbody>
     {% for item in order.items %}
-        {# @var item \fostercommerce\snipcart\models\snipcart\Item #}
+        {# @var item \verbb\snipcart\models\snipcart\Item #}
         <tr>
             <td class="align-left first-cell-padding">
                 {{- item.quantity -}}

@@ -6,9 +6,9 @@
  * @copyright Copyright (c) 2020 Working Concept Inc.
  */
 
-namespace fostercommerce\snipcart\events;
+namespace verbb\snipcart\events;
 
-use fostercommerce\snipcart\models\snipcart\Refund;
+use verbb\snipcart\models\snipcart\Refund;
 use yii\base\Event;
 
 /**

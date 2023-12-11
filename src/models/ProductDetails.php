@@ -1,20 +1,13 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models;
+namespace verbb\snipcart\models;
 
 use craft\elements\Entry;
 use craft\elements\MatrixBlock;
 use Twig\Markup;
-use fostercommerce\snipcart\helpers\MeasurementHelper;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
-use fostercommerce\snipcart\fields\ProductDetails as ProductDetailsField;
+use verbb\snipcart\helpers\MeasurementHelper;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
+use verbb\snipcart\fields\ProductDetails as ProductDetailsField;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
 
@@ -22,7 +15,7 @@ use craft\helpers\Template as TemplateHelper;
  * This model is used explicitly for storing Product Details field data and
  * making some Twig functions available for convenience.
  *
- * @package fostercommerce\snipcart\models
+ * @package verbb\snipcart\models
  */
 class ProductDetails extends \craft\base\Model
 {

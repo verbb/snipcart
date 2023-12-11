@@ -1,8 +1,8 @@
-{# @var customer \fostercommerce\snipcart\models\Customer #}
+{# @var customer \verbb\snipcart\models\Customer #}
 {% extends "snipcart/cp/_layout" %}
 {% import "_includes/forms" as forms %}
 
-{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("verbb\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = "Snipcart Customers" ~ (isTestMode ? " 🚧") %}

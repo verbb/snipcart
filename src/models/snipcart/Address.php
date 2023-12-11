@@ -1,17 +1,10 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 /**
  * Class Address
  *
- * @package fostercommerce\snipcart\models
+ * @package verbb\snipcart\models
  */
 class Address extends \craft\base\Model
 {

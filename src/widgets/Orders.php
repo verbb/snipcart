@@ -1,15 +1,8 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\widgets;
 
-namespace fostercommerce\snipcart\widgets;
-
-use fostercommerce\snipcart\assetbundles\OrdersWidgetAsset;
-use fostercommerce\snipcart\Snipcart;
+use verbb\snipcart\assetbundles\OrdersWidgetAsset;
+use verbb\snipcart\Snipcart;
 use Craft;
 use craft\base\Widget;
 
@@ -41,7 +34,7 @@ class Orders extends Widget
      */
     public static function iconPath()
     {
-        return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
+        return Craft::getAlias('@verbb/snipcart/assetbundles/dist/img/orders-icon.svg');
     }
 
     /**

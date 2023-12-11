@@ -1,18 +1,11 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\base;
+namespace verbb\snipcart\base;
 
 use craft\helpers\Json;
-use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
-use fostercommerce\snipcart\models\snipcart\Package;
+use verbb\snipcart\models\snipcart\Order as SnipcartOrder;
+use verbb\snipcart\models\snipcart\Package;
 use craft\base\Component;
-use fostercommerce\snipcart\Snipcart;
+use verbb\snipcart\Snipcart;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use craft\base\Model;

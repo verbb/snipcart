@@ -1,8 +1,8 @@
 <?php
 
-namespace fostercommerce\snipcart\errors;
+namespace verbb\snipcart\errors;
 
-use fostercommerce\snipcart\events\ShippingRateEvent;
+use verbb\snipcart\events\ShippingRateEvent;
 
 class ShippingRateException extends \Exception
 {

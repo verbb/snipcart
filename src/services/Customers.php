@@ -1,24 +1,17 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\helpers\ModelHelper;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\models\snipcart\Customer;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\helpers\ModelHelper;
 
 /**
  * Class Customers
  *
  * For interacting with Snipcart customers.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  */
 class Customers extends \craft\base\Component
 {

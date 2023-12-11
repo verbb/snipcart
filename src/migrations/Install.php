@@ -1,16 +1,9 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\migrations;
 
-namespace fostercommerce\snipcart\migrations;
-
-use fostercommerce\snipcart\db\Table;
-use fostercommerce\snipcart\models\ProductDetails;
-use fostercommerce\snipcart\controllers\WebhooksController;
+use verbb\snipcart\db\Table;
+use verbb\snipcart\models\ProductDetails;
+use verbb\snipcart\controllers\WebhooksController;
 use Craft;
 use craft\db\Migration;
 use craft\helpers\MigrationHelper;

@@ -1,89 +1,53 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart;
 
-namespace fostercommerce\snipcart;
+use verbb\snipcart\assetbundles\PluginSettingsAsset;
+use verbb\snipcart\events\RegisterShippingProvidersEvent;
+use verbb\snipcart\fields\ProductDetails;
+use verbb\snipcart\helpers\CraftQlHelper;
+use verbb\snipcart\helpers\RouteHelper;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\models\Settings;
+use verbb\snipcart\providers\shipstation\ShipStation;
+use verbb\snipcart\services\Api;
+use verbb\snipcart\services\Carts;
+use verbb\snipcart\services\Customers;
+use verbb\snipcart\services\Data;
+use verbb\snipcart\services\DigitalGoods;
+use verbb\snipcart\services\Discounts;
+use verbb\snipcart\services\Fields as SnipcartFields;
+use verbb\snipcart\services\Notifications;
+use verbb\snipcart\services\Orders;
+use verbb\snipcart\services\Products;
+use verbb\snipcart\services\Shipments;
+use verbb\snipcart\services\Subscriptions;
+use verbb\snipcart\services\Webhooks;
+use verbb\snipcart\variables\SnipcartVariable;
+use verbb\snipcart\widgets\Orders as OrdersWidget;
 
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\providers\shipstation\ShipStation;
-use fostercommerce\snipcart\services\Api;
-use fostercommerce\snipcart\services\Carts;
-use fostercommerce\snipcart\services\Customers;
-use fostercommerce\snipcart\services\Data;
-use fostercommerce\snipcart\services\DigitalGoods;
-use fostercommerce\snipcart\services\Discounts;
-use fostercommerce\snipcart\services\Fields as SnipcartFields;
-use fostercommerce\snipcart\services\Notifications;
-use fostercommerce\snipcart\services\Orders;
-use fostercommerce\snipcart\services\Products;
-use fostercommerce\snipcart\services\Shipments;
-use fostercommerce\snipcart\services\Subscriptions;
-use fostercommerce\snipcart\services\Webhooks;
-use fostercommerce\snipcart\variables\SnipcartVariable;
-use fostercommerce\snipcart\widgets\Orders as OrdersWidget;
-use fostercommerce\snipcart\models\Settings;
-use fostercommerce\snipcart\fields\ProductDetails;
-use fostercommerce\snipcart\assetbundles\PluginSettingsAsset;
-use fostercommerce\snipcart\events\RegisterShippingProvidersEvent;
-use fostercommerce\snipcart\helpers\RouteHelper;
-use fostercommerce\snipcart\helpers\CraftQlHelper;
 use Craft;
 use craft\base\Plugin;
+use craft\console\Application as ConsoleApplication;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterCacheOptionsEvent;
-use craft\utilities\ClearCaches;
+use craft\services\Dashboard;
 use craft\services\Fields;
+use craft\utilities\ClearCaches;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
-use craft\console\Application as ConsoleApplication;
-use craft\services\Dashboard;
+
 use yii\base\Event;
 
-/**
- * Class Snipcart
- *
- * @author    Working Concept
- * @package   Snipcart
- * @since     1.0.0
- *
- * @property  Api            $api
- * @property  Carts          $carts
- * @property  Customers      $customers
- * @property  Data           $data
- * @property  Discounts      $discounts
- * @property  SnipcartFields $fields
- * @property  Notifications  $notifications
- * @property  Orders         $orders
- * @property  Products       $products
- * @property  Shipments      $shipments
- * @property  Subscriptions  $subscriptions
- * @property  Webhooks       $webhooks
- */
 class Snipcart extends Plugin
 {
-    /**
-     * @var Snipcart
-     */
-    public static $plugin;
-
-    /**
-     * @event ShippingProviderEvent
-     */
     const EVENT_REGISTER_SHIPPING_PROVIDERS = 'registerShippingProviders';
 
-    /**
-     * @var string
-     */
-    public $schemaVersion = '1.0.10';
+    public static $plugin;
+    public $schemaVersion = '1.1.10';
+    public $hasCpSection = true;
+    public $hasCpSettings = true;
 
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         parent::init();
@@ -185,7 +149,7 @@ class Snipcart extends Plugin
         }
 
         if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'fostercommerce\snipcart\console\controllers';
+            $this->controllerNamespace = 'verbb\snipcart\console\controllers';
         }
 
         $this->registerShippingProviders();

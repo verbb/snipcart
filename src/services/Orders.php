@@ -1,21 +1,14 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\events\ShippingRateEvent;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\Notification;
-use fostercommerce\snipcart\models\snipcart\Refund;
-use fostercommerce\snipcart\models\snipcart\Package;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\errors\ShippingRateException;
+use verbb\snipcart\events\ShippingRateEvent;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\models\snipcart\Notification;
+use verbb\snipcart\models\snipcart\Refund;
+use verbb\snipcart\models\snipcart\Package;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\errors\ShippingRateException;
 use Craft;
 
 /**
@@ -23,7 +16,7 @@ use Craft;
  * documented models. The service can be accessed globally from
  * `Snipcart::$plugin->orders`.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  *
  * @todo clean up interfaces to be more Craft-y and obscure pagination concerns
  * @todo return null for invalid single-object requests, otherwise empty arrays
@@ -245,7 +238,7 @@ class Orders extends \craft\base\Component
      * @param Order $order
      *
      * @return Package
-     * @throws fostercommerce\snipcart\errors\ShippingRateException
+     * @throws verbb\snipcart\errors\ShippingRateException
      */
     public function getOrderPackaging(Order $order): Package
     {

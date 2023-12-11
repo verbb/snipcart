@@ -1,8 +1,8 @@
-{# @var subscription \fostercommerce\snipcart\models\Subscription #}
+{# @var subscription \verbb\snipcart\models\Subscription #}
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("verbb\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set centered = true %}
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}

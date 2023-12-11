@@ -1,7 +1,7 @@
-{# @var subscription \fostercommerce\snipcart\models\Subscription #}
+{# @var subscription \verbb\snipcart\models\Subscription #}
 {% extends "snipcart/cp/_layout" %}
 
-{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\SnipcartAsset") %}
+{% do view.registerAssetBundle("verbb\\snipcart\\assetbundles\\SnipcartAsset") %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title         = "Snipcart Subscriptions" ~ (isTestMode ? " 🚧") %}

@@ -11,7 +11,7 @@
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = "New Discount" ~ (isTestMode ? " 🚧") %}
 
-{% do view.registerAssetBundle("fostercommerce\\snipcart\\assetbundles\\DiscountFieldAsset") %}
+{% do view.registerAssetBundle("verbb\\snipcart\\assetbundles\\DiscountFieldAsset") %}
 
 {% block actionButton %}
     <input type="submit" id="newdiscountsavebtn" class="btn submit icon" href="{{ url('snipcart/discounts/save') }}" value="{{- 'Create'|t('snipcart') -}}">

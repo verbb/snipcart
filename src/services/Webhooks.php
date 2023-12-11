@@ -1,36 +1,29 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\events\CustomerEvent;
-use fostercommerce\snipcart\events\OrderNotificationEvent;
-use fostercommerce\snipcart\events\OrderRefundEvent;
-use fostercommerce\snipcart\events\OrderStatusEvent;
-use fostercommerce\snipcart\events\OrderTrackingEvent;
-use fostercommerce\snipcart\events\SubscriptionEvent;
-use fostercommerce\snipcart\events\TaxesEvent;
-use fostercommerce\snipcart\models\snipcart\Notification;
-use fostercommerce\snipcart\models\snipcart\Refund;
-use fostercommerce\snipcart\models\snipcart\Subscription;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\events\OrderEvent;
-use fostercommerce\snipcart\records\ShippingQuoteLog;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\records\WebhookLog;
+use verbb\snipcart\events\CustomerEvent;
+use verbb\snipcart\events\OrderNotificationEvent;
+use verbb\snipcart\events\OrderRefundEvent;
+use verbb\snipcart\events\OrderStatusEvent;
+use verbb\snipcart\events\OrderTrackingEvent;
+use verbb\snipcart\events\SubscriptionEvent;
+use verbb\snipcart\events\TaxesEvent;
+use verbb\snipcart\models\snipcart\Notification;
+use verbb\snipcart\models\snipcart\Refund;
+use verbb\snipcart\models\snipcart\Subscription;
+use verbb\snipcart\models\snipcart\Customer;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\events\OrderEvent;
+use verbb\snipcart\records\ShippingQuoteLog;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\records\WebhookLog;
 use Craft;
 
 /**
  * This class handles valid data that's posted to Snipcart’s webhook endpoint.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  */
 class Webhooks extends \craft\base\Component
 {

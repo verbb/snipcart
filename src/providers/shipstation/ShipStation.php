@@ -1,33 +1,26 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\providers\shipstation;
+namespace verbb\snipcart\providers\shipstation;
 
 use Craft;
 use craft\helpers\Json;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\models\snipcart\Order as SnipcartOrder;
-use fostercommerce\snipcart\models\snipcart\Package;
-use fostercommerce\snipcart\models\snipcart\ShippingRate as SnipcartRate;
-use fostercommerce\snipcart\models\shipstation\Dimensions;
-use fostercommerce\snipcart\models\shipstation\Order;
-use fostercommerce\snipcart\models\shipstation\Rate;
-use fostercommerce\snipcart\models\shipstation\Weight;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\base\ShippingProvider;
-use fostercommerce\snipcart\providers\shipstation\Settings as ShipStationSettings;
-use fostercommerce\snipcart\providers\shipstation\events\OrderEvent;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\models\snipcart\Order as SnipcartOrder;
+use verbb\snipcart\models\snipcart\Package;
+use verbb\snipcart\models\snipcart\ShippingRate as SnipcartRate;
+use verbb\snipcart\models\shipstation\Dimensions;
+use verbb\snipcart\models\shipstation\Order;
+use verbb\snipcart\models\shipstation\Rate;
+use verbb\snipcart\models\shipstation\Weight;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\base\ShippingProvider;
+use verbb\snipcart\providers\shipstation\Settings as ShipStationSettings;
+use verbb\snipcart\providers\shipstation\events\OrderEvent;
 
 /**
  * Class ShipStation
  *
- * @package fostercommerce\snipcart\providers
+ * @package verbb\snipcart\providers
  * @todo log exceptions for troubleshooting
  */
 class ShipStation extends ShippingProvider
@@ -509,7 +502,7 @@ class ShipStation extends ShippingProvider
      *
      * @param $order
      * @return Rate|null
-     * @throws fostercommerce\snipcart\errors\ShippingRateException
+     * @throws verbb\snipcart\errors\ShippingRateException
      */
     private function getClosestRateForOrder($order)
     {

@@ -1,12 +1,5 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\assetbundles;
+namespace verbb\snipcart\assetbundles;
 
 use craft\web\AssetBundle;
 
@@ -22,7 +15,7 @@ class PluginSettingsAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = '@fostercommerce/snipcart/assetbundles/dist';
+        $this->sourcePath = '@verbb/snipcart/assetbundles/dist';
         $this->depends = [SnipcartAsset::class];
         $this->js = ['js/settings-plugin.js'];
         $this->css = ['css/settings-plugin.css'];

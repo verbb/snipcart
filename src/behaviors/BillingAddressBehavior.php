@@ -1,14 +1,7 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\behaviors;
 
-namespace fostercommerce\snipcart\behaviors;
-
-use fostercommerce\snipcart\models\snipcart\Address;
+use verbb\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
 /**
@@ -16,7 +9,7 @@ use yii\base\Behavior;
  * directly on the Snipcart Order model, where they exist within a nested
  * Address object.
  *
- * @package fostercommerce\snipcart\behaviors
+ * @package verbb\snipcart\behaviors
  */
 class BillingAddressBehavior extends Behavior
 {

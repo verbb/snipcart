@@ -1,15 +1,8 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\controllers;
 
-namespace fostercommerce\snipcart\controllers;
-
-use fostercommerce\snipcart\models\snipcart\Discount;
-use fostercommerce\snipcart\Snipcart;
+use verbb\snipcart\models\snipcart\Discount;
+use verbb\snipcart\Snipcart;
 use craft\helpers\UrlHelper;
 use Craft;
 

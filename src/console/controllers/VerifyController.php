@@ -5,13 +5,13 @@
  * @link      https://workingconcept.com
  * @copyright Copyright (c) 2018 Working Concept Inc.
  */
-namespace fostercommerce\snipcart\console\controllers;
+namespace verbb\snipcart\console\controllers;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\providers\shipstation\ShipStation;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\providers\shipstation\ShipStation;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -19,7 +19,7 @@ use yii\console\ExitCode;
  * Console utility for making sure Snipcart orders made it to ShipStation,
  * and attempting to re-feed any order that got lost in the tubes.
  *
- * @package fostercommerce\snipcart\console\controllers
+ * @package verbb\snipcart\console\controllers
  */
 class VerifyController extends Controller
 {

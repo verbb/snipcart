@@ -1,23 +1,16 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\ElementInterface;
-use fostercommerce\snipcart\models\snipcart\PaymentSchedule;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
+use verbb\snipcart\models\snipcart\PaymentSchedule;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
 use craft\elements\MatrixBlock;
 
 /**
  * Class Item
  *
- * @package fostercommerce\snipcart\models\snipcart
+ * @package verbb\snipcart\models\snipcart
  *
  * @property PaymentSchedule|null $paymentSchedule
  */

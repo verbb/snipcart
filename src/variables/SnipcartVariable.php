@@ -1,21 +1,14 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\variables;
 
-namespace fostercommerce\snipcart\variables;
-
-use fostercommerce\snipcart\fields\ProductDetails;
-use fostercommerce\snipcart\helpers\FieldHelper;
-use fostercommerce\snipcart\helpers\FormatHelper;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\Subscription;
-use fostercommerce\snipcart\Snipcart;
+use verbb\snipcart\fields\ProductDetails;
+use verbb\snipcart\helpers\FieldHelper;
+use verbb\snipcart\helpers\FormatHelper;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\models\snipcart\Customer;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\models\snipcart\Subscription;
+use verbb\snipcart\Snipcart;
 use Craft;
 use craft\helpers\Template as TemplateHelper;
 use yii\base\InvalidConfigException;

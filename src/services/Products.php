@@ -1,16 +1,9 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\events\InventoryEvent;
-use fostercommerce\snipcart\helpers\FieldHelper;
-use fostercommerce\snipcart\models\snipcart\Item;
+use verbb\snipcart\events\InventoryEvent;
+use verbb\snipcart\helpers\FieldHelper;
+use verbb\snipcart\models\snipcart\Item;
 use craft\elements\Entry;
 use craft\base\Component;
 use Craft;
@@ -22,7 +15,7 @@ use Craft;
  *
  * Products become Items once added to a cart and/or purchased.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  */
 class Products extends Component
 {

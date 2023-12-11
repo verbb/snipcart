@@ -1,16 +1,9 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\services;
+namespace verbb\snipcart\services;
 
 use craft\helpers\Json;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\Snipcart;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\base\Component;
@@ -26,7 +19,7 @@ use yii\base\Exception;
  * configured Guzzle client, can optionally cache GET requests, and validates
  * tokens.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  */
 class Api extends Component
 {

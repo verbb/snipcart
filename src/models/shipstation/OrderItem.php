@@ -1,20 +1,13 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\shipstation;
 
-namespace fostercommerce\snipcart\models\shipstation;
-
-use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
+use verbb\snipcart\models\snipcart\Item as SnipcartItem;
 
 /**
  * ShipStation Order Item Model
  * https://www.shipstation.com/developer-api/#/reference/model-orderitem
  *
- * @package fostercommerce\snipcart\models
+ * @package verbb\snipcart\models
  *
  * @property Weight|null $weight
  * @property ItemOption[]|null $options

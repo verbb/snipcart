@@ -1,22 +1,15 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\snipcart;
 
-namespace fostercommerce\snipcart\models\snipcart;
-
-use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
-use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
-use fostercommerce\snipcart\helpers\ModelHelper;
+use verbb\snipcart\behaviors\BillingAddressBehavior;
+use verbb\snipcart\behaviors\ShippingAddressBehavior;
+use verbb\snipcart\helpers\ModelHelper;
 
 /**
  * Snipcart Order model
  * https://docs.snipcart.com/v2/api-reference/orders
  *
- * @package fostercommerce\snipcart\models\snipcart
+ * @package verbb\snipcart\models\snipcart
  *
  * @property Address $billingAddress
  * @property Address $shippingAddress
@@ -205,7 +198,7 @@ class Order extends \craft\base\Model
     public $willBePaidLater;
 
     /**
-     * @var \fostercommerce\snipcart\models\CustomField[]|null
+     * @var \verbb\snipcart\models\CustomField[]|null
      */
     public $customFields;
 

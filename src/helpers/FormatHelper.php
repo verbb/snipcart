@@ -6,10 +6,10 @@
  * @copyright Copyright (c) 2019 Working Concept Inc.
  */
 
-namespace fostercommerce\snipcart\helpers;
+namespace verbb\snipcart\helpers;
 
 use DateTimeImmutable;
-use fostercommerce\snipcart\models\Settings;
+use verbb\snipcart\models\Settings;
 use yii\base\InvalidConfigException;
 
 class FormatHelper

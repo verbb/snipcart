@@ -1,23 +1,16 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\services;
+namespace verbb\snipcart\services;
 
 use Craft;
 use craft\mail\Message;
 use Pelago\Emogrifier\CssInliner;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\helpers\VersionHelper;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\helpers\VersionHelper;
 
 /**
  * Sends notifications as things happen. Currently just email.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  * @todo Make a proper Notification model
  */
 class Notifications extends \craft\base\Component

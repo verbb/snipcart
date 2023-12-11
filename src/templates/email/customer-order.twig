@@ -1,11 +1,11 @@
-{# @var order \fostercommerce\snipcart\models\Order #}
+{# @var order \verbb\snipcart\models\Order #}
 {# @var craft \Craft #}
 {% extends 'snipcart/email/_layout' %}
 
 {% set isDevMode = craft.app.getConfig().general.devMode %}
 {% set imageUrl = isDevMode ?
-    '@fostercommerce/snipcart/assetbundles/dist/img/order-complete-devmode.png' :
-    '@fostercommerce/snipcart/assetbundles/dist/img/order-complete.png' %}
+    '@verbb/snipcart/assetbundles/dist/img/order-complete-devmode.png' :
+    '@verbb/snipcart/assetbundles/dist/img/order-complete.png' %}
 
 {% block hero %}
     {% include "snipcart/email/_parts/hero" with {

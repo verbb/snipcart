@@ -1,19 +1,12 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\fields;
+namespace verbb\snipcart\fields;
 
 use craft\helpers\Localization;
-use fostercommerce\snipcart\db\Table;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
-use fostercommerce\snipcart\assetbundles\ProductDetailsFieldAsset;
+use verbb\snipcart\db\Table;
+use verbb\snipcart\helpers\VersionHelper;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
+use verbb\snipcart\assetbundles\ProductDetailsFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;

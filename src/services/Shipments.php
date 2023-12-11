@@ -1,19 +1,12 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://workingconcept.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
-
-use fostercommerce\snipcart\events\ShippingRateEvent;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\providers\shipstation\ShipStation;
-use fostercommerce\snipcart\records\ShippingQuoteLog;
-use fostercommerce\snipcart\errors\ShippingRateException;
+use verbb\snipcart\events\ShippingRateEvent;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\providers\shipstation\ShipStation;
+use verbb\snipcart\records\ShippingQuoteLog;
+use verbb\snipcart\errors\ShippingRateException;
 use Craft;
 
 /**
@@ -21,7 +14,7 @@ use Craft;
  *
  * For interacting with external shipping providers.
  *
- * @package fostercommerce\snipcart\services
+ * @package verbb\snipcart\services
  * @property ShipStation $shipStation
  */
 class Shipments extends \craft\base\Component

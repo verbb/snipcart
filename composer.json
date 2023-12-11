@@ -1,57 +1,51 @@
 {
-    "name": "fostercommerce/craft-snipcart",
-    "description": "Craft CMS e-commerce in a day.",
+    "name": "verbb/snipcart",
+    "description": "Integrate with Snipcart.",
     "type": "craft-plugin",
-    "version": "1.6.1",
+    "version": "1.7.0",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
         "craft-plugin",
-        "craft3",
         "snipcart"
     ],
     "support": {
-        "docs": "https://snipcart.fostercommerce.com/",
-        "issues": "https://github.com/FosterCommerce/snipcart-craft-plugin/issues"
+        "email": "support@verbb.io",
+        "issues": "https://github.com/verbb/snipcart/issues?state=open",
+        "source": "https://github.com/verbb/snipcart",
+        "docs": "https://github.com/verbb/snipcart",
+        "rss": "https://github.com/verbb/snipcart/commits/v2.atom"
     },
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
+            "name": "Verbb",
+            "homepage": "https://verbb.io"
+        },
+        {
             "name": "Foster Commerce",
-            "homepage": "https://www.fostercommerce.com/"
+            "homepage": "https://www.fostercommerce.com"
+        },
+        {
+            "name": "Matt Stein",
+            "homepage": "https://mattstein.com"
         }
     ],
     "require": {
-        "php": ">=7.4.0",
-        "craftcms/cms": "^3.3.0",
-        "pelago/emogrifier": "*"
-    },
-    "require-dev": {
-        "roave/security-advisories": "dev-latest",
-        "vlucas/phpdotenv": "^3.4",
-        "codeception/codeception": "^4.0.0",
-        "fzaninotto/faker": "^1.8",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0",
-        "codeception/module-rest": "^1.0.0",
-        "codeception/module-datafactory": "^1.0.0",
-        "codeception/module-yii2": "^1.0.0"
+        "craftcms/cms": "^3.7.0",
+        "pelago/emogrifier": "*",
+        "verbb/base": "^1.0.2"
     },
     "autoload": {
         "psr-4": {
-            "fostercommerce\\snipcart\\": "src/"
+            "verbb\\snipcart\\": "src/"
         }
-    },
-    "config": {
-        "sort-packages": true
     },
     "extra": {
         "name": "Snipcart",
         "handle": "snipcart",
-        "hasCpSettings": true,
-        "hasCpSection": true,
-        "changelogUrl": "https://github.com/FosterCommerce/snipcart-craft-plugin/changelog.md",
-        "class": "fostercommerce\\snipcart\\Snipcart"
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/snipcart/craft-3/CHANGELOG.md",
+        "class": "verbb\\snipcart\\Snipcart"
     }
 }
