@@ -10,53 +10,34 @@
     { label: 'Settings' | t('app'), url: url('snipcart/settings') },
 ] %}
 
-{% set navItems = {
-    account: { label: 'Snipcart Account' | t('snipcart')},
-    orders: { label: 'Orders' | t('snipcart') },
-    webhooks: { label: 'Webhooks' | t('snipcart') },
-    logging: { label: 'Logging & Caching' | t('snipcart') },
-    shipping: { label: 'Shipping' | t('snipcart') },
+{% set tabs = {
+    account: { label: 'Snipcart Account' | t('snipcart'), url: '#account' },
+    orders: { label: 'Orders' | t('snipcart'), url: '#orders' },
+    webhooks: { label: 'Webhooks' | t('snipcart'), url: '#webhooks' },
+    logging: { label: 'Logging & Caching' | t('snipcart'), url: '#logging' },
+    shipping: { label: 'Shipping' | t('snipcart'), url: '#shipping' },
 } %}
 
-{% set selectedTab = 'settings' %}
-{% set selectedItem = 'account' %}
+{% set selectedTab = 'account' %}
 {% set fullPageForm = true %}
 
 {% set title = 'Snipcart Settings' | t('snipcart') %}
-
-{% block sidebar %}
-    <nav class="snipcart-settings-tabs" data-vui-tabs>
-        <ul>
-            {% for id, item in navItems %}
-                {% if item.heading is defined %}
-                    <li class="heading"><span>{{ item.heading }}</span></li>
-                {% else %}
-                    <li>
-                        <a href="#sidebar-tab-{{ id }}" class="tab {% if id == selectedItem %}sel{% endif %}">
-                            {{ item.label }}
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </nav>
-{% endblock %}
 
 {% block blockContent %}
 
 <input type="hidden" name="action" value="plugins/save-plugin-settings">
 <input type="hidden" name="pluginHandle" value='snipcart'>
 
-{% for id, item in navItems %}
-    {% if item.label is defined %}
-        <div id="sidebar-tab-{{ id }}" {% if not loop.first %}class="hidden"{% endif %}>
-            <h2>{{ item.label }}</h2>
+<div class="form-wrap">
+{% for id, item in tabs %}
+    <div id="{{ id }}" {% if not loop.first %}class="hidden"{% endif %}>
+        <h2>{{ item.label }}</h2>
 
-            {% namespace 'settings' %}
-                {% include 'snipcart/settings/_panes/' ~ id ignore missing %}
-            {% endnamespace %}
-        </div>
-    {% endif %}
+        {% namespace 'settings' %}
+            {% include 'snipcart/settings/_panes/' ~ id ignore missing %}
+        {% endnamespace %}
+    </div>
 {% endfor %}
+</div>
 
 {% endblock %}
