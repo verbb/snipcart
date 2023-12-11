@@ -1,35 +1,23 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\fields\ProductDetails;
+use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
+use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
 
 use Craft;
 use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\elements\Entry;
-use fostercommerce\snipcart\fields\ProductDetails;
-use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
-use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
 
-/**
- * @package fostercommerce\snipcart\services
- */
+use stdClass;
+
 class Fields extends Component
 {
-    /**
-     * Saves data for a Product Details field.
-     *
-     * @param ProductDetails   $field   Related Field instance
-     * @param ElementInterface $element Related Element
-     *
-     * @throws
-     */
-    public function saveProductDetailsField($field, $element): ?bool
+    // Public Methods
+    // =========================================================================
+
+    public function saveProductDetailsField(ProductDetails $field, ElementInterface $element): ?bool
     {
         $data = $element->getFieldValue($field->handle);
 
@@ -39,25 +27,10 @@ class Fields extends Component
 
         $currentSiteId = Craft::$app->getSites()->getCurrentSite()->id;
 
-        return $this->saveRecord(
-            $data,
-            $element->siteId ?? $currentSiteId,
-            $element->getId(),
-            $field->id
-        );
+        return $this->saveRecord($data, $element->siteId ?? $currentSiteId, $element->getId(), $field->id);
     }
 
-    /**
-     * Gets data for a Product Details field.
-     *
-     * @param ProductDetails        $field   Related Field
-     * @param ElementInterface|null $element Related Element
-     * @param mixed                 $value   Data that should be used
-     *                                       to populate the model
-     *
-     * @throws
-     */
-    public function getProductDetailsField($field, ElementInterface $element = null, mixed $value = null): ?ProductDetailsModel
+    public function getProductDetailsField(ProductDetails $field, ElementInterface $element = null, mixed $value = null): ?ProductDetailsModel
     {
         // if we’ve already got a model, just give it back
         if ($value instanceof ProductDetailsModel) {
@@ -65,7 +38,7 @@ class Fields extends Component
         }
 
         // if we don’t have an element, we don't have much to do
-        if (! $element instanceof ElementInterface) {
+        if (!$element instanceof ElementInterface) {
             return null;
         }
 
@@ -92,27 +65,17 @@ class Fields extends Component
             $elementId = $currentRevision->getId();
         }
 
-        /**
-         * Populate a ProductDetailsModel on an existing Element.
-         */
-        if ($elementId !== null &&
-            $record = $this->getRecord(
-                $siteId,
-                $elementId,
-                $field->id
-            )
-        ) {
-            if (! $this->isUnsavedRecord($record)) {
+        // Populate a ProductDetailsModel on an existing Element.
+        if ($elementId !== null && $record = $this->getRecord($siteId, $elementId, $field->id)) {
+            if (!$this->isUnsavedRecord($record)) {
                 // populate with stored values
                 return new ProductDetailsModel($record->getAttributes());
             }
 
             $model = new ProductDetailsModel();
 
-            /**
-             * Populate empty model with defaults, being sure fieldId is
-             * set since defaults depend on field configuration.
-             */
+            // Populate empty model with defaults, being sure fieldId is
+            // set since defaults depend on field configuration.
             $model->fieldId = $field->id;
             $model->populateDefaults();
 
@@ -133,33 +96,21 @@ class Fields extends Component
         return $model;
     }
 
-    /**
-     * Returns true if the record has not yet been saved to the database, or
-     * if it was created without yet being populated like during a bulk Element
-     * re-save after the field is newly added.
-     */
+
+    // Private Methods
+    // =========================================================================
+
     private function isUnsavedRecord(ProductDetailsRecord $productDetailsRecord): bool
     {
         if ($productDetailsRecord->isNew) {
             return true;
         }
 
-        /**
-         * A record can only have a `null` sku and price if saved during a
-         * bulk operation.
-         */
+        // A record can only have a `null` sku and price if saved during a bulk operation.
         return $productDetailsRecord->sku === null && $productDetailsRecord->price === null;
     }
 
-    /**
-     * Saves the record that stores the field data.
-     *
-     * @param \stdClass  $data       Field data to be saved
-     * @param int        $siteId     Relevant Site ID
-     * @param int        $elementId  Relevant Element ID
-     * @param int        $fieldId    Relevant Field ID
-     */
-    private function saveRecord($data, $siteId, $elementId, $fieldId): bool
+    private function saveRecord(stdClass $data, int $siteId, int $elementId, int $fieldId): bool
     {
         $productDetailsRecord = $this->getRecord($siteId, $elementId, $fieldId);
 
@@ -181,15 +132,7 @@ class Fields extends Component
         return $productDetailsRecord->save();
     }
 
-    /**
-     * Gets a ProductDetailsRecord with stored field data, or initializes
-     * a new one.
-     *
-     * @param int  $siteId     Relevant Site ID
-     * @param int  $elementId  Relevant Element ID
-     * @param int  $fieldId    Relevant Field ID
-     */
-    private function getRecord($siteId, $elementId, $fieldId): ProductDetailsRecord
+    private function getRecord(int $siteId, int $elementId, int $fieldId): ProductDetailsRecord
     {
         $record = ProductDetailsRecord::findOne([
             'siteId' => $siteId,
@@ -197,7 +140,7 @@ class Fields extends Component
             'fieldId' => $fieldId,
         ]);
 
-        if (! $record instanceof ProductDetailsRecord) {
+        if (!$record instanceof ProductDetailsRecord) {
             $record = new ProductDetailsRecord();
 
             $record->isNew = true;

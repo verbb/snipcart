@@ -1,85 +1,66 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\controllers;
 
-namespace fostercommerce\snipcart\controllers;
+use verbb\snipcart\Snipcart;
 
 use Craft;
-use craft\errors\MissingComponentException;
 use craft\web\Controller;
-use fostercommerce\snipcart\Snipcart;
+
 use yii\web\Response;
 
 class CustomersController extends Controller
 {
-    public const SEARCH_KEYWORD_PARAM = 'searchKeywords';
+    // Constants
+    // =========================================================================
 
+    public const SEARCH_KEYWORD_PARAM = 'searchKeywords';
     public const SEARCH_KEYWORD_SESSION_KEY = 'snipcartSearchKeywords';
 
-    /**
-     * Displays paginated list of customers.
-     *
-     * @throws
-     */
+
+    // Public Methods
+    // =========================================================================
+
     public function actionIndex(): Response
     {
         $request = Craft::$app->getRequest();
         $searchKeywords = $this->getSearchKeywords();
         $page = $request->getPageNum();
 
-        if (! empty($searchKeywords)) {
-            $customers = Snipcart::$plugin->customers->listCustomers($page, 20, [
+        if (!empty($searchKeywords)) {
+            $customers = Snipcart::$plugin->getCustomers()->listCustomers($page, 20, [
                 'name' => $searchKeywords,
             ]);
         } else {
-            $customers = Snipcart::$plugin->customers->listCustomers($page);
+            $customers = Snipcart::$plugin->getCustomers()->listCustomers($page);
         }
 
         $totalPages = ceil($customers->totalItems / $customers->limit);
 
-        return $this->renderTemplate(
-            'snipcart/cp/customers/index',
-            [
-                'pageNumber' => $page,
-                'totalPages' => $totalPages,
-                'totalItems' => $customers->totalItems,
-                'customers' => $customers->items,
-                'keywords' => $searchKeywords,
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/customers/index', [
+            'pageNumber' => $page,
+            'totalPages' => $totalPages,
+            'totalItems' => $customers->totalItems,
+            'customers' => $customers->items,
+            'keywords' => $searchKeywords,
+        ]);
     }
 
-    /**
-     * Displays customer detail.
-     *
-     * @throws
-     */
     public function actionCustomerDetail(string $customerId): Response
     {
-        $customer = Snipcart::$plugin->customers->getCustomer($customerId);
-        $customerOrders = Snipcart::$plugin->customers->getCustomerOrders($customerId);
+        $customer = Snipcart::$plugin->getCustomers()->getCustomer($customerId);
+        $customerOrders = Snipcart::$plugin->getCustomers()->getCustomerOrders($customerId);
 
-        return $this->renderTemplate(
-            'snipcart/cp/customers/detail',
-            [
-                'customer' => $customer,
-                'orders' => $customerOrders,
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/customers/detail', [
+            'customer' => $customer,
+            'orders' => $customerOrders,
+        ]);
     }
 
-    /**
-     * Finds search keywords in request or session, storing them in the
-     * session in the process. Returns empty string if no keywords are present.
-     *
-     * @return array|mixed|string
-     * @throws MissingComponentException
-     */
-    private function getSearchKeywords()
+
+    // Private Methods
+    // =========================================================================
+
+    private function getSearchKeywords(): mixed
     {
         $request = Craft::$app->getRequest();
         $session = Craft::$app->getSession();

@@ -1,71 +1,29 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 
+use DateTime;
+
 class Refund extends Model
 {
-    /**
-     * @var string The refund's unique identifier.
-     */
-    public $id;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var string The order's unique identifier.
-     */
-    public $orderToken;
+    public ?string $id = null;
+    public ?string $orderToken = null;
+    public ?float $amount = null;
+    public ?string $comment = null;
+    public ?bool $refundedByPaymentGateway = null;
+    public ?bool $notifyCustomer = null;
+    public ?bool $notifiedCustomerByEmail = null;
+    public ?string $currency = null;
+    public ?DateTime $creationDate = null;
+    public ?DateTime $modificationDate = null;
 
-    /**
-     * @var float The amount of the refund.
-     */
-    public $amount;
 
-    /**
-     * @var string The reason for the refund.
-     */
-    public $comment;
-
-    /**
-     * @var bool
-     */
-    public $refundedByPaymentGateway;
-
-    /**
-     * @var bool Whether the customer should be notified if this is a new refund.
-     */
-    public $notifyCustomer;
-
-    /**
-     * @var bool Whether or not the customer has been notified by email about the refund.
-     */
-    public $notifiedCustomerByEmail;
-
-    /**
-     * @var string The currency of the order that is getting refunded.
-     */
-    public $currency;
-
-    /**
-     * @var
-     */
-    public $creationDate;
-
-    /**
-     * @var
-     */
-    public $modificationDate;
-
-    public function datetimeAttributes(): array
-    {
-        return ['creationDate', 'modificationDate'];
-    }
+    // Public Methods
+    // =========================================================================
 
     public function getPayloadForPost(): array
     {

@@ -1,68 +1,39 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\controllers;
 
-namespace fostercommerce\snipcart\controllers;
+use verbb\snipcart\models\snipcart\Discount;
+use verbb\snipcart\Snipcart;
 
 use Craft;
-use craft\errors\MissingComponentException;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use fostercommerce\snipcart\models\snipcart\Discount;
-use fostercommerce\snipcart\Snipcart;
-use yii\web\BadRequestHttpException;
+
 use yii\web\Response;
 
 class DiscountsController extends Controller
 {
-    /**
-     * Displays discounts, which don’t come paginated.
-     *
-     * @throws
-     */
+    // Public Methods
+    // =========================================================================
+
     public function actionIndex(): Response
     {
-        return $this->renderTemplate(
-            'snipcart/cp/discounts/index',
-            [
-                'discounts' => Snipcart::$plugin->discounts->listDiscounts(),
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/discounts/index', [
+            'discounts' => Snipcart::$plugin->getDiscounts()->listDiscounts(),
+        ]);
     }
 
-    /**
-     * Displays discount detail.
-     *
-     * @throws
-     */
     public function actionDiscountDetail(string $discountId): Response
     {
-        return $this->renderTemplate(
-            'snipcart/cp/discounts/detail',
-            [
-                'discount' => Snipcart::$plugin->discounts->getDiscount($discountId),
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/discounts/detail', [
+            'discount' => Snipcart::$plugin->getDiscounts()->getDiscount($discountId),
+        ]);
     }
 
-    /**
-     * Displays new discount form.
-     */
     public function actionNew(): Response
     {
         return $this->renderTemplate('snipcart/cp/discounts/new');
     }
 
-    /**
-     * Saves a new discount.
-     *
-     * @throws MissingComponentException
-     * @throws BadRequestHttpException
-     */
     public function actionSave(): Response
     {
         $this->requirePostRequest();
@@ -71,13 +42,13 @@ class DiscountsController extends Controller
 
         unset($params['CRAFT_CSRF_TOKEN'], $params['action']);
 
-        if (! $discount = new Discount($params)) {
+        if (!$discount = new Discount($params)) {
             Craft::$app->getUrlManager()->setRouteParams([
                 'variables' => [
                     'discount' => $discount,
                 ],
             ]);
-        } elseif (! $discount->validate()) {
+        } else if (!$discount->validate()) {
             Craft::$app->getUrlManager()->setRouteParams([
                 'variables' => [
                     'discount' => $discount,
@@ -85,7 +56,7 @@ class DiscountsController extends Controller
             ]);
 
             Craft::$app->getSession()->setError('Invalid Discount details.');
-        } elseif (Snipcart::$plugin->discounts->createDiscount($discount)) {
+        } else if (Snipcart::$plugin->getDiscounts()->createDiscount($discount)) {
             Craft::$app->getSession()->setNotice('Discount saved.');
         } else {
             Craft::$app->getSession()->setError('Failed to save Discount.');
@@ -94,20 +65,11 @@ class DiscountsController extends Controller
         return $this->redirect(UrlHelper::cpUrl('snipcart/discounts'));
     }
 
-    /**
-     * @throws BadRequestHttpException
-     */
     public function actionUpdateDiscount(): void
     {
         $this->requirePostRequest();
     }
 
-    /**
-     * Deletes a discount.
-     *
-     * @throws BadRequestHttpException
-     * @throws MissingComponentException
-     */
     public function actionDeleteDiscount(): Response
     {
         $this->requirePostRequest();
@@ -115,15 +77,12 @@ class DiscountsController extends Controller
         $discountId = (string) Craft::$app->getRequest()->post('discountId');
 
         // successful response will be `null`, do don't bother checking
-        Snipcart::$plugin->discounts->deleteDiscountById($discountId);
+        Snipcart::$plugin->getDiscounts()->deleteDiscountById($discountId);
 
         Craft::$app->getSession()->setNotice('Discount deleted.');
 
-        /**
-         * Clear cache so we don't return to see our deleted item on the list.
-         * @todo Be more conservative about this, just clearing Snipcart or
-         *       even 'discounts' caches.
-         */
+        // Clear cache so we don't return to see our deleted item on the list.
+        // @todo Be more conservative about this, just clearing Snipcart or even 'discounts' caches.
         $cacheService = Craft::$app->getCache();
         $cacheService->flush();
 

@@ -1,166 +1,32 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 
-/**
- * https://docs.snipcart.com/v2/api-reference/products
- */
+use DateTime;
+
 class Product extends Model
 {
-    /**
-     * @var
-     */
-    public $id;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var \DateTime
-     */
-    public $creationDate;
-
-    /**
-     * @var \DateTime
-     */
-    public $modificationDate;
-
-    /**
-     * @var
-     */
-    public $mode;
-
-    /**
-     * @var
-     */
-    public $userDefinedId;
-
-    /**
-     * @var
-     */
-    public $url;
-
-    /**
-     * @var
-     */
-    public $price;
-
-    /**
-     * @var
-     */
-    public $name;
-
-    /**
-     * @var
-     */
-    public $description;
-
-    /**
-     * @var
-     */
-    public $image;
-
-    /**
-     * @var
-     */
-    public $archived;
-
-    /**
-     * @var
-     */
-    public $statistics;
-
-    // numberOfSales
-    // totalSales
-
-    /**
-     * @var
-     */
-    public $customFields;
-
-    /**
-     * @var
-     */
-    public $metaData;
-
-    /**
-     * @var
-     */
-    public $inventoryManagementMethod;
-
-    /**
-     * @var
-     */
-    public $stock;
-
-    /**
-     * @var
-     */
-    public $totalStock;
-
-    /**
-     * @var
-     */
-    public $allowOutOfStockPurchases;
-
-    /**
-     * @var
-     */
-    public $variants;
-
-    /*
-
-    "items": [
-
-
-       {
-        "variants": [
-          {
-            "stock": 10,
-            "variation": [
-              {
-                "name": "Size",
-                "option": "16GB"
-              },
-              {
-                "name": "Color",
-                "option": "Black"
-              }
-            ],
-            "allowOutOfStockPurchases": true
-          },
-          {
-            "stock": 1,
-            "variation": [
-              {
-                "name": "Size",
-                "option": "32GB"
-              },
-              {
-                "name": "Color",
-                "option": "Red"
-              }
-            ],
-            "allowOutOfStockPurchases": false
-          }
-        ],
-        "metadata": {
-            "meta": true
-        },
-        "id": "3932ecd1-6508-4209-a7c6-8da4cc75590d",
-        "creationDate": "2016-11-03T12:51:04.297Z",
-        "modificationDate": "2016-11-03T12:51:28.873Z"
-      }
-    ]
-      */
-
-    public function datetimeAttributes(): array
-    {
-        return ['creationDate', 'modificationDate'];
-    }
+    public ?string $id = null;
+    public ?DateTime $creationDate = null;
+    public ?DateTime $modificationDate = null;
+    public ?string $mode = null;
+    public ?string $userDefinedId = null;
+    public ?string $url = null;
+    public ?string $price = null;
+    public ?string $name = null;
+    public ?string $description = null;
+    public ?string $image = null;
+    public ?string $archived = null;
+    public ?string $statistics = null;
+    public ?string $customFields = null;
+    public ?string $metaData = null;
+    public ?string $inventoryManagementMethod = null;
+    public ?string $stock = null;
+    public ?string $totalStock = null;
+    public ?string $allowOutOfStockPurchases = null;
+    public ?string $variants = null;
 }

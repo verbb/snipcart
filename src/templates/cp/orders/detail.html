@@ -1,0 +1,171 @@
+{% extends '_layouts/cp' %}
+{% import '_includes/forms' as forms %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set centered = true %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'Order ' ~ order.invoiceNumber ~ (isTestMode ? ' 🚧') %}
+
+{% set crumbs = [
+    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: 'Orders' | t('snipcart'), url: url('snipcart/orders') }
+] %}
+
+{% block content %}
+    <div>
+        {% if orderRefunds %}
+            {% set totalRefunded = 0 %}
+            
+            <div class="refunds">
+                <h2>{{ 'Refunds' | t('snipcart') }}</h2>
+
+                <table width="100%">
+                    <thead>
+                        <th>{{ 'Date' | t('snipcart') }}</th>
+                        <th>{{ 'Amount' | t('snipcart') }}</th>
+                        <th>{{ 'Comment' | t('snipcart') }}</th>
+                        <th>{{ 'Customer Notified' | t('snipcart') }}</th>
+                        <th>{{ 'Refunded by Gateway' | t('snipcart') }}</th>
+                    </thead>
+                    <tbody>
+                        {% for refund in orderRefunds %}
+                            <tr>
+                                <td>{{ refund.creationDate | datetime('short') }}</td>
+                                <td>{{ craft.snipcart.formatCurrency(refund.amount, order.currency) }}</td>
+                                <td>{{ refund.comment }}</td>
+                                <td>{{ refund.notifyCustomer ? 'yes' : 'no' }}</td>
+                                <td>{{ refund.refundedByPaymentGateway ? 'yes' : 'no' }}</td>
+                            </tr>
+                            
+                            {% set totalRefunded = totalRefunded + refund.amount %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <br>
+                <br>
+            </div>
+        {% endif %}
+
+        <div class="detail-columns block px-3 mb-8">
+            <div class="md:flex -mx-6">
+                <div class="md:w-1/2 mx-3">
+                    <div class="inner">
+                        <div class="flex-wrapper -mx-3">
+                            <div class="w-1/2 mx-3">
+                                <h2>{{ 'Created' | t('snipcart') }} {{ order.creationDate | date('long') }}</h2>
+                                
+                                <p>
+                                    {{ 'Updated' | t('snipcart') }} {{ order.modificationDate | datetime('short') }}<br>
+                                    {{ 'Status' | t('snipcart') }}: <b>{{ order.status }}</b><br>
+                                    
+                                    {% if order.cardType %}
+                                        {{ 'Payment Method' | t('snipcart') }}: <b>{{ order.cardType }} {% if order.creditCardLast4Digits %}(<code>{{ order.creditCardLast4Digits }}</code>){% endif %}</b><br>
+                                    {% endif %}
+                                    
+                                    {% if order.paymentGatewayUsed and order.paymentGatewayUsed != 'None' -%}
+                                        {{ order.paymentGatewayUsed }}{% if order.paymentTransactionId %}: {% endif %}
+                                    {%- endif %}
+                                    
+                                    {% if order.paymentTransactionId -%}
+                                        <code>{{ order.paymentTransactionId }}</code>
+                                    {%- endif %}
+                                </p>
+
+                                {% if order.notes %}
+                                    <h3>{{ 'Notes' | t('snipcart') }}</h3>
+                                    
+                                    {{ order.notes }}
+                                {% endif %}
+                            </div>
+
+                            <div class="w-1/2 mx-3">
+                                <h2>{{ 'Customer' | t('snipcart') }}</h2>
+
+                                {% include 'snipcart/cp/_parts/customer-summary' with {
+                                    order: order,
+                                } %}
+
+                                {% include 'snipcart/cp/_parts/order-addresses' with {
+                                    order: order,
+                                    shippingSameAsBilling: order.shippingAddressSameAsBilling
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2 mx-3">
+                    <div class="inner">
+                        <h2>{{ 'Items' | t('snipcart') }}</h2>
+
+                        {% include 'snipcart/cp/_parts/cart-items' with {
+                            order: order
+                        } %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% hook 'cp.snipcart.order.detail' %}
+
+        {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
+            <a href="#" class="btn" id="refund-order-btn">{{ 'Refund Order …' | t('snipcart') }}</a>
+        {%- endif %}
+
+        <form id="refund-form" action="" method="post" class="hidden">
+            <input type="hidden" name="action" value="snipcart/orders/refund">
+            <input type="hidden" name="orderId" value="{{ order.token }}">
+            {{ csrfInput() }}
+
+            {{ forms.textField({
+                first: true,
+                label: 'Refund Amount' | t('snipcart'),
+                id: 'amount',
+                required: true,
+                name: 'amount',
+                autofocus: true,
+            }) }}
+
+            {{ forms.textField({
+                label: 'Comment' | t('snipcart'),
+                id: 'comment',
+                required: false,
+                name: 'comment',
+            }) }}
+
+            {{ forms.lightswitchField({
+                label: 'Notify Customer' | t('snipcart'),
+                id: 'notifyCustomer',
+                required: false,
+                name: 'notifyCustomer',
+                on: false,
+                value: true,
+            }) }}
+
+            <a href="#" class="btn cancel">{{ 'Cancel' | t('snipcart') }}</a>
+            <input type="submit" name="submit" class="btn submit" value="{{ 'Process Refund' | t('snipcart') }}">
+        </form>
+
+        <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
+            {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
+        </a>
+    </div>
+{% endblock %}
+
+{% js %}
+    (function($) {
+        "use strict";
+        var $form = $("#refund-form");
+        
+        $("#refund-order-btn").click(function(e){
+            $form.removeClass("hidden");
+            var hud = new Garnish.HUD(e.target, $form);
+
+            $form.find('.cancel').click(function(e){
+                hud.hide();
+            });
+        });
+    })(jQuery);
+{% endjs %}

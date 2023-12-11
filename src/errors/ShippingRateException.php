@@ -1,17 +1,23 @@
 <?php
+namespace verbb\snipcart\errors;
 
-namespace fostercommerce\snipcart\errors;
+use verbb\snipcart\events\ShippingRateEvent;
 
-use fostercommerce\snipcart\events\ShippingRateEvent;
+use Exception;
+use Throwable;
 
-class ShippingRateException extends \Exception
+class ShippingRateException extends Exception
 {
-    /**
-     * @var ShippingRateEvent The event that was marked as invalid
-     */
-    public $event;
+    // Properties
+    // =========================================================================
 
-    public function __construct(ShippingRateEvent $shippingRateEvent, string $message = null, int $code = 0, \Throwable $throwable = null)
+    public ShippingRateEvent $event;
+
+
+    // Public Properties
+    // =========================================================================
+
+    public function __construct(ShippingRateEvent $shippingRateEvent, string $message = null, int $code = 0, Throwable $throwable = null)
     {
         $this->event = $shippingRateEvent;
 

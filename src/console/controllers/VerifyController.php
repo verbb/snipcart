@@ -1,76 +1,56 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\console\controllers;
 
-namespace fostercommerce\snipcart\console\controllers;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\providers\shipstation\ShipStation;
 
-use Craft;
 use craft\helpers\DateTimeHelper;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\providers\shipstation\ShipStation;
-use fostercommerce\snipcart\Snipcart;
+
 use yii\console\Controller;
 use yii\console\ExitCode;
 
-/**
- * Console utility for making sure Snipcart orders made it to ShipStation,
- * and attempting to re-feed any order that got lost in the tubes.
- *
- * @package fostercommerce\snipcart\console\controllers
- */
 class VerifyController extends Controller
 {
-    public const SUCCESS_CHAR = '✓';
+    // Constants
+    // =========================================================================
 
+    public const SUCCESS_CHAR = '✓';
     public const FAIL_CHAR = '✗';
 
-    /**
-     * Checks that most recent orders exist in Snipcart and ShipStation.
-     * Sends notifications and tries again if any are missing.
-     *
-     * @param bool $forceFeed  forcefully re-send missing orders
-     * @param int  $limit      number of recent orders to check
-     *
-     * @throws
-     */
-    public function actionCheckOrders($forceFeed = false, $limit = 3): int
+
+    // Public Methods
+    // =========================================================================
+
+    public function actionCheckOrders(bool $forceFeed = false, int $limit = 3): int
     {
         $startTime = microtime(true);
         $failedOrders = [];
 
         $this->stdout('-------------------------------------' . PHP_EOL);
-        $this->stdout(sprintf('Checking last %d orders...', $limit) . PHP_EOL);
+        $this->stdout("Checking last $limit orders..." . PHP_EOL);
         $this->stdout('-------------------------------------' . PHP_EOL);
 
-        $orders = Snipcart::$plugin->orders->getOrders([
+        $orders = Snipcart::$plugin->getOrders()->getOrders([
             'limit' => $limit,
             'cache' => false,
         ]);
 
         foreach ($orders as $order) {
-            $this->stdout(sprintf('Snipcart %s … ', $order->invoiceNumber));
+            $this->stdout("Snipcart $order->invoiceNumber … ");
 
             if ($order->hasShippableItems()) {
                 $success = true;
-                $shipStationOrder = Snipcart::$plugin->shipments
+
+                $shipStationOrder = Snipcart::$plugin->getShipments()
                     ->shipStation
                     ->getOrderBySnipcartInvoice($order->invoiceNumber);
 
-                if (! $shipStationOrder instanceof \fostercommerce\snipcart\models\shipstation\Order) {
+                if (!$shipStationOrder instanceof \verbb\snipcart\models\shipstation\Order) {
                     $success = false;
                     $failedOrders[] = $order;
                 }
 
-                $this->stdout(
-                    sprintf(
-                        'ShipStation [%s]' . PHP_EOL,
-                        $success ? self::SUCCESS_CHAR : self::FAIL_CHAR
-                    )
-                );
+                $this->stdout(sprintf('ShipStation [%s]' . PHP_EOL, $success ? self::SUCCESS_CHAR : self::FAIL_CHAR));
             } else {
                 // no shippable items, may not need to be in ShipStation
                 $this->stdout(' [skipped]' . PHP_EOL);
@@ -78,10 +58,7 @@ class VerifyController extends Controller
         }
 
         if ($failedOrders !== []) {
-            $reFeedResults = $this->reFeedToShipStation(
-                $failedOrders,
-                $forceFeed
-            );
+            $reFeedResults = $this->reFeedToShipStation($failedOrders, $forceFeed);
 
             $this->sendAdminNotification($failedOrders, $reFeedResults);
         }
@@ -91,48 +68,34 @@ class VerifyController extends Controller
         $endTime = microtime(true);
         $executionTime = ($endTime - $startTime);
 
-        $this->stdout(sprintf('Finished in %s seconds.', $executionTime) . PHP_EOL . PHP_EOL);
+        $this->stdout("Finished in $executionTime seconds." . PHP_EOL . PHP_EOL);
 
         return ExitCode::OK;
     }
 
-    /**
-     * Tries re-feeding missing orders into ShipStation.
-     *
-     * @param Order[] $orders
-     * @param bool    $force
-     *
-     * @return array  If attempts were made to re-send the orders to
-     *                ShipStation, they'll be in this array where the key is the
-     *                invoice number and the value is true if successful.
-     * @throws
-     */
-    private function reFeedToShipStation($orders, $force): array
+
+    // Private Methods
+    // =========================================================================
+
+    private function reFeedToShipStation(array $orders, bool $force): array
     {
         $reFeedResult = [];
         $minuteLimit = Snipcart::$plugin->getSettings()->reFeedAttemptWindow;
 
         foreach ($orders as $order) {
             // try again, but only briefly or if forced
-            if ($force || DateTimeHelper::isWithinLast(
-                $order->creationDate,
-                $minuteLimit . ' minutes'
-            )) {
+            if ($force || DateTimeHelper::isWithinLast($order->creationDate, $minuteLimit . ' minutes')) {
                 $this->stdout('-------------------------------------' . PHP_EOL);
-                $this->stdout(sprintf(
-                    'Re-sending order %s to ShipStation … ',
-                    $order->invoiceNumber
-                ));
+                $this->stdout("Re-sending order $order->invoiceNumber to ShipStation … ");
 
-                $result = Snipcart::$plugin->shipments->shipStation->createOrder($order);
+                $result = Snipcart::$plugin->getShipments()->shipStation->createOrder($order);
                 $succeeded = isset($result->orderId) && empty($result->getErrors());
                 $wasTest = $succeeded && $result->orderId === ShipStation::TEST_ORDER_ID;
 
                 // log failure for troubleshooting
-                Craft::error(sprintf(
-                    'ShipStation re-feed failed: %s',
-                    implode(', ', $result->getErrors())
-                ), 'snipcart');
+                Snipcart::error('ShipStation re-feed failed: {errors}', [
+                    'errors' => implode(', ', $result->getErrors()),
+                ]);
 
                 $statusString = $succeeded ? self::SUCCESS_CHAR : self::FAIL_CHAR;
 
@@ -151,18 +114,9 @@ class VerifyController extends Controller
         return $reFeedResult;
     }
 
-    /**
-     * Lets somebody know that one or more orders didn’t make it to ShipStation.
-     *
-     * @param Order[] $snipcartOrders
-     *
-     * @throws
-     */
-    private function sendAdminNotification($snipcartOrders, array $reFeedResults): int
+    private function sendAdminNotification(array $snipcartOrders, array $reFeedResults): int
     {
-        Snipcart::$plugin->notifications->setEmailTemplate(
-            'snipcart/email/recovery'
-        );
+        Snipcart::$plugin->getNotifications()->setEmailTemplate('snipcart/email/recovery');
 
         $containsFailures = false;
 
@@ -173,7 +127,7 @@ class VerifyController extends Controller
             }
         }
 
-        Snipcart::$plugin->notifications->setNotificationVars([
+        Snipcart::$plugin->getNotifications()->setNotificationVars([
             'orders' => $snipcartOrders,
             'reattempt' => $reFeedResults,
             'containsFailures' => $containsFailures,
@@ -182,7 +136,7 @@ class VerifyController extends Controller
         $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
         $subject = 'Recovered Snipcart Orders';
 
-        if (! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject)) {
+        if (!Snipcart::$plugin->getNotifications()->sendEmail($toEmails, $subject)) {
             $this->stderr('Notifications failed.' . PHP_EOL);
         }
 

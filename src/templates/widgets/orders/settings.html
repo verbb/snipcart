@@ -1,0 +1,23 @@
+{% import '_includes/forms' as forms %}
+
+<form method="post" accept-charset="UTF-8">
+    {{ forms.selectField({
+        label: 'Chart Type' | t('snipcart'),
+        instructions: 'Choose the type of chart you‘d like to display.' | t('snipcart'),
+        required: true,
+        name: 'chartType',
+        options: widget.getChartTypeOptions(),
+        value: widget.chartType,
+        errors: widget.getErrors('chartType'),
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Time Period' | t('snipcart'),
+        instructions: 'Choose a range of time to be charted.' | t('snipcart'),
+        required: true,
+        name: 'chartRange',
+        options: widget.getChartRangeOptions(),
+        value: widget.chartRange,
+        errors: widget.getErrors('chartRange'),
+    }) }}
+</form>

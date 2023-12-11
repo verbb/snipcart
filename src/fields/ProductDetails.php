@@ -1,40 +1,39 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\fields;
 
-namespace fostercommerce\snipcart\fields;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\assetbundles\ProductDetailsFieldAsset;
+use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
+use verbb\snipcart\validators\ProductDetailsValidator;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
-use fostercommerce\snipcart\assetbundles\ProductDetailsFieldAsset;
-use fostercommerce\snipcart\db\Table;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\models\ProductDetails as ProductDetailsModel;
-use fostercommerce\snipcart\Snipcart;
-use fostercommerce\snipcart\validators\ProductDetailsValidator;
+
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use LitEmoji\LitEmoji;
+
 use yii\db\Schema;
 
-/**
- * ProductDetails
- *
- * @property ProductDetails $value
- */
+use LitEmoji\LitEmoji;
+use Stringable;
+
 class ProductDetails extends Field
 {
-    /**
-     * @var string The type of database column the field should have in the content table
-     */
-    public $columnType = [
+    // Static Methods
+    // =========================================================================
+
+    public static function displayName(): string
+    {
+        return Craft::t('snipcart', 'Snipcart Product Details');
+    }
+
+    // Properties
+    // =========================================================================
+
+    public array $columnType = [
         'sku' => Schema::TYPE_STRING,
         'inventory' => Schema::TYPE_INTEGER,
         'price' => Schema::TYPE_MONEY,
@@ -48,100 +47,31 @@ class ProductDetails extends Field
         'dimensionsUnit' => Schema::TYPE_STRING,
     ];
 
-    /**
-     * @var bool Whether to display "shippable" option for this field instance
-     *           and allow it to be set per entry.
-     */
-    public $displayShippableSwitch = false;
+    public bool $displayShippableSwitch = false;
+    public bool $displayTaxableSwitch = false;
+    public bool $displayInventory = false;
+    public bool $defaultShippable = false;
+    public bool $defaultTaxable = false;
+    public ?string $defaultWeight = null;
+    public ?string $defaultWeightUnit = null;
+    public ?string $defaultLength = null;
+    public ?string $defaultWidth = null;
+    public ?string $defaultHeight = null;
+    public ?string $defaultDimensionsUnit = null;
+    public string $skuDefault = '';
 
-    /**
-     * @var bool Whether to display "taxable" option for this field instance
-     *           and allow it to be set per entry.
-     */
-    public $displayTaxableSwitch = false;
 
-    /**
-     * @var bool Whether to display "inventory" option for this field instance.
-     */
-    public $displayInventory = false;
-
-    /**
-     * @var bool Default "shippable" value.
-     */
-    public $defaultShippable = false;
-
-    /**
-     * @var bool Default "taxable" value.
-     */
-    public $defaultTaxable = false;
-
-    /**
-     * @var
-     */
-    public $defaultWeight;
-
-    /**
-     * @var
-     */
-    public $defaultWeightUnit;
-
-    /**
-     * @var
-     */
-    public $defaultLength;
-
-    /**
-     * @var
-     */
-    public $defaultWidth;
-
-    /**
-     * @var
-     */
-    public $defaultHeight;
-
-    /**
-     * @var
-     */
-    public $defaultDimensionsUnit;
-
-    /**
-     * @var string
-     */
-    public $skuDefault = '';
-
-    public static function displayName(): string
-    {
-        return Craft::t('snipcart', 'Snipcart Product Details');
-    }
-
-    public static function hasContentColumn(): bool
-    {
-        return true;
-    }
-
-    public function init(): void
-    {
-        parent::init();
-    }
+    // Public Methods
+    // =========================================================================
 
     public function getContentColumnType(): array|string
     {
         return $this->columnType;
     }
 
-    /**
-     * Standardizes field values from several potential formats.
-     *
-     * @inheritdoc
-     */
     public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
-        return Snipcart::$plugin->fields->getProductDetailsField(
-            $this,
-            $element,
-            $value
-        );
+        return Snipcart::$plugin->getFields()->getProductDetailsField($this, $element, $value);
     }
 
     public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
@@ -158,7 +88,7 @@ class ProductDetails extends Field
 
                 if (is_string($v)) {
                     $value[$k] = LitEmoji::unicodeToShortcode($v);
-                } elseif ($v instanceof \Stringable) {
+                } else if ($v instanceof Stringable) {
                     $value[$k] = LitEmoji::unicodeToShortcode($v->__toString());
                 } else {
                     $value[$k] = $v;
@@ -169,9 +99,6 @@ class ProductDetails extends Field
         return $value;
     }
 
-    /**
-     * @since 3.3.0
-     */
     public function getContentGqlType(): array
     {
         $typeName = $this->handle . '_SnipcartField';
@@ -194,67 +121,39 @@ class ProductDetails extends Field
                 ],
             ]));
 
-        TypeLoader::registerType(
-            $typeName,
-            static fn(): mixed => $productDetailsType
-        );
+        TypeLoader::registerType($typeName, static fn(): mixed => $productDetailsType);
 
         return $productDetailsType;
     }
 
-    public function getInputHtml(
-        mixed $value,
-        ?ElementInterface $element = null,
-    ): string {
-        Craft::$app->getView()->registerAssetBundle(
-            ProductDetailsFieldAsset::class
-        );
+    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
+    {
+        Craft::$app->getView()->registerAssetBundle(ProductDetailsFieldAsset::class);
 
-        return Craft::$app->getView()->renderTemplate(
-            'snipcart/fields/product-details/field',
-            [
-                'name' => $this->handle,
-                'field' => $this,
-                'element' => $element,
-                'value' => $value,
-                'settings' => $this->getSettings(),
-                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
-                'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
-                'isCraft34' => VersionHelper::isCraft34(),
-            ]
-        );
+        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/field', [
+            'name' => $this->handle,
+            'field' => $this,
+            'element' => $element,
+            'value' => $value,
+            'settings' => $this->getSettings(),
+            'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+            'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
+        ]);
     }
 
     public function getSettingsHtml(): string
     {
-        Craft::$app->getView()->registerAssetBundle(
-            ProductDetailsFieldAsset::class
-        );
+        Craft::$app->getView()->registerAssetBundle(ProductDetailsFieldAsset::class);
 
-        return Craft::$app->getView()->renderTemplate(
-            'snipcart/fields/product-details/settings',
-            [
-                'field' => $this,
-                'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
-                'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
-            ]
-        );
+        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/settings', [
+            'field' => $this,
+            'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+            'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
+        ]);
     }
 
-    /**
-     * Adds a validation rule for the element for validating each of the
-     * "sub-fields" we’re working with.
-     *
-     * @inheritdoc
-     */
     public function getElementValidationRules(): array
     {
-        return [
-            [
-                ProductDetailsValidator::class,
-            ],
-        ];
+        return [[ProductDetailsValidator::class]];
     }
 }
-
-//class_alias(ProductDetails::class, \fostercommerce\snipcart\fields\ProductDetails::class);

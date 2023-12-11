@@ -1,0 +1,15 @@
+{% set pagingTrigger = 'p' %}
+{% set firstItem = ((currentPage - 1) * perPage) + 1 %}
+{% set lastItem = firstItem + pageItems - 1 %}
+
+{% include '_includes/pagination' with {
+    pageInfo: {
+        first: firstItem,
+        last: lastItem,
+        total: totalItems,
+        itemLabel: itemLabel ?? null,
+        itemsLabel: itemsLabel ?? null,
+        prevUrl: firstItem > 1 ? url(path ~ pagingTrigger ~ (currentPage - 1)) : null,
+        nextUrl: lastItem < totalItems ? url(path ~ pagingTrigger ~ (currentPage + 1)) : null,
+    }
+} %}

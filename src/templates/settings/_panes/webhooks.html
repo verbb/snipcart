@@ -1,0 +1,11 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.textField({
+    label: 'Webhook Endpoint' | t('snipcart'),
+    instructions: 'Configure Snipcart to use this endpoint if you‘d like this site to receive webhook data.' | t('snipcart'),
+    name: 'webhookEndpoint',
+    class: 'code webhook-endpoint',
+    value: siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle'),
+    readonly: true,
+}) }}

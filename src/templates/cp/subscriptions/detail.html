@@ -1,0 +1,221 @@
+{% extends '_layouts/cp' %}
+{% import '_includes/forms' as forms %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set centered = true %}
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'Subscription for ' ~ subscription.user.billingAddress.fullName ~ (isTestMode ? ' 🚧') %}
+
+{% set crumbs = [
+    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: 'Subscriptions' | t('snipcart'), url: url('snipcart/subscriptions') }
+] %}
+
+{% set isCancelled = subscription.cancelledOn is not empty %}
+
+{% block content %}
+    <div>
+        {% if isCancelled %}
+            <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-8">
+                {{ 'This subscription was cancelled' | t('snipcart') }} {{ subscription.cancelledOn | date('long') }}.
+            </div>
+        {% endif %}
+
+        <div class="detail-columns block px-3 mb-8">
+            <div class="md:flex -mx-6">
+                <div class="w-full md:w-1/2 mx-3">
+                    <div class="inner">
+                        <table class="data fullwidth fixed-layout -mx-3">
+                            <tbody>
+                                <tr>
+                                    <th class="light">{{ 'Name' | t('snipcart') }}</th>
+                                    <td>{{ subscription.name }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Status' | t('snipcart') }}</th>
+                                    <td>{{ subscription.status }}</td>
+                                </tr>
+
+                                <tr>
+                                    {% set schedule = subscription.schedule %}
+                                    <th class="light">{{ 'Schedule' | t('snipcart') }}</th>
+                                    <td>
+                                        {{ 'Starts' | t('snipcart') }} {{ schedule.startsOn | date('long') }} and
+                                        {{ 'renews every ' | t('snipcart') }} {{ schedule.intervalCount > 1 ? schedule.intervalCount : '' }} {{ schedule.interval | lower }}{{ schedule.intervalCount > 1 ? 's' : '' -}}
+                                        {% if schedule.trialPeriodInDays %} {{ 'after' | t('snipcart') }} {{ schedule.trialPeriodInDays }} {{ 'day trial' | t('snipcart') }}{% endif %}.
+                                    </td>
+                                </tr>
+
+                                {% if subscription.initialOrderToken %}
+                                    {% set initialOrder = craft.snipcart.getOrder(subscription.initialOrderToken) %}
+                                    
+                                    <tr>
+                                        <th class="light">{{ 'Initial Order' | t('snipcart') }}</th>
+                                        <td>
+                                            <a href="{{ url('snipcart/order/' ~ initialOrder.token) }}">
+                                                {{- initialOrder.invoiceNumber -}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if subscription.user %}
+                                    <tr>
+                                        <th class="light">{{ 'Customer' | t('snipcart') }}</th>
+                                        <td>
+                                            <a href="{{ url('snipcart/customers/' ~ subscription.user.id) }}">
+                                                {{- subscription.user.billingAddress.fullName -}}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <th class="light">{{ 'Amount' | t('snipcart') }}</th>
+                                    <td>{{ craft.snipcart.formatCurrency(subscription.amount) }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Quantity' | t('snipcart') }}</th>
+                                    <td>{{ subscription.quantity }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Total Spent' | t('snipcart') }}</th>
+                                    <td>{{ craft.snipcart.formatCurrency(subscription.totalSpent) }}</td>
+                                </tr>
+
+                                {% if subscription.firstInvoiceReceivedOn %}
+                                    <tr>
+                                        <th class="light">{{ 'First Invoice Received' | t('snipcart') }}</th>
+                                        <td>{{ subscription.firstInvoiceReceivedOn | date('long') }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <th class="light">{{ 'Shipping Charged' | t('snipcart') }}</th>
+                                    <td>
+                                        {% if subscription.shippingCharged %}
+                                            <span data-icon="check"
+                                                  title="{{ 'Yes' | t('snipcart') }}"></span>
+                                        {% else %}
+                                            <span data-icon="remove"
+                                                  title="{{ 'No' | t('snipcart') }}"></span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Recurring Shipping' | t('snipcart') }}</th>
+                                    <td>
+                                        {% if subscription.recurringShipping %}
+                                            <span data-icon="check"
+                                                  title="{{ 'Yes' | t('snipcart') }}"></span>
+                                        {% else %}
+                                            <span data-icon="remove"
+                                                  title="{{ 'No' | t('snipcart') }}"></span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                {% if subscription.cancelledOn %}
+                                    <tr>
+                                        <th class="light">{{ 'Cancelled On' | t('snipcart') }}</th>
+                                        <td>{{ subscription.cancelledOn | date('long') }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if subscription.gatewayId %}
+                                    <tr>
+                                        <th class="light">{{ 'Gateway Subscription ID' | t('snipcart') }}</th>
+                                        <td><code>{{ subscription.gatewayId }}</code></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 mx-3 mt-6 md:mt-2">
+                    <div class="inner">
+                        {% if subscription.upcomingPayments %}
+                            <h2>{{ 'Upcoming Payments' | t('snipcart') }}</h2>
+
+                            <table class="fullwidth">
+                                <thead>
+                                    <th>{{ 'Date' | t('snipcart') }}</th>
+                                    <th>{{ 'Total' | t('snipcart') }}</th>
+                                    <th>{{ 'Taxes' | t('snipcart') }}</th>
+                                    <th>{{ 'Shipping' | t('snipcart') }}</th>
+                                </thead>
+                                <tbody>
+                                    {% for payment in subscription.upcomingPayments %}
+                                        <tr>
+                                            <td>{{ payment.date | date('short') }}</td>
+                                            <td title="{{ 'subtotal' | t('snipcart') }}: {{ craft.snipcart.formatCurrency(payment.subtotal) }}, {{ 'taxable total' | t('snipcart') }}: {{ craft.snipcart.formatCurrency(payment.taxableTotal) }}">{{ craft.snipcart.formatCurrency(payment.total) }}</td>
+                                            
+                                            <td>
+                                                {{ payment.taxes | join("\n") | nl2br }}
+                                            </td>
+
+                                            <td>{{ payment.shipping ? craft.snipcart.formatCurrency(payment.shipping) : '' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+
+                        {% set invoices = subscription.getInvoices() %}
+
+                        {% if invoices|length %}
+                            <div class="mt-8">
+                                <h2>{{ 'Invoices' | t('snipcart') }}</h2>
+
+                                <table class="fullwidth">
+                                    <thead>
+                                        <th>{{ 'Number' | t('snipcart') }}</th>
+                                        <th>{{ 'Date' | t('snipcart') }}</th>
+                                        <th>{{ 'Amount' | t('snipcart') }}</th>
+                                        <th>{{ 'Status' | t('snipcart') }}</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for invoice in subscription.getInvoices() %}
+                                            <tr>
+                                                <td><a href="{{ cpUrl('snipcart/order/' ~ invoice.id) }}">{{ invoice.number }}</a></td>
+                                                <td>{{ invoice.creationDate | date('short') }}</td>
+                                                <td>{{ craft.snipcart.formatCurrency(invoice.amount) }}</td>
+                                                <td>{{ invoice.paid ? 'Paid' | t('snipcart') : 'Unpaid' | t('snipcart') }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% hook 'cp.snipcart.subscription.detail' %}
+
+        <p class="text-muted mt-8">
+            {{ 'Created' | t('snipcart') }} {{ subscription.creationDate | date('long') }}, {{ 'last updated' | t('snipcart') }} {{ subscription.modificationDate | datetime('short') }}
+        </p>
+
+        <a href="{{ subscription.dashboardUrl() }}" class="btn" target="_blank">
+            {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
+        </a>
+
+        {% if not isCancelled %}
+            <form action="" method="post" class="inline-block ml-1">
+                <input type="hidden" name="action" value="snipcart/subscriptions/cancel">
+                <input type="hidden" name="subscriptionId" value="{{ subscription.id }}">
+                {{ csrfInput() }}
+
+                <input type="submit" class="btn" value="{{ 'Cancel Subscription' | t('snipcart') }}">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,102 +1,50 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\errors\ShippingRateException;
+use verbb\snipcart\events\ShippingRateEvent;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\models\snipcart\Notification;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\models\snipcart\Package;
+use verbb\snipcart\models\snipcart\Refund;
 
 use Craft;
 use craft\base\Component;
-use fostercommerce\snipcart\errors\ShippingRateException;
-use fostercommerce\snipcart\events\ShippingRateEvent;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\models\snipcart\Notification;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\Package;
-use fostercommerce\snipcart\models\snipcart\Refund;
-use fostercommerce\snipcart\Snipcart;
 
-/**
- * The Orders service lets you interact with Snipcart orders as tidy,
- * documented models. The service can be accessed globally from
- * `Snipcart::$plugin->orders`.
- *
- * @package fostercommerce\snipcart\services
- *
- * @todo clean up interfaces to be more Craft-y and obscure pagination concerns
- * @todo return null for invalid single-object requests, otherwise empty arrays
- */
+use DateTime;
+use stdClass;
+use Exception;
+use Throwable;
+
 class Orders extends Component
 {
-    /**
-     * @event ShippingRateEvent Triggered before shipping rates are requested
-     *                          from any third parties.
-     */
+    // Constants
+    // =========================================================================
+
     public const EVENT_BEFORE_REQUEST_SHIPPING_RATES = 'beforeRequestShippingRates';
-
-    /**
-     * @var string
-     */
     public const NOTIFICATION_TYPE_ADMIN = 'notifyAdmin';
-
-    /**
-     * @var string
-     */
     public const NOTIFICATION_TYPE_CUSTOMER = 'notifyCustomer';
 
-    /**
-     * Gets a Snipcart order.
-     *
-     * @param string $orderId Snipcart order ID
-     *
-     * @return Order|null
-     * @throws \Exception if our API key is missing.
-     */
-    public function getOrder(String $orderId)
+
+    // Public Methods
+    // =========================================================================
+
+    public function getOrder(String $orderId): ?Order
     {
-        if ($orderData = Snipcart::$plugin->api->get(sprintf(
-            'orders/%s',
-            $orderId
-        ))) {
-            return ModelHelper::safePopulateModel(
-                (array) $orderData,
-                Order::class
-            );
+        if ($orderData = Snipcart::$plugin->getApi()->get("orders/$orderId")) {
+            return ModelHelper::safePopulateModel((array) $orderData, Order::class);
         }
 
         return null;
     }
 
-    /**
-     * Gets multiple Snipcart orders.
-     *
-     * @param array $params Parameters to send with the request
-     *
-     * @return Order[]
-     * @throws \Exception if our API key is missing.
-     *
-     * @todo support params similar to Craft Elements
-     */
-    public function getOrders($params = []): array
+    public function getOrders(array $params = []): array
     {
-        return ModelHelper::safePopulateArrayWithModels(
-            (array) $this->fetchOrders($params)->items,
-            Order::class
-        );
+        return ModelHelper::safePopulateArrayWithModels((array)$this->fetchOrders($params)->items, Order::class);
     }
 
-    /**
-     * Gets Snipcart orders using multiple requests to overcome
-     * pagination limits.
-     *
-     * @param array $params Parameters to send with the request
-     *
-     * @return Order[]
-     * @throws
-     */
     public function getAllOrders(array $params = []): array
     {
         $collection = [];
@@ -124,69 +72,21 @@ class Orders extends Component
 
         $items = array_merge(...$collection);
 
-        return ModelHelper::safePopulateArrayWithModels(
-            $items,
-            Order::class
-        );
+        return ModelHelper::safePopulateArrayWithModels($items, Order::class);
     }
 
-    /**
-     * Gets the notifications Snipcart has sent regarding a specific order.
-     *
-     * @param string $orderId Snipcart order ID
-     *
-     * @return Notification[]
-     * @throws \Exception if our API key is missing.
-     */
-    public function getOrderNotifications($orderId): array
+    public function getOrderNotifications(string $orderId): array
     {
-        return ModelHelper::safePopulateArrayWithModels(
-            (array) Snipcart::$plugin->api->get(sprintf(
-                'orders/%s/notifications',
-                $orderId
-            )),
-            Notification::class
-        );
+        return ModelHelper::safePopulateArrayWithModels((array) Snipcart::$plugin->getApi()->get("orders/$orderId/notifications"), Notification::class);
     }
 
-    /**
-     * Gets a Snipcart order's refunds.
-     *
-     * @param string $orderId Snipcart order ID
-     *
-     * @return Refund[]
-     * @throws \Exception if our API key is missing.
-     */
-    public function getOrderRefunds($orderId): array
+    public function getOrderRefunds(string $orderId): array
     {
-        return ModelHelper::safePopulateArrayWithModels(
-            (array) Snipcart::$plugin->api->get(sprintf(
-                'orders/%s/refunds',
-                $orderId
-            )),
-            Refund::class
-        );
+        return ModelHelper::safePopulateArrayWithModels((array) Snipcart::$plugin->getApi()->get("orders/$orderId/refunds"), Refund::class);
     }
 
-    /**
-     * Gets Snipcart orders with pagination info.
-     *
-     * @param int    $page   Page of results
-     * @param int    $limit  Number of results per page
-     * @param array  $params Parameters to send with the request
-     *
-     * @return \stdClass
-     *              ->items (Order[])
-     *              ->totalItems (int)
-     *              ->offset (int)
-     *              ->limit (int)
-     * @throws \Exception if our API key is missing.
-     */
-    public function listOrders($page = 1, $limit = 25, array $params = []): \stdClass
+    public function listOrders(int $page = 1, int $limit = 25, array $params = []): stdClass
     {
-        /**
-         * define offset and limit since that's pretty much all we're doing here
-         */
         $params['offset'] = ($page - 1) * $limit;
         $params['limit'] = $limit;
 
@@ -196,27 +96,18 @@ class Orders extends Component
         $items = json_decode(json_encode($response->items, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
 
         return (object) [
-            'items' => ModelHelper::safePopulateArrayWithModels(
-                $items,
-                Order::class
-            ),
+            'items' => ModelHelper::safePopulateArrayWithModels($items, Order::class),
             'totalItems' => $response->totalItems,
             'offset' => $response->offset,
             'limit' => $limit,
         ];
     }
 
-    /**
-     * Reduce product inventory for each item in a completed order.
-     *
-     * @return bool true if successful
-     * @throws
-     */
     public function updateProductsFromOrder(Order $order): bool
     {
         if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder) {
             foreach ($order->items as $orderItem) {
-                Snipcart::$plugin->products->reduceInventory($orderItem);
+                Snipcart::$plugin->getProducts()->reduceInventory($orderItem);
                 // TODO: reduce product inventory in ShipStation if necessary
             }
         }
@@ -224,26 +115,6 @@ class Orders extends Component
         return true;
     }
 
-    /**
-     * Gets Craft Elements that relate to order items, updating quantities
-     * and sending a notification if relevant.
-     *
-     * @return bool|array true if successful, or an array of notification errors
-     * @throws
-     * @deprecated in 1.1. Use updateProductsFromOrder() instead.
-     */
-    public function updateElementsFromOrder(Order $order): bool
-    {
-        return $this->updateProductsFromOrder($order);
-    }
-
-    /**
-     * Triggers an Event that will allow another plugin or module to provide
-     * packaging details and/or modify an order before shipping rates
-     * are requested for that order.
-     *
-     * @throws ShippingRateException
-     */
     public function getOrderPackaging(Order $order): Package
     {
         $package = new Package();
@@ -253,8 +124,10 @@ class Orders extends Component
                 'order' => $order,
                 'package' => $package,
             ]);
+
             $this->trigger(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES, $shippingRateEvent);
-            if (! $shippingRateEvent->isValid) {
+            
+            if (!$shippingRateEvent->isValid) {
                 throw new ShippingRateException($shippingRateEvent);
             }
 
@@ -264,75 +137,42 @@ class Orders extends Component
         return $package;
     }
 
-    /**
-     * Sends email order notifications.
-     *
-     * @param Order  $order The relevant Snipcart order.
-     * @param array  $extra Additional variables for email template.
-     * @param string $type  Either `admin` or `customer`
-     *
-     * @return array|bool
-     * @throws \Throwable if there's a template mode exception.
-     */
-    public function sendOrderEmailNotification($order, $extra = [], $type = self::NOTIFICATION_TYPE_ADMIN)
+    public function sendOrderEmailNotification(Order $order, array $extra = [], string $type = self::NOTIFICATION_TYPE_ADMIN): bool|array
     {
         $templateSettings = $this->selectNotificationTemplate($type);
+
         $emailVars = array_merge([
             'order' => $order,
             'settings' => Snipcart::$plugin->getSettings(),
         ], $extra);
 
-        Snipcart::$plugin->notifications->setEmailTemplate(
-            $templateSettings['path'],
-            null,
-            $templateSettings['user']
-        );
+        Snipcart::$plugin->getNotifications()->setEmailTemplate($templateSettings['path'], null, $templateSettings['user']);
 
-        Snipcart::$plugin->notifications->setNotificationVars($emailVars);
+        Snipcart::$plugin->getNotifications()->setNotificationVars($emailVars);
 
         $toEmails = [];
-        $subject = Craft::t(
-            'snipcart',
-            '{name} just placed an order',
-            [
-                'name' => $order->billingAddressName,
-            ]
-        );
+        $subject = Craft::t('snipcart', '{name} just placed an order', [
+            'name' => $order->billingAddressName,
+        ]);
 
         if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
-        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
+        } else if ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $toEmails = [$order->email];
-            $subject = Craft::t(
-                'snipcart',
-                '{siteName} Order #{invoiceNumber}',
-                [
-                    'siteName' => Craft::$app->getSites()->getCurrentSite()->name,
-                    'invoiceNumber' => $order->invoiceNumber,
-                ]
-            );
+            $subject = Craft::t('snipcart', '{siteName} Order #{invoiceNumber}', [
+                'siteName' => Craft::$app->getSites()->getCurrentSite()->name,
+                'invoiceNumber' => $order->invoiceNumber,
+            ]);
         }
 
-        if (! Snipcart::$plugin->notifications->sendEmail($toEmails, $subject)) {
-            return Snipcart::$plugin->notifications->getErrors();
+        if (!Snipcart::$plugin->getNotifications()->sendEmail($toEmails, $subject)) {
+            return Snipcart::$plugin->getNotifications()->getErrors();
         }
 
         return true;
     }
 
-    /**
-     * Creates a refund for an order.
-     *
-     * @param string $orderId         The order ID
-     * @param float  $amount          Amount to be refunded
-     * @param string $comment         Reason for the refund
-     * @param bool   $notifyCustomer  Whether Snipcart should send
-     *                                a notification to the customer
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    public function refundOrder($orderId, $amount, $comment = '', $notifyCustomer = false)
+    public function refundOrder(string $orderId, float $amount, string $comment = '', bool $notifyCustomer = false): mixed
     {
         $refund = new Refund([
             'orderToken' => $orderId,
@@ -341,22 +181,14 @@ class Orders extends Component
             'notifyCustomer' => $notifyCustomer,
         ]);
 
-        return Snipcart::$plugin->api->post(
-            sprintf('orders/%s/refunds', $orderId),
-            $refund->getPayloadForPost()
-        );
+        return Snipcart::$plugin->getApi()->post("orders/$orderId/refunds", $refund->getPayloadForPost());
     }
 
-    /**
-     * Queries the API for orders with the provided parameters.
-     * Invalid parameters are ignored and not sent to Snipcart.
-     *
-     * @param array $params
-     *
-     * @return \stdClass|array API response object or array of objects.
-     * @throws \Exception if our API key is missing.
-     */
-    private function fetchOrders($params = [])
+
+    // Private Methods
+    // =========================================================================
+
+    private function fetchOrders(array $params = []): array|stdClass
     {
         $validParams = [
             'offset',
@@ -373,11 +205,11 @@ class Orders extends Component
         $cacheSetting = $hasCacheParam ? $params['cache'] : true;
         $dateTimeFormat = 'Y-m-d\TH:i:sP';
 
-        if (isset($params['from']) && $params['from'] instanceof \DateTime) {
+        if (isset($params['from']) && $params['from'] instanceof DateTime) {
             $params['from'] = $params['from']->format($dateTimeFormat);
         }
 
-        if (isset($params['to']) && $params['to'] instanceof \DateTime) {
+        if (isset($params['to']) && $params['to'] instanceof DateTime) {
             $params['to'] = $params['to']->format($dateTimeFormat);
         }
 
@@ -387,24 +219,10 @@ class Orders extends Component
             }
         }
 
-        return Snipcart::$plugin->api->get(
-            'orders',
-            $apiParams,
-            $cacheSetting
-        );
+        return Snipcart::$plugin->getApi()->get('orders', $apiParams, $cacheSetting);
     }
 
-    /**
-     * Selects whatever Twig template should be used for an order notification,
-     * and if it’s a custom template make sure it exists before relying on it.
-     *
-     * @param string $type `admin` or `customer`
-     *
-     * @return array       Returns an array with a `path` string property
-     *                     and `user` bool which is true if the template exists
-     *                     on the front end—false if it's scoped to the plugin
-     */
-    private function selectNotificationTemplate($type): array
+    private function selectNotificationTemplate(string $type): array
     {
         $model = Snipcart::$plugin->getSettings();
         $defaultTemplatePath = '';
@@ -413,7 +231,7 @@ class Orders extends Component
         if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $defaultTemplatePath = 'snipcart/email/order';
             $customTemplatePath = $model->notificationEmailTemplate;
-        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
+        } else if ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $defaultTemplatePath = 'snipcart/email/customer-order';
             $customTemplatePath = $model->customerNotificationEmailTemplate;
         }

@@ -1,0 +1,271 @@
+{% extends '_layouts/cp' %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set crumbs = [
+    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: 'Discounts' | t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = discount.name ~ (isTestMode ? ' 🚧') %}
+
+{% block content %}
+
+    <div>
+        {% if discount.expires and discount.expires < now %}
+            <div class="block p-2 border border-solid border-alert-blue rounded-sm text-alert-blue mb-6">
+                {{ 'This discount expired' | t('snipcart') }} {{ discount.expires | date('long') }}.
+            </div>
+        {% endif %}
+
+        <div class="detail-columns block px-3 mb-8">
+            <div class="md:flex -mx-6">
+                <div class="md:w-1/2 mx-3">
+                    <div class="inner">
+                        <h2>{{ 'Details' | t('snipcart') }}</h2>
+
+                        <table class="data fullwidth fixed-layout -mx-3">
+                            <tbody>
+                                <tr>
+                                    <th class="light">{{ 'Type' | t('snipcart') }}</th>
+                                    <td>{{ discount.type }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Created' | t('snipcart') }}</th>
+                                    <td>
+                                        {{ discount.creationDate | date('long') }}
+                                        {%- if discount.expires %}, {{ 'expires' | t('snipcart') }} {{ discount.expires | date('long') }}{% endif %}
+                                    </td>
+                                </tr>
+
+                                {% if 'amount' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Amount' | t('snipcart') }}</th>
+                                        <td>{{ discount.amount }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'productIds' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Product IDs' | t('snipcart') }}</th>
+                                        <td>{{ discount.productIds }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'rate' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Rate' | t('snipcart') }}</th>
+                                        <td>{{ discount.rate }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'alternatePrice' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Alternate Price' | t('snipcart') }}</th>
+                                        <td>{{ discount.alternatePrice }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'shippingDescription' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Shipping Description' | t('snipcart') }}</th>
+                                        <td>{{ discount.shippingDescription }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'shippingCost' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Shipping Cost' | t('snipcart') }}</th>
+                                        <td>{{ discount.shippingCost }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'shippingGuaranteedDaysToDelivery' in discount.typeOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Shipping Guaranteed Days to Delivery' | t('snipcart') }}</th>
+                                        <td>{{ discount.shippingGuaranteedDaysToDelivery }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <th class="light">{{ 'Trigger' | t('snipcart') }}</th>
+                                    <td>{{ discount.trigger }}</td>
+                                </tr>
+
+                                {% if 'code' in discount.triggerOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Code' | t('snipcart') }}</th>
+                                        <td><code>{{ discount.code }}</code></td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'totalToReach' in discount.triggerOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Total to Reach' | t('snipcart') }}</th>
+                                        <td>{{ discount.totalToReach }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if 'itemId' in discount.triggerOptionFields() %}
+                                    <tr>
+                                        <th class="light">{{ 'Item ID' | t('snipcart') }}</th>
+                                        <td>{{ discount.itemId }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <th class="light">{{ 'Combinable' | t('snipcart') }}</th>
+                                    <td>{{ discount.combinable ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Applies on All Recurring Orders' | t('snipcart') }}</th>
+                                    <td>{{ discount.appliesOnAllRecurringOrders ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th class="light">{{ 'Only on Same Products' | t('snipcart') }}</th>
+                                    <td>{{ discount.onlyOnSameProducts ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                </tr>
+
+                                {% if discount.maxAmountToReach %}
+                                    <tr>
+                                        <th class="light">{{ 'Max Amount to Reach' | t('snipcart') }}</th>
+                                        <td>{{ discount.maxAmountToReach }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.quantityOfAProduct %}
+                                    <tr>
+                                        <th class="light">{{ 'Quantity of a Product' | t('snipcart') }}</th>
+                                        <td>{{ discount.quantityOfAProduct }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.maxQuantityOfAProduct %}
+                                    <tr>
+                                        <th class="light">{{ 'Max Quantity of a Product' | t('snipcart') }}</th>
+                                        <td>{{ discount.maxQuantityOfAProduct }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.quantityOfProductIds %}
+                                    <tr>
+                                        <th class="light">{{ 'Quantity of Product IDs' | t('snipcart') }}</th>
+                                        <td>{{ discount.quantityOfProductIds }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.numberOfItemsRequired %}
+                                    <tr>
+                                        <th class="light">{{ 'Number of Items Required' | t('snipcart') }}</th>
+                                        <td>{{ discount.numberOfItemsRequired }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.numberOfFreeItems %}
+                                    <tr>
+                                        <th class="light">{{ 'Number of Free Items' | t('snipcart') }}</th>
+                                        <td>{{ discount.numberOfFreeItems }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.hasSavedAmount %}
+                                    <tr>
+                                        <th class="light">{{ 'Has Saved Amount' | t('snipcart') }}</th>
+                                        <td>{{ discount.hasSavedAmount ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.quantityInterval %}
+                                    <tr>
+                                        <th class="light">{{ 'Quantity Interval' | t('snipcart') }}</th>
+                                        <td>{{ discount.quantityInterval }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.affectedItems | length %}
+                                    <tr>
+                                        <th class="light">{{ 'Affected Items' | t('snipcart') }}</th>
+                                        <td>
+                                            <ul>
+                                                {% for item in discount.affectedItems %}
+                                                    <li>{{ item }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+
+                                {% if discount.products | length %}
+                                    <tr>
+                                        <th class="light">{{ 'Affected Items' | t('snipcart') }}</th>
+                                        <td>
+                                            <ul>
+                                                {% for product in discount.products %}
+                                                    <li>{{ product }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-8 md:w-1/2 md:mt-0 mx-3">
+                    <div class="inner">
+                        <h2>{{ 'Usage' | t('snipcart') }}</h2>
+
+                        {% set hasUsage = discount.maxNumberOfUsages ? true : false %}
+
+                        {% if hasUsage %}
+                            <div class="block border h-2 border-solid border-grey rounded-full w-full relative overflow-hidden mb-5">
+                                {% set usage = discount.numberOfUsages > 0 ? discount.numberOfUsages / discount.maxNumberOfUsages : 0 %}
+                                <div class="bg-grey h-full absolute" style="width: {{ usage * 100 }}%;"></div>
+                            </div>
+                        {% endif %}
+
+                        <table class="data fullwidth -mx-3 fixed-layout">
+                            <tbody>
+                                <tr>
+                                    <th class="light">{{ 'Number of Usages / Max' | t('snipcart') }}</th>
+                                    <td>{{ discount.numberOfUsages }} / {{ discount.maxNumberOfUsages ?? '∞' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="light">{{ 'Number of Usages Uncompleted' | t('snipcart') }}</th>
+                                    <td>{{ discount.numberOfUsagesUncompleted }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="light">{{ 'Is For a Recovery Campaign' | t('snipcart') }}</th>
+                                    <td>{{ discount.isForARecoveryCampaign ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="light">{{ 'Archived' | t('snipcart') }}</th>
+                                    <td>{{ discount.archived ? 'yes' | t('snipcart') : 'no' | t('snipcart') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% hook 'cp.snipcart.discount.detail' %}
+
+        <a href="{{ discount.dashboardUrl() }}" class="btn mt-8" target="_blank">
+            {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
+        </a>
+
+        <form action="" method="post" class="inline-block ml-1">
+            <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
+            <input type="hidden" name="discountId" value="{{ discount.id }}">
+            {{ csrfInput() }}
+
+            <input type="submit" class="btn" value="{{ 'Delete' | t('snipcart') }}">
+        </form>
+    </div>
+{% endblock %}

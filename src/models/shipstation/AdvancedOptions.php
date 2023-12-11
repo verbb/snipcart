@@ -1,142 +1,43 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\shipstation;
+namespace verbb\snipcart\models\shipstation;
 
 use craft\base\Model;
 
-/**
- * ShipStation Advanced Options Model
- * https://www.shipstation.com/developer-api/#/reference/model-advancedoptions
- */
 class AdvancedOptions extends Model
 {
-    /**
-     * @var int|null Specifies the warehouse where to the order is to ship from.
-     *               If the order was fulfilled using a fill provider,
-     *               no warehouse is attached to these orders and will result
-     *               in a null value being returned.
-     */
-    public $warehouseId;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var bool|null Specifies whether the order is non-machinable.
-     */
-    public $nonMachinable;
+    public ?int $warehouseId = null;
+    public ?bool $nonMachinable = null;
+    public ?bool $saturdayDelivery = null;
+    public ?bool $containsAlcohol = null;
+    public ?int $storeId = null;
+    public ?string $customField1 = null;
+    public ?string $customField2 = null;
+    public ?string $customField3 = null;
+    public ?string $source = null;
+    public bool $mergedOrSplit;
+    public array $mergedIds = [];
+    public ?int $parentId = null;
+    public ?string $billToParty = null;
+    public ?string $billToAccount = null;
+    public ?string $billToPostalCode = null;
+    public ?string $billToCountryCode = null;
+    public ?string $billToMyOtherAccount = null;
 
-    /**
-     * @var bool|null Specifies whether the order is to be delivered on
-     *                a Saturday.
-     */
-    public $saturdayDelivery;
 
-    /**
-     * @var bool|null Specifies whether the order contains alcohol.
-     */
-    public $containsAlcohol;
-
-    /**
-     * @var int|null ID of store that is associated with the order. If not
-     *               specified in the CreateOrder call either to create
-     *               or update an order, ShipStation will default to the first
-     *               manual store on the account.
-     */
-    public $storeId;
-
-    /**
-     * @var string|null Field that allows for custom data
-     *                  to be associated with an order.
-     */
-    public $customField1;
-
-    /**
-     * @var string|null Field that allows for custom data
-     *                  to be associated with an order.
-     */
-    public $customField2;
-
-    /**
-     * @var string|null Field that allows for custom data
-     *                  to be associated with an order.
-     */
-    public $customField3;
-
-    /**
-     * @var string|null Identifies the original source/marketplace of the order.
-     */
-    public $source;
-
-    /**
-     * @var bool Read-Only: Returns whether or not an order has been merged or
-     *           split with another order.
-     */
-    public $mergedOrSplit;
-
-    /**
-     * @var int[] Read-Only: Array of orderIds. Each orderId identifies an order
-     *            that was merged with the associated order.
-     */
-    public $mergedIds = [];
-
-    /**
-     * @var int Read-Only: If an order has been split, it will return the
-     *          Parent ID of the order with which it has been split.
-     *          If the order has not been split, this field will return null.
-     */
-    public $parentId;
-
-    /**
-     * @var string|null Identifies which party to bill. Possible values:
-     *                  "my_account", **"my_other_account", "recipient",
-     *                  "third_party".
-     */
-    public $billToParty;
-
-    /**
-     * @var string|null Account number of billToParty.
-     */
-    public $billToAccount;
-
-    /**
-     * @var string|null Postal Code of billToParty.
-     */
-    public $billToPostalCode;
-
-    /**
-     * @var string|null Country Code of billToParty.
-     */
-    public $billToCountryCode;
-
-    /**
-     * @var string|null When using my_other_account billToParty value,
-     *                  the shippingProviderId value associated with
-     *                  the desired account.
-     */
-    public $billToMyOtherAccount;
+    // Public Methods
+    // =========================================================================
 
     public function rules(): array
     {
         return [
-            [['warehouseId', 'storeId', 'parentId'],
-                'number',
-                'integerOnly' => true,
-            ],
+            [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true],
             [['customField1', 'customField2', 'customField3', 'source', 'billToParty', 'billToAccount', 'billToPostalCode', 'billToCountryCode', 'billToMyOtherAccount'], 'string'],
             [['nonMachinable', 'saturdayDelivery', 'containsAlcohol', 'mergedOrSplit'], 'boolean'],
-            [
-                'mergedIds',
-                'each',
-                'rule' => ['integer'],
-            ],
-            [['billToCountryCode'],
-                'string',
-                'length' => 2,
-            ],
+            ['mergedIds', 'each', 'rule' => ['integer']],
+            [['billToCountryCode'], 'string', 'length' => 2],
         ];
     }
 }

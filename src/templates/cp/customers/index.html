@@ -1,0 +1,83 @@
+{% extends 'snipcart/cp/_layout' %}
+{% import '_includes/forms' as forms %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'Snipcart Customers' ~ (isTestMode ? ' 🚧') %}
+{% set selectedTab = 'customers' %}
+{% set showingSearchResult = keywords is not empty %}
+{% set hasResults = customers | length > 0 %}
+
+{% block content %}
+    <div>
+        <div class="mb-6 p-2 bg-light-grey rounded{% if not showingSearchResult and not hasResults %} hidden{% endif %}">
+            <form action="" method="post">
+                {{ csrfInput() }}
+
+                <div class="inline-block" style="width: 200px;">
+                    {{ forms.text({
+                        first: true,
+                        label: 'Keywords' | t('snipcart'),
+                        id: 'searchKeywords',
+                        required: true,
+                        placeholder: 'customer name',
+                        name: 'searchKeywords',
+                        value: keywords
+                    }) }}
+                </div>
+
+                <input type="submit" class="btn submit" name="submit" value="{{ 'Search' | t('snipcart') }}">
+
+                {% if keywords %}
+                    <input type="submit"
+                        class="btn"
+                        name="submit"
+                        onclick="document.getElementById('searchKeywords').value = '';"
+                        value="{{ 'Clear' | t('snipcart') }}"
+                    >
+                {% endif %}
+            </form>
+        </div>
+
+        {% if not hasResults %}
+            <p id="noredirects">
+                {{ showingSearchResult ? 'No records found.' | t('snipcart') : 'There aren’t any customers with accounts yet.' | t('snipcart') }}
+            </p>
+        {% else %}
+
+            <table id="customers" class="data w-full">
+                <thead>
+                    <th scope="col">{{ 'Name' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Email' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Billing Address' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Orders' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Total Spent' | t('snipcart') }}</th>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                        <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
+                            <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.billingAddressAddress1 }}</td>
+                            <td>{{ customer.statistics.ordersCount }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount, craft.snipcart.defaultCurrency) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'snipcart/cp/_parts/pagination' with {
+                perPage: 20,
+                pageItems: customers | length,
+                currentPage: pageNumber,
+                totalPages: totalPages,
+                totalItems: totalItems,
+                itemLabel: 'customer',
+                itemsLabel: 'customers',
+                path: 'snipcart/customers/'
+            } %}
+
+        {% endif %}
+    </div>
+{% endblock %}

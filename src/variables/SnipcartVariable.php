@@ -1,193 +1,100 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\variables;
 
-namespace fostercommerce\snipcart\variables;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\fields\ProductDetails;
+use verbb\snipcart\helpers\FieldHelper;
+use verbb\snipcart\helpers\FormatHelper;
+use verbb\snipcart\models\snipcart\Customer;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\models\snipcart\Subscription;
 
 use Craft;
 use craft\base\Element;
+use craft\helpers\App;
 use craft\helpers\Template as TemplateHelper;
-use fostercommerce\snipcart\fields\ProductDetails;
-use fostercommerce\snipcart\helpers\FieldHelper;
-use fostercommerce\snipcart\helpers\FormatHelper;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\Subscription;
-use fostercommerce\snipcart\Snipcart;
+
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Markup;
+
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
+use DateTime;
+
 class SnipcartVariable
 {
-    /**
-     * Returns Snipcart public API key.
-     */
+    // Public Methods
+    // =========================================================================
+
     public function publicApiKey(): string
     {
-        return Snipcart::$plugin->getSettings()->publicKey();
+        return Snipcart::$plugin->getSettings()->getPublicKey();
     }
 
-    /**
-     * Returns the default currency.
-     */
     public function defaultCurrency(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrency();
     }
 
-    /**
-     * Returns the default currency symbol.
-     */
     public function defaultCurrencySymbol(): string
     {
         return Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
     }
 
-    /**
-     * Returns formatted currency string.
-     *
-     * @param mixed  $value        The value to be formatted.
-     * @param string $currencyType Optional string representing desired currency
-     *                             to be explicitly set.
-     *
-     * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
-     */
-    public function formatCurrency(mixed $value, $currencyType = null): string
+    public function formatCurrency(mixed $value, string $currencyType = null): string
     {
         return FormatHelper::formatCurrency($value, $currencyType);
     }
 
-    /**
-     * Returns a compact, general, relative, human-readable string representing
-     * the age of the provided DateTime.
-     */
-    public function tinyDateInterval(\DateTime $dateTime): string
+    public function tinyDateInterval(DateTime $dateTime): string
     {
         return FormatHelper::tinyDateInterval($dateTime);
     }
 
-    /**
-     * Returns a Snipcart customer by ID.
-     *
-     * @param string $customerId
-     * @return Customer|null
-     * @throws \Exception if API key is missing.
-     */
-    public function getCustomer($customerId)
+    public function getCustomer(string $customerId): ?Customer
     {
-        return Snipcart::$plugin->customers->getCustomer($customerId);
+        return Snipcart::$plugin->getCustomers()->getCustomer($customerId);
     }
 
-    /**
-     * Returns a Snipcart order by ID.
-     *
-     * @return Order|null
-     * @throws \Exception if API key is missing.
-     */
-    public function getOrder(string $orderId)
+    public function getOrder(string $orderId): ?Order
     {
-        return Snipcart::$plugin->orders->getOrder($orderId);
+        return Snipcart::$plugin->getOrders()->getOrder($orderId);
     }
 
-    /**
-     * Returns a Snipcart subscription by ID.
-     *
-     * @param string $subscriptionId
-     * @return Subscription|null
-     * @throws \Exception if API key is missing.
-     */
-    public function getSubscription($subscriptionId)
+    public function getSubscription(string $subscriptionId): ?Subscription
     {
-        return Snipcart::$plugin->subscriptions->getSubscription($subscriptionId);
+        return Snipcart::$plugin->getSubscriptions()->getSubscription($subscriptionId);
     }
 
-    /**
-     * Returns product info for the provided Element regardless of what the
-     * field handle might be.
-     *
-     * @param Element $element
-     * @return ProductDetails|null
-     */
-    public function getProductInfo($element)
+    public function getProductInfo(Element $element): ?ProductDetails
     {
         return FieldHelper::getProductInfo($element);
     }
 
-    /**
-     * Gets a cart anchor with a count.
-     *
-     * @param  string  $text       Button's inner text. Defaults to `Shopping Cart`.
-     * @param  bool    $showCount  `false` to remove dynamic item count.
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws Exception
-     */
-    public function cartLink($text = null, $showCount = true): Markup
+    public function cartLink(string $text = null, bool $showCount = true): Markup
     {
-        return $this->renderTemplate(
-            'snipcart/front-end/cart-link',
-            [
-                'text' => $text,
-                'showCount' => $showCount,
-            ]
-        );
+        return $this->renderTemplate('snipcart/front-end/cart-link', [
+            'text' => $text,
+            'showCount' => $showCount,
+        ]);
     }
 
-    /**
-     * Get the main Snipcart JavaScript snippet, optionally including jQuery
-     * and Snipcart's cart stylesheet.
-     *
-     * @param  bool    $includejQuery
-     * @param  string  $onload
-     * @param  bool    $includeStyles
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws Exception
-     */
-    public function cartSnippet($includejQuery = true, $onload = '', $includeStyles = true): Markup
+    public function cartSnippet(bool $includejQuery = true, string $onload = '', bool $includeStyles = true): Markup
     {
-        $model = Snipcart::$plugin->getSettings();
-        $publicApiKey = $model->publicKey();
+        $settings = Snipcart::$plugin->getSettings();
 
-        if (VersionHelper::isCraft31()) {
-            $publicApiKey = Craft::parseEnv($publicApiKey);
-        }
-
-        return $this->renderTemplate(
-            'snipcart/front-end/cart-js',
-            [
-                'settings' => $model,
-                'includejQuery' => $includejQuery,
-                'includeStyles' => $includeStyles,
-                'publicApiKey' => $publicApiKey,
-                'onload' => $onload,
-            ]
-        );
+        return $this->renderTemplate('snipcart/front-end/cart-js', [
+            'settings' => $settings,
+            'includejQuery' => $includejQuery,
+            'includeStyles' => $includeStyles,
+            'publicApiKey' => $settings->getPublicKey(),
+            'onload' => $onload,
+        ]);
     }
 
-    /**
-     * Renders an internal (plugin) Twig template.
-     *
-     * @param         $template
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws Exception
-     */
     private function renderTemplate(string $template, array $data = []): Markup
     {
         $view = Craft::$app->getView();

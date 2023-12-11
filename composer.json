@@ -1,73 +1,52 @@
 {
-    "name": "fostercommerce/craft-snipcart",
-    "description": "Craft CMS e-commerce in a day.",
+    "name": "verbb/snipcart",
+    "description": "Integrate with Snipcart.",
     "type": "craft-plugin",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
         "craft-plugin",
-        "craft4",
         "snipcart"
     ],
     "support": {
-        "docs": "https://snipcart.fostercommerce.com/",
-        "issues": "https://github.com/FosterCommerce/snipcart-craft-plugin/issues"
+        "email": "support@verbb.io",
+        "issues": "https://github.com/verbb/snipcart/issues?state=open",
+        "source": "https://github.com/verbb/snipcart",
+        "docs": "https://github.com/verbb/snipcart",
+        "rss": "https://github.com/verbb/snipcart/commits/v2.atom"
     },
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
+            "name": "Verbb",
+            "homepage": "https://verbb.io"
+        },
+        {
             "name": "Foster Commerce",
-            "homepage": "https://www.fostercommerce.com/"
+            "homepage": "https://www.fostercommerce.com"
+        },
+        {
+            "name": "Matt Stein",
+            "homepage": "https://mattstein.com"
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.0.2",
         "craftcms/cms": "^4.0.0",
-        "pelago/emogrifier": "*"
-    },
-    "require-dev": {
-        "craftcms/ecs": "dev-main",
-        "craftcms/phpstan": "dev-main",
-        "craftcms/rector": "dev-main",
-        "roave/security-advisories": "dev-latest",
-        "fakerphp/faker": "^1.23",
-        "vlucas/phpdotenv": "^3.4",
-        "codeception/codeception": "^4.0.0",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0",
-        "codeception/module-rest": "^1.0.0",
-        "codeception/module-datafactory": "^1.0.0",
-        "codeception/module-yii2": "^1.0.0"
+        "pelago/emogrifier": "*",
+        "verbb/base": "^2.0.0"
     },
     "autoload": {
         "psr-4": {
-            "fostercommerce\\snipcart\\": "src/"
-        }
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "yiisoft/yii2-composer": true,
-            "craftcms/plugin-installer": true
+            "verbb\\snipcart\\": "src/"
         }
     },
     "extra": {
         "name": "Snipcart",
         "handle": "snipcart",
-        "hasCpSettings": true,
-        "hasCpSection": true,
-        "changelogUrl": "https://github.com/FosterCommerce/snipcart-craft-plugin/changelog.md",
-        "class": "fostercommerce\\snipcart\\Snipcart"
-    },
-    "prefer-stable": true,
-    "minimum-stability": "dev",
-    "scripts": {
-        "phpstan": "phpstan --memory-limit=1G",
-        "ecs-check": "ecs check --ansi --memory-limit=1G",
-        "ecs-fix": "ecs check --ansi --fix --memory-limit=1G",
-        "rector": "rector process",
-        "rector-dry-run": "rector process --dry-run"
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/snipcart/craft-4/CHANGELOG.md",
+        "class": "verbb\\snipcart\\Snipcart"
     }
 }

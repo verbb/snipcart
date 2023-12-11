@@ -1,233 +1,160 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\behaviors;
 
-namespace fostercommerce\snipcart\behaviors;
+use verbb\snipcart\models\snipcart\Address;
 
-use fostercommerce\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
-/**
- * Defines a behavior for more cleanly proxying billingAddress* properties
- * directly on the Snipcart Order model, where they exist within a nested
- * Address object.
- *
- * @package fostercommerce\snipcart\behaviors
- */
 class BillingAddressBehavior extends Behavior
 {
+    // Properties
+    // =========================================================================
+
     private ?Address $billingAddress = null;
+
+
+    // Public Methods
+    // =========================================================================
 
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressName()
+    public function getBillingAddressName(): ?string
     {
         return $this->getBillingAddress()->name;
     }
 
-    /**
-     * @param $name
-     * @return string
-     */
-    public function setBillingAddressName($name)
+    public function setBillingAddressName(string $name): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressFirstName()
+    public function getBillingAddressFirstName(): ?string
     {
         return $this->getBillingAddress()->firstName;
     }
 
-    /**
-     * @param $firstName
-     * @return string
-     */
-    public function setBillingAddressFirstName($firstName)
+    public function setBillingAddressFirstName(string $firstName): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->firstName = $firstName;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressCompanyName()
+    public function getBillingAddressCompanyName(): ?string
     {
         return $this->getBillingAddress()->companyName;
     }
 
-    /**
-     * @param $companyName
-     * @return string
-     */
-    public function setBillingAddressCompanyName($companyName)
+    public function setBillingAddressCompanyName(string $companyName): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->companyName = $companyName;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressAddress1()
+    public function getBillingAddressAddress1(): ?string
     {
         return $this->getBillingAddress()->address1;
     }
 
-    /**
-     * @param $address1
-     * @return string
-     */
-    public function setBillingAddressAddress1($address1)
+    public function setBillingAddressAddress1(string $address1): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->address1 = $address1;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressAddress2()
+    public function getBillingAddressAddress2(): ?string
     {
         return $this->getBillingAddress()->address2;
     }
 
-    /**
-     * @param $address2
-     * @return string
-     */
-    public function setBillingAddressAddress2($address2)
+    public function setBillingAddressAddress2(string $address2): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->address2 = $address2;
     }
 
-    public function getBillingAddressCity(): string
+    public function getBillingAddressCity(): ?string
     {
         return $this->getBillingAddress()->city;
     }
 
-    /**
-     * @param $city
-     * @return string
-     */
-    public function setBillingAddressCity($city)
+    public function setBillingAddressCity(string $city): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->city = $city;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressCountry()
+    public function getBillingAddressCountry(): ?string
     {
         return $this->getBillingAddress()->country;
     }
 
-    /**
-     * @param $country
-     * @return string
-     */
-    public function setBillingAddressCountry($country)
+    public function setBillingAddressCountry(string $country): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->country = $country;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressProvince()
+    public function getBillingAddressProvince(): ?string
     {
         return $this->getBillingAddress()->province;
     }
 
-    /**
-     * @param $province
-     * @return string
-     */
-    public function setBillingAddressProvince($province)
+    public function setBillingAddressProvince(string $province): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->province = $province;
     }
 
-    /**
-     * @return string
-     */
-    public function getBillingAddressPostalCode()
+    public function getBillingAddressPostalCode(): ?string
     {
         return $this->getBillingAddress()->postalCode;
     }
 
-    /**
-     * @param $postalCode
-     * @return string
-     */
-    public function setBillingAddressPostalCode($postalCode)
+    public function setBillingAddressPostalCode(string $postalCode): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 
         return $this->billingAddress->postalCode = $postalCode;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBillingAddressPhone()
+    public function getBillingAddressPhone(): ?string
     {
         return $this->getBillingAddress()->phone;
     }
 
-    /**
-     * @param $phone
-     * @return string
-     */
-    public function setBillingAddressPhone($phone)
+    public function setBillingAddressPhone(string $phone): ?string
     {
-        if (! $this->billingAddress instanceof Address) {
+        if (!$this->billingAddress instanceof Address) {
             $this->billingAddress = new Address();
         }
 

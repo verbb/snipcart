@@ -1,54 +1,18 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models;
+namespace verbb\snipcart\models;
 
 use craft\base\Model;
 
-/**
- * Class ShippingQuoteLog
- *
- * @package fostercommerce\snipcart\models
- */
 class ShippingQuoteLog extends Model
 {
-    /**
-     * @var int
-     */
-    public $id;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var int
-     */
-    public $siteId;
-
-    /**
-     * @var string
-     */
-    public $token;
-
-    /**
-     * @var string
-     */
-    public $body;
-
-    /**
-     * @var
-     */
-    public $dateCreated;
-
-    /**
-     * @var
-     */
-    public $dateUpdated;
-
-    /**
-     * @var string
-     */
-    public $uid;
+    public ?int $id = null;
+    public ?int $siteId = null;
+    public ?string $token = null;
+    public ?string $body = null;
+    public ?DateTime $dateCreated = null;
+    public ??DateTime $dateUpdated = null;
+    public ?string $uid = null;
 }

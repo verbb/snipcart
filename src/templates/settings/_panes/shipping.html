@@ -1,0 +1,281 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+<h2>{{ 'Providers' | t('snipcart') }}</h2>
+
+{% set hasConfiguredProviders = false %}
+{% set hasProviderErrors = false %}
+
+{% if settings.getErrors('providerSettings') %}
+    <ul class="errors mb-4">
+        {% for field, message in settings.getErrors('providerSettings') %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<div id="shipping-provider-fields" class="matrix matrix-field">
+    {% if settings.getProviders() | length %}
+        <div class="blocks">
+            {% for providerName, provider in settings.getProviders() %}
+                {% if providerName == 'shipStation' %}
+                    {% set providerSettings = provider.getSettings() %}
+                    {% set hasErrors = providerSettings.getErrors() | length %}
+                    {% set isConfigured = provider.isConfigured %}
+                    {% set displayPanel = isConfigured or (not isConfigured and hasErrors) %}
+
+                    {% if isConfigured %}
+                        {% set hasConfiguredProviders = true %}
+                    {% endif %}
+
+                    {% if hasErrors %}
+                        {% set hasProviderErrors = true %}
+                    {% endif %}
+
+                    <a id="shipstation-add-btn" class="btn{% if displayPanel %} hidden{% endif %}">+ {{ "ShipStation" | t('snipcart') }}</a>
+                    <div id="shipstation-provider-settings" class="snipcart-provider shipStation matrixblock relative{% if not displayPanel %} hidden{% endif %}">
+                        <a id="shipstation-settings-delete" class="delete icon" title="Delete Provider" style="position: absolute; top: 1rem; right: 1.25rem;"></a>
+                        <input id="shipstation-panel-enabled" type="hidden" name="providers[shipStation][enabled]" value="{{ displayPanel ? "1" : "0" }}">
+
+                        {% set apiKeyFieldOptions = {
+                            label: 'API Key' | t('snipcart'),
+                            instructions: '_Account_ → _API Settings_ → _API Keys_' | t('snipcart'),
+                            class: 'code',
+                            required: true,
+                            name: 'settings[providerSettings][shipStation][apiKey]',
+                            value: providerSettings.apiKey,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('apiKey'),
+                        } %}
+
+                        {% set apiSecretFieldOptions = {
+                            label: 'API Secret' | t('snipcart'),
+                            instructions: '_Account_ → _API Settings_ → _API Keys_' | t('snipcart'),
+                            class: 'code',
+                            required: true,
+                            name: 'settings[providerSettings][shipStation][apiSecret]',
+                            value: providerSettings.apiSecret,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('apiSecret'),
+                        } %}
+
+                            {% set apiKeyFieldOptions = apiKeyFieldOptions
+                                | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                            {{ forms.autosuggestField(apiKeyFieldOptions) }}
+
+                            {% set apiSecretFieldOptions = apiSecretFieldOptions
+                                | merge({ suggestions: craft.cp.getEnvSuggestions() }) %}
+                            {{ forms.autosuggestField(apiSecretFieldOptions) }}
+
+                        {{ forms.textField({
+                            label: 'Default Carrier Code' | t('snipcart'),
+                            class: 'code',
+                            required: false,
+                            name: 'settings[providerSettings][shipStation][defaultCarrierCode]',
+                            value: providerSettings.defaultCarrierCode,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('defaultCarrierCode'),
+                        }) }}
+
+                        {{ forms.textField({
+                            label: 'Default Package Code' | t('snipcart'),
+                            class: 'code',
+                            required: false,
+                            name: 'settings[providerSettings][shipStation][defaultPackageCode]',
+                            value: providerSettings.defaultPackageCode,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('defaultPackageCode'),
+                        }) }}
+
+                        {{ forms.textField({
+                            label: 'Default Country' | t('snipcart'),
+                            instructions: 'Two-character country code.' | t('snipcart'),
+                            class: 'code',
+                            required: true,
+                            name: 'settings[providerSettings][shipStation][defaultCountry]',
+                            value: providerSettings.defaultCountry,
+                            size: 3,
+                            limit: 2,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('defaultCountry'),
+                        }) }}
+
+                        {{ forms.selectField({
+                            label: 'Default Order Confirmation' | t('snipcart'),
+                            instructions: 'Type of delivery confirmation to be used once the shipment is created.' | t('snipcart'),
+                            required: true,
+                            name: 'settings[providerSettings][shipStation][defaultOrderConfirmation]',
+                            value: providerSettings.defaultOrderConfirmation,
+                            options: {
+                                'none': 'None',
+                                'delivery': 'Delivery',
+                                'signature': 'Signature',
+                                'adult_signature': 'Adult Signature',
+                                'direct_signature': 'Direct Signature',
+                            },
+                            errors: providerSettings.getErrors('defaultOrderConfirmation'),
+                        }) }}
+
+                        {{ forms.textField({
+                            label: 'Default Warehouse ID' | t('snipcart'),
+                            class: 'code',
+                            required: true,
+                            name: 'settings[providerSettings][shipStation][defaultWarehouseId]',
+                            value: providerSettings.defaultWarehouseId,
+                            autocomplete: false,
+                            errors: providerSettings.getErrors('defaultWarehouseId'),
+                        }) }}
+
+                        {{ forms.lightswitchField({
+                            label: 'Enable Shipping Rates?' | t('snipcart'),
+                            instructions: 'Fetch custom shipping rates from the ShipStation API?' | t('snipcart'),
+                            required: false,
+                            name: 'settings[providerSettings][shipStation][enableShippingRates]',
+                            on: providerSettings.enableShippingRates,
+                            errors: providerSettings.getErrors('enableShippingRates'),
+                        }) }}
+
+                        {{ forms.lightswitchField({
+                            label: 'Send Completed Orders?' | t('snipcart'),
+                            instructions: 'Send completed Snipcart orders to ShipStation?' | t('snipcart'),
+                            required: false,
+                            name: 'settings[providerSettings][shipStation][sendCompletedOrders]',
+                            on: providerSettings.sendCompletedOrders,
+                            errors: providerSettings.getErrors('sendCompletedOrders'),
+                        }) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+{% set hasShipFromErrors = (settings.getErrors('shipFrom') | length > 0) or hasProviderErrors %}
+
+<div id="ship-from-fields" class="mt-12{% if not hasConfiguredProviders and not hasShipFromErrors %} hidden{% endif %}">
+    <h2>{{ 'Ship From' | t('snipcart') }}</h2>
+
+    {% if settings.getErrors('shipFrom') %}
+        <ul class="errors mb-4">
+            {% for field, message in settings.getErrors('shipFrom') %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% set shipFrom = settings.shipFrom %}
+
+    {{ forms.textField({
+        label: 'Name' | t('snipcart'),
+        id: 'shipFromName',
+        name: 'settings[shipFromAddress][name]',
+        required: true,
+        value: shipFrom.name ?? '',
+        errors: shipFrom.getErrors('name') ?? [],
+        instructions: "",
+    }) }}
+
+    {{ forms.textField({
+        label: 'Company Name' | t('snipcart'),
+        id: 'shipFromCompanyName',
+        name: 'settings[shipFromAddress][companyName]',
+        value: shipFrom.companyName ?? '',
+        errors: shipFrom.getErrors('companyName') ?? [],
+        instructions: "",
+    }) }}
+
+    {{ forms.textField({
+        label: 'Address' | t('snipcart'),
+        id: 'shipFromAddress1',
+        name: 'settings[shipFromAddress][address1]',
+        required: true,
+        placeholder: 'Address Line 1' | t('snipcart'),
+        value: shipFrom.address1 ?? '',
+        errors: shipFrom.getErrors('address1') ?? [],
+        instructions: "",
+    }) }}
+
+    {{ forms.textField({
+        id: 'shipFromAddress2',
+        name: 'settings[shipFromAddress][address2]',
+        placeholder: 'Address Line 2' | t('snipcart'),
+        value: shipFrom.address2 ?? '',
+        errors: shipFrom.getErrors('address2') ?? [],
+        instructions: "",
+    }) }}
+
+    <div class="input-row">
+        <div class="column city">
+            {{ forms.textField({
+                id: 'shipFromCity',
+                name: 'settings[shipFromAddress][city]',
+                required: true,
+                size: 30,
+                placeholder: 'City',
+                value: shipFrom.city ?? '',
+                errors: shipFrom.getErrors('city') ?? [],
+                instructions: "",
+            }) }}
+        </div>
+
+        <div class="column province">
+            {{ forms.textField({
+                id: 'shipFromProvince',
+                name: 'settings[shipFromAddress][province]',
+                required: true,
+                placeholder: 'Province' | t,
+                size: 8,
+                maxlength: 2,
+                value: shipFrom.province ?? '',
+                errors: shipFrom.getErrors('province') ?? [],
+                instructions: "",
+            }) }}
+        </div>
+
+        <div class="column postal-code">
+            {{ forms.textField({
+                id: 'shipFromPostalCode',
+                name: 'settings[shipFromAddress][postalCode]',
+                required: true,
+                placeholder: 'Postal Code' | t,
+                value: shipFrom.postalCode ?? '',
+                errors: shipFrom.getErrors('postalCode') ?? [],
+                instructions: "",
+            }) }}
+        </div>
+
+        <div class="column country">
+            {{ forms.textField({
+                id: 'shipFromCountry',
+                name: 'settings[shipFromAddress][country]',
+                required: true,
+                placeholder: 'Country' | t,
+                size: 8,
+                maxlength: 2,
+                value: shipFrom.country ?? '',
+                errors: shipFrom.getErrors('country') ?? [],
+                instructions: "",
+            }) }}
+        </div>
+    </div>
+
+    {{ forms.textField({
+        label: 'Phone' | t('snipcart'),
+        id: 'shipFromPhone',
+        name: 'settings[shipFromAddress][phone]',
+        required: true,
+        value: shipFrom.phone ?? '',
+        errors: shipFrom.getErrors('phone') ?? [],
+        instructions: "",
+    }) }}
+
+    {{ forms.textField({
+        label: 'Email' | t('snipcart'),
+        id: 'shipFromEmail',
+        name: 'settings[shipFromAddress][email]',
+        required: true,
+        value: shipFrom.email ?? '',
+        errors: shipFrom.getErrors('email') ?? [],
+        instructions: "",
+    }) }}
+</div>

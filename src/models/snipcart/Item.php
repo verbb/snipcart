@@ -1,262 +1,78 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\snipcart;
 
-namespace fostercommerce\snipcart\models\snipcart;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
 
 use craft\base\ElementInterface;
 use craft\base\Model;
 use craft\elements\MatrixBlock;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\records\ProductDetails as ProductDetailsRecord;
+use Craft;
+use DateTime;
 
-/**
- * Class Item
- *
- * @package fostercommerce\snipcart\models\snipcart
- *
- * @property PaymentSchedule|null $paymentSchedule
- */
 class Item extends Model
 {
-    /**
-     * @var string Snipcart's own unique ID for the item.
-     */
-    public $uniqueId;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var string
-     */
-    public $token;
-
-    /**
-     * @var string The product ID originally sent with the buy button.
-     */
-    public $id;
-
-    /**
-     * @var
-     */
-    public $subscriptionId;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var float
-     */
-    public $price;
-
-    /**
-     * @var float
-     */
-    public $originalPrice;
-
-    /**
-     * @var string
-     */
-    public $description;
-
-    /**
-     * @var
-     */
-    public $fileGuid;
-
-    /**
-     * @var
-     */
-    public $initialData;
-
-    /**
-     * @var
-     */
-    public $categories;
-
-    /**
-     * @var
-     */
-    public $url;
-
-    /**
-     * @var int
-     */
-    public $weight;
-
-    /**
-     * @var
-     */
-    public $image;
-
-    /**
-     * @var int
-     */
-    public $quantity;
-
-    /**
-     * @var int|null
-     */
-    public $minQuantity;
-
-    /**
-     * @var int|null
-     */
-    public $maxQuantity;
-
-    /**
-     * @var bool
-     */
-    public $stackable;
-
-    /**
-     * @var bool
-     */
-    public $shippable;
-
-    /**
-     * @var bool
-     */
-    public $taxable;
-
-    /**
-     * @var
-     */
-    public $taxes;
-
-    /**
-     * @var CustomField[]|null
-     */
-    public $customFields;
-
-    /**
-     * @var string|null
-     */
-    public $customFieldsJson;
-
-    /**
-     * @var bool
-     */
-    public $duplicatable;
-
-    /**
-     * @var
-     */
-    public $alternatePrices;
-
-    /**
-     * @var bool
-     */
-    public $hasDimensions;
-
-    /**
-     * @var float
-     */
-    public $unitPrice;
-
-    /**
-     * @var float
-     */
-    public $totalPrice;
-
-    /**
-     * @var float
-     */
-    public $totalPriceWithoutTaxes;
-
-    /**
-     * @var
-     */
-    public $totalWeight;
-
-    /**
-     * @var string
-     */
-    public $addedOn;
-
-    /**
-     * @var string
-     */
-    public $startsOn;
-
-    /**
-     * @var \DateTime
-     */
-    public $modificationDate;
-
-    /**
-     * @var float
-     */
-    public $width;
-
-    /**
-     * @var float
-     */
-    public $height;
-
-    /**
-     * @var float
-     */
-    public $length;
-
-    /**
-     * @var
-     */
-    public $metadata;
-
-    /**
-     * @var
-     */
-    public $hasTaxesIncluded;
-
-    /**
-     * @var
-     */
-    public $totalPriceWithoutDiscountsAndTaxesLegacy;
-
-    /**
-     * @var
-     */
-    public $totalPriceWithoutDiscountsAndTaxes;
-
-    /**
-     * @var
-     */
-    public $pausingAction;
-
-    /**
-     * @var
-     */
-    public $cancellationAction;
+    public ?string $uniqueId = null;
+    public ?string $token = null;
+    public ?string $id = null;
+    public ?string $subscriptionId = null;
+    public ?string $name = null;
+    public ?float $price = null;
+    public ?float $originalPrice = null;
+    public ?string $description = null;
+    public ?string $fileGuid = null;
+    public ?string $initialData = null;
+    public ?string $categories = null;
+    public ?string $url = null;
+    public ?int $weight = null;
+    public ?string $image = null;
+    public ?int $quantity = null;
+    public ?int $minQuantity = null;
+    public ?int $maxQuantity = null;
+    public ?bool $stackable = null;
+    public ?bool $shippable = null;
+    public ?bool $taxable = null;
+    public array $taxes = [];
+    public array $customFields = [];
+    public ?string $customFieldsJson = null;
+    public ?bool $duplicatable = null;
+    public ?string $alternatePrices = null;
+    public ?bool $hasDimensions = null;
+    public ?float $unitPrice = null;
+    public ?float $totalPrice = null;
+    public ?float $totalPriceWithoutTaxes = null;
+    public ?string $totalWeight = null;
+    public ?string $addedOn = null;
+    public ?string $startsOn = null;
+    public ?DateTime $modificationDate = null;
+    public ?float $width = null;
+    public ?float $height = null;
+    public ?float $length = null;
+    public ?string $metadata = null;
+    public ?string $hasTaxesIncluded = null;
+    public ?string $totalPriceWithoutDiscountsAndTaxesLegacy = null;
+    public ?string $totalPriceWithoutDiscountsAndTaxes = null;
+    public ?string $pausingAction = null;
+    public ?string $cancellationAction = null;
 
     private ?PaymentSchedule $paymentSchedule = null;
 
-    public function datetimeAttributes(): array
-    {
-        return ['modificationDate'];
-    }
+
+    // Public Methods
+    // =========================================================================
 
     public function extraFields(): array
     {
         return ['paymentSchedule'];
     }
 
-    /**
-     * Get a Craft Element that's uniquely related to this Item, if possible.
-     *
-     * @param bool $entryOnly Whether to return the immediately-associated
-     *                        Element, like a Matrix block, or the closest Entry.
-     *
-     * @return ElementInterface|null
-     */
-    public function getRelatedElement($entryOnly = false)
+    public function getRelatedElement(bool $entryOnly = false): ?ElementInterface
     {
         // get related record by SKU
-        if (! ($record = ProductDetailsRecord::findOne([
+        if (!($record = ProductDetailsRecord::findOne([
             'sku' => $this->id,
         ])) instanceof ProductDetailsRecord) {
             // bail without a Record, which can happen if the product's details
@@ -264,7 +80,7 @@ class Item extends Model
             return null;
         }
 
-        if ($element = \Craft::$app->getElements()->getElementById($record->elementId)) {
+        if ($element = Craft::$app->getElements()->getElementById($record->elementId)) {
             $isMatrix = $element && $element instanceof MatrixBlock;
 
             if ($isMatrix && $entryOnly) {
@@ -278,28 +94,19 @@ class Item extends Model
         return null;
     }
 
-    /**
-     * @return PaymentSchedule|null
-     */
-    public function getPaymentSchedule()
+    public function getPaymentSchedule(): ?PaymentSchedule
     {
         return $this->paymentSchedule;
     }
 
-    /**
-     * @param PaymentSchedule|array|null $paymentSchedule
-     */
-    public function setPaymentSchedule($paymentSchedule): ?PaymentSchedule
+    public function setPaymentSchedule(PaymentSchedule|array|null $paymentSchedule): ?PaymentSchedule
     {
         if ($paymentSchedule === null) {
             return $this->paymentSchedule = null;
         }
 
-        if (! $paymentSchedule instanceof PaymentSchedule) {
-            $paymentScheduleData = ModelHelper::stripUnknownProperties(
-                $paymentSchedule,
-                PaymentSchedule::class
-            );
+        if (!$paymentSchedule instanceof PaymentSchedule) {
+            $paymentScheduleData = ModelHelper::stripUnknownProperties($paymentSchedule, PaymentSchedule::class);
 
             $paymentSchedule = new PaymentSchedule((array) $paymentScheduleData);
         }

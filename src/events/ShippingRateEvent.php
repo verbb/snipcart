@@ -1,47 +1,26 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\events;
 
-namespace fostercommerce\snipcart\events;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\models\snipcart\Package;
 
 use craft\events\CancelableEvent;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\models\snipcart\Package;
-use fostercommerce\snipcart\models\snipcart\ShippingRate;
 
-/**
- * Shipping rate event class.
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
 class ShippingRateEvent extends CancelableEvent
 {
-    /**
-     * @var Order
-     */
-    public $order;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var ShippingRate[]
-     */
-    public $rates = [];
+    public Order $order;
+    public array $rates = [];
+    public Package $package;
+    public array $errors = [];
 
-    /**
-     * @var Package
-     */
-    public $package;
 
-    /**
-     * @var array[] with 'key' and 'message' keys
-     */
-    public $errors = [];
+    // Public Methods
+    // =========================================================================
 
-    public function getErrors()
+    public function getErrors(): ?array
     {
         if ($this->isValid) {
             return null;

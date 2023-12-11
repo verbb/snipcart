@@ -1,150 +1,53 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\snipcart;
 
-namespace fostercommerce\snipcart\models\snipcart;
+use verbb\snipcart\Snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
-use fostercommerce\snipcart\Snipcart;
 
-/**
- * Class Subscription
- * https://docs.snipcart.com/v2/api-reference/subscriptions
- *
- * @package fostercommerce\snipcart\models
- */
+use DateTime;
+
 class Subscription extends Model
 {
+    // Constants
+    // =========================================================================
+
     public const STATUS_ACTIVE = 'Active';
-
     public const STATUS_PAUSED = 'Paused';
-
     public const STATUS_CANCELED = 'Canceled';
 
-    /**
-     * @var
-     */
-    public $user;
 
-    /**
-     * @var
-     */
-    public $initialOrderToken;
+    // Properties
+    // =========================================================================
+    
+    public ?string $user = null;
+    public ?string $initialOrderToken = null;
+    public ?string $firstInvoiceReceivedOn = null;
+    public ?string $schedule = null;
+    public ?string $itemId = null;
+    public ?string $id = null;
+    public ?string $name = null;
+    public ?DateTime $creationDate = null;
+    public ?DateTime $modificationDate = null;
+    public ?string $cancelledOn = null;
+    public ?string $amount = null;
+    public ?string $quantity = null;
+    public ?string $userDefinedId = null;
+    public ?string $totalSpent = null;
+    public ?string $status = null;
+    public ?string $gatewayId = null;
+    public ?string $metadata = null;
+    public ?string $cartId = null;
+    public ?string $recurringShipping = null;
+    public ?string $shippingCharged = null;
+    public ?DateTime $nextBillingDate = null;
+    public ?string $upcomingPayments = null;
+    public ?string $invoiceNumber = null;
 
-    /**
-     * @var
-     */
-    public $firstInvoiceReceivedOn;
 
-    /**
-     * @var
-     */
-    public $schedule;
-
-    /**
-     * @var
-     */
-    public $itemId;
-
-    /**
-     * @var
-     */
-    public $id;
-
-    /**
-     * @var
-     */
-    public $name;
-
-    /**
-     * @var
-     */
-    public $creationDate;
-
-    /**
-     * @var
-     */
-    public $modificationDate;
-
-    /**
-     * @var
-     */
-    public $cancelledOn;
-
-    /**
-     * @var
-     */
-    public $amount;
-
-    /**
-     * @var
-     */
-    public $quantity;
-
-    /**
-     * @var
-     */
-    public $userDefinedId;
-
-    /**
-     * @var
-     */
-    public $totalSpent;
-
-    /**
-     * @var
-     */
-    public $status;
-
-    /**
-     * @var
-     */
-    public $gatewayId;
-
-    /**
-     * @var
-     */
-    public $metadata;
-
-    /**
-     * @var
-     */
-    public $cartId;
-
-    /**
-     * @var
-     */
-    public $recurringShipping;
-
-    /**
-     * @var
-     */
-    public $shippingCharged;
-
-    /**
-     * @var
-     */
-    public $nextBillingDate;
-
-    /**
-     * @var
-     */
-    public $upcomingPayments;
-
-    /**
-     * @var
-     */
-    public $invoiceNumber;
-
-    public function datetimeAttributes(): array
-    {
-        return ['creationDate', 'modificationDate', 'cancelledOn', 'nextBillingDate', 'firstInvoiceReceivedOn'];
-    }
+    // Public Methods
+    // =========================================================================
 
     public function getCpUrl(): string
     {
@@ -158,6 +61,6 @@ class Subscription extends Model
 
     public function getInvoices(): array
     {
-        return Snipcart::$plugin->subscriptions->getSubscriptionInvoices($this->id);
+        return Snipcart::$plugin->getSubscriptions()->getSubscriptionInvoices($this->id);
     }
 }

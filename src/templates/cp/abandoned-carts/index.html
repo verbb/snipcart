@@ -1,0 +1,48 @@
+{% extends 'snipcart/cp/_layout' %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'Snipcart Abandoned Carts' ~ (isTestMode ? ' 🚧') %}
+{% set selectedTab = 'abandoned' %}
+
+{% block content %}
+    <div>
+        <p id="noredirects"{% if carts | length %} class="hidden"{% endif %}>
+            {{ 'There aren’t any abandoned carts yet.' | t('snipcart') }}
+        </p>
+
+        {% if carts | length %}
+
+            <table id="carts" class="data w-full">
+                <thead>
+                    <th scope="col">{{ 'Email' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Status' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Date' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Total Items' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Total' | t('snipcart') }}</th>
+                </thead>
+                <tbody>
+                    {% for cart in carts %}
+                        <tr data-id="{{ cart.token }}" data-name="{{ cart.email }}">
+                            <td><a href="{{ cart.cpUrl }}">{{ cart.email }}</a></td>
+                            <td>{{ cart.status }}</td>
+                            <td>{{ cart.modificationDate | date('short') }}</td>
+                            <td>{{ cart.items|length }}</td>
+                            <td>{{ craft.snipcart.formatCurrency(cart.total, cart.currency) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if hasMoreResults and continuationToken %}
+                <div class="text-center mt-8">
+                    <a id="load-carts" class="btn" data-continuation-token="{{ continuationToken }}">
+                        {{- 'Load More' | t('snipcart') }} {{ '…' -}}
+                    </a>
+                </div>
+            {% endif %}
+
+        {% endif %}
+    </div>
+{% endblock %}

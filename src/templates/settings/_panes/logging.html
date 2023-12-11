@@ -1,0 +1,39 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.lightswitchField({
+    label: 'Cache API Responses?' | t('snipcart'),
+    instructions: 'Switch on to have some REST API requests cached, which will make things zippier in the control panel.' | t('snipcart'),
+    name: 'cacheResponses',
+    on: settings.cacheResponses,
+    errors: settings.getErrors('cacheResponses'),
+    warning: macros.configWarning('cacheResponses', 'snipcart'),
+}) }}
+
+{{ forms.textField({
+    label: 'Cache Duration Limit' | t('snipcart'),
+    instructions: 'Specify the maximum number of seconds cached responses will be used, if enabled.' | t('snipcart'),
+    name: 'cacheDurationLimit',
+    class: 'code',
+    value: settings.cacheDurationLimit,
+    errors: settings.getErrors('cacheDurationLimit'),
+    warning: macros.configWarning('cacheDurationLimit', 'snipcart'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Log Custom Rates?' | t('snipcart'),
+    instructions: 'Switch on to log webhook rate responses to the database for troubleshooting and order shipping rate validation.' | t('snipcart'),
+    name: 'logCustomRates',
+    on: settings.logCustomRates,
+    errors: settings.getErrors('logCustomRates'),
+    warning: macros.configWarning('logCustomRates', 'snipcart'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Log Webhook Requests?' | t('snipcart'),
+    instructions: 'Switch on to look valid webhook posts to the database for troubleshooting.' | t('snipcart'),
+    name: 'logWebhookRequests',
+    on: settings.logWebhookRequests,
+    errors: settings.getErrors('logWebhookRequests'),
+    warning: macros.configWarning('logWebhookRequests', 'snipcart'),
+}) }}

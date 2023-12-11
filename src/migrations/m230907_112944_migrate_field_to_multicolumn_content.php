@@ -1,6 +1,5 @@
 <?php
-
-namespace fostercommerce\snipcart\migrations;
+namespace verbb\snipcart\migrations;
 
 use Craft;
 use craft\db\Migration;
@@ -9,42 +8,12 @@ use craft\elements\Entry;
 use craft\helpers\App;
 use craft\helpers\Json;
 
-/**
- * m230907_112944_migrate_field_to_multicolumn_content migration.
- */
+use RuntimeException;
+
 class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 {
-    public function resaveFields()
-    {
-        // We need to resave **all** fields because we don't know where fields are being added.
-        // For example, they could be in Matrix fields, Super Table fields, etc.
-        // We need to rely on those fields resaving correctly to implement the migration.
-
-        App::maxPowerCaptain(); // We could potentially be resaving a lot of fields.
-
-        $fields = (new Query())
-            ->from('{{%fields}}')
-            ->all();
-
-        $fieldsService = Craft::$app->getFields();
-        $fieldsService->refreshFields();
-
-        foreach ($fields as $field) {
-            $field = $fieldsService->getFieldById($field['id']);
-
-            if (! $field) {
-                continue;
-            }
-
-            if (! $fieldsService->saveField($field, false)) {
-                throw new \RuntimeException(Json::encode([
-                    'field' => $field->handle,
-                    'type' => $field::class,
-                    'errors' => $field->getErrors(),
-                ]));
-            }
-        }
-    }
+    // Public Methods
+    // =========================================================================
 
     public function safeUp(): bool
     {
@@ -74,12 +43,13 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 
             $entry = Entry::find()->id($element['canonicalId'])->one();
             $field = $fieldsService->getFieldById($product['fieldId']);
+            
             // set the field data
-            if (! $entry) {
+            if (!$entry) {
                 continue;
             }
 
-            if (! $field) {
+            if (!$field) {
                 continue;
             }
 
@@ -107,5 +77,37 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
     {
         echo "m220816_153427_switch_to_multi_column_field cannot be reverted.\n";
         return false;
+    }
+
+    public function resaveFields(): void
+    {
+        // We need to resave **all** fields because we don't know where fields are being added.
+        // For example, they could be in Matrix fields, Super Table fields, etc.
+        // We need to rely on those fields resaving correctly to implement the migration.
+
+        App::maxPowerCaptain(); // We could potentially be resaving a lot of fields.
+
+        $fields = (new Query())
+            ->from('{{%fields}}')
+            ->all();
+
+        $fieldsService = Craft::$app->getFields();
+        $fieldsService->refreshFields();
+
+        foreach ($fields as $field) {
+            $field = $fieldsService->getFieldById($field['id']);
+
+            if (!$field) {
+                continue;
+            }
+
+            if (!$fieldsService->saveField($field, false)) {
+                throw new RuntimeException(Json::encode([
+                    'field' => $field->handle,
+                    'type' => $field::class,
+                    'errors' => $field->getErrors(),
+                ]));
+            }
+        }
     }
 }

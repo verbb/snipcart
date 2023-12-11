@@ -1,29 +1,17 @@
 <?php
+namespace verbb\snipcart\validators;
 
-namespace fostercommerce\snipcart\validators;
-
-use Craft;
 use craft\elements\Entry;
 use craft\helpers\ElementHelper;
+
 use yii\base\InvalidConfigException;
 use yii\validators\Validator;
 
-/**
- * Class ProductDetailsValidator.
- *
- * @author Foster Commerce
- * @since 1.5.7
- */
 class ProductDetailsValidator extends Validator
 {
-    public function init(): void
-    {
-        parent::init();
-    }
+    // Public Methods
+    // =========================================================================
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function validateAttribute($model, $attribute): void
     {
         $value = $model->{$attribute};
@@ -41,7 +29,7 @@ class ProductDetailsValidator extends Validator
         // there's definitely a better way to do this ¯\_(ツ)_/¯
         $value['price'] = str_replace(',', '', $value['price']);
 
-        /* SKU field validations */
+        // SKU field validations 
         // test for empty SKU
         if ($value['sku'] === null || trim($value['sku']) === '') {
             $this->addError($model, $attribute, 'SKU cannot be blank');
@@ -49,33 +37,25 @@ class ProductDetailsValidator extends Validator
 
         // test for unique SKU
         // query for all product details SKU fields
-
-        /*
-        if(!$model->$attribute->validateSku('sku')){
-            $this->addError($model, $attribute, 'SKU must be unique');
-        }
-        */
-
-        if (! $this->skuIsUnique($model, $value['sku'], $sectionHandle, $fieldHandle)) {
+        if (!$this->skuIsUnique($model, $value['sku'], $sectionHandle, $fieldHandle)) {
             $this->addError($model, $attribute, 'SKU must be unique');
         }
 
-        /* Inventory field validations */
-
+        // Inventory field validations 
         if ($value['inventory'] !== null) {
             if ($value['inventory'] < 0) {
                 $this->addError($model, $attribute, 'Inventory cannot be less than 0');
-            } elseif (! is_numeric($value['inventory'])) {
+            } else if (!is_numeric($value['inventory'])) {
                 $this->addError($model, $attribute, 'Inventory must be a number');
             }
         }
 
-        /* Price field validations */
-        if ($value['price'] === null || trim($value['price'] === '')) {
+        // Price field validations 
+        if ($value['price'] === null || trim($value['price']) === '') {
             $this->addError($model, $attribute, 'Price cannot be blank');
-        } elseif ($value['price'] !== null && $value['price'] < 0) {
+        } else if ($value['price'] !== null && $value['price'] < 0) {
             $this->addError($model, $attribute, 'Price cannot be negative');
-        } elseif ($value['price'] !== null && ! is_numeric($value['price'])) {
+        } else if ($value['price'] !== null && ! is_numeric($value['price'])) {
             $this->addError($model, $attribute, 'Price must be numeric');
         }
     }
@@ -91,26 +71,6 @@ class ProductDetailsValidator extends Validator
 
     public function skuIsUnique($model, $sku, mixed $sectionHandle, $fieldHandle): bool
     {
-
-        /*
-        $entryQuery = craft\elements\Entry::find()
-            ->section($sectionHandle)
-            ->where(["field_${fieldHandle}_mduolzrl" => $sku]);
-
-        $entries = $entryQuery->count();
-        */
-
-        /*
-        $entryQuery = craft\elements\Entry::find()
-            ->section($sectionHandle);
-
-        //$entryQuery->subQuery->andWhere(Db::parseParam($fieldHandle, $sku));
-        $entryQuery->andWhere("${fieldHandle} = '${sku}'");
-        //$entryQuery->andWhere("'elementId' = 352");
-
-        $entries = $entryQuery->count();
-        */
-
         $entries = Entry::find()->section($sectionHandle)->id(['not', $model->id])->all();
 
         foreach ($entries as $entry) {
@@ -118,7 +78,7 @@ class ProductDetailsValidator extends Validator
                 continue;
             }
 
-            if (! ($entry->enabled && $entry->getEnabledForSite())) {
+            if (!($entry->enabled && $entry->getEnabledForSite())) {
                 continue;
             }
 

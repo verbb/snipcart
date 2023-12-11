@@ -1,55 +1,40 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\controllers;
 
-namespace fostercommerce\snipcart\controllers;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use fostercommerce\snipcart\Snipcart;
+
 use yii\web\Response;
 
 class CartsController extends Controller
 {
-    /**
-     * Displays paginated list of abandoned carts.
-     *
-     * @throws
-     */
+    // Public Methods
+    // =========================================================================
+
     public function actionIndex(): Response
     {
         $page = Craft::$app->getRequest()->getPageNum();
-        $carts = Snipcart::$plugin->carts->listAbandonedCarts($page);
+        $carts = Snipcart::$plugin->getCarts()->listAbandonedCarts($page);
 
-        return $this->renderTemplate(
-            'snipcart/cp/abandoned-carts/index',
-            [
-                'pageNumber' => $page,
-                'carts' => $carts->items,
-                'continuationToken' => $carts->continuationToken ?? null,
-                'hasMoreResults' => $carts->hasMoreResults ?? false,
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/abandoned-carts/index', [
+            'pageNumber' => $page,
+            'carts' => $carts->items,
+            'continuationToken' => $carts->continuationToken ?? null,
+            'hasMoreResults' => $carts->hasMoreResults ?? false,
+        ]);
     }
 
-    /**
-     * Gets the next page/grouping of abandoned carts.
-     *
-     * @throws
-     */
     public function actionGetNextCarts(): Response
     {
         $this->requirePostRequest();
 
         $token = Craft::$app->getRequest()->getRequiredParam('continuationToken');
 
-        $response = Snipcart::$plugin->api->get('carts/abandoned', [
+        $response = Snipcart::$plugin->getApi()->get('carts/abandoned', [
             'continuationToken' => $token,
         ]);
 
@@ -67,20 +52,12 @@ class CartsController extends Controller
         return $this->asJson($response);
     }
 
-    /**
-     * Displays abandoned cart detail.
-     *
-     * @throws \Exception
-     */
     public function actionDetail(string $cartId): Response
     {
-        $abandonedCart = Snipcart::$plugin->carts->getAbandonedCart($cartId);
+        $abandonedCart = Snipcart::$plugin->getCarts()->getAbandonedCart($cartId);
 
-        return $this->renderTemplate(
-            'snipcart/cp/abandoned-carts/detail',
-            [
-                'abandonedCart' => $abandonedCart,
-            ]
-        );
+        return $this->renderTemplate('snipcart/cp/abandoned-carts/detail', [
+            'abandonedCart' => $abandonedCart,
+        ]);
     }
 }

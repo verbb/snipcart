@@ -1,78 +1,67 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\App;
 use craft\helpers\Json;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\Snipcart;
-use GuzzleHttp\Client;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
+
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+
 use yii\base\Exception;
 use yii\caching\TagDependency;
 
-/**
- * Class Api
- *
- * The API service is for interacting with Snipcart's REST API. It provides a
- * configured Guzzle client, can optionally cache GET requests, and validates
- * tokens.
- *
- * @package fostercommerce\snipcart\services
- */
+use stdClass;
+
 class Api extends Component
 {
-    /**
-     * @var string The tag we'll attach to our caches here so they can be
-     *             neatly invalidated with a reference to it.
-     */
-    public const CACHE_TAG = 'snipcart-api-cache';
+    // Static Methods
+    // =========================================================================
 
-    /**
-     * @var string Characters to prepend to any cache keys that are used.
-     */
+    public static function invalidateCache(): void
+    {
+        TagDependency::invalidate(Craft::$app->getCache(), self::CACHE_TAG);
+
+        Snipcart::log('API caches cleared.');
+    }
+
+
+    // Constants
+    // =========================================================================
+
+    public const CACHE_TAG = 'snipcart-api-cache';
     public const CACHE_KEY_PREFIX = 'snipcart_';
 
-    /**
-     * @var string Snipcart's base API URL used for all interactions.
-     */
-    protected static $apiBaseUrl = 'https://app.snipcart.com/api/';
 
-    /**
-     * @var bool Whether we have credentials for talking with the Snipcart API.
-     */
-    protected $isLinked;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var Client Instantiated REST client.
-     */
-    protected $client;
+    protected static string $apiBaseUrl = 'https://app.snipcart.com/api/';
+
+    protected bool $isLinked = false;
+    protected ?Client $client = null;
+
+
+    // Public Methods
+    // =========================================================================
 
     public function init(): void
     {
         parent::init();
-        $this->isLinked = $this->getSecretApiKey() !== null;
+
+        $this->isLinked = (bool)Snipcart::$plugin->getSettings()->getSecretKey();
     }
 
-    /**
-     * Returns a configured Guzzle client.
-     *
-     * @throws \Exception if our API key is missing.
-     */
     public function getClient(): Client
     {
-        if (! $this->isLinked) {
+        if (!$this->isLinked) {
             throw new Exception('Snipcart plugin not configured.');
         }
 
@@ -80,9 +69,11 @@ class Api extends Component
             return $this->client;
         }
 
+        $secretKey = Snipcart::$plugin->getSettings()->getSecretKey();
+
         $clientConfig = [
             'base_uri' => self::$apiBaseUrl,
-            'auth' => [$this->getSecretApiKey(), 'password'],
+            'auth' => [$secretKey, 'password'],
             'headers' => [
                 'Content-Type' => 'application/json; charset=utf-8',
                 'Accept' => 'application/json',
@@ -94,18 +85,7 @@ class Api extends Component
         return $this->client = Craft::createGuzzleClient($clientConfig);
     }
 
-    /**
-     * Sends a GET request to the Snipcart REST API.
-     *
-     * @param  string $endpoint    Snipcart API endpoint to be queried
-     * @param  array  $parameters  Array of parameters to be URL formatted
-     * @param  bool   $useCache    Whether or not to cache responses
-     *
-     * @return \stdClass|array|null  Response as single object, array
-     *                               of objects or null for an invalid response.
-     * @throws \Exception if our API key is missing.
-     */
-    public function get(string $endpoint, array $parameters = [], bool $useCache = true)
+    public function get(string $endpoint, array $parameters = [], bool $useCache = true): array|stdClass|null
     {
         if ($parameters !== []) {
             $endpoint .= '?' . http_build_query($parameters);
@@ -114,9 +94,6 @@ class Api extends Component
         $cacheService = Craft::$app->getCache();
         $cacheKey = self::CACHE_KEY_PREFIX . $endpoint;
 
-        /**
-         * Make sure plugin settings *and* local parameter both allow caching.
-         */
         $useCache = $useCache && Snipcart::$plugin->getSettings()->cacheResponses;
 
         if ($useCache && $cachedResponseData = $cacheService->get($cacheKey)) {
@@ -126,134 +103,52 @@ class Api extends Component
         $responseData = $this->getRequest($endpoint);
 
         if ($responseData && $useCache) {
-            $cacheService->set(
-                $cacheKey,
-                $responseData,
-                Snipcart::$plugin->getSettings()->cacheDurationLimit,
-                new TagDependency([
-                    'tags' => [self::CACHE_TAG],
-                ])
-            );
+            $cacheService->set($cacheKey, $responseData, Snipcart::$plugin->getSettings()->cacheDurationLimit, new TagDependency([
+                'tags' => [self::CACHE_TAG],
+            ]));
         }
 
         return $responseData;
     }
 
-    /**
-     * Sends a POST request to the Snipcart REST API.
-     *
-     * @param  string $endpoint    Desired endpoint
-     * @param  array  $data        Parameters to be formatted and sent
-     *
-     * @return \stdClass|array     Response object or array of objects
-     * @throws \Exception if our API key is missing.
-     */
-    public function post(string $endpoint, array $data = [])
+    public function post(string $endpoint, array $data = []): array|stdClass|null
     {
         return $this->postRequest($endpoint, $data);
     }
 
-    /**
-     * Sends a PUT request to the Snipcart REST API.
-     *
-     * @param  string $endpoint    Desired endpoint
-     * @param  array  $data        Parameters to be formatted and sent
-     *
-     * @return \stdClass|array     Response object or array of objects
-     * @throws \Exception if our API key is missing.
-     */
-    public function put(string $endpoint, array $data = [])
+    public function put(string $endpoint, array $data = []): array|stdClass|null
     {
         return $this->putRequest($endpoint, $data);
     }
 
-    /**
-     * Sends a DELETE request to the Snipcart REST API.
-     *
-     * @param  string $endpoint    Desired endpoint
-     * @param  array  $data        Parameters to be formatted and sent
-     *
-     * @return \stdClass|array     Response object or array of objects
-     * @throws \Exception if our API key is missing.
-     */
-    public function delete(string $endpoint, array $data = [])
+    public function delete(string $endpoint, array $data = []): array|stdClass|null
     {
         return $this->deleteRequest($endpoint, $data);
     }
 
-    /**
-     * Ask Snipcart whether its provided token is genuine.
-     * (Used for webhook posts to be sure they came from Snipcart.)
-     *
-     * Tokens are deleted after this call, so it can only be used once to verify
-     * and tokens expire in one hour. Expect a 404 if the token is deleted
-     * or expired.
-     *
-     * @param string  $token  token to be validated, probably
-     *                        from $_POST['HTTP_X_SNIPCART_REQUESTTOKEN']
-     *
-     * @throws \Exception if our API key is missing.
-     */
-    public function tokenIsValid($token): bool
+    public function tokenIsValid(string $token): bool
     {
-        $response = $this->getRequest(sprintf(
-            'requestvalidation/%s',
-            $token
-        ));
+        $response = $this->getRequest("requestvalidation/$token");
 
         return isset($response->token) && $response->token === $token;
     }
 
-    /**
-     * Invalidate any cached GET requests we may have accumulated.
-     */
-    public static function invalidateCache(): void
-    {
-        TagDependency::invalidate(
-            Craft::$app->getCache(),
-            self::CACHE_TAG
-        );
 
-        Craft::info('API caches cleared.', 'snipcart');
-    }
+    // Private Methods
+    // =========================================================================
 
-    private function getSecretApiKey()
-    {
-        $keyValue = Snipcart::$plugin->getSettings()->secretKey();
-
-        return VersionHelper::isCraft31() ?
-            Craft::parseEnv($keyValue) :
-            $keyValue;
-    }
-
-    /**
-     * Sends a GET request to the Snipcart REST API.
-     *
-     * @param string $endpoint The desired endpoint
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    private function getRequest(string $endpoint)
+    private function getRequest(string $endpoint): mixed
     {
         try {
             $response = $this->getClient()->get($endpoint);
+            
             return $this->prepResponseData($response->getBody());
         } catch (RequestException $requestException) {
             return $this->handleRequestException($requestException, $endpoint);
         }
     }
 
-    /**
-     * Sends a POST request to the Snipcart REST API.
-     *
-     * @param string $endpoint The desired endpoint
-     * @param array  $data     Parameters to be sent with the request
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    private function postRequest(string $endpoint, array $data = [])
+    private function postRequest(string $endpoint, array $data = []): mixed
     {
         try {
             $response = $this->getClient()->post($endpoint, [
@@ -266,16 +161,7 @@ class Api extends Component
         }
     }
 
-    /**
-     * Sends a PUT request to the Snipcart API.
-     *
-     * @param string $endpoint The desired endpoint
-     * @param array  $data     Parameters to be sent with the request
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    private function putRequest(string $endpoint, array $data = [])
+    private function putRequest(string $endpoint, array $data = []): mixed
     {
         try {
             $response = $this->getClient()->put($endpoint, [
@@ -288,16 +174,7 @@ class Api extends Component
         }
     }
 
-    /**
-     * Sends a PUT request to the Snipcart API.
-     *
-     * @param string $endpoint The desired endpoint
-     * @param array  $data     Parameters to be sent with the request
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    private function deleteRequest(string $endpoint, array $data = [])
+    private function deleteRequest(string $endpoint, array $data = []): mixed
     {
         try {
             $response = $this->getClient()->delete($endpoint, [
@@ -310,73 +187,38 @@ class Api extends Component
         }
     }
 
-    /**
-     * Takes the raw response body and gives it back as data that’s ready to use.
-     *
-     * @return mixed Appropriate PHP type, or null if json cannot be decoded
-     *               or encoded data is deeper than the recursion limit.
-     */
-    private function prepResponseData(StreamInterface $stream)
+    private function prepResponseData(StreamInterface $stream): mixed
     {
-        /**
-         * Get the response data as an object, not an associative array.
-         */
         return Json::decode($stream, false);
     }
 
-    /**
-     * Handles a failed request.
-     *
-     * @param RequestException $requestException Exception that was thrown
-     * @param string           $endpoint   Endpoint that was queried
-     *
-     * @throws \Exception
-     */
-    private function handleRequestException(
-        RequestException $requestException,
-        string $endpoint,
-    ) {
+    private function handleRequestException(RequestException $requestException, string $endpoint): void
+    {
         $statusCode = null;
         $reason = null;
 
         if (($response = $requestException->getResponse()) instanceof ResponseInterface) {
-            /**
-             * Get the status code, which should be 200 or 201 if things went well.
-             */
             $statusCode = $response->getStatusCode();
-
-            /**
-             * If there's a response we'll use its body, otherwise default
-             * to the request URI.
-             */
             $reason = $response->getBody();
         }
 
         if ($statusCode !== null && $reason instanceof StreamInterface) {
-            // return code and message
-            Craft::warning(sprintf(
-                'Snipcart API responded with %d: %s',
-                $statusCode,
-                $reason
-            ), 'snipcart');
+            Snipcart::error('Snipcart API responded with {code}: {reason}', [
+                'code' => $statusCode,
+                'reason' => $reason,
+            ]);
 
             if ($statusCode === 401) {
-                // unauthorized, meaning invalid API credentials
                 throw new Exception('Unauthorized; make sure Snipcart API credentials are valid.');
             }
 
             if ($statusCode === 500) {
-                // something went wrong on the other end
                 throw new Exception('Snipcart API responded with 500 error.');
             }
         } else {
-            // report mystery
-            Craft::warning(sprintf(
-                'Snipcart API request to %s failed.',
-                $endpoint
-            ), 'snipcart');
+            Snipcart::error('Snipcart API request to {endpoint} failed.', [
+                'endpoint' => $endpoint,
+            ]);
         }
-
-        return null;
     }
 }

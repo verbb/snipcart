@@ -1,47 +1,18 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\shipstation;
 
-namespace fostercommerce\snipcart\models\shipstation;
+use verbb\snipcart\models\snipcart\CustomField;
 
 use craft\base\Model;
-use fostercommerce\snipcart\models\snipcart\CustomField;
 
-/**
- * ShipStation Item Option Model
- * https://www.shipstation.com/developer-api/#/reference/model-itemoption
- */
+use stdClass;
 
 class ItemOption extends Model
 {
-    /**
-     * @var string|null Name of item option. Example: "Size"
-     */
-    public $name;
+    // Static Methods
+    // =========================================================================
 
-    /**
-     * @var string|null The value of the item option. Example: "Medium"
-     */
-    public $value;
-
-    public function rules(): array
-    {
-        return [
-            [['name', 'value'], 'string'],
-            [['name', 'value'], 'required'],
-        ];
-    }
-
-    /**
-     * @param CustomField|\stdClass|array $item
-     * @return ItemOption|null
-     * @todo strictly use CustomField as param
-     */
-    public static function populateFromSnipcartCustomField($item): ?self
+    public static function populateFromSnipcartCustomField(array|CustomField|stdClass $item): ?self
     {
         if (is_array($item)) {
             $item = (object) $item;
@@ -55,5 +26,24 @@ class ItemOption extends Model
         }
 
         return null;
+    }
+
+
+    // Properties
+    // =========================================================================
+
+    public ?string $name = null;
+    public ?string $value = null;
+
+
+    // Public Methods
+    // =========================================================================
+
+    public function rules(): array
+    {
+        return [
+            [['name', 'value'], 'string'],
+            [['name', 'value'], 'required'],
+        ];
     }
 }

@@ -1,0 +1,119 @@
+{% import '_includes/forms' as forms %}
+
+{{ forms.lightswitchField({
+    label: 'Inventory Enabled?' | t('snipcart'),
+    instructions: 'Switch on to display an inventory input for this field.' | t('snipcart'),
+    name: 'displayInventory',
+    on: field.displayInventory,
+    errors: field.getErrors('displayInventory'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Display Shippable Option?' | t('snipcart'),
+    instructions: 'Switch on to display a shippable option for this field.' | t('snipcart'),
+    name: 'displayShippableSwitch',
+    on: field.displayShippableSwitch,
+    errors: field.getErrors('displayShippableSwitch'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Shippable Default' | t('snipcart'),
+    instructions: 'Switch on to have items Shippable by default.' | t('snipcart'),
+    name: 'defaultShippable',
+    on: field.defaultShippable,
+    errors: field.getErrors('defaultShippable'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Display Taxable Option?' | t('snipcart'),
+    instructions: 'Switch on to display a taxable option for this field.' | t('snipcart'),
+    name: 'displayTaxableSwitch',
+    on: field.displayTaxableSwitch,
+    errors: field.getErrors('displayTaxableSwitch'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Taxable Default' | t('snipcart'),
+    instructions: 'Switch on to have items Taxable by default.' | t('snipcart'),
+    name: 'defaultTaxable',
+    on: field.defaultTaxable,
+    errors: field.getErrors('defaultTaxable'),
+}) }}
+
+<div class="snipcart-product-details-field-group snipcart-product-details-weight-group">
+    <div class="label">
+        <label for="weight">
+            {{- 'Default Weight' | t('snipcart') -}}
+        </label>
+    </div>
+
+    <div class="inputs">
+        {{ forms.text({
+            id: 'defaultWeight',
+            name: 'defaultWeight',
+            value: field.defaultWeight ?? '',
+            size: 5,
+            errors: field.getErrors('defaultWeight'),
+        }) }}
+
+        <div class="select">
+            {{ forms.select({
+                id: 'defaultWeightUnit',
+                name: 'defaultWeightUnit',
+                options: weightUnitOptions,
+                value: field.defaultWeightUnit ?? '',
+                errors: field.getErrors('defaultWeightUnit'),
+            }) }}
+        </div>
+    </div>
+</div>
+
+<div class="snipcart-product-details-field-group snipcart-product-details-dimensions-group mb-4">
+    <div class="label">
+        <label>
+            {{- 'Default Dimensions' | t('snipcart') -}}
+        </label>
+    </div>
+
+    <div class="inputs">
+        {{ forms.text({
+            id: 'defaultLength',
+            name: 'defaultLength',
+            class: 'dimension-input',
+            placeholder: 'L',
+            size: 5,
+            value: field.defaultLength ?? '',
+            errors: field.getErrors('length'),
+        }) }} <span class="muted">×</span>
+
+        {{ forms.text({
+            id: 'defaultWidth',
+            name: 'defaultWidth',
+            class: 'dimension-input',
+            placeholder: 'W',
+            size: 5,
+            value: field.defaultWidth ?? '',
+            errors: field.getErrors('width'),
+        }) }} <span class="muted">×</span>
+
+        {{ forms.text({
+            id: 'defaultHeight',
+            name: 'defaultHeight',
+            class: 'dimension-input',
+            placeholder: 'H',
+            size: 5,
+            value: field.defaultHeight ?? '',
+            errors: field.getErrors('height'),
+        }) }}
+
+        <div class="select">
+            {{ forms.select({
+                id: 'defaultDimensionsUnit',
+                name: 'defaultDimensionsUnit',
+                options: dimensionsUnitOptions,
+                value: field.defaultDimensionsUnit ?? '',
+                errors: field.getErrors('dimensionsUnit'),
+            }) }}
+        </div>
+    </div>
+</div>

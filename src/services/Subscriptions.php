@@ -1,147 +1,63 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\models\snipcart\Subscription;
 
 use craft\base\Component;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\models\snipcart\Subscription;
-use fostercommerce\snipcart\Snipcart;
 
-/**
- * Class Subscriptions
- *
- * For interacting with Snipcart subscriptions.
- *
- * @package fostercommerce\snipcart\services
- */
+use Exception;
+use stdClass;
+
 class Subscriptions extends Component
 {
-    /**
-     * Lists subscriptions.
-     *
-     * @param int    $page   Page of results
-     * @param int    $limit  Number of results per page
-     * @param array  $params Parameters to send with the request
-     *
-     * @return \stdClass
-     *              ->items (Subscription[])
-     *              ->totalItems (int)
-     *              ->offset (int)
-     *              ->limit (int)
-     * @throws \Exception when there isn't an API key to authenticate requests.
-     */
-    public function listSubscriptions($page = 1, $limit = 20, array $params = []): \stdClass
+    // Public Methods
+    // =========================================================================
+
+    public function listSubscriptions(int $page = 1, int $limit = 20, array $params = []): stdClass
     {
-        /**
-         * Define offset and limit since that's pretty much all we're doing here.
-         */
         $params['offset'] = ($page - 1) * $limit;
         $params['limit'] = $limit;
 
-        $response = Snipcart::$plugin->api->get(
-            'subscriptions',
-            $params
-        );
+        $response = Snipcart::$plugin->getApi()->get('subscriptions', $params);
 
         return (object) [
-            'items' => ModelHelper::safePopulateArrayWithModels(
-                $response->items,
-                Subscription::class
-            ),
+            'items' => ModelHelper::safePopulateArrayWithModels($response->items, Subscription::class),
             'totalItems' => $response->totalItems,
             'offset' => $response->offset,
             'limit' => $limit,
         ];
     }
 
-    /**
-     * Gets a Snipcart subscription.
-     *
-     * @param string $subscriptionId Snipcart subscription ID
-     *
-     * @return Subscription|null
-     * @throws \Exception if our API key is missing.
-     */
-    public function getSubscription($subscriptionId)
+    public function getSubscription(string $subscriptionId): ?Subscription
     {
-        if ($subscriptionData = Snipcart::$plugin->api->get(sprintf(
-            'subscriptions/%s',
-            $subscriptionId
-        ))) {
-            return ModelHelper::safePopulateModel(
-                (array) $subscriptionData,
-                Subscription::class
-            );
+        if ($subscriptionData = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId")) {
+            return ModelHelper::safePopulateModel((array) $subscriptionData, Subscription::class);
         }
 
         return null;
     }
 
-    /**
-     * Returns invoices related to a subscription.
-     *
-     * @param $subscriptionId
-     *
-     * @throws \Exception
-     */
     public function getSubscriptionInvoices($subscriptionId): array
     {
-        $response = Snipcart::$plugin->api->get(sprintf(
-            'subscriptions/%s/invoices',
-            $subscriptionId
-        ));
+        $response = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId/invoices");
 
         return is_array($response) ? $response : [];
     }
 
-    /**
-     * Cancels a subscription.
-     *
-     * @param string $subscriptionId Snipcart subscription ID
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    public function cancel($subscriptionId)
+    public function cancel(string $subscriptionId): mixed
     {
-        return Snipcart::$plugin->api->delete(
-            sprintf('subscriptions/%s', $subscriptionId)
-        );
+        return Snipcart::$plugin->getApi()->delete("subscriptions/$subscriptionId");
     }
 
-    /**
-     * Pauses a subscription.
-     *
-     * @param string $subscriptionId Snipcart subscription ID
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    public function pause($subscriptionId)
+    public function pause(string $subscriptionId): mixed
     {
-        return Snipcart::$plugin->api->post(
-            sprintf('subscriptions/%s/pause', $subscriptionId)
-        );
+        return Snipcart::$plugin->getApi()->post("subscriptions/$subscriptionId/pause");
     }
 
-    /**
-     * Resumes a subscription.
-     *
-     * @param string $subscriptionId Snipcart subscription ID
-     *
-     * @return mixed
-     * @throws \Exception if our API key is missing.
-     */
-    public function resume($subscriptionId)
+    public function resume(string $subscriptionId): mixed
     {
-        return Snipcart::$plugin->api->post(
-            sprintf('subscriptions/%s/resume', $subscriptionId)
-        );
+        return Snipcart::$plugin->getApi()->post("subscriptions/$subscriptionId/resume");
     }
 }

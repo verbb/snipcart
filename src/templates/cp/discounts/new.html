@@ -1,0 +1,161 @@
+{% extends '_layouts/cp' %}
+{% import '_includes/forms' as forms %}
+
+{% set crumbs = [
+    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: 'Discounts' | t('snipcart'), url: url('snipcart/discounts') }
+] %}
+
+{% set fullPageForm = true %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'New Discount' ~ (isTestMode ? ' 🚧') %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\DiscountFieldAsset') %}
+
+{% block actionButton %}
+    <input type="submit" id="newdiscountsavebtn" class="btn submit icon" href="{{ url('snipcart/discounts/save') }}" value="{{- 'Create' | t('snipcart') -}}">
+{% endblock %}
+
+{% block content %}
+    <input type="hidden" name="action" value="snipcart/discounts/save">
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        label: 'Name' | t('snipcart'),
+        instructions: 'Add a friendly discount name.' | t('snipcart'),
+        required: true,
+        name: 'name',
+        value: discount.name ?? '',
+        autofocus: true,
+        errors: discount.getErrors('name') ?? [],
+    }) }}
+
+    {{ forms.dateField({
+        label: 'Expires' | t('snipcart'),
+        instructions: 'Specify an expiration date or leave empty and the discount will never expire.' | t('snipcart'),
+        name: 'expires',
+        value: discount.expires ?? '',
+        errors: discount.getErrors('expires') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Max Number of Usages' | t('snipcart'),
+        instructions: 'Enter the maximum number of usages, or leave empty and customers will be able to use it indefinitely.' | t('snipcart'),
+        name: 'maxNumberOfUsages',
+        value: discount.maxNumberOfUsages ?? '',
+        size: 13,
+        errors: discount.getErrors('maxNumberOfUsages') ?? [],
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Trigger' | t('snipcart'),
+        instructions: 'Condition that will trigger the discount.' | t('snipcart'),
+        required: true,
+        name: 'trigger',
+        options: {
+            'Total': 'Total',
+            'Code': 'Code',
+            'Product': 'Product',
+        },
+        value: discount.defaultTrigger ?? null,
+        errors: discount.getErrors('trigger') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Code' | t('snipcart'),
+        instructions: 'The code that will need to be entered by the customer. Required when trigger is `Code`.' | t('snipcart'),
+        name: 'code',
+        value: discount.code ?? '',
+        errors: discount.getErrors('code') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Item ID' | t('snipcart'),
+        instructions: 'The unique ID of your product defined with `data-item-id`. Required when trigger is `Product`.' | t('snipcart'),
+        name: 'itemId',
+        value: discount.itemId ?? '',
+        errors: discount.getErrors('itemId') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Total To Reach' | t('snipcart'),
+        instructions: 'The minimum order amount. Required when trigger is `Total`.' | t('snipcart'),
+        name: 'totalToReach',
+        value: discount.totalToReach ?? '',
+        errors: discount.getErrors('totalToReach') ?? [],
+    }) }}
+
+    {{ forms.selectField({
+        label: 'Type' | t('snipcart'),
+        instructions: 'The type of action that the discount will apply.' | t('snipcart'),
+        required: true,
+        name: 'type',
+        options: {
+            'FixedAmount': 'Fixed Amount',
+            'FixedAmountOnItems': 'Fixed Amount On Items',
+            'Rate': 'Rate',
+            'AlternatePrice': 'Alternate Price',
+            'Shipping': 'Shipping',
+        },
+        value: discount.defaultType ?? null,
+        errors: discount.getErrors('type') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Amount' | t('snipcart'),
+        instructions: 'The amount that will be deducted from order total. Required when type is `FixedAmount`.' | t('snipcart'),
+        name: 'amount',
+        value: discount.amount ?? '',
+        errors: discount.getErrors('amount') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Product IDs' | t('snipcart'),
+        instructions: 'A comma separated list of unique ID of your products defined with data-item-id. The fixed amount will be deducted from each product that matches. Required when type is `FixedAmountOnItems`.' | t('snipcart'),
+        name: 'productIds',
+        value: discount.productIds ?? '',
+        errors: discount.getErrors('productIds') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Rate' | t('snipcart'),
+        instructions: 'The rate in percentage that will be deducted from order total. Required when type is `Rate`.' | t('snipcart'),
+        name: 'rate',
+        value: discount.rate ?? '',
+        errors: discount.getErrors('rate') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Alternate Price' | t('snipcart'),
+        instructions: 'The name of the alternate price list to use. Required when type is `AlternatePrice`.' | t('snipcart'),
+        name: 'alternatePrice',
+        value: discount.alternatePrice ?? '',
+        errors: discount.getErrors('alternatePrice') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Description' | t('snipcart'),
+        instructions: 'The shipping method name that will be displayed to your customers. Required when type is `Shipping`.' | t('snipcart'),
+        name: 'shippingDescription',
+        value: discount.shippingDescription ?? '',
+        errors: discount.getErrors('shippingDescription') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Cost' | t('snipcart'),
+        instructions: 'The shipping amount that will be available to your customers. Required when type is `Shipping`.' | t('snipcart'),
+        name: 'shippingCost',
+        value: discount.shippingCost ?? '',
+        errors: discount.getErrors('shippingCost') ?? [],
+    }) }}
+
+    {{ forms.textField({
+        label: 'Shipping Guaranteed Days to Delivery' | t('snipcart'),
+        instructions: 'The number of days it will take for shipping, you can leave it to null.' | t('snipcart'),
+        name: 'shippingGuaranteedDaysToDelivery',
+        value: discount.shippingGuaranteedDaysToDelivery ?? '',
+        errors: discount.getErrors('shippingGuaranteedDaysToDelivery') ?? [],
+    }) }}
+{% endblock %}

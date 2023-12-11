@@ -1,0 +1,89 @@
+{% extends 'snipcart/cp/_layout' %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+{% set title = 'Snipcart Orders' ~ (isTestMode ? ' 🚧') %}
+{% set selectedTab = 'orders' %}
+
+{% block content %}
+    <div>
+        <div class="mb-6 p-2 bg-light-grey rounded">
+            <form action="" method="post">
+                {{ csrfInput() }}
+
+                {% include 'snipcart/cp/_parts/limited-date' with {
+                    label: 'Start Date' | t('snipcart'),
+                    id: 'startDate',
+                    required: true,
+                    name: 'startDate',
+                    defaultDate: startDate,
+                    maxDate: now | date_modify('-1 day'),
+                    value: startDate,
+                } %}
+
+                <em>to</em>
+
+                {% include 'snipcart/cp/_parts/limited-date' with {
+                    label: 'End Date' | t('snipcart'),
+                    id: 'endDate',
+                    required: true,
+                    name: 'endDate',
+                    defaultDate: endDate,
+                    maxDate: now,
+                    value: endDate,
+                } %}
+
+                <input type="submit" class="btn submit" name="submit" value="{{ 'Update' | t('snipcart') }}">
+            </form>
+        </div>
+        
+        <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
+            {{- 'There aren’t any orders to show. Time to sell some things!' | t('snipcart') -}}
+        </p>
+
+        {% if orders %}
+            <table id="orders" class="data w-full">
+                <thead>
+                    <th scope="col">{{ 'Invoice' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Placed' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Customer' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Email' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Total' | t('snipcart') }}</th>
+                    <th scope="col">{{ 'Status' | t('snipcart') }}</th>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
+                            <td><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
+                            <td>{{ order.creationDate | date('short') }}</td>
+                            <td>{{ order.billingAddress.name }}</td>
+                            <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
+                            <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
+                            <td>
+                                {%- if order.status == 'Open' -%}
+                                    <div class="status"></div>
+                                {% elseif order.status == 'Processed' -%}
+                                    <div class="status active"></div>
+                                {% endif %}
+
+                                {{ order.status -}}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'snipcart/cp/_parts/pagination' with {
+                perPage: 20,
+                pageItems: orders | length,
+                currentPage: pageNumber,
+                totalPages: totalPages,
+                totalItems: totalItems,
+                itemLabel: 'order',
+                itemsLabel: 'orders',
+                path: 'snipcart/orders/',
+            } %}
+        {% endif %}
+    </div>
+{% endblock %}

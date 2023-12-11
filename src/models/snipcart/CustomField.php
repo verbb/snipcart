@@ -1,49 +1,18 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 
 class CustomField extends Model
 {
-    /**
-     * @var
-     */
-    public $name;
-
-    /**
-     * @var
-     */
-    public $operation;
-
-    /**
-     * @var
-     */
-    public $type;
-
-    /**
-     * @var
-     */
-    public $options;
-
-    /**
-     * @var
-     */
-    public $required;
-
-    /**
-     * @var
-     */
-    public $value;
-
-    /**
-     * @var
-     */
-    public $optionsArray;
+    // Properties
+    // =========================================================================
+    
+    public ?string $name = null;
+    public ?string $operation = null;
+    public ?string $type = null;
+    public array $options = [];
+    public bool $required = false;
+    public mixed $value = null;
+    public array $optionsArray = [];
 }

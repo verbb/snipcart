@@ -1,275 +1,73 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use DateTime;
 
-/**
- * https://docs.snipcart.com/v2/api-reference/discounts
- */
 class Discount extends Model
 {
+    // Constants
+    // =========================================================================
+
     public const TRIGGER_CODE = 'Code';
-
     public const TRIGGER_TOTAL = 'Total';
-
     public const TRIGGER_PRODUCT = 'Product';
-
     public const TYPE_FIXED_AMOUNT = 'FixedAmount';
-
     public const TYPE_FIXED_AMOUNT_ON_ITEMS = 'FixedAmountOnItems';
-
     public const TYPE_RATE = 'Rate';
-
     public const TYPE_ALTERNATE_PRICE = 'AlternatePrice';
-
     public const TYPE_ALTERNATE_SHIPPING = 'Shipping';
 
-    /**
-     * @var string "2223490d-84c1-480c-b713-50cb0b819313"
-     */
-    public $id;
 
-    /**
-     * @var string References the discount ID when applied in the context of an Order.
-     */
-    public $discountId;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var string The discount friendly name. (required)
-     */
-    public $name;
-
-    /**
-     * @var \DateTime|null The date when this discount should expire, if null,
-     *                     the discount will never expires.
-     */
-    public $expires;
-
-    /**
-     * @var int|null The maximum number of usages for the discount, if null,
-     *               customers will be able to use this discount indefinitely.
-     */
-    public $maxNumberOfUsages;
-
-    /**
-     * @var string Condition that will trigger the discount. Possible values: `Total`, `Code`, `Product`
-     */
-    public $trigger;
-
-    /**
-     * @var string The code that will need to be entered by the customer. Required when trigger is `Code`
-     */
-    public $code;
-
-    /**
-     * @var string The unique ID of your product defined with `data-item-id`. Required when trigger is `Product`.
-     */
-    public $itemId;
-
-    /**
-     * @var float The minimum order amount. Required when trigger is `Total`.
-     */
-    public $totalToReach;
-
-    /**
-     * @var string The type of action that the discount will apply. (required)
-     *             Possible values: `FixedAmount`, `FixedAmountOnItems`,
-     *             `Rate`, `AlternatePrice`, `Shipping`
-     */
-    public $type;
-
-    /**
-     * @var float The amount that will be deducted from order total.
-     *            Required when type is `FixedAmount`.
-     */
-    public $amount;
-
-    /**
-     * @var float The amount that was saved if/when this instance was applied
-     *            to an Order.
-     */
-    public $amountSaved;
-
-    /**
-     * @var string  A comma separated list of unique ID of your products defined
-     *              with data-item-id. The fixed amount will be deducted from
-     *              each product that matches.
-     *              Required when type is `FixedAmountOnItems`.
-     */
-    public $productIds;
-
-    /**
-     * @var float The rate in percentage that will be deducted from order total.
-     *            Required when type is `Rate`.
-     */
-    public $rate;
-
-    /**
-     * @var
-     */
-    public $normalizedRate;
-
-    /**
-     * @var string|null The name of the alternate price list to use.
-     *                  Required when type is `AlternatePrice`.
-     */
-    public $alternatePrice;
-
-    /**
-     * @var string The shipping method name that will be displayed to
-     *             your customers. Required when type is `Shipping`.
-     */
-    public $shippingDescription;
-
-    /**
-     * @var float The shipping amount that will be available to your customers.
-     *            Required when type is `Shipping`.
-     */
-    public $shippingCost;
-
-    /**
-     * @var int The number of days it will take for shipping, you can leave it
-     *          to null.
-     */
-    public $shippingGuaranteedDaysToDelivery;
-
-    /**
-     * @var int
-     */
-    public $numberOfUsages;
-
-    /**
-     * @var int
-     */
-    public $numberOfUsagesUncompleted;
-
-    /**
-     * @var bool
-     */
-    public $isForARecoveryCampaign;
-
-    /**
-     * @var bool
-     */
-    public $archived;
-
-    /**
-     * @var
-     */
-    public $combinable;
-
-    /**
-     * @var
-     */
-    public $maxAmountToReach;
-
-    /**
-     * @var
-     */
-    public $maxDiscountsPerItem;
-
-    /**
-     * @var
-     */
-    public $appliesOnAllRecurringOrders;
-
-    /**
-     * @var
-     */
-    public $quantityOfAProduct;
-
-    /**
-     * @var
-     */
-    public $quantityOfProductIds;
-
-    /**
-     * @var
-     */
-    public $onlyOnSameProducts;
-
-    /**
-     * @var
-     */
-    public $quantityInterval;
-
-    /**
-     * @var
-     */
-    public $maxQuantityOfAProduct;
-
-    /**
-     * @var
-     */
-    public $numberOfItemsRequired;
-
-    /**
-     * @var
-     */
-    public $numberOfFreeItems;
-
-    /**
-     * @var
-     */
-    public $affectedItems;
-
-    /**
-     * @var
-     */
-    public $dataAttribute;
-
-    /**
-     * @var
-     */
-    public $hasSavedAmount;
-
-    /**
-     * @var
-     */
-    public $products;
-
-    /**
-     * @var
-     */
-    public $currency;
-
-    /**
-     * @var
-     */
-    public $creationDate;
-
-    /**
-     * @var
-     */
-    public $modificationDate;
-
-    /**
-     * @var
-     */
-    public $categories;
-
-    /**
-     * @var
-     */
-    public $categoryNames;
-
-    /**
-     * @var
-     */
-    public $refunds;
-
-    /**
-     * @var
-     */
-    public $savedAmount;
+    public ?string $id = null;
+    public ?string $discountId = null;
+    public ?string $name = null;
+    public ?DateTime $expires = null;
+    public ?int $maxNumberOfUsages = null;
+    public ?string $trigger = null;
+    public ?string $code = null;
+    public ?string $itemId = null;
+    public ?float $totalToReach = null;
+    public ?string $type = null;
+    public ?float $amount = null;
+    public ?float $amountSaved = null;
+    public ?string $productIds = null;
+    public ?float $rate = null;
+    public ?string $normalizedRate = null;
+    public ?string $alternatePrice = null;
+    public ?string $shippingDescription = null;
+    public ?float $shippingCost = null;
+    public ?int $shippingGuaranteedDaysToDelivery = null;
+    public ?int $numberOfUsages = null;
+    public ?int $numberOfUsagesUncompleted = null;
+    public ?bool $isForARecoveryCampaign = null;
+    public ?bool $archived = null;
+    public ?string $combinable = null;
+    public ?string $maxAmountToReach = null;
+    public ?string $maxDiscountsPerItem = null;
+    public ?string $appliesOnAllRecurringOrders = null;
+    public ?string $quantityOfAProduct = null;
+    public ?string $quantityOfProductIds = null;
+    public ?string $onlyOnSameProducts = null;
+    public ?string $quantityInterval = null;
+    public ?string $maxQuantityOfAProduct = null;
+    public ?string $numberOfItemsRequired = null;
+    public ?string $numberOfFreeItems = null;
+    public array $affectedItems = [];
+    public ?string $dataAttribute = null;
+    public ?string $hasSavedAmount = null;
+    public array $products = [];
+    public ?string $currency = null;
+    public ?DateTime $creationDate = null;
+    public ?DateTime $modificationDate = null;
+    public array $categories = [];
+    public array $categoryNames = [];
+    public array $refunds = [];
+    public ?string $savedAmount; = null
 
     private array $_triggerOptionFieldMap = [
         self::TRIGGER_CODE => [
@@ -303,10 +101,9 @@ class Discount extends Model
         ],
     ];
 
-    public function datetimeAttributes(): array
-    {
-        return ['expires'];
-    }
+
+    // Public Methods
+    // =========================================================================
 
     public function rules(): array
     {
@@ -324,13 +121,7 @@ class Discount extends Model
         ];
     }
 
-    /**
-     * Remove cruft for posting to the REST API. This should be in a scenario
-     * once it's clear how to get them working.
-     *
-     * @param bool $isNew  true if this is a new Discount record
-     */
-    public function getPayloadForPost($isNew = true): array
+    public function getPayloadForPost(bool $isNew = true): array
     {
         $remove = [];
 
@@ -358,33 +149,21 @@ class Discount extends Model
         return $payload;
     }
 
-    /**
-     * Gets a list of field options relevant to the selected trigger.
-     */
     public function getTriggerOptionFields(): array
     {
         return $this->_triggerOptionFieldMap[$this->trigger];
     }
 
-    /**
-     * Gets a list of discount field options relevant to the selected type.
-     */
     public function getTypeOptionFields(): array
     {
         return $this->_typeOptionFieldMap[$this->type];
     }
 
-    /**
-     * Returns the Craft control panel URL for the detail page.
-     */
     public function getCpUrl(): string
     {
         return UrlHelper::cpUrl('snipcart/discount/' . $this->id);
     }
 
-    /**
-     * Returns the Snipcart dashboard URL for the discount.
-     */
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;

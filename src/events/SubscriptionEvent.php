@@ -1,26 +1,14 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\events;
 
-namespace fostercommerce\snipcart\events;
+use verbb\snipcart\models\snipcart\Subscription;
 
-use fostercommerce\snipcart\models\snipcart\Subscription;
 use yii\base\Event;
 
-/**
- * Subscription event class.
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
 class SubscriptionEvent extends Event
 {
-    /**
-     * @var Subscription
-     */
-    public $subscription;
+    // Properties
+    // =========================================================================
+
+    public Subscription $subscription;
 }

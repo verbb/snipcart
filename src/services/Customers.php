@@ -1,110 +1,57 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\helpers\ModelHelper;
+use verbb\snipcart\models\snipcart\Customer;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\Snipcart;
 
 use craft\base\Component;
-use fostercommerce\snipcart\helpers\ModelHelper;
-use fostercommerce\snipcart\models\snipcart\Customer;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\Snipcart;
 
-/**
- * Class Customers
- *
- * For interacting with Snipcart customers.
- *
- * @package fostercommerce\snipcart\services
- */
+use Exception;
+use stdClass;
+
 class Customers extends Component
 {
-    /**
-     * Lists Snipcart customers.
-     *
-     * @param int    $page   Page of results
-     * @param int    $limit  Number of results per page
-     * @param array  $params Parameters to send with the request
-     *
-     * @return \stdClass|array|null
-     *              ->totalItems (int)
-     *              ->offset (int)
-     *              ->limit (int)
-     *              ->items (Customer[])
-     * @throws \Exception if our API key is missing.
-     */
-    public function listCustomers($page = 1, $limit = 20, array $params = [])
+    // Public Methods
+    // =========================================================================
+
+    public function listCustomers(int $page = 1, int $limit = 20, array $params = []): array|stdClass|null
     {
         $params['offset'] = ($page - 1) * $limit;
         $params['limit'] = $limit;
 
-        $customerData = Snipcart::$plugin->api->get('customers', $params);
-        $customerData->items = ModelHelper::safePopulateArrayWithModels(
-            (array) $customerData->items,
-            Customer::class
-        );
+        $customerData = Snipcart::$plugin->getApi()->get('customers', $params);
+        $customerData->items = ModelHelper::safePopulateArrayWithModels((array)$customerData->items, Customer::class);
 
         return $customerData;
     }
 
-    /**
-     * Gets a Snipcart customer.
-     *
-     * @param string $customerId Snipcart customer ID
-     *
-     * @return Customer|null
-     * @throws \Exception if our API key is missing.
-     */
-    public function getCustomer($customerId)
+    public function getCustomer(string $customerId): ?Customer
     {
-        if ($customerData = Snipcart::$plugin->api->get(sprintf(
-            'customers/%s',
-            $customerId
-        ))) {
-            return ModelHelper::safePopulateModel(
-                (array) $customerData,
-                Customer::class
-            );
+        if ($customerData = Snipcart::$plugin->getApi()->get(sprintf('customers/%s', $customerId))) {
+            return ModelHelper::safePopulateModel((array)$customerData, Customer::class);
         }
 
         return null;
     }
 
-    /**
-     * Gets a customer's order history.
-     *
-     * @param string $customerId Snipcart customer ID
-     *
-     * @return Order[]
-     * @throws \Exception if our API key is missing.
-     */
-    public function getCustomerOrders($customerId): array
+    public function getCustomerOrders(string $customerId): array
     {
-        $orders = ModelHelper::safePopulateArrayWithModels(
-            (array) Snipcart::$plugin->api->get(sprintf(
-                'customers/%s/orders',
-                $customerId
-            ), [
-                'orderBy' => 'creationDate',
-            ]),
-            Order::class
-        );
+        $orders = ModelHelper::safePopulateArrayWithModels((array)Snipcart::$plugin->getApi()->get("customers/$customerId/orders", [
+            'orderBy' => 'creationDate',
+        ]),
+        Order::class);
 
         usort($orders, fn($a, $b): bool => $this->sortOrdersByDateDescending($a, $b));
 
         return $orders;
     }
 
-    /**
-     * Descending sort method for Customer object `creationDate` property.
-     *
-     * @param $a
-     * @param $b
-     */
+
+    // Private Methods
+    // =========================================================================
+
     private function sortOrdersByDateDescending($a, $b): bool
     {
         return $a->creationDate->getTimestamp() < $b->creationDate->getTimestamp();

@@ -1,26 +1,12 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\helpers;
 
-namespace fostercommerce\snipcart\helpers;
-
-/**
- * Model utility methods.
- */
 class ModelHelper
 {
-    /**
-     * Takes an array of objects and turn each top-level element into an instance
-     * of the given data model.
-     *
-     * @param array   $array  array where each item can be transformed into model
-     * @param string  $class  name of desired model class
-     */
-    public static function populateArrayWithModels(array $array, $class): array
+    // Static Methods
+    // =========================================================================
+
+    public static function populateArrayWithModels(array $array, string $class): array
     {
         foreach ($array as &$item) {
             $item = new $class($item);
@@ -29,13 +15,6 @@ class ModelHelper
         return $array;
     }
 
-    /**
-     * Cleans the provided data removing any attributes not found on a given
-     * class, then uses that clean data to populate an instance of the class.
-     *
-     * @param mixed   $data   Data to be used to populate the model.
-     * @param string  $class  Model to be populated.
-     */
     public static function safePopulateModel(mixed $data, string $class): mixed
     {
         $cleanData = (array) self::stripUnknownProperties($data, $class);
@@ -43,14 +22,6 @@ class ModelHelper
         return new $class($cleanData);
     }
 
-    /**
-     * Cleans each object in an array and uses the clean data to populate
-     * the provided class.
-     *
-     * @param array  $array  Array in which each item contains data for
-     *                       populating a model.
-     * @param string $class  Model to be populated.
-     */
     public static function safePopulateArrayWithModels(array $array, string $class): array
     {
         foreach ($array as &$item) {
@@ -60,20 +31,8 @@ class ModelHelper
         return $array;
     }
 
-    /**
-     * Strips root-level properties from an object if they aren’t attributes on
-     * the designated model.
-     *
-     * @param object $data   Object with data, like a webhook payload.
-     * @param string $class  Model to be populated, which can't receive any
-     *                       unknown attributes.
-     * @return array
-     * @throws
-     */
     public static function stripUnknownProperties(mixed $data, string $class): mixed
     {
-
-        // instantiate the model so we can poke at it
         $model = new $class();
 
         // get normal model attributes
@@ -88,7 +47,7 @@ class ModelHelper
         // keep a reference of removed properties
         $removed = [];
 
-        if (! is_array($data) && ! is_object($data)) {
+        if (!is_array($data) && ! is_object($data)) {
             // don’t attempt to loop the un-loopable
             return $data;
         }
@@ -97,7 +56,7 @@ class ModelHelper
             if (is_string($key) && ! in_array($key, $modelAttributes, false)) {
                 if (is_object($data)) {
                     unset($data->{$key});
-                } elseif (is_array($data)) {
+                } else if (is_array($data)) {
                     unset($data[$key]);
                 }
 

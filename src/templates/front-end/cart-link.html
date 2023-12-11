@@ -1,0 +1,10 @@
+{% set classes = classes ?? [] -%}
+{% set href = href ?? '#' -%}
+{% set showCount = showCount ?? true -%}
+{% set text = text ?? 'Shopping Cart' | t('snipcart') %}
+
+{% if craft.snipcart.publicApiKey -%}
+    <a id="snipcart-cart-link" href="{{ href }}" class="snipcart-checkout snipcart-summary{% if classes | length %} {{ classes | join(' ') }}{% endif %}">
+        {{- text | raw }}{% if showCount %} <span id="snipcart-item-count" class="snipcart-total-items">0</span>{% endif -%}
+    </a>
+{%- endif %}

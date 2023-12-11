@@ -1,26 +1,14 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\providers\shipstation\events;
 
-namespace fostercommerce\snipcart\providers\shipstation\events;
+use verbb\snipcart\models\shipstation\Order;
 
-use fostercommerce\snipcart\models\shipstation\Order;
 use yii\base\Event;
 
-/**
- * Order event class.
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
 class OrderEvent extends Event
 {
-    /**
-     * @var Order
-     */
-    public $order;
+    // Properties
+    // =========================================================================
+
+    public Order $order;
 }

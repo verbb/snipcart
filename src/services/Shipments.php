@@ -1,82 +1,62 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\Snipcart;
+use verbb\snipcart\errors\ShippingRateException;
+use verbb\snipcart\events\ShippingRateEvent;
+use verbb\snipcart\models\snipcart\Order;
+use verbb\snipcart\providers\shipstation\ShipStation;
+use verbb\snipcart\records\ShippingQuoteLog;
 
-use Craft;
 use craft\base\Component;
-use fostercommerce\snipcart\errors\ShippingRateException;
-use fostercommerce\snipcart\events\ShippingRateEvent;
-use fostercommerce\snipcart\models\snipcart\Order;
-use fostercommerce\snipcart\providers\shipstation\ShipStation;
-use fostercommerce\snipcart\records\ShippingQuoteLog;
-use fostercommerce\snipcart\Snipcart;
+
 use yii\db\ActiveRecord;
 
-/**
- * Class Shipments
- *
- * For interacting with external shipping providers.
- *
- * @package fostercommerce\snipcart\services
- * @property ShipStation $shipStation
- */
 class Shipments extends Component
 {
-    /**
-     * @event WebhookEvent Triggered before shipping rates are returned to Snipcart.
-     */
+    // Constants
+    // =========================================================================
+
     public const EVENT_BEFORE_RETURN_SHIPPING_RATES = 'beforeReturnShippingRates';
 
-    /**
-     * @var ShipStation Local reference to instantiated ShipStation provider
-     */
-    private $_shipStation;
 
-    /**
-     * Returns an instance of the ShipStation provider.
-     */
+    // Properties
+    // =========================================================================
+
+    private ShipStation $_shipStation;
+
+
+    // Public Methods
+    // =========================================================================
+
     public function getShipStation(): ShipStation
     {
-        if (! $this->_shipStation instanceof ShipStation) {
+        if (!$this->_shipStation instanceof ShipStation) {
             $settings = Snipcart::$plugin->getSettings();
+
             return $this->_shipStation = $settings->getProvider('shipStation');
         }
 
         return $this->_shipStation;
     }
 
-    /**
-     * Collects shipping rate options for a Snipcart order.
-     *
-     * @return array [ 'rates' => ShippingRate[], 'package' => Package ] or [ 'errors' => [ ['key' => '...', 'message' => '...'] ] ]
-     */
     public function collectRatesForOrder(Order $order): array
     {
         if ($order->hasShippableItems() === false) {
-            Craft::warning(sprintf(
-                'Snipcart order %s did not contain any shippable items.',
-                $order->invoiceNumber ?? $order->token
-            ), 'snipcart');
+            Snipcart::error('Snipcart order {num} did not contain any shippable items.', [
+                'num' => $order->invoiceNumber ?? $order->token,
+            ]);
 
             return [];
         }
 
         try {
             $rates = [];
-            $package = Snipcart::$plugin->orders->getOrderPackaging($order);
+            $package = Snipcart::$plugin->getOrders()->getOrderPackaging($order);
 
-            $includeShipStationRates = $this->getShipStation()->isConfigured() &&
-                $this->getShipStation()->getSettings()->enableShippingRates;
+            $includeShipStationRates = $this->getShipStation()->isConfigured() && $this->getShipStation()->getSettings()->enableShippingRates;
 
-            if ($includeShipStationRates &&
-                $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)
-            ) {
+            if ($includeShipStationRates && $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)) {
                 $rates = array_merge($rates, $shipStationRates);
             }
 
@@ -89,17 +69,16 @@ class Shipments extends Component
 
                 $this->trigger(self::EVENT_BEFORE_RETURN_SHIPPING_RATES, $shippingRateEvent);
 
-                if (! $shippingRateEvent->isValid) {
+                if (!$shippingRateEvent->isValid) {
                     throw new ShippingRateException($shippingRateEvent);
                 }
 
                 $rates = $shippingRateEvent->rates;
             }
         } catch (ShippingRateException $shippingRateException) {
-            Craft::warning(sprintf(
-                'Snipcart plugin returned an error while fetching rates for %s',
-                $order->invoiceNumber
-            ), 'snipcart');
+            Snipcart::error('Snipcart plugin returned an error while fetching rates for {num}', [
+                'num' => $order->invoiceNumber,
+            ]);
 
             return [
                 'errors' => $shippingRateException->event->getErrors(),
@@ -107,10 +86,9 @@ class Shipments extends Component
         }
 
         if (empty($rates)) {
-            Craft::warning(sprintf(
-                'Snipcart plugin did not return any rates for %s',
-                $order->invoiceNumber
-            ), 'snipcart');
+            Snipcart::error('Snipcart plugin did not return any rates for {num}', [
+                'num' => $order->invoiceNumber,
+            ]);
         }
 
         return [
@@ -119,13 +97,7 @@ class Shipments extends Component
         ];
     }
 
-    /**
-     * Handles an order that’s been completed, normally sent after
-     * receiving a webhook post from Snipcart.
-     *
-     * @return object
-     */
-    public function handleCompletedOrder(Order $order)
+    public function handleCompletedOrder(Order $order): object
     {
         $response = (object) [
             'orders' => [],
@@ -142,10 +114,7 @@ class Shipments extends Component
         $shipStationShouldSend = $this->getShipStation()->getSettings()->sendCompletedOrders;
 
         // should we seriously do it?
-        $sendToShipStation = ! $isTestMode &&
-            $order->hasShippableItems() &&
-            $shipStationConfigured &&
-            $shipStationShouldSend;
+        $sendToShipStation = ! $isTestMode && $order->hasShippableItems() && $shipStationConfigured && $shipStationShouldSend;
 
         // send order to ShipStation if we need to
         if ($sendToShipStation) {
@@ -160,13 +129,7 @@ class Shipments extends Component
         return $response;
     }
 
-    /**
-     * Gets the last shipping rate quote that was returned for the given order.
-     *
-     * @param $order
-     * @return array|ShippingQuoteLog|ActiveRecord|null
-     */
-    public function getQuoteLogForOrder($order)
+    public function getQuoteLogForOrder($order): ShippingQuoteLog|array|ActiveRecord|null
     {
         return ShippingQuoteLog::find()
             ->where([

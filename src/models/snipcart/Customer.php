@@ -1,201 +1,64 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use DateTime;
 
-/**
- * Snipcart Customer model
- * https://docs.snipcart.com/v2/api-reference/customers
- */
 class Customer extends Model
 {
-    public const STATUS_CONFIRMED = 'Confirmed';
+    // Constants
+    // =========================================================================
 
+    public const STATUS_CONFIRMED = 'Confirmed';
     public const STATUS_UNCONFIRMED = 'Unconfirmed';
 
-    /**
-     * @var string
-     */
-    public $id;
 
-    /**
-     * @var string
-     */
-    public $email;
+    // Properties
+    // =========================================================================
 
-    // TODO: use relational addresses and getters/setters to match API object like Order
+    public ?string $id = null;
+    public ?string $email = null;
+    public ?string $billingAddressName = null;
+    public ?string $billingAddressFirstName = null;
+    public ?string $billingAddressCompanyName = null;
+    public ?string $billingAddressAddress1 = null;
+    public ?string $billingAddressAddress2 = null;
+    public ?string $billingAddressCity = null;
+    public ?string $billingAddressCountry = null;
+    public ?string $billingAddressProvince = null;
+    public ?string $billingAddressPostalCode = null;
+    public ?string $billingAddressPhone = null;
+    public ?string $shippingAddressName = null;
+    public ?string $shippingAddressFirstName = null;
+    public ?string $shippingAddressCompanyName = null;
+    public ?string $shippingAddressAddress1 = null;
+    public ?string $shippingAddressAddress2 = null;
+    public ?string $shippingAddressCity = null;
+    public ?string $shippingAddressCountry = null;
+    public ?string $shippingAddressProvince = null;
+    public ?string $shippingAddressPostalCode = null;
+    public ?string $shippingAddressPhone = null;
+    public ?bool $shippingAddressSameAsBilling = null;
+    public ?string $sessionToken = null;
+    public ?string $status = null;
+    public ?CustomerStatistics $statistics = null;
+    public ?string $gravatarUrl = null;
+    public ?string $mode = null;
+    public ?DateTime $creationDate = null;
+    public ?string $gatewayId = null;
+    public mixed $billingAddress = null;
+    public mixed $shippingAddress = null;
 
-    /**
-     * @var string
-     */
-    public $billingAddressName;
 
-    /**
-     * @var string
-     */
-    public $billingAddressFirstName;
+    // Public Methods
+    // =========================================================================
 
-    /**
-     * @var
-     */
-    public $billingAddressCompanyName;
-
-    /**
-     * @var
-     */
-    public $billingAddressAddress1;
-
-    /**
-     * @var
-     */
-    public $billingAddressAddress2;
-
-    /**
-     * @var
-     */
-    public $billingAddressCity;
-
-    /**
-     * @var
-     */
-    public $billingAddressCountry;
-
-    /**
-     * @var
-     */
-    public $billingAddressProvince;
-
-    /**
-     * @var
-     */
-    public $billingAddressPostalCode;
-
-    /**
-     * @var
-     */
-    public $billingAddressPhone;
-
-    /**
-     * @var
-     */
-    public $shippingAddressName;
-
-    /**
-     * @var
-     */
-    public $shippingAddressFirstName;
-
-    /**
-     * @var
-     */
-    public $shippingAddressCompanyName;
-
-    /**
-     * @var
-     */
-    public $shippingAddressAddress1;
-
-    /**
-     * @var
-     */
-    public $shippingAddressAddress2;
-
-    /**
-     * @var
-     */
-    public $shippingAddressCity;
-
-    /**
-     * @var
-     */
-    public $shippingAddressCountry;
-
-    /**
-     * @var
-     */
-    public $shippingAddressProvince;
-
-    /**
-     * @var
-     */
-    public $shippingAddressPostalCode;
-
-    /**
-     * @var
-     */
-    public $shippingAddressPhone;
-
-    /**
-     * @var bool Specifies whether the shipping and billing addresses are the same.
-     */
-    public $shippingAddressSameAsBilling;
-
-    /**
-     * @var string|null
-     */
-    public $sessionToken;
-
-    /**
-     * @var string The status of your customers, Confirmed means that the
-     *             customers have created an account and Unconfirmed are those
-     *             who checked out as guests.
-     */
-    public $status;
-
-    /**
-     * @var CustomerStatistics
-     */
-    public $statistics;
-
-    /**
-     * @var string
-     */
-    public $gravatarUrl;
-
-    /**
-     * @var
-     */
-    public $mode;
-
-    /**
-     * @var \DateTime
-     */
-    public $creationDate;
-
-    /**
-     * @var
-     */
-    public $gatewayId;
-
-    /**
-     * @var
-     */
-    public $billingAddress;
-
-    /**
-     * @var
-     */
-    public $shippingAddress;
-
-    /**
-     * Returns the Craft control panel URL for the detail page.
-     */
     public function getCpUrl(): string
     {
         return UrlHelper::cpUrl('snipcart/customer/' . $this->id);
     }
 
-    /**
-     * Returns the URL for the customer in the Snipcart customer dashboard.
-     */
     public function getDashboardUrl(): ?string
     {
         if ($this->id === null) {
@@ -203,11 +66,6 @@ class Customer extends Model
         }
 
         return 'https://app.snipcart.com/dashboard/customers/' . $this->id;
-    }
-
-    public function datetimeAttributes(): array
-    {
-        return ['creationDate'];
     }
 
     public function extraFields(): array

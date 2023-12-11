@@ -1,64 +1,14 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\shipstation;
+namespace verbb\snipcart\models\shipstation;
 
 use craft\base\Model;
-use fostercommerce\snipcart\models\snipcart\Package as SnipcartPackage;
+use verbb\snipcart\models\snipcart\Package as SnipcartPackage;
 
-/**
- * ShipStation Dimensions Model
- * https://www.shipstation.com/developer-api/#/reference/model-dimensions
- */
 class Dimensions extends Model
 {
-    public const UNIT_INCHES = 'inches';
+    // Static Methods
+    // =========================================================================
 
-    public const UNIT_CENTIMETERS = 'centimeters';
-
-    /**
-     * @var int|null Length of package.
-     */
-    public $length;
-
-    /**
-     * @var int|null Width of package.
-     */
-    public $width;
-
-    /**
-     * @var int|null Height of package.
-     */
-    public $height;
-
-    /**
-     * @var string|null Units of measurement. See class constants.
-     */
-    public $units;
-
-    public function rules(): array
-    {
-        return [
-            [['length', 'width', 'height'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [['units'], 'string'],
-            [['units'],
-                'in',
-                'range' => [self::UNIT_INCHES, self::UNIT_CENTIMETERS],
-            ],
-        ];
-    }
-
-    /**
-     * Populate this model from a Package.
-     */
     public static function populateFromSnipcartPackage(SnipcartPackage $snipcartPackage): self
     {
         return new self([
@@ -69,13 +19,37 @@ class Dimensions extends Model
         ]);
     }
 
-    /**
-     * True if valid, non-zero length, width, and height are all present.
-     */
+
+    // Constants
+    // =========================================================================
+
+    public const UNIT_INCHES = 'inches';
+    public const UNIT_CENTIMETERS = 'centimeters';
+
+
+    // Properties
+    // =========================================================================
+
+    public ?int $length = null;
+    public ?int $width = null;
+    public ?int $height = null;
+    public ?string $units = null;
+    
+
+    // Public Methods
+    // =========================================================================
+
+    public function rules(): array
+    {
+        return [
+            [['length', 'width', 'height'], 'number', 'integerOnly' => true],
+            [['units'], 'string'],
+            [['units'], 'in', 'range' => [self::UNIT_INCHES, self::UNIT_CENTIMETERS]],
+        ];
+    }
+
     public function hasPhysicalDimensions(): bool
     {
-        return $this->length !== null && $this->length > 0 &&
-            $this->width !== null && $this->width > 0 &&
-            $this->height !== null && $this->height > 0;
+        return $this->length !== null && $this->length > 0 && $this->width !== null && $this->width > 0 && $this->height !== null && $this->height > 0;
     }
 }

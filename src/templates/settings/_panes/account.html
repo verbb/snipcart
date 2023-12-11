@@ -1,0 +1,75 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.autosuggestField({
+    label: 'Public API Key' | t('snipcart'),
+    instructions: 'Add your public Snipcart API key. You can find this on your account page in Snipcart.' | t('snipcart'),
+    name: 'publicApiKey',
+    required: true,
+    suggestEnvVars: true,
+    value: settings.publicApiKey,
+    errors: settings.getErrors('publicApiKey'),
+    warning: macros.configWarning('publicApiKey', 'snipcart'),
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Secret API Key' | t('snipcart'),
+    instructions: 'Add your secret Snipcart API key. You can find this on your account page in Snipcart.' | t('snipcart'),
+    name: 'secretApiKey',
+    required: true,
+    suggestEnvVars: true,
+    value: settings.secretApiKey,
+    errors: settings.getErrors('secretApiKey'),
+    warning: macros.configWarning('secretApiKey', 'snipcart'),
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Test Public API Key' | t('snipcart'),
+    instructions: 'Add your public Snipcart Test API key. You can find this on your account page in Snipcart.' | t('snipcart'),
+    name: 'publicTestApiKey',
+    suggestEnvVars: true,
+    value: settings.publicTestApiKey,
+    errors: settings.getErrors('publicTestApiKey'),
+    warning: macros.configWarning('publicTestApiKey', 'snipcart'),
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Test Secret API Key' | t('snipcart'),
+    instructions: 'Add your secret Snipcart Test API key. You can find this on your account page in Snipcart.' | t('snipcart'),
+    name: 'secretTestApiKey',
+    suggestEnvVars: true,
+    value: settings.secretTestApiKey,
+    errors: settings.getErrors('secretTestApiKey'),
+    warning: macros.configWarning('secretTestApiKey', 'snipcart'),
+}) }}
+
+{{ forms.booleanMenuField({
+    label: 'Test Mode' | t('snipcart'),
+    instructions: 'Switch on if you‘ve added your test keys and want all Snipcart API interaction to be in test mode. Orders will not be sent to ShipStation.' | t('snipcart'),
+    name: 'testMode',
+    includeEnvVars: true,
+    value: settings.testMode,
+    errors: settings.getErrors('testMode'),
+    warning: macros.configWarning('testMode', 'snipcart'),
+}) }}
+
+{{ forms.booleanMenuField({
+    label: 'Test Mode Notifications' | t('snipcart'),
+    instructions: 'Switch on to send email notifications from Snipcart when test mode is enabled.' | t('snipcart'),
+    name: 'sendTestModeEmail',
+    includeEnvVars: true,
+    value: settings.sendTestModeEmail,
+    errors: settings.getErrors('sendTestModeEmail'),
+    warning: macros.configWarning('sendTestModeEmail', 'snipcart'),
+}) }}
+
+{{ forms.selectField({
+    label: 'Currency' | t('snipcart'),
+    instructions: 'Specify your store‘s currency.' | t('snipcart'),
+    required: true,
+    name: 'defaultCurrency',
+    options: settings.getCurrencyOptions(),
+    value: settings.defaultCurrency,
+    errors: settings.getErrors('defaultCurrency'),
+    warning: macros.configWarning('defaultCurrency', 'snipcart'),
+}) }}

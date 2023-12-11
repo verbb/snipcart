@@ -1,47 +1,29 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\shipstation;
+namespace verbb\snipcart\models\shipstation;
 
 use craft\base\Model;
-use fostercommerce\snipcart\models\snipcart\Item as SnipcartItem;
-
-/**
- * ShipStation Weight Model
- * https://www.shipstation.com/developer-api/#/reference/model-weight
- */
 
 class Weight extends Model
 {
+    // Constants
+    // =========================================================================
+
     public const UNIT_POUNDS = 'pounds';
-
     public const UNIT_OUNCES = 'ounces';
-
     public const UNIT_GRAMS = 'grams';
 
-    /**
-     * @var int Weight value.
-     */
-    public $value;
 
-    /**
-     * @var string Units of weight. See class constants.
-     */
-    public $units;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var int|null (read only) A numeric value that is equivalent to the above units field.
-     */
-    public $WeightUnits;
+    public ?int $value = null;
+    public ?string $units = null;
+    public ?int $weightUnits = null;
+    
 
-    /**
-     * @param SnipcartItem|\stdClass $item
-     */
+    // Public Methods
+    // =========================================================================
+
     public static function populateFromSnipcartItem($item): self
     {
         return new self([
@@ -53,15 +35,9 @@ class Weight extends Model
     public function rules(): array
     {
         return [
-            [['value'],
-                'number',
-                'integerOnly' => true,
-            ],
+            [['value'], 'number', 'integerOnly' => true],
             [['units'], 'string'],
-            [['units'],
-                'in',
-                'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS],
-            ],
+            [['units'], 'in', 'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS]],
         ];
     }
 }

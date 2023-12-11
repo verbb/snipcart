@@ -1,0 +1,14 @@
+{% if craft.snipcart.publicApiKey() %}
+    {% if includejQuery -%}
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    {%- endif %}
+
+    {% if includeStyles -%}
+        <link href="https://cdn.snipcart.com/themes/2.0/base/snipcart.min.css" rel="stylesheet" type="text/css" />
+    {%- endif %}
+    
+    <script id='Snipcart' src="//cdn.snipcart.com/scripts/2.0/snipcart.js" data-api-key="{{ publicApiKey }}"
+        {%- if settings.orderCommentsFieldName %} data-cart-custom1-name="{{ settings.orderCommentsFieldName }}" data-cart-custom1-type="textarea"{% endif %}
+        {%- if settings.orderGiftNoteFieldName %} data-cart-custom2-name="{{ settings.orderGiftNoteFieldName }}" data-cart-custom2-type="textarea"{% endif %}
+        {%- if onload %} onload="{{ onload | raw }}"{% endif %}></script>
+{%- endif -%}

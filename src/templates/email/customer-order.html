@@ -1,0 +1,41 @@
+{% extends 'snipcart/email/_layout' %}
+
+{% set isDevMode = craft.app.getConfig().general.devMode %}
+{% set imageUrl = isDevMode ? '@verbb/snipcart/resources/dist/img/order-complete-devmode.png' : '@verbb/snipcart/resources/dist/img/order-complete.png' %}
+
+{% block hero %}
+    {% include "snipcart/email/_parts/hero" with {
+        imageSrc: craft.app.assetManager.getPublishedUrl(imageUrl, true)
+    } only %}
+{% endblock hero %}
+
+{% block content %}
+
+    {% include "snipcart/email/_parts/heading" with {
+        heading: "Thanks for your order!" | t
+    } only %}
+
+    {% include "snipcart/email/_parts/primary-details" with {
+        primaryDetails: {
+            'Order Number': order.invoiceNumber,
+            'Order Email': order.email
+        }
+    } only %}
+
+    {% include "snipcart/email/_parts/items" with {
+        order: order
+    } only %}
+
+    {% include "snipcart/email/_parts/custom-fields" with {
+        customFields: order.customFields
+    } only %}
+
+    {% include "snipcart/email/_parts/addresses" with {
+        order: order
+    } only %}
+
+    {% include "snipcart/email/_parts/payments" with {
+        order: order
+    } only %}
+
+{% endblock content %}

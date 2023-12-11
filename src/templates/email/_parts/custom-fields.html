@@ -1,0 +1,10 @@
+{% for customField in customFields %}
+    {% if customField.value is not empty %}
+        <h3>
+            {{- customField.name | t('snipcart') -}}
+        </h3>
+        <p class="no-top-margin">
+            {{- customField.value -}}
+        </p>
+    {% endif %}
+{% endfor %}

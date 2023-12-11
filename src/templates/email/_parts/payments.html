@@ -1,0 +1,13 @@
+{% set upcomingPayments = order.summary.upcomingPayments ?? null %}
+
+{% if upcomingPayments and upcomingPayments | length %}
+    <h3>
+        {{- 'Upcoming Payments' | t('snipcart') -}}
+    </h3>
+
+    {% for upcomingPayment in upcomingPayments %}
+        <p class="no-top-margin">
+            {{ upcomingPayment.name }} on {{ upcomingPayment.date  |date('short') }}
+        </p>
+    {% endfor %}
+{% endif %}

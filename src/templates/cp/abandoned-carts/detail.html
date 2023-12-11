@@ -1,0 +1,60 @@
+{% extends '_layouts/cp' %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+
+{% set crumbs = [
+    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: 'Abandoned Carts' | t('snipcart'), url: url('snipcart/abandoned') }
+] %}
+
+{% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
+
+{% if abandonedCart.billingAddress is null %}
+    {% set title = abandonedCart.email ~ (isTestMode ? ' 🚧') %}
+{% else %}
+    {% set title = abandonedCart.billingAddress.name ~ (isTestMode ? ' 🚧') %}
+{% endif %}
+
+{% block content %}
+    <div class="md:flex mb-8">
+        <div class="md:w-1/2">
+            <p class="font-bold">
+                {{- abandonedCart.modificationDate|datetime('long') -}}
+            </p>
+
+            {% include 'snipcart/cp/_parts/customer-summary' with {
+                order: abandonedCart,
+            } %}
+
+            {%  if not abandonedCart.billingAddress is null %}
+                {% include 'snipcart/cp/_parts/order-addresses' with {
+                    order: abandonedCart,
+                    shippingSameAsBilling: abandonedCart.shipToBillingAddress
+                } %}
+            {% endif %}
+
+            {% hook 'cp.snipcart.cart.detail' %}
+
+            <a href="{{ abandonedCart.dashboardUrl() }}" class="btn mt-4" target="_blank">
+                {{- "View in Snipcart Dashboard" | t('snipcart') -}}
+            </a>
+        </div>
+
+        <div class="mt-6 md:w-1/2 md:mt-0">
+            <h3>{{ 'Items' | t('snipcart') }}</h3>
+
+            {% include "snipcart/cp/_parts/cart-items" with {
+                order: abandonedCart,
+                type: 'abandonedCart'
+            } %}
+        </div>
+    </div>
+
+    <div class="block">
+        <hr>
+
+        {% include 'snipcart/cp/_parts/technical-details' with {
+            order: abandonedCart,
+        } %}
+    </div>
+{% endblock %}

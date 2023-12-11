@@ -1,78 +1,52 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\providers\shipstation;
+namespace verbb\snipcart\providers\shipstation;
 
 use craft\base\Model;
+use craft\helpers\App;
 
 class Settings extends Model
 {
+    // Constants
+    // =========================================================================
+
     public const ORDER_CONFIRMATION_DELIVERY = 'delivery';
 
-    /**
-     * @var string
-     */
-    public $apiKey;
 
-    /**
-     * @var string
-     */
-    public $apiSecret;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var string
-     */
-    public $defaultCarrierCode = '';
+    public ?string $apiKey = null;
+    public ?string $apiSecret = null;
+    public ?string $defaultCarrierCode = null;
+    public ?string $defaultPackageCode = null;
+    public ?string $defaultCountry = null;
+    public ?string $defaultOrderConfirmation = null;
+    public ?int $defaultWarehouseId = null;
+    public bool $enableShippingRates = false;
+    public bool $sendCompletedOrders = false;
 
-    /**
-     * @var string
-     */
-    public $defaultPackageCode = '';
 
-    /**
-     * @var string Two character code
-     */
-    public $defaultCountry;
+    // Public Methods
+    // =========================================================================
 
-    /**
-     * @var string
-     */
-    public $defaultOrderConfirmation;
+    public function getPublicKey(): string
+    {
+        return App::parseEnv($this->apiKey);
+    }
 
-    /**
-     * @var int
-     */
-    public $defaultWarehouseId;
-
-    /**
-     * @var bool
-     */
-    public $enableShippingRates = false;
-
-    /**
-     * @var bool
-     */
-    public $sendCompletedOrders = false;
+    public function getSecretKey(): string
+    {
+        return App::parseEnv($this->apiSecret);
+    }
 
     public function rules(): array
     {
         return [
             [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'],
             [['apiKey', 'apiSecret', 'defaultCarrierCode', 'defaultPackageCode', 'defaultOrderConfirmation'], 'string'],
-            [['defaultWarehouseId'],
-                'number',
-                'integerOnly' => true,
-            ],
+            [['defaultWarehouseId'], 'number', 'integerOnly' => true],
             [['enableShippingRates', 'sendCompletedOrders'], 'boolean'],
-            [['defaultCountry'],
-                'string',
-                'length' => 2,
-            ],
+            [['defaultCountry'], 'string', 'length' => 2],
         ];
     }
 }

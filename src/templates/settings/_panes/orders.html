@@ -1,0 +1,91 @@
+{% import '_includes/forms' as forms %}
+{% import 'verbb-base/_macros' as macros %}
+
+{{ forms.lightswitchField({
+    label: 'Reduce Item Quantities' | t('snipcart'),
+    instructions: 'Switch on if you‘ve configured webhooks and want your Product Details to adjust Quantity as orders come in.' | t('snipcart'),
+    name: 'reduceQuantitiesOnOrder',
+    on: settings.reduceQuantitiesOnOrder,
+    errors: settings.getErrors('reduceQuantitiesOnOrder'),
+    warning: macros.configWarning('reduceQuantitiesOnOrder', 'snipcart'),
+}) }}
+
+{{ forms.textField({
+    label: 'Order Comments Field Name' | t('snipcart'),
+    instructions: 'If you‘re using [custom order fields](https://docs.snipcart.com/v2/configuration/custom-fields) for order comments, specify the exact field name here. (Used for ShipStation.)' | t('snipcart'),
+    name: 'orderCommentsFieldName',
+    value: settings.orderCommentsFieldName,
+    class: 'code',
+    errors: settings.getErrors('orderCommentsFieldName'),
+    warning: macros.configWarning('orderCommentsFieldName', 'snipcart'),
+}) }}
+
+{{ forms.textField({
+    label: 'Order Gift Note Field Name' | t('snipcart'),
+    instructions: 'If you‘re using [custom order fields](https://docs.snipcart.com/v2/configuration/custom-fields) for a gift note, specify the exact field name here. (Used for ShipStation.)' | t('snipcart'),
+    name: 'orderGiftNoteFieldName',
+    class: 'code',
+    value: settings.orderGiftNoteFieldName,
+    errors: settings.getErrors('orderGiftNoteFieldName'),
+    warning: macros.configWarning('orderGiftNoteFieldName', 'snipcart'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Store Admins Email Notifications' | t('snipcart'),
+    instructions: 'Switch on if you‘d like to send *store admins* custom order email notifications from Craft.' | t('snipcart'),
+    name: 'sendOrderNotificationEmail',
+    on: settings.sendOrderNotificationEmail,
+    errors: settings.getErrors('sendOrderNotificationEmail'),
+    warning: macros.configWarning('sendOrderNotificationEmail', 'snipcart'),
+}) }}
+
+{{ forms.editableTableField({
+    label: 'Notification Emails' | t('snipcart'),
+    instructions: 'Add comma-separated email addresses for *store admins* that should receive email notifications as orders are placed.' | t('snipcart'),
+    name: 'notificationEmails',
+    cols: {
+        email: {
+            type: 'singleline',
+            heading: 'Email Address' | t('snipcart'),
+        },
+    },
+    rows: settings.getNotificationEmailsForTable(),
+    allowAdd: true,
+    allowDelete: true,
+    allowReorder: true,
+    errors: settings.getErrors('notificationEmails'),
+    warning: macros.configWarning('notificationEmails', 'snipcart'),
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Order Email Notification Template' | t('snipcart'),
+    instructions: 'Specify the path to a custom Twig template to be used for admin order email notifications.' | t('snipcart'),
+    name: 'notificationEmailTemplate',
+    suggestEnvVars: true,
+    class: 'code',
+    placeholder: '_email/order-notification',
+    value: settings.customerNotificationEmailTemplate,
+    errors: settings.getErrors('notificationEmailTemplate'),
+    warning: macros.configWarning('notificationEmailTemplate', 'snipcart'),
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Customer Email Notifications' | t('snipcart'),
+    instructions: 'Switch on if you‘d like to send customers custom order email notifications from Craft. Be sure to disable Snipcart‘s so you don‘t inundate customers with multiple order confirmations!' | t('snipcart'),
+    name: 'sendCustomerOrderNotificationEmail',
+    on: settings.sendCustomerOrderNotificationEmail,
+    errors: settings.getErrors('sendCustomerOrderNotificationEmail'),
+    warning: macros.configWarning('sendCustomerOrderNotificationEmail', 'snipcart'),
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Customer Order Email Notification Template' | t('snipcart'),
+    instructions: 'Specify the path to a custom Twig template to be used for customer order email notifications.' | t('snipcart'),
+    name: 'customerNotificationEmailTemplate',
+    suggestEnvVars: true,
+    class: 'code',
+    placeholder: '_email/customer-order-notification',
+    value: settings.customerNotificationEmailTemplate,
+    errors: settings.getErrors('customerNotificationEmailTemplate'),
+    warning: macros.configWarning('customerNotificationEmailTemplate', 'snipcart'),
+}) }}

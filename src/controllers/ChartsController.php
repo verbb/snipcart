@@ -1,29 +1,22 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\controllers;
 
-namespace fostercommerce\snipcart\controllers;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\web\Controller;
+
+use yii\base\Response;
+
 use DateTime;
 use DateTimeZone;
-use fostercommerce\snipcart\Snipcart;
-use yii\base\Response;
-use yii\web\BadRequestHttpException;
 
 class ChartsController extends Controller
 {
-    /**
-     * Fetches order data JSON for the Dashboard widget's chart.
-     *
-     * @throws BadRequestHttpException
-     */
+    // Public Methods
+    // =========================================================================
+
     public function actionGetOrdersData(): Response
     {
         $this->requirePostRequest();
@@ -33,29 +26,31 @@ class ChartsController extends Controller
         $range = $request->getRequiredParam('range');
 
         if ($range === 'weekly') {
-            $startDate = (new \DateTime('now'))->modify('-1 week');
-        } elseif ($range === 'monthly') {
-            $startDate = (new \DateTime('now'))->modify('-1 month');
+            $startDate = (new DateTime('now'))->modify('-1 week');
+        } else if ($range === 'monthly') {
+            $startDate = (new DateTime('now'))->modify('-1 month');
         } else {
             $problem = 'Invalid date range requested.';
-            Craft::error($problem, 'snipcart');
+            Snipcart::error($problem);
+
             return $this->asJson($problem);
         }
 
-        $endDate = (new \DateTime('now'))->modify('-1 day');
+        $endDate = (new DateTime('now'))->modify('-1 day');
         $formats = [];
 
         if ($type === 'totalSales') {
-            $data = Snipcart::$plugin->data->getSales($startDate, $endDate);
+            $data = Snipcart::$plugin->getData()->getSales($startDate, $endDate);
             $chartData = $this->getTotalSales($data);
-            $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
-                ->getDefaultCurrencySymbol();
-        } elseif ($type === 'numberOfOrders') {
-            $data = Snipcart::$plugin->data->getOrderCount($startDate, $endDate);
+
+            $formats['currencySymbol'] = Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
+        } else if ($type === 'numberOfOrders') {
+            $data = Snipcart::$plugin->getData()->getOrderCount($startDate, $endDate);
             $chartData = $this->getNumberOfOrders($data);
         } else {
             $problem = 'Invalid chart type requested.';
-            Craft::error($problem, 'snipcart');
+            Snipcart::error($problem);
+
             return $this->asJson($problem);
         }
 
@@ -66,33 +61,20 @@ class ChartsController extends Controller
         ]);
     }
 
-    /**
-     * Fetches order and sales stats in one response for the CP overview chart.
-     *
-     * @throws BadRequestHttpException
-     * @throws
-     */
     public function actionGetCombinedData(): Response
     {
         $this->requirePostRequest();
 
         $formats = [];
 
-        $salesData = Snipcart::$plugin->data->getSales(
-            $this->getStartDate(),
-            $this->getEndDate()
-        );
+        $salesData = Snipcart::$plugin->getData()->getSales($this->getStartDate(), $this->getEndDate());
 
         $salesChartData = $this->getTotalSales($salesData);
         $salesChartData['series'][0]['type'] = 'area';
 
-        $formats['currencySymbol'] = Snipcart::$plugin->getSettings()
-            ->getDefaultCurrencySymbol();
+        $formats['currencySymbol'] = Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
 
-        $orderData = Snipcart::$plugin->data->getOrderCount(
-            $this->getStartDate(),
-            $this->getEndDate()
-        );
+        $orderData = Snipcart::$plugin->getData()->getOrderCount($this->getStartDate(), $this->getEndDate());
         $orderChartData = $this->getNumberOfOrders($orderData);
 
         return $this->asJson([
@@ -105,31 +87,20 @@ class ChartsController extends Controller
         ]);
     }
 
-    /**
-     * Gets chart series for Snipcart sales data.
-     *
-     * @param $data
-     */
+
+    // Private Methods
+    // =========================================================================
+
     private function getTotalSales($data): array
     {
         return $this->formatForChart($data, 'Sales');
     }
 
-    /**
-     * Gets chart series for Snipcart orders data.
-     *
-     * @param $data
-     */
     private function getNumberOfOrders($data): array
     {
         return $this->formatForChart($data, 'Orders');
     }
 
-    /**
-     * Translates Snipcart’s returned data into a chart-friendly series.
-     *
-     * @param $data
-     */
     private function formatForChart($data, string $label): array
     {
         $rows = [];
@@ -151,20 +122,16 @@ class ChartsController extends Controller
         ];
     }
 
-    /**
-     * Gets the beginning of the range used for visualizing stats.
-     *
-     * @throws
-     */
     private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
-        if (! $startDateParam) {
+
+        if (!$startDateParam) {
             return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
                 ->modify('-1 month');
         }
 
-        if (! is_string($startDateParam)) {
+        if (!is_string($startDateParam)) {
             return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
                 ->modify('-1 month');
         }
@@ -174,19 +141,15 @@ class ChartsController extends Controller
         ]);
     }
 
-    /**
-     * Gets the end of the range used for visualizing stats.
-     *
-     * @throws
-     */
     private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
-        if (! $endDateParam) {
+        
+        if (!$endDateParam) {
             return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
         }
 
-        if (! is_string($endDateParam)) {
+        if (!is_string($endDateParam)) {
             return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
         }
 

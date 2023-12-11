@@ -1,128 +1,60 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\services;
 
-namespace fostercommerce\snipcart\services;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\base\Component;
 use craft\mail\Message;
-use fostercommerce\snipcart\helpers\VersionHelper;
-use fostercommerce\snipcart\Snipcart;
-use Pelago\Emogrifier\CssInliner;
+
 use yii\base\Exception;
 
-/**
- * Sends notifications as things happen. Currently just email.
- *
- * @package fostercommerce\snipcart\services
- * @todo Make a proper Notification model
- */
+use Pelago\Emogrifier\CssInliner;
+
 class Notifications extends Component
 {
-    /**
-     * @var string Path to Twig template for HTML email.
-     */
-    private $htmlEmailTemplate;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var string Path to Twig template for plain text email.
-     */
-    private $textEmailTemplate;
-
-    /**
-     * @var bool Whether supplied email template paths are provided by the site
-     *           (frontend) or the control panel. Important for switching the
-     *           view's template mode when rendering HTML.
-     */
-    private $emailTemplatesAreFrontEnd;
-
-    /**
-     * @var string Slack webhook URL for notifications. (Not implemented.)
-     */
-    private $slackWebhook;
-
-    /**
-     * @var mixed Variables that should be fed to the Twig notification template.
-     */
-    private $notificationVars;
-
-    /**
-     * @var array Error strings accumulated during notification setup+attempt.
-     */
+    private string $htmlEmailTemplate;
+    private string $textEmailTemplate;
+    private bool $emailTemplatesAreFrontEnd;
+    private string $slackWebhook;
+    private mixed $notificationVars;
     private array $errors = [];
 
-    /**
-     * Sets template variables for the notification.
-     * Should be called before `sendEmail()`.
-     */
+
+    // Public Methods
+    // =========================================================================
+
     public function setNotificationVars(mixed $data): void
     {
         $this->notificationVars = $data;
     }
 
-    /**
-     * Gets template variables for the notification.
-     *
-     * @return mixed
-     */
-    public function getNotificationVars()
+    public function getNotificationVars(): mixed
     {
         return $this->notificationVars;
     }
 
-    /**
-     * Sets notification errors.
-     *
-     * @param $errors
-     */
     public function setErrors(array $errors): void
     {
         $this->errors = $errors;
     }
 
-    /**
-     * Sets notification email template.
-     *
-     * @param string $htmlTemplate Twig template path to be used for the HTML
-     *                             email notification
-     * @param string $textTemplate Twig template path to be used for an
-     *                             alternate, plain text email notification
-     * @param bool   $frontend     Whether the supplied path is on the front
-     *                             (site) end or the back (plugin) end, which
-     *                             matters for setting the template mode.
-     */
-    public function setEmailTemplate($htmlTemplate, $textTemplate = null, $frontend = false): void
+    public function setEmailTemplate(string $htmlTemplate, string $textTemplate = null, bool $frontend = false): void
     {
         $this->htmlEmailTemplate = $htmlTemplate;
         $this->textEmailTemplate = $textTemplate;
         $this->emailTemplatesAreFrontEnd = $frontend;
     }
 
-    /**
-     * Sets the Slack webhook URL.
-     *
-     * @param string $url
-     */
-    public function setSlackWebhook($url): void
+    public function setSlackWebhook(string $url): void
     {
         $this->slackWebhook = $url;
     }
 
-    /**
-     * Sends an email notification.
-     *
-     * @param array  $to       Array of email addresses
-     * @param string $subject  Email subject
-     *
-     * @return bool `true` on success, `false` otherwise (see ->getErrors())
-     * @throws
-     */
-    public function sendEmail($to, $subject): bool
+    public function sendEmail(array $to, string $subject): bool
     {
         $model = Snipcart::$plugin->getSettings();
 
@@ -135,44 +67,22 @@ class Notifications extends Component
         $errors = [];
         $view = Craft::$app->getView();
 
-        if (VersionHelper::isCraft31()) {
-            $emailSettings = Craft::$app->getProjectConfig()->get('email');
-        } else {
-            $emailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
-        }
+        $emailSettings = Craft::$app->getProjectConfig()->get('email');
 
-        /**
-         * Switch template mode only if we need to rely on our own template.
-         */
+        // Switch template mode only if we need to rely on our own template.
         if ($this->emailTemplatesAreFrontEnd === false) {
-            /**
-             * Remember what we started with.
-             */
             $originalTemplateMode = $view->getTemplateMode();
 
-            /**
-             * Explicitly set to CP mode.
-             *
-             * This could technically throw an exception over an invalid
-             * template mode, but we're not worried.
-             */
             $view->setTemplateMode($view::TEMPLATE_MODE_CP);
         }
 
-        /**
-         * Make sure we've got valid templates now that we've
-         * switched the view mode.
-         */
-        if (! $this->ensureTemplatesExist()) {
+        if (!$this->ensureTemplatesExist()) {
             $this->setErrors(['Email template(s) are missing.']);
             return false;
         }
 
         // render the HTML message
-        $messageHtml = $view->renderPageTemplate(
-            $this->htmlEmailTemplate,
-            $this->getNotificationVars()
-        );
+        $messageHtml = $view->renderPageTemplate($this->htmlEmailTemplate, $this->getNotificationVars());
 
         // inline the message’s styles so they're more likely to be applied
         $mergedHtml = CssInliner::fromHtml($messageHtml)->inlineCss()->render();
@@ -180,10 +90,7 @@ class Notifications extends Component
         $messageText = '';
 
         if ($this->textEmailTemplate !== '' && $this->textEmailTemplate !== '0') {
-            $messageText = $view->renderPageTemplate(
-                $this->textEmailTemplate,
-                $this->getNotificationVars()
-            );
+            $messageText = $view->renderPageTemplate($this->textEmailTemplate, $this->getNotificationVars());
         }
 
         foreach ($to as $address) {
@@ -201,16 +108,15 @@ class Notifications extends Component
                 $message->setTextBody($messageText);
             }
 
-            if (! Craft::$app->getMailer()->send($message)) {
-                $problem = sprintf('Notification failed to send to %s!', $address);
-                Craft::warning($problem, 'snipcart');
+            if (!Craft::$app->getMailer()->send($message)) {
+                $problem = "Notification failed to send to $address!";
+                Snipcart::error($problem);
+
                 $errors[] = $problem;
             }
         }
 
-        if ($this->emailTemplatesAreFrontEnd === false &&
-            isset($originalTemplateMode)
-        ) {
+        if ($this->emailTemplatesAreFrontEnd === false && isset($originalTemplateMode)) {
             $view->setTemplateMode($originalTemplateMode);
         }
 
@@ -219,15 +125,13 @@ class Notifications extends Component
         return $errors === [];
     }
 
-    /**
-     * Makes sure that the HTML email template exists at the specified path,
-     * and that the text template exists if it was provided.
-     *
-     * @throws Exception
-     */
+
+    // Private Methods
+    // =========================================================================
+
     private function ensureTemplatesExist(): bool
     {
-        if (! $this->ensureTemplateExists($this->htmlEmailTemplate)) {
+        if (!$this->ensureTemplateExists($this->htmlEmailTemplate)) {
             return false;
         }
 
@@ -240,21 +144,13 @@ class Notifications extends Component
         return true;
     }
 
-    /**
-     * Makes sure the template exists at the supplied path!
-     *
-     * @param $path
-     *
-     * @throws Exception
-     */
     private function ensureTemplateExists($path): bool
     {
-        if (! Craft::$app->getView()->doesTemplateExist($path)) {
-            Craft::error(sprintf(
-                'Specified email template `%s` does not exist.',
-                $path
-
-            ), 'snipcart');
+        if (!Craft::$app->getView()->doesTemplateExist($path)) {
+            Snipcart::error('Specified email template `{path}` does not exist.', [
+                'path' => $path,
+            ]);
+            
             return false;
         }
 

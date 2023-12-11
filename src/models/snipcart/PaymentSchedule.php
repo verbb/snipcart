@@ -1,55 +1,23 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
-
-namespace fostercommerce\snipcart\models\snipcart;
+namespace verbb\snipcart\models\snipcart;
 
 use craft\base\Model;
+use DateTime;
 
 class PaymentSchedule extends Model
 {
-    /**
-     * @var string|bool
-     */
-    public $interval;
+    // Properties
+    // =========================================================================
 
-    /**
-     * @var int
-     */
-    public $intervalCount;
+    public string|bool|null $interval = null;
+    public ?int $intervalCount = null;
+    public ?int $trialPeriodInDays = null;
+    public ?DateTime $startsOn = null;
 
-    /**
-     * @var int|null
-     */
-    public $trialPeriodInDays;
 
-    /**
-     * @var \DateTime
-     */
-    public $startsOn;
+    // Public Methods
+    // =========================================================================
 
-    public function datetimeAttributes(): array
-    {
-        return ['startsOn'];
-    }
-
-    /**
-     * Returns a formatted string describing the description interval, meant to
-     * come after a word like “every”.
-     *
-     * Omits `1` and pluralizes units.
-     *
-     * Examples:
-     *
-     * - `week`
-     * - `2 weeks`
-     * - `3 months`
-     * - `year`
-     */
     public function getIntervalLabel(): string
     {
         if ($this->intervalCount === 0) {

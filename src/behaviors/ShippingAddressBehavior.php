@@ -1,236 +1,160 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\behaviors;
 
-namespace fostercommerce\snipcart\behaviors;
+use verbb\snipcart\models\snipcart\Address;
 
-use fostercommerce\snipcart\models\snipcart\Address;
 use yii\base\Behavior;
 
-/**
- * Defines a behavior for more cleanly proxying shippingAddress* properties
- * directly on the Snipcart Order model, where they exist within a nested
- * Address object.
- *
- * @package fostercommerce\snipcart\behaviors
- */
 class ShippingAddressBehavior extends Behavior
 {
+    // Properties
+    // =========================================================================
+
     private ?Address $shippingAddress = null;
+
+
+    // Public Methods
+    // =========================================================================
 
     public function getShippingAddress(): ?Address
     {
         return $this->shippingAddress;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressName()
+    public function getShippingAddressName(): ?string
     {
         return $this->getShippingAddress()->name;
     }
 
-    /**
-     * @param $name
-     * @return string|null
-     */
-    public function setShippingAddressName($name)
+    public function setShippingAddressName(string $name): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->name = $name;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressFirstName()
+    public function getShippingAddressFirstName(): ?string
     {
         return $this->getShippingAddress()->firstName;
     }
 
-    /**
-     * @param $firstName
-     * @return string|null
-     */
-    public function setShippingAddressFirstName($firstName)
+    public function setShippingAddressFirstName(string $firstName): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->firstName = $firstName;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressCompanyName()
+    public function getShippingAddressCompanyName(): ?string
     {
         return $this->getShippingAddress()->companyName;
     }
 
-    /**
-     * @param $companyName
-     * @return string|null
-     */
-    public function setShippingAddressCompanyName($companyName)
+    public function setShippingAddressCompanyName(string $companyName): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->companyName = $companyName;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressAddress1()
+    public function getShippingAddressAddress1(): ?string
     {
         return $this->getShippingAddress()->address1;
     }
 
-    /**
-     * @param $address1
-     * @return string|null
-     */
-    public function setShippingAddressAddress1($address1)
+    public function setShippingAddressAddress1(string $address1): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->address1 = $address1;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressAddress2()
+    public function getShippingAddressAddress2(): ?string
     {
         return $this->getShippingAddress()->address2;
     }
 
-    /**
-     * @param $address2
-     * @return string|null
-     */
-    public function setShippingAddressAddress2($address2)
+    public function setShippingAddressAddress2(string $address2): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->address2 = $address2;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressCity()
+    public function getShippingAddressCity(): ?string
     {
         return $this->getShippingAddress()->city;
     }
 
-    /**
-     * @param $city
-     * @return string|null
-     */
-    public function setShippingAddressCity($city)
+    public function setShippingAddressCity(string $city): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->city = $city;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressCountry()
+    public function getShippingAddressCountry(): ?string
     {
         return $this->getShippingAddress()->country;
     }
 
-    /**
-     * @param $country
-     * @return string|null
-     */
-    public function setShippingAddressCountry($country)
+    public function setShippingAddressCountry(string $country): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->country = $country;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressProvince()
+    public function getShippingAddressProvince(): ?string
     {
         return $this->getShippingAddress()->province;
     }
 
-    /**
-     * @param $province
-     * @return string|null
-     */
-    public function setShippingAddressProvince($province)
+    public function setShippingAddressProvince(string $province): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->province = $province;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressPostalCode()
+    public function getShippingAddressPostalCode(): ?string
     {
         return $this->getShippingAddress()->postalCode;
     }
 
-    /**
-     * @param $postalCode
-     * @return string
-     */
-    public function setShippingAddressPostalCode($postalCode)
+    public function setShippingAddressPostalCode(string $postalCode): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 
         return $this->shippingAddress->postalCode = $postalCode;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getShippingAddressPhone()
+    public function getShippingAddressPhone(): ?string
     {
         return $this->getShippingAddress()->phone;
     }
 
-    /**
-     * @param $phone
-     * @return string|null
-     */
-    public function setShippingAddressPhone($phone)
+    public function setShippingAddressPhone(string $phone): ?string
     {
-        if (! $this->shippingAddress instanceof Address) {
+        if (!$this->shippingAddress instanceof Address) {
             $this->shippingAddress = new Address();
         }
 

@@ -1,311 +1,87 @@
 <?php
-/**
- * Snipcart plugin for Craft CMS 3.x
- *
- * @link      https://fostercommerce.com
- * @copyright Copyright (c) 2018 Working Concept Inc.
- */
+namespace verbb\snipcart\models\snipcart;
 
-namespace fostercommerce\snipcart\models\snipcart;
+use verbb\snipcart\behaviors\BillingAddressBehavior;
+use verbb\snipcart\behaviors\ShippingAddressBehavior;
+use verbb\snipcart\helpers\ModelHelper;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
-use fostercommerce\snipcart\behaviors\BillingAddressBehavior;
-use fostercommerce\snipcart\behaviors\ShippingAddressBehavior;
-use fostercommerce\snipcart\helpers\ModelHelper;
 
-/**
- * https://docs.snipcart.com/v2/api-reference/abandoned-carts
- *
- * @property Address $billingAddress
- * @property Address $shippingAddress */
+use DateTime;
+
 class AbandonedCart extends Model
 {
+    // Constants
+    // =========================================================================
+
     public const STATUS_IN_PROGRESS = 'InProgress';
 
-    /**
-     * @var
-     */
-    public $id;
 
-    /**
-     * @var
-     */
-    public $token;
-
-    /**
-     * @var
-     */
-    public $accountId;
-
-    /**
-     * @var
-     */
-    public $location;
-
-    /**
-     * @var string
-     */
-    public $email;
-
-    /**
-     * @var
-     */
-    public $mode;
-
-    /**
-     * @var
-     */
-    public $status;
-
-    /**
-     * @var
-     */
-    public $shipToBillingAddress;
-
-    /**
-     * @var \DateTime
-     */
-    public $modificationDate;
-
-    /**
-     * @var \DateTime
-     */
-    public $completionDate;
-
-    /**
-     * @var
-     */
-    public $invoiceNumber;
-
-    public $shippingInformation;
-
-    /*
-    "shippingInformation": {
-      "provider": null,
-      "fees": 10,
-      "method": "Fast custom shipping"
-    },
-    */
-
-    public $paymentMethod;
-
-    public $summary;
-
-    /*
-    summary": {
-      "subtotal": 20,
-      "taxableTotal": 20,
-      "total": 30,
-      "paymentMethod": 0,
-      "taxes": [],
-      "adjustedTotal": 30
-    },
-    */
-
-    /**
-     * @var
-     */
-    public $metadata;
-
-    /**
-     * @var
-     */
-    public $items;
-
-    /**
-     * @var
-     */
-    public $discounts;
-
-    /**
-     * @var
-     */
-    public $customFields;
-
-    /**
-     * @var
-     */
-    public $plans;
-
-    /**
-     * @var
-     */
-    public $refunds;
-
-    /**
-     * @var
-     */
-    public $currency;
-
-    /**
-     * @var
-     */
-    public $totalWeight;
-
-    /**
-     * @var
-     */
-    public $total;
-
-    /**
-     * @var
-     */
-    public $ipAddress;
-
-    /**
-     * @var
-     */
-    public $userAgent;
-
-    /**
-     * @var
-     */
-    public $lang;
-
-    /**
-     * @var
-     */
-    public $version;
-
-    /**
-     * @var
-     */
-    public $recoveryCampaignStatus;
-
-    /**
-     * @var
-     */
-    public $hasItemsShippable;
-
-    /**
-     * @var
-     */
-    public $taxes;
-
-    /**
-     * @var
-     */
-    public $defaultTaxes;
-
-    /**
-     * @var
-     */
-    public $baseTotal;
-
-    /**
-     * @var
-     */
-    public $discountsTotal;
-
-    /**
-     * @var
-     */
-    public $itemsTotal;
-
-    /**
-     * @var
-     */
-    public $itemsTotalWithoutTaxes;
-
-    /**
-     * @var
-     */
-    public $taxesTotal;
-
-    /**
-     * @var
-     */
-    public $taxProvider;
-
-    /**
-     * @var
-     */
-    public $paymentGatewayUsed;
-
-    /**
-     * @var
-     */
-    public $gatewayResponseData;
-
-    /**
-     * @var
-     */
-    public $paymentGatewayTransactionId;
-
-    /**
-     * @var
-     */
-    public $paymentGatewayInvoiceId;
-
-    /**
-     * @var
-     */
-    public $exported;
-
-    /**
-     * @var
-     */
-    public $isRecurringInvoice;
-
-    /**
-     * @var
-     */
-    public $parentCartId;
-
-    /**
-     * @var
-     */
-    public $guest;
-
-    /**
-     * @var
-     */
-    public $shippingCharged;
-
-    /**
-     * @var
-     */
-    public $partitionKey;
-
-    /**
-     * @var
-     */
-    public $creationDate;
-
-    /**
-     * @var
-     */
-    public $_etag;
-
-    /**
-     * @var
-     */
-    public $userId;
-
-    /**
-     * @var
-     */
-    public $user;
-
-    /**
-     * @var
-     */
-    public $compatibilitySwitches;
-
-    /**
-     * @var
-     */
-    public $notifications;
-
-    /**
-     * @var
-     */
-    public $totalPriceWithoutDiscountsAndTaxes;
+    // Properties
+    // =========================================================================
+    
+    public ?string $id = null;
+    public ?string $token = null;
+    public ?string $accountId = null;
+    public ?string $location = null;
+    public string $email = null;
+    public ?string $mode = null;
+    public ?string $status = null;
+    public ?string $shipToBillingAddress = null;
+    public ?DateTime $modificationDate = null;
+    public ?DateTime $completionDate = null;
+    public ?string $invoiceNumber = null;
+    public ?string $shippingInformation = null;
+    public ?string $paymentMethod = null;
+    public ?string $summary = null;
+    public ?string $metadata = null;
+    public ?string $items = null;
+    public ?string $discounts = null;
+    public ?string $customFields = null;
+    public ?string $plans = null;
+    public ?string $refunds = null;
+    public ?string $currency = null;
+    public ?string $totalWeight = null;
+    public ?string $total = null;
+    public ?string $ipAddress = null;
+    public ?string $userAgent = null;
+    public ?string $lang = null;
+    public ?string $version = null;
+    public ?string $recoveryCampaignStatus = null;
+    public ?bool $hasItemsShippable = null;
+    public array $taxes = [];
+    public array $defaultTaxes = [];
+    public ?string $baseTotal = null;
+    public ?string $discountsTotal = null;
+    public ?string $itemsTotal = null;
+    public ?string $itemsTotalWithoutTaxes = null;
+    public ?string $taxesTotal = null;
+    public ?string $taxProvider = null;
+    public ?string $paymentGatewayUsed = null;
+    public ?string $gatewayResponseData = null;
+    public ?string $paymentGatewayTransactionId = null;
+    public ?string $paymentGatewayInvoiceId = null;
+    public ?string $exported = null;
+    public ?bool $isRecurringInvoice = null;
+    public ?string $parentCartId = null;
+    public ?string $guest = null;
+    public ?string $shippingCharged = null;
+    public ?string $partitionKey = null;
+    public ?DateTime $creationDate = null;
+    public ?string $_etag = null;
+    public ?string $userId = null;
+    public ?string $user = null;
+    public ?string $compatibilitySwitches = null;
+    public array $notifications = [] = null;
+    public ?string $totalPriceWithoutDiscountsAndTaxes = null;
 
     private ?Address $_billingAddress = null;
-
     private ?Address $_shippingAddress = null;
+
+
+    // Public Methods
+    // =========================================================================
 
     public function getBillingAddress(): ?Address
     {
@@ -317,21 +93,14 @@ class AbandonedCart extends Model
         return $this->_shippingAddress;
     }
 
-    /**
-     * @param Address|array $address
-     * @return Address
-     */
-    public function setBillingAddress($address): ?Address
+    public function setBillingAddress(array|Address $address): ?Address
     {
-        if (! $address instanceof Address) {
+        if (!$address instanceof Address) {
             if ($address === null) {
                 $address = [];
             }
 
-            $addrData = ModelHelper::stripUnknownProperties(
-                $address,
-                Address::class
-            );
+            $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
 
             $address = new Address((array) $addrData);
         }
@@ -339,38 +108,20 @@ class AbandonedCart extends Model
         return $this->_billingAddress = $address;
     }
 
-    /**
-     * @param Address|array $address
-     * @return Address
-     */
-    public function setShippingAddress($address): ?Address
+    public function setShippingAddress(array|Address $address): ?Address
     {
-        if (! $address instanceof Address) {
+        if (!$address instanceof Address) {
             if ($address === null) {
                 $address = [];
             }
 
-            $addrData = ModelHelper::stripUnknownProperties(
-                $address,
-                Address::class
-            );
+            $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
             $addressModel = new Address((array) $addrData);
         }
 
         return $this->_shippingAddress = $addressModel;
     }
 
-    public function datetimeAttributes(): array
-    {
-        return ['modificationDate', 'completionDate'];
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * Proxy all our billingAddress* and shippingAddress* fields without having
-     * to use a whole bunch of getters and setters on this model.
-     */
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
@@ -386,9 +137,6 @@ class AbandonedCart extends Model
         return $behaviors;
     }
 
-    /**
-     * Returns the Craft control panel URL for the detail page.
-     */
     public function getCpUrl(): string
     {
         return UrlHelper::cpUrl('snipcart/abandoned/' . $this->token);
