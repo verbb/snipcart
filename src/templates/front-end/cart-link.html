@@ -1,10 +1,13 @@
-{% set classes = classes ?? [] -%}
-{% set href = href ?? '#' -%}
-{% set showCount = showCount ?? true -%}
+{% set classes = classes ?? [] %}
+{% set href = href ?? '#' %}
+{% set showCount = showCount ?? true %}
+{% set showPrice = showPrice ?? false %}
 {% set text = text ?? 'Shopping Cart' | t('snipcart') %}
 
-{% if craft.snipcart.publicApiKey -%}
-    <a id="snipcart-cart-link" href="{{ href }}" class="snipcart-checkout snipcart-summary{% if classes | length %} {{ classes | join(' ') }}{% endif %}">
-        {{- text | raw }}{% if showCount %} <span id="snipcart-item-count" class="snipcart-total-items">0</span>{% endif -%}
+{% if publicApiKey %}
+    <a href="{{ href }}" class="snipcart-checkout {{ classes | join(' ') }}">
+        {{ text | raw }}
+        {% if showCount %}<span class="snipcart-items-count"></span>{% endif %}
+        {% if showPrice %}<span class="snipcart-total-price"></span>{% endif %}
     </a>
-{%- endif %}
+{% endif %}
