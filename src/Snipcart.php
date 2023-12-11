@@ -41,7 +41,7 @@ class Snipcart extends Plugin
     // Properties
     // =========================================================================
 
-    public string $schemaVersion = '1.0.10';
+    public string $schemaVersion = '1.1.0';
     public bool $hasCpSection = true;
     public bool $hasCpSettings = true;
 
