@@ -76,22 +76,34 @@ class SnipcartVariable
 
     public function cartLink(string $text = null, bool $showCount = true): Markup
     {
+        $settings = Snipcart::$plugin->getSettings();
+
         return $this->renderTemplate('snipcart/front-end/cart-link', [
             'text' => $text,
             'showCount' => $showCount,
+            'publicApiKey' => $settings->getPublicKey(),
         ]);
     }
 
     public function cartSnippet(bool $includejQuery = true, string $onload = '', bool $includeStyles = true): Markup
     {
+        Craft::$app->getDeprecator()->log(__METHOD__, 'The `cartSnippet` variable has been deprecated. Use `cartSummary(params, inline)` instead.');
+
+        return $this->cartSummary();
+    }
+
+    public function cartSummary(array $params = [], bool $inline = false): Markup
+    {
         $settings = Snipcart::$plugin->getSettings();
 
-        return $this->renderTemplate('snipcart/front-end/cart-js', [
-            'settings' => $settings,
-            'includejQuery' => $includejQuery,
-            'includeStyles' => $includeStyles,
+        $params = array_replace([
             'publicApiKey' => $settings->getPublicKey(),
-            'onload' => $onload,
+            'loadStrategy' => 'on-user-interaction',
+        ], $params);
+
+        return $this->renderTemplate('snipcart/front-end/cart-js', [
+            'inline' => $inline,
+            'params' => $params,
         ]);
     }
 
