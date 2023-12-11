@@ -12,6 +12,7 @@ use craft\base\Model;
 use craft\elements\Entry;
 use craft\elements\MatrixBlock;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use craft\helpers\Template as TemplateHelper;
 
 use Twig\Error\LoaderError;
@@ -256,7 +257,7 @@ class ProductDetails extends Model
             'data-item-image' => $image,
             'data-item-id' => $this->sku,
             'data-item-name' => $name,
-            'data-item-price' => $price,
+            'data-item-price' => is_array($price) ? Json::encode($price) : $price,
             'data-item-url' => $url,
             'data-item-quantity' => $quantity,
             'data-item-taxable' => $this->taxable ? true : false,
@@ -268,6 +269,32 @@ class ProductDetails extends Model
             $options['data-item-length'] = round($this->getDimensionInCentimeters('length'));
             $options['data-item-height'] = round($this->getDimensionInCentimeters('height'));
             $options['data-item-weight'] = $this->getWeightInGrams();
+        }
+
+        $customOptions = ArrayHelper::remove($params, 'customOptions', []);
+
+        foreach ($customOptions as $key => $customOption) {
+            $index = $key + 1;
+
+            $options["data-item-custom$index-name"] = $customOption['name'] ?? '';
+            $options["data-item-custom$index-required"] = ($customOption['required'] ?? null) ? true : false;
+
+            $optionsData = [];
+
+            foreach (($customOption['options'] ?? []) as $option) {
+                $optionName = $option['name'] ?? $option;
+                $optionPrice = ($option['price'] ?? null);
+
+                if ($optionPrice && $optionPrice > 0 && !str_starts_with($optionPrice, '+')) {
+                    $optionPrice = '+' . $optionPrice;
+                }
+
+                $optionsData[] = $optionPrice ? $optionName . '[' . $optionPrice . ']' : $optionName;
+            }
+
+            if ($optionsData) {
+                $options["data-item-custom$index-options"] = implode('|', $optionsData);
+            }
         }
 
         return array_replace_recursive($options, $params);
