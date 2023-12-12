@@ -247,7 +247,7 @@ class ProductDetails extends Model
         $class = ArrayHelper::remove($params, 'classes', []);
         $image = ArrayHelper::remove($params, 'image');
         $name = ArrayHelper::remove($params, 'name', ($element->title ?? $this->sku));
-        $url = ArrayHelper::remove($url, 'image', ($element->url ?? ''));
+        $url = ArrayHelper::remove($url, 'url', ($element->url ?? ''));
         $quantity = ArrayHelper::remove($params, 'quantity', 1);
 
         $options = [
