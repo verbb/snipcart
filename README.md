@@ -1,4 +1,5 @@
 # Snipcart plugin for Craft CMS
+<img width="500" src="https://verbb.imgix.net/plugins/snipcart/snipcart-social-card.png?v=1">
 
 Quickly turn a Craft CMS website into a fully functioning store.
 

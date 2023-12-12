@@ -1,4 +1,4 @@
-# Verifying ShipStation Orders
+# ShipStation
 There's a console utility you can use to make sure orders are fed to ShipStation properly.
 
 ```shell
