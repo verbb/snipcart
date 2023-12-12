@@ -74,13 +74,14 @@ class SnipcartVariable
         return FieldHelper::getProductInfo($element);
     }
 
-    public function cartLink(string $text = null, bool $showCount = true): Markup
+    public function cartLink(string $text = null, bool $showCount = true, bool $showPrice = false): Markup
     {
         $settings = Snipcart::$plugin->getSettings();
 
         return $this->renderTemplate('snipcart/front-end/cart-link', [
             'text' => $text,
             'showCount' => $showCount,
+            'showPrice' => $showPrice,
             'publicApiKey' => $settings->getPublicKey(),
         ]);
     }
