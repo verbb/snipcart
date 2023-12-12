@@ -1,0 +1,60 @@
+[
+    {
+        "title": "Get Started",
+        "collapsable": false,
+        "children": [
+            "get-started/installation-setup",
+            "get-started/requirements",
+            "get-started/configuration",
+            "get-started/setup"
+        ]
+    },
+    {
+        "title": "Feature Tour",
+        "collapsable": false,
+        "children": [
+            "feature-tour/products",
+            "feature-tour/templating",
+            "feature-tour/notifications",
+            "feature-tour/order-fields",
+            "feature-tour/shipments",
+            "feature-tour/test-mode"
+        ]
+    },
+    {
+        "title": "Template Guides",
+        "collapsable": false,
+        "children": [
+            "template-guides/template-tags",
+            "template-guides/fields"
+        ]
+    },
+    {
+        "title": "Developers",
+        "collapsable": false,
+        "children": [
+            "developers/events",
+            "developers/graphql",
+            "developers/template-hooks",
+            "developers/recipes"
+        ]
+    },
+    {
+        "title": "Webhooks",
+        "collapsable": false,
+        "children": [
+            "webhooks/overview",
+            "webhooks/setup",
+            "webhooks/events"
+        ]
+    },
+    {
+        "title": "Troubleshooting",
+        "collapsable": false,
+        "children": [
+            "troubleshooting/logging",
+            "troubleshooting/testing-webhooks",
+            "troubleshooting/verify-orders"
+        ]
+    }
+]
