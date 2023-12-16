@@ -80,32 +80,32 @@ class Settings extends Model
     // Public Methods
     // =========================================================================
 
-    public function getPublicTestApiKey(): string
+    public function getPublicTestApiKey(): ?string
     {
         return App::parseEnv($this->publicTestApiKey);
     }
 
-    public function getPublicApiKey(): string
+    public function getPublicApiKey(): ?string
     {
         return App::parseEnv($this->publicApiKey);
     }
 
-    public function getPublicKey(): string
+    public function getPublicKey(): ?string
     {
         return $this->testMode ? $this->getPublicTestApiKey() : $this->getPublicApiKey();
     }
 
-    public function getSecretTestApiKey(): string
+    public function getSecretTestApiKey(): ?string
     {
         return App::parseEnv($this->secretTestApiKey);
     }
 
-    public function getSecretApiKey(): string
+    public function getSecretApiKey(): ?string
     {
         return App::parseEnv($this->secretApiKey);
     }
 
-    public function getSecretKey(): string
+    public function getSecretKey(): ?string
     {
         return $this->testMode ? $this->secretTestApiKey : $this->secretApiKey;
     }
