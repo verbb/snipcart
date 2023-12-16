@@ -29,6 +29,16 @@ class SnipcartVariable
     // Public Methods
     // =========================================================================
 
+    public function getPlugin(): Snipcart
+    {
+        return Snipcart::$plugin;
+    }
+
+    public function getPluginName(): string
+    {
+        return Snipcart::$plugin->getPluginName();
+    }
+
     public function publicApiKey(): string
     {
         return Snipcart::$plugin->getSettings()->getPublicKey();
