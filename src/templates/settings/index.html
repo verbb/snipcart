@@ -6,7 +6,7 @@
 {% requireAdmin %}
 
 {% set crumbs = [
-    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: craft.snipcart.getPluginName(), url: url('snipcart') },
     { label: 'Settings' | t('app'), url: url('snipcart/settings') },
 ] %}
 
@@ -16,6 +16,7 @@
     webhooks: { label: 'Webhooks' | t('snipcart'), url: '#webhooks' },
     logging: { label: 'Logging & Caching' | t('snipcart'), url: '#logging' },
     shipping: { label: 'Shipping' | t('snipcart'), url: '#shipping' },
+    general: { label: 'General' | t('snipcart'), url: '#general' },
 } %}
 
 {% set selectedTab = 'account' %}

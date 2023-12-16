@@ -3,7 +3,7 @@
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 
 {% set crumbs = [
-    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: craft.snipcart.getPluginName(), url: url('snipcart') },
     { label: 'Discounts' | t('snipcart'), url: url('snipcart/discounts') }
 ] %}
 

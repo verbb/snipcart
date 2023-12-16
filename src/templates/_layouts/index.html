@@ -3,7 +3,7 @@
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 
 {% if title is not defined %}
-    {% set title = 'Snipcart' | t('snipcart') %}
+    {% set title = craft.snipcart.getPluginName() %}
 {% endif %}
 
 {% block content %}

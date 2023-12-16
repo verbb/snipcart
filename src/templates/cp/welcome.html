@@ -2,7 +2,7 @@
 
 {% set centered = true %}
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
-{% set title = 'Snipcart' ~ (isTestMode ? ' 🚧') %}
+{% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}
 
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 

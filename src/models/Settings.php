@@ -22,6 +22,7 @@ class Settings extends Model
     // Properties
     // =========================================================================
 
+    public string $pluginName = 'Snipcart';
     public ?string $publicApiKey = null;
     public ?string $publicTestApiKey = null;
     public ?string $secretApiKey = null;

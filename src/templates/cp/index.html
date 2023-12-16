@@ -3,7 +3,7 @@
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\OverviewAsset') %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
-{% set title = 'Snipcart' ~ (isTestMode ? ' 🚧') %}
+{% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'overview' %}
 
 {% block content %}

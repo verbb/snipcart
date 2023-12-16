@@ -68,9 +68,23 @@ class Snipcart extends Plugin
         }
     }
 
+    public function getPluginName(): string
+    {
+        return Craft::t('snipcart', $this->getSettings()->pluginName);
+    }
+
     public function getSettingsResponse(): mixed
     {
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('snipcart/settings'));
+    }
+
+    public function getCpNavItem(): ?array
+    {
+        $navItems = parent::getCpNavItem();
+
+        $navItems['label'] = $this->getPluginName();
+
+        return $navItems;
     }
 
 

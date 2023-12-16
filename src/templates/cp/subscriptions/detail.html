@@ -8,7 +8,7 @@
 {% set title = 'Subscription for ' ~ subscription.user.billingAddress.fullName ~ (isTestMode ? ' 🚧') %}
 
 {% set crumbs = [
-    { label: 'Snipcart' | t('snipcart'), url: url('snipcart') },
+    { label: craft.snipcart.getPluginName(), url: url('snipcart') },
     { label: 'Subscriptions' | t('snipcart'), url: url('snipcart/subscriptions') }
 ] %}
 
