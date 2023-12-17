@@ -72,7 +72,7 @@ class AbandonedCart extends Model
     public ?DateTime $creationDate = null;
     public ?string $_etag = null;
     public ?string $userId = null;
-    public ?string $user = null;
+    public ?stdClass $user = null;
     public ?stdClass $compatibilitySwitches = null;
     public array $notifications = [];
     public ?string $totalPriceWithoutDiscountsAndTaxes = null;
