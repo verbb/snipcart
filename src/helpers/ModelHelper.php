@@ -25,7 +25,7 @@ class ModelHelper
     public static function safePopulateArrayWithModels(array $array, string $class): array
     {
         foreach ($array as &$item) {
-            $item = self::safePopulateModel((array) $item, $class);
+            $item = self::safePopulateModel((array)$item, $class);
         }
 
         return $array;

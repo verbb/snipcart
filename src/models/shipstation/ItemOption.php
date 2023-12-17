@@ -15,7 +15,7 @@ class ItemOption extends Model
     public static function populateFromSnipcartCustomField(array|CustomField|stdClass $item): ?self
     {
         if (is_array($item)) {
-            $item = (object) $item;
+            $item = (object)$item;
         }
 
         if (isset($item->name, $item->value)) {

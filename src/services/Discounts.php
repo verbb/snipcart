@@ -19,7 +19,7 @@ class Discounts extends Component
     {
         $response = Snipcart::$plugin->getApi()->get('discounts');
 
-        return ModelHelper::safePopulateArrayWithModels((array) $response, Discount::class);
+        return ModelHelper::safePopulateArrayWithModels((array)$response, Discount::class);
     }
 
     public function createDiscount(Discount $discount): mixed
@@ -30,7 +30,7 @@ class Discounts extends Component
     public function getDiscount(string $discountId): ?Discount
     {
         if ($discountData = Snipcart::$plugin->getApi()->get("discounts/$discountId")) {
-            return ModelHelper::safePopulateModel((array) $discountData, Discount::class);
+            return ModelHelper::safePopulateModel((array)$discountData, Discount::class);
         }
 
         return null;

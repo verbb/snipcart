@@ -33,7 +33,7 @@ class Carts extends Component
     public function getAbandonedCart(string $cartId): ?AbandonedCart
     {
         if ($abandonedCartData = Snipcart::$plugin->getApi()->get("carts/abandoned/$cartId")) {
-            return ModelHelper::safePopulateModel((array) $abandonedCartData, AbandonedCart::class);
+            return ModelHelper::safePopulateModel((array)$abandonedCartData, AbandonedCart::class);
         }
 
         return null;

@@ -33,7 +33,7 @@ class Subscriptions extends Component
     public function getSubscription(string $subscriptionId): ?Subscription
     {
         if ($subscriptionData = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId")) {
-            return ModelHelper::safePopulateModel((array) $subscriptionData, Subscription::class);
+            return ModelHelper::safePopulateModel((array)$subscriptionData, Subscription::class);
         }
 
         return null;

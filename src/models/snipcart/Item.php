@@ -110,7 +110,7 @@ class Item extends Model
         if (!$paymentSchedule instanceof PaymentSchedule) {
             $paymentScheduleData = ModelHelper::stripUnknownProperties($paymentSchedule, PaymentSchedule::class);
 
-            $paymentSchedule = new PaymentSchedule((array) $paymentScheduleData);
+            $paymentSchedule = new PaymentSchedule((array)$paymentScheduleData);
         }
 
         return $this->paymentSchedule = $paymentSchedule;

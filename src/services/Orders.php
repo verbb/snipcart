@@ -34,7 +34,7 @@ class Orders extends Component
     public function getOrder(String $orderId): ?Order
     {
         if ($orderData = Snipcart::$plugin->getApi()->get("orders/$orderId")) {
-            return ModelHelper::safePopulateModel((array) $orderData, Order::class);
+            return ModelHelper::safePopulateModel((array)$orderData, Order::class);
         }
 
         return null;
@@ -56,7 +56,7 @@ class Orders extends Component
             $params['offset'] = $offset;
 
             if ($result = $this->fetchOrders($params)) {
-                $currentItems = (array) $result->items;
+                $currentItems = (array)$result->items;
                 $collected += count($currentItems);
                 $collection[] = $currentItems;
 

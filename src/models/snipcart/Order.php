@@ -129,7 +129,7 @@ class Order extends Model
             if (!$item instanceof Item) {
                 $itemData = ModelHelper::stripUnknownProperties($item, Item::class);
 
-                $item = new Item((array) $itemData);
+                $item = new Item((array)$itemData);
             }
         }
 
@@ -168,7 +168,7 @@ class Order extends Model
         }
 
         if (gettype($user) === 'object') {
-            $user = (array) $user;
+            $user = (array)$user;
         }
 
         // added a bit to get a user element based on the email passed in from $user as it is an array
