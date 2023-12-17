@@ -22,8 +22,10 @@ class Subscriptions extends Component
 
         $response = Snipcart::$plugin->getApi()->get('subscriptions', $params);
 
+        $items = $response->items ?? [];
+
         return (object) [
-            'items' => ModelHelper::safePopulateArrayWithModels($response->items, Subscription::class),
+            'items' => ModelHelper::safePopulateArrayWithModels($items, Subscription::class),
             'totalItems' => $response->totalItems,
             'offset' => $response->offset,
             'limit' => $limit,
