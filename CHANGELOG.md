@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.1.2 - 2023-12-19
+
+### Added
+- Add plugin setting to modify plugin name.
+- Add `craft.snipcart.plugin` and `craft.snipcart.pluginName`.
+- Add translations file.
+- Add some missing English translations.
+
+### Fixed
+- Fix subscriptions viewing items.
+- Fix an error for abandoned cart users.
+- Fix welcome image alignment.
+- Fix type errors for API keys.
+
 ## 2.1.1 - 2023-12-12
 
 ### Fixed
