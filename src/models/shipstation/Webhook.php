@@ -19,22 +19,25 @@ class Webhook extends Model
 
     public ?string $resource_url = null;
     public ?string $resource_type = null;
-    
 
-    // Public Methods
+
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['resource_url', 'resource_type'], 'string', 'max' => 200],
-            [['resource_url'], 'url'],
-            [['resource_type'], 'in', 'range' => [
-                self::TYPE_ORDER_NOTIFY,
-                self::TYPE_ITEM_ORDER_NOTIFY,
-                self::TYPE_SHIP_NOTIFY,
-                self::TYPE_ITEM_SHIP_NOTIFY,
-            ]],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['resource_url', 'resource_type'], 'string', 'max' => 200];
+        $rules[] = [['resource_url'], 'url'];
+
+        $rules[] = [['resource_type'], 'in', 'range' => [
+            self::TYPE_ORDER_NOTIFY,
+            self::TYPE_ITEM_ORDER_NOTIFY,
+            self::TYPE_SHIP_NOTIFY,
+            self::TYPE_ITEM_SHIP_NOTIFY,
+        ]];
+
+        return $rules;
     }
 }

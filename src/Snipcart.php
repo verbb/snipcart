@@ -55,8 +55,6 @@ class Snipcart extends Plugin
 
         self::$plugin = $this;
 
-        $this->_setPluginComponents();
-        $this->_setLogging();
         $this->_registerFieldTypes();
         $this->_registerVariable();
         $this->_registerCacheTypes();

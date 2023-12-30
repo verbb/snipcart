@@ -16,16 +16,17 @@ class CustomsItem extends Model
     public ?string $countryOfOrigin = null;
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['customsItemId', 'description', 'harmonizedTariffCode', 'countryOfOrigin'], 'string'],
-            [['quantity'], 'number', 'integerOnly' => true],
-            [['value'], 'number', 'integerOnly' => false],
-            [['countryOfOrigin'], 'string', 'length' => 2],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['quantity'], 'number', 'integerOnly' => true];
+        $rules[] = [['value'], 'number', 'integerOnly' => false];
+        $rules[] = [['countryOfOrigin'], 'string', 'length' => 2];
+
+        return $rules;
     }
 }

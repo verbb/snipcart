@@ -45,21 +45,27 @@ class InternationalOptions extends Model
         return $this->customsItems = $customsItems;
     }
 
-    public function rules(): array
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        return [
-            [['contents', 'nonDelivery'], 'string'],
-            [['contents'], 'in', 'range' => [
-                self::CONTENTS_MERCHANDISE,
-                self::CONTENTS_DOCUMENTS,
-                self::CONTENTS_GIFT,
-                self::CONTENTS_RETURNED_GOODS,
-                self::CONTENTS_SAMPLE,
-            ]],
-            [['nonDelivery'], 'in', 'range' => [
-                self::NON_DELIVERY_RETURN_TO_SENDER,
-                self::NON_DELIVERY_TREAT_AS_ABANDONED,
-            ]],
-        ];
+        $rules = parent::defineRules();
+                
+        $rules[] = [['contents'], 'in', 'range' => [
+            self::CONTENTS_MERCHANDISE,
+            self::CONTENTS_DOCUMENTS,
+            self::CONTENTS_GIFT,
+            self::CONTENTS_RETURNED_GOODS,
+            self::CONTENTS_SAMPLE,
+        ]];
+
+        $rules[] = [['nonDelivery'], 'in', 'range' => [
+            self::NON_DELIVERY_RETURN_TO_SENDER,
+            self::NON_DELIVERY_TREAT_AS_ABANDONED,
+        ]];
+
+        return $rules;
     }
 }

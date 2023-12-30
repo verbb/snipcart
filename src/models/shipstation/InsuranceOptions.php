@@ -20,17 +20,16 @@ class InsuranceOptions extends Model
     public ?int $insuredValue = 0;
     
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['provider'], 'string'],
-            [['provider'], 'in', 'range' => [self::PROVIDER_CARRIER, self::PROVIDER_SHIPSURANCE]],
-            [['insureShipment'], 'boolean'],
-            [['insuredValue'], 'number', 'integerOnly' => false],
-            [['insuredValue'], 'default', 'value' => 0],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['provider'], 'in', 'range' => [self::PROVIDER_CARRIER, self::PROVIDER_SHIPSURANCE]];
+        $rules[] = [['insuredValue'], 'number', 'integerOnly' => false];
+
+        return $rules;
     }
 }

@@ -17,7 +17,7 @@ class Address extends Model
     public ?string $address2 = null;
     public ?string $fullAddress = null;
     public ?string $city = null;
-    public ?string $country = null;
+    public ?string $country = 'US';
     public ?string $province = null;
     public ?string $postalCode = null;
     public ?string $phone = null;
@@ -40,15 +40,19 @@ class Address extends Model
 
         return $num;
     }
+    
 
-    public function rules(): array
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        return [
-            [['name', 'companyName', 'address1', 'address2', 'city', 'country', 'province', 'postalCode', 'phone', 'email'], 'string', 'max' => 255],
-            [['name', 'address1', 'city', 'country', 'province', 'postalCode'], 'required'],
-            [['companyName', 'address2', 'phone'], 'default', 'value' => null],
-            [['country'], 'default', 'value' => 'US'],
-            [['country', 'province'], 'string', 'length' => 2],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['name', 'companyName', 'address1', 'address2', 'city', 'country', 'province', 'postalCode', 'phone', 'email'], 'string', 'max' => 255];
+        $rules[] = [['name', 'address1', 'city', 'country', 'province', 'postalCode'], 'required'];
+        $rules[] = [['country', 'province'], 'string', 'length' => 2];
+
+        return $rules;
     }
 }

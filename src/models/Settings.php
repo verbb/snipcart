@@ -120,16 +120,6 @@ class Settings extends Model
         return $this->getPublicApiKey() && $this->getSecretApiKey();
     }
 
-    public function rules(): array
-    {
-        return array_merge(parent::rules(), [
-            [['publicApiKey', 'secretApiKey', 'publicTestApiKey', 'secretTestApiKey', 'orderGiftNoteFieldName', 'orderCommentsFieldName'], 'string'],
-            [['publicApiKey', 'secretApiKey'], 'required'],
-            [['cacheDurationLimit'], 'number', 'integerOnly' => true],
-            ['notificationEmails', 'each', 'rule' => ['email']],
-        ]);
-    }
-
     public function validate($attributeNames = null, $clearErrors = true): bool
     {
         $validates = parent::validate($attributeNames, $clearErrors);
@@ -250,6 +240,21 @@ class Settings extends Model
     public function getProviders(): array
     {
         return $this->_providers;
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['publicApiKey', 'secretApiKey'], 'required'];
+        $rules[] = [['cacheDurationLimit'], 'number', 'integerOnly' => true];
+        $rules[] = ['notificationEmails', 'each', 'rule' => ['email']];
+
+        return $rules;
     }
 
 

@@ -44,24 +44,23 @@ class Address extends Model
     public ?string $city = null;
     public ?string $state = null;
     public ?string $postalCode = null;
-    public ?string $country = null;
+    public ?string $country = 'US';
     public ?string $phone = null;
     public ?string $residential = null;
     public ?string $addressVerified = null;
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['name', 'street1', 'street2', 'street3', 'city', 'state', 'postalCode', 'phone', 'addressVerified'], 'string', 'max' => 255],
-            [['name', 'street1', 'city', 'state', 'postalCode'], 'required'],
-            [['residential'], 'boolean'],
-            [['company', 'street2', 'street3'], 'default', 'value' => null],
-            [['country'], 'default', 'value' => 'US'],
-            [['country'], 'string', 'length' => 2],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['name', 'street1', 'street2', 'street3', 'city', 'state', 'postalCode', 'phone', 'addressVerified'], 'string', 'max' => 255];
+        $rules[] = [['name', 'street1', 'city', 'state', 'postalCode'], 'required'];
+        $rules[] = [['country'], 'string', 'length' => 2];
+
+        return $rules;
     }
 }

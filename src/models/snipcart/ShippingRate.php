@@ -17,16 +17,6 @@ class ShippingRate extends Model
     // Public Methods
     // =========================================================================
 
-    public function rules(): array
-    {
-        return [
-            [['guaranteedDaysToDelivery'], 'number', 'integerOnly' => true],
-            [['cost'], 'number', 'integerOnly' => false],
-            [['description', 'code'], 'string'],
-            [['cost', 'description'], 'required'],
-        ];
-    }
-
     public function fields(): array
     {
         $return = [
@@ -43,5 +33,20 @@ class ShippingRate extends Model
         }
 
         return $return;
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['guaranteedDaysToDelivery'], 'number', 'integerOnly' => true];
+        $rules[] = [['cost'], 'number', 'integerOnly' => false];
+        $rules[] = [['cost', 'description'], 'required'];
+
+        return $rules;
     }
 }

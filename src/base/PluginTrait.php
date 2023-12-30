@@ -16,11 +16,8 @@ use verbb\snipcart\services\Shipments;
 use verbb\snipcart\services\Subscriptions;
 use verbb\snipcart\services\Webhooks;
 
-use Craft;
-
-use yii\log\Logger;
-
-use verbb\base\BaseHelper;
+use verbb\base\LogTrait;
+use verbb\base\helpers\Plugin;
 
 trait PluginTrait
 {
@@ -30,25 +27,36 @@ trait PluginTrait
     public static Snipcart $plugin;
 
 
-    // Public Methods
+    // Traits
     // =========================================================================
 
-    public static function log(string $message, array $attributes = []): void
+    use LogTrait;
+
+
+    // Static Methods
+    // =========================================================================
+
+    public static function config(): array
     {
-        if ($attributes) {
-            $message = Craft::t('snipcart', $message, $attributes);
-        }
+        Plugin::bootstrapPlugin('snipcart');
 
-        Craft::getLogger()->log($message, Logger::LEVEL_INFO, 'snipcart');
-    }
-
-    public static function error(string $message, array $attributes = []): void
-    {
-        if ($attributes) {
-            $message = Craft::t('snipcart', $message, $attributes);
-        }
-
-        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, 'snipcart');
+        return [
+            'components' => [
+                'api' => Api::class,
+                'carts' => Carts::class,
+                'customers' => Customers::class,
+                'data' => Data::class,
+                'digitalGoods' => DigitalGoods::class,
+                'discounts' => Discounts::class,
+                'fields' => Fields::class,
+                'notifications' => Notifications::class,
+                'orders' => Orders::class,
+                'products' => Products::class,
+                'shipments' => Shipments::class,
+                'subscriptions' => Subscriptions::class,
+                'webhooks' => Webhooks::class,
+            ],
+        ];
     }
 
 
@@ -119,35 +127,4 @@ trait PluginTrait
     {
         return $this->get('webhooks');
     }
-
-
-    // Private Methods
-    // =========================================================================
-
-    private function _setPluginComponents(): void
-    {
-        $this->setComponents([
-            'api' => Api::class,
-            'carts' => Carts::class,
-            'customers' => Customers::class,
-            'data' => Data::class,
-            'digitalGoods' => DigitalGoods::class,
-            'discounts' => Discounts::class,
-            'fields' => Fields::class,
-            'orders' => Orders::class,
-            'notifications' => Notifications::class,
-            'products' => Products::class,
-            'shipments' => Shipments::class,
-            'subscriptions' => Subscriptions::class,
-            'webhooks' => Webhooks::class,
-        ]);
-
-        BaseHelper::registerModule();
-    }
-
-    private function _setLogging(): void
-    {
-        BaseHelper::setFileLogging('snipcart');
-    }
-
 }

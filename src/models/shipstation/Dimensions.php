@@ -39,17 +39,22 @@ class Dimensions extends Model
     // Public Methods
     // =========================================================================
 
-    public function rules(): array
-    {
-        return [
-            [['length', 'width', 'height'], 'number', 'integerOnly' => true],
-            [['units'], 'string'],
-            [['units'], 'in', 'range' => [self::UNIT_INCHES, self::UNIT_CENTIMETERS]],
-        ];
-    }
-
     public function hasPhysicalDimensions(): bool
     {
         return $this->length !== null && $this->length > 0 && $this->width !== null && $this->width > 0 && $this->height !== null && $this->height > 0;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['length', 'width', 'height'], 'number', 'integerOnly' => true];
+        $rules[] = [['units'], 'in', 'range' => [self::UNIT_INCHES, self::UNIT_CENTIMETERS]];
+
+        return $rules;
     }
 }

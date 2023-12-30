@@ -43,22 +43,16 @@ class Product extends Model
     public ?ProductTag $tags = null;
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
-    
-    public function rules(): array
+
+    protected function defineRules(): array
     {
-        return [
-            [['sku', 'name', 'internalNotes', 'fulfillmentSku', 'createDate', 'modifyDate', 'productType', 'warehouseLocation', 'defaultCarrierCode', 'defaultServiceCode', 'defaultPackageCode', 'defaultIntlCarrierCode', 'defaultIntlServiceCode', 'defaultIntlPackageCode', 'defaultConfirmation', 'defaultIntlConfirmation', 'customsDescription', 'customsTariffNo', 'customsCountryCode'], 'string'],
-            [['productId', 'length', 'width', 'height', 'weightOz'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [['price', 'defaultCost', 'customsValue'],
-                'number',
-                'integerOnly' => false,
-            ],
-            [['active', 'noCustoms'], 'boolean'],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['productId', 'length', 'width', 'height', 'weightOz'], 'number', 'integerOnly' => true];
+        $rules[] = [['price', 'defaultCost', 'customsValue'], 'number', 'integerOnly' => false];
+
+        return $rules;
     }
 }

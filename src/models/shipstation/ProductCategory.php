@@ -12,14 +12,15 @@ class ProductCategory extends Model
     public ?string $name = null;
     
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['categoryId'], 'number', 'integerOnly' => true],
-            [['name'], 'string'],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['categoryId'], 'number', 'integerOnly' => true];
+
+        return $rules;
     }
 }

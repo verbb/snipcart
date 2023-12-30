@@ -8,19 +8,20 @@ class CustomerStatistics extends Model
     // Properties
     // =========================================================================
 
-    public ?int $ordersCount = null;;
-    public ?float $ordersAmount = null;;
+    public ?int $ordersCount = 0;
+    public ?float $ordersAmount = 0;
+    
 
-
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['ordersCount'], 'number', 'integerOnly' => true],
-            [['ordersAmount'], 'number', 'integerOnly' => false],
-            [['ordersCount', 'ordersAmount'], 'default', 'value' => 0],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['ordersCount'], 'number', 'integerOnly' => true];
+        $rules[] = [['ordersAmount'], 'number', 'integerOnly' => false];
+
+        return $rules;
     }
 }

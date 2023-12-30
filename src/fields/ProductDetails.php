@@ -29,23 +29,10 @@ class ProductDetails extends Field
     {
         return Craft::t('snipcart', 'Snipcart Product Details');
     }
+    
 
     // Properties
     // =========================================================================
-
-    public array $columnType = [
-        'sku' => Schema::TYPE_STRING,
-        'inventory' => Schema::TYPE_INTEGER,
-        'price' => Schema::TYPE_MONEY,
-        'taxable' => Schema::TYPE_BOOLEAN,
-        'shippable' => Schema::TYPE_BOOLEAN,
-        'weight' => Schema::TYPE_FLOAT,
-        'weightUnit' => Schema::TYPE_STRING,
-        'length' => Schema::TYPE_FLOAT,
-        'width' => Schema::TYPE_FLOAT,
-        'height' => Schema::TYPE_FLOAT,
-        'dimensionsUnit' => Schema::TYPE_STRING,
-    ];
 
     public bool $displayShippableSwitch = false;
     public bool $displayTaxableSwitch = false;
@@ -64,17 +51,12 @@ class ProductDetails extends Field
     // Public Methods
     // =========================================================================
 
-    public function getContentColumnType(): array|string
-    {
-        return $this->columnType;
-    }
-
-    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
         return Snipcart::$plugin->getFields()->getProductDetailsField($this, $element, $value);
     }
 
-    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ElementInterface $element = null): mixed
     {
         if ($value !== null) {
             foreach ($value as $k => $v) {
@@ -126,21 +108,6 @@ class ProductDetails extends Field
         return $productDetailsType;
     }
 
-    public function getInputHtml(mixed $value, ?ElementInterface $element = null): string
-    {
-        Craft::$app->getView()->registerAssetBundle(ProductDetailsFieldAsset::class);
-
-        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/field', [
-            'name' => $this->handle,
-            'field' => $this,
-            'element' => $element,
-            'value' => $value,
-            'settings' => $this->getSettings(),
-            'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
-            'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
-        ]);
-    }
-
     public function getSettingsHtml(): string
     {
         Craft::$app->getView()->registerAssetBundle(ProductDetailsFieldAsset::class);
@@ -155,5 +122,24 @@ class ProductDetails extends Field
     public function getElementValidationRules(): array
     {
         return [[ProductDetailsValidator::class]];
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function inputHtml(mixed $value, ?ElementInterface $element, bool $inline): string
+    {
+        Craft::$app->getView()->registerAssetBundle(ProductDetailsFieldAsset::class);
+
+        return Craft::$app->getView()->renderTemplate('snipcart/fields/product-details/field', [
+            'name' => $this->handle,
+            'field' => $this,
+            'element' => $element,
+            'value' => $value,
+            'settings' => $this->getSettings(),
+            'weightUnitOptions' => ProductDetailsModel::getWeightUnitOptions(),
+            'dimensionsUnitOptions' => ProductDetailsModel::getDimensionsUnitOptions(),
+        ]);
     }
 }

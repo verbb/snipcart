@@ -12,14 +12,15 @@ class ProductTag extends Model
     public ?string $name = null;
     
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['tagId'], 'number', 'integerOnly' => true],
-            [['name'], 'string'],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['tagId'], 'number', 'integerOnly' => true];
+
+        return $rules;
     }
 }

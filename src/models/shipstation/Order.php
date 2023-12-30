@@ -66,13 +66,13 @@ class Order extends Model
     public ?int $customerId = null;
     public ?string $customerUsername = null;
     public ?string $customerEmail = null;
-    public ?float $orderTotal = null;
-    public ?float $amountPaid = null;
-    public ?float $taxAmount = null;
-    public ?float $shippingAmount = null;
+    public ?float $orderTotal = 0;
+    public ?float $amountPaid = 0;
+    public ?float $taxAmount = 0;
+    public ?float $shippingAmount = 0;
     public ?string $customerNotes = null;
     public ?string $internalNotes = null;
-    public ?bool $gift = null;
+    public ?bool $gift = false;
     public ?string $giftMessage = null;
     public ?string $paymentMethod = null;
     public ?string $requestedShippingService = null;
@@ -84,7 +84,7 @@ class Order extends Model
     public ?DateTime $holdUntilDate = null;
     public array $tagIds = [];
     public ?string $userId = null;
-    public ?bool $externallyFulfilled = null;
+    public ?bool $externallyFulfilled = false;
     public ?string $externallyFulfilledBy = null;
     public array $labelMessages = [];
 
@@ -229,46 +229,11 @@ class Order extends Model
         ];
     }
 
-    public function rules(): array
-    {
-        // ShipStation uses the ISO 8601 combined format for dateTime stamps
-        // being submitted to and returned from the API. `2016-11-29 23:59:59`
-        // The time zone represented in all API responses is PST/PDT.
-        // Similarly, ShipStation asks that you make all time zone conversions
-        // and submit any dateTime requests in PST/PDT.
-        return [
-            [['orderId', 'customerId', 'userId'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'],
-                'number',
-                'integerOnly' => false,
-            ],
-            [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'],
-                'default',
-                'value' => 0,
-            ],
-            [['orderNumber', 'orderStatus'], 'string'],
-            [['orderKey', 'customerUsername', 'customerEmail', 'customerNotes', 'internalNotes', 'giftMessage', 'paymentMethod', 'requestedShippingService', 'carrierCode', 'serviceCode', 'packageCode', 'confirmation', 'externallyFulfilledBy'], 'string'],
-            [['customerEmail'], 'email'],
-            [['gift', 'externallyFulfilled'], 'boolean'],
-            [['gift', 'externallyFulfilled'],
-                'default',
-                'value' => false,
-            ],
-            [
-                'tagIds',
-                'each',
-                'rule' => ['integer'],
-            ],
-        ];
-    }
-
     public function scenarios(): array
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_NEW] = ['username'];
+
         return $scenarios;
     }
 
@@ -338,5 +303,26 @@ class Order extends Model
         unset($payload['weight']['WeightUnits']);
 
         return $payload;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        // ShipStation uses the ISO 8601 combined format for dateTime stamps
+        // being submitted to and returned from the API. `2016-11-29 23:59:59`
+        // The time zone represented in all API responses is PST/PDT.
+        // Similarly, ShipStation asks that you make all time zone conversions
+        // and submit any dateTime requests in PST/PDT.
+        $rules[] = [['orderId', 'customerId', 'userId'], 'number', 'integerOnly' => true];
+        $rules[] = [['orderTotal', 'amountPaid', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false];
+        $rules[] = [['customerEmail'], 'email'];
+        $rules[] = ['tagIds', 'each', 'rule' => ['integer']];
+
+        return $rules;
     }
 }

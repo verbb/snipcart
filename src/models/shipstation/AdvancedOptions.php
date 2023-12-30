@@ -17,7 +17,7 @@ class AdvancedOptions extends Model
     public ?string $customField2 = null;
     public ?string $customField3 = null;
     public ?string $source = null;
-    public bool $mergedOrSplit;
+    public bool $mergedOrSplit = false;
     public array $mergedIds = [];
     public ?int $parentId = null;
     public ?string $billToParty = null;
@@ -27,17 +27,17 @@ class AdvancedOptions extends Model
     public ?string $billToMyOtherAccount = null;
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true],
-            [['customField1', 'customField2', 'customField3', 'source', 'billToParty', 'billToAccount', 'billToPostalCode', 'billToCountryCode', 'billToMyOtherAccount'], 'string'],
-            [['nonMachinable', 'saturdayDelivery', 'containsAlcohol', 'mergedOrSplit'], 'boolean'],
-            ['mergedIds', 'each', 'rule' => ['integer']],
-            [['billToCountryCode'], 'string', 'length' => 2],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true];
+        $rules[] = ['mergedIds', 'each', 'rule' => ['integer']];
+        $rules[] = [['billToCountryCode'], 'string', 'length' => 2];
+
+        return $rules;
     }
 }

@@ -38,15 +38,19 @@ class Settings extends Model
     {
         return App::parseEnv($this->apiSecret);
     }
+    
 
-    public function rules(): array
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        return [
-            [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'],
-            [['apiKey', 'apiSecret', 'defaultCarrierCode', 'defaultPackageCode', 'defaultOrderConfirmation'], 'string'],
-            [['defaultWarehouseId'], 'number', 'integerOnly' => true],
-            [['enableShippingRates', 'sendCompletedOrders'], 'boolean'],
-            [['defaultCountry'], 'string', 'length' => 2],
-        ];
+        $rules = parent::defineRules();
+    
+        $rules[] = [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'];
+        $rules[] = [['defaultWarehouseId'], 'number', 'integerOnly' => true];
+        $rules[] = [['defaultCountry'], 'string', 'length' => 2];
+
+        return $rules;
     }
 }

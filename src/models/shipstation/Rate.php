@@ -14,14 +14,15 @@ class Rate extends Model
     public ?float $otherCost = null;
     
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['serviceName', 'serviceCode'], 'string'],
-            [['shipmentCost', 'otherCost'], 'number', 'integerOnly' => false],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['shipmentCost', 'otherCost'], 'number', 'integerOnly' => false];
+
+        return $rules;
     }
 }

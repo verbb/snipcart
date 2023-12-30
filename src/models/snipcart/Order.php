@@ -246,53 +246,6 @@ class Order extends Model
         return $behaviors;
     }
 
-    public function rules(): array
-    {
-        return [
-            [[
-                'token',
-                'parentToken',
-                'parentInvoiceNumber',
-                'creationDate',
-                'modificationDate',
-                'status',
-                'paymentMethod',
-                'invoiceNumber',
-                'parentInvoiceNumber',
-                'email',
-                'cardHolderName',
-                'creditCardLast4Digits',
-                'notes',
-                'shippingMethod',
-                'shippingMethod',
-                'subscriptionId',
-                'paymentTransactionId',
-                'paymentGatewayUsed',
-                'taxProvider',
-                'lang',
-                'ipAddress',
-                'userAgent',
-                'currency',
-                'recoveredFromCampaignId',
-                'trackingNumber',
-                'trackingUrl',
-            ], 'string'],
-            [[
-                'shippingAddressSameAsBilling',
-                'willBePaidLater',
-                'billingAddressComplete',
-                'shippingAddressComplete',
-                'shippingMethodComplete',
-                'isRecurringOrder',
-            ], 'boolean'],
-            //[['creationDate', 'modificationDate', 'completionDate'], 'date', 'format' => 'php:c'],
-            [['finalGrandTotal', 'shippingFees', 'rebateAmount'],
-                'number',
-                'integerOnly' => false,
-            ],
-        ];
-    }
-
     public function extraFields(): array
     {
         return [
@@ -325,5 +278,18 @@ class Order extends Model
             'shippingAddressPhone',
             'cpUrl',
         ];
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['finalGrandTotal', 'shippingFees', 'rebateAmount'], 'number', 'integerOnly' => false];
+
+        return $rules;
     }
 }

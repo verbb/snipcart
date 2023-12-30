@@ -31,13 +31,18 @@ class Weight extends Model
             'units' => self::UNIT_GRAMS,
         ]);
     }
+    
 
-    public function rules(): array
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        return [
-            [['value'], 'number', 'integerOnly' => true],
-            [['units'], 'string'],
-            [['units'], 'in', 'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS]],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['value'], 'number', 'integerOnly' => true];
+        $rules[] = [['units'], 'in', 'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS]];
+
+        return $rules;
     }
 }

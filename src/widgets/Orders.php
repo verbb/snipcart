@@ -49,18 +49,6 @@ class Orders extends Widget
         return Craft::t('snipcart', 'Snipcart {range} {type}', ['range' => $rangeNames, 'type' => $typeName]);
     }
 
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['chartType', 'chartRange'], 'required'];
-        $rules[] = [['chartType', 'chartRange'], 'string'];
-        $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
-        $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
-
-        return $rules;
-    }
-
     public function getBodyHtml(): ?string
     {
         $view = Craft::$app->getView();
@@ -95,5 +83,20 @@ class Orders extends Widget
             'weekly' => 'Weekly',
             'monthly' => 'Monthly',
         ];
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['chartType', 'chartRange'], 'required'];
+        $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
+        $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
+
+        return $rules;
     }
 }

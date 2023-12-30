@@ -36,14 +36,15 @@ class ItemOption extends Model
     public ?string $value = null;
 
 
-    // Public Methods
+    // Protected Methods
     // =========================================================================
 
-    public function rules(): array
+    protected function defineRules(): array
     {
-        return [
-            [['name', 'value'], 'string'],
-            [['name', 'value'], 'required'],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['name', 'value'], 'required'];
+
+        return $rules;
     }
 }

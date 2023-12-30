@@ -95,15 +95,20 @@ class OrderItem extends Model
         return array_combine($fields, $fields);
     }
 
-    public function rules(): array
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
     {
-        return [
-            [['orderItemId', 'quantity', 'productId'], 'number', 'integerOnly' => true],
-            [['unitPrice', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false],
-            [['lineItemKey', 'sku', 'name', 'warehouseLocation', 'fulfillmentSku', 'upc', 'createDate', 'modifyDate'], 'string', 'max' => 255],
-            [['name'], 'required'],
-            [['imageUrl'], 'url'],
-            [['adjustment'], 'boolean'],
-        ];
+        $rules = parent::defineRules();
+        
+        $rules[] = [['orderItemId', 'quantity', 'productId'], 'number', 'integerOnly' => true];
+        $rules[] = [['unitPrice', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false];
+        $rules[] = [['lineItemKey', 'sku', 'name', 'warehouseLocation', 'fulfillmentSku', 'upc', 'createDate', 'modifyDate'], 'string', 'max' => 255];
+        $rules[] = [['name'], 'required'];
+        $rules[] = [['imageUrl'], 'url'];
+
+        return $rules;
     }
 }

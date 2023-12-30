@@ -86,54 +86,6 @@ class ProductDetails extends Model
         return Craft::$app->fields->getFieldById($this->fieldId);
     }
 
-    public function rules(): array
-    {
-        return [
-            ['sku', 'validateSku'],
-            [['sku', 'weightUnit', 'dimensionsUnit'], 'string'],
-            [['length', 'width', 'height', 'weight'],
-                'number',
-                'integerOnly' => false,
-            ],
-            [['elementId', 'fieldId', 'inventory'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [['shippable'], 'boolean'],
-            [['taxable'], 'boolean'],
-            [['sku'], 'required'],
-            [['weightUnit'],
-                'in',
-                'range' => [
-                    self::WEIGHT_UNIT_GRAMS,
-                    self::WEIGHT_UNIT_OUNCES,
-                    self::WEIGHT_UNIT_POUNDS,
-                ],
-            ],
-            [['dimensionsUnit'],
-                'in',
-                'range' => [
-                    self::DIMENSIONS_UNIT_CENTIMETERS,
-                    self::DIMENSIONS_UNIT_INCHES,
-                ],
-            ],
-            [['weight', 'weightUnit'],
-                'required',
-                'when' => fn($model): bool => $this->isShippable($model),
-                'message' => '{attribute} is required when product is shippable.',
-            ],
-            [['length', 'width', 'height'],
-                'required',
-                'when' => fn($model): bool => $this->hasDimensions($model),
-                'message' => '{attribute} required if there are other dimensions.',
-            ],
-            [['dimensionsUnit'],
-                'required',
-                'when' => fn($model): bool => $this->hasAllDimensions($model),
-            ],
-        ];
-    }
-
     public function validateSku($attribute): bool
     {
         $isUnique = $this->skuIsUniqueElementAttribute($attribute);
@@ -232,6 +184,56 @@ class ProductDetails extends Model
             'fieldData' => $this,
             'params' => $params,
         ]));
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+
+        $rules[] = ['sku', 'validateSku'];
+        $rules[] = [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false];
+        $rules[] = [['elementId', 'fieldId', 'inventory'], 'number', 'integerOnly' => true];
+        $rules[] = [['sku'], 'required'];
+
+        $rules[] = [['weightUnit'],
+            'in',
+            'range' => [
+                self::WEIGHT_UNIT_GRAMS,
+                self::WEIGHT_UNIT_OUNCES,
+                self::WEIGHT_UNIT_POUNDS,
+            ],
+        ];
+
+        $rules[] = [['dimensionsUnit'],
+            'in',
+            'range' => [
+                self::DIMENSIONS_UNIT_CENTIMETERS,
+                self::DIMENSIONS_UNIT_INCHES,
+            ],
+        ];
+
+        $rules[] = [['weight', 'weightUnit'],
+            'required',
+            'when' => fn($model): bool => $this->isShippable($model),
+            'message' => '{attribute} is required when product is shippable.',
+        ];
+
+        $rules[] = [['length', 'width', 'height'],
+            'required',
+            'when' => fn($model): bool => $this->hasDimensions($model),
+            'message' => '{attribute} required if there are other dimensions.',
+        ];
+
+        $rules[] = [['dimensionsUnit'],
+            'required',
+            'when' => fn($model): bool => $this->hasAllDimensions($model),
+        ];
+
+        return $rules;
     }
 
 

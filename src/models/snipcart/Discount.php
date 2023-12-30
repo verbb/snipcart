@@ -105,22 +105,6 @@ class Discount extends Model
     // Public Methods
     // =========================================================================
 
-    public function rules(): array
-    {
-        return [
-            [['name', 'trigger', 'code', 'itemId', 'type', 'productIds', 'shippingDescription'], 'string'],
-            [['name', 'trigger', 'type'], 'required'],
-            [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'],
-                'number',
-                'integerOnly' => true,
-            ],
-            [['totalToReach', 'amount', 'amountSaved', 'rate', 'alternatePrice', 'shippingCost'],
-                'number',
-                'integerOnly' => false,
-            ],
-        ];
-    }
-
     public function getPayloadForPost(bool $isNew = true): array
     {
         $remove = [];
@@ -167,5 +151,28 @@ class Discount extends Model
     public function getDashboardUrl(): string
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['name', 'trigger', 'type'], 'required'];
+
+        $rules[] = [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'],
+            'number',
+            'integerOnly' => true,
+        ];
+
+        $rules[] = [['totalToReach', 'amount', 'amountSaved', 'rate', 'alternatePrice', 'shippingCost'],
+            'number',
+            'integerOnly' => false,
+        ];
+
+        return $rules;
     }
 }
