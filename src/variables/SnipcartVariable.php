@@ -96,13 +96,6 @@ class SnipcartVariable
         ]);
     }
 
-    public function cartSnippet(bool $includejQuery = true, string $onload = '', bool $includeStyles = true): Markup
-    {
-        Craft::$app->getDeprecator()->log(__METHOD__, 'The `craft.snipcart.cartSnippet()` variable has been deprecated. Use `craft.snipcart.cartJs(params, inline)` instead.');
-
-        return $this->cartJs();
-    }
-
     public function cartJs(array $params = [], bool $inline = false): Markup
     {
         $settings = Snipcart::$plugin->getSettings();
