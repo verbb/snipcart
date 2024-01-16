@@ -23,7 +23,7 @@ class Product extends Model
     public ?string $archived = null;
     public ?string $statistics = null;
     public ?string $customFields = null;
-    public ?string $metaData = null;
+    public ?array $metaData = null;
     public ?string $inventoryManagementMethod = null;
     public ?string $stock = null;
     public ?string $totalStock = null;

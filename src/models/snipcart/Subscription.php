@@ -37,7 +37,7 @@ class Subscription extends Model
     public ?string $totalSpent = null;
     public ?string $status = null;
     public ?string $gatewayId = null;
-    public ?string $metadata = null;
+    public ?array $metadata = null;
     public ?string $cartId = null;
     public ?string $recurringShipping = null;
     public ?string $shippingCharged = null;

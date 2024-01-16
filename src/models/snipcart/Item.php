@@ -53,7 +53,7 @@ class Item extends Model
     public ?float $width = null;
     public ?float $height = null;
     public ?float $length = null;
-    public ?string $metadata = null;
+    public ?array $metadata = null;
     public ?string $hasTaxesIncluded = null;
     public ?string $totalPriceWithoutDiscountsAndTaxesLegacy = null;
     public ?string $totalPriceWithoutDiscountsAndTaxes = null;

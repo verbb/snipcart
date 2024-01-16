@@ -85,7 +85,7 @@ class Order extends Model
     public ?string $totalRebateRate = null;
     public ?string $shippingEnabled = null;
     public ?string $numberOfItemsInOrder = null;
-    public ?string $metadata = null;
+    public ?array $metadata = null;
     public ?string $taxesTotal = null;
     public ?string $itemsCount = null;
     public stdClass|array|null $summary = null;

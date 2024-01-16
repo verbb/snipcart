@@ -36,7 +36,7 @@ class AbandonedCart extends Model
     public ?stdClass $shippingInformation = null;
     public ?string $paymentMethod = null;
     public ?stdClass $summary = null;
-    public ?string $metadata = null;
+    public ?array $metadata = null;
     public array $items = [];
     public array $discounts = [];
     public array $customFields = [];
