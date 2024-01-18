@@ -1,6 +1,10 @@
 {% extends '_layouts/cp' %}
 {% import '_includes/forms' as forms %}
 
+{% if not order %}
+    {% exit 404 %}
+{% endif %}
+
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 
 {% set centered = true %}

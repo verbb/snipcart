@@ -1,5 +1,9 @@
 {% extends '_layouts/cp' %}
 
+{% if not customer %}
+    {% exit 404 %}
+{% endif %}
+
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 
 {% set crumbs = [
