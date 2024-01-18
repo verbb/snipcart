@@ -52,7 +52,7 @@ class Shipments extends Component
 
         $shipStation = $this->getShipStation();
 
-        if (!$shipstation) {
+        if (!$shipStation) {
             return [];
         }
 
@@ -112,7 +112,7 @@ class Shipments extends Component
 
         $shipStation = $this->getShipStation();
 
-        if (!$shipstation) {
+        if (!$shipStation) {
             return $response;
         }
 
