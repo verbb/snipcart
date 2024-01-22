@@ -81,6 +81,14 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 
     public function resaveFields(): void
     {
+        // Don't make the same config changes twice
+        $projectConfig = Craft::$app->getProjectConfig();
+        $schemaVersion = $projectConfig->get('plugins.snipcart.schemaVersion', true);
+
+        if (version_compare($schemaVersion, '1.0.9', '>=')) {
+            return;
+        }
+
         // We need to resave **all** fields because we don't know where fields are being added.
         // For example, they could be in Matrix fields, Super Table fields, etc.
         // We need to rely on those fields resaving correctly to implement the migration.
