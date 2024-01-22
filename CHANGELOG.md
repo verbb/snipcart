@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.1.3 - 2024-01-23
+
+### Added
+- Add 404 handling for detail view of objects.
+- Add french translations. (thanks @scandella).
+
+### Fixed
+- Fix a migration error.
+- Fix Shipstation shipments.
+- Fix display of “Total Spent” values.
+- Fix metadata typing.
+
 ## 2.1.2 - 2023-12-19
 
 ### Added
