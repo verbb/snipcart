@@ -16,6 +16,25 @@ use yii\base\InvalidConfigException;
 
 class Orders extends Widget
 {
+    // Static Methods
+    // =========================================================================
+
+    public static function displayName(): string
+    {
+        return Craft::t('snipcart', 'Snipcart Orders');
+    }
+
+    public static function icon(): string
+    {
+        return Craft::getAlias('@verbb/snipcart/icon-mask.svg');
+    }
+
+    public static function maxColspan(): int
+    {
+        return 3;
+    }
+
+
     // Properties
     // =========================================================================
 
@@ -26,39 +45,12 @@ class Orders extends Widget
     // Public Methods
     // =========================================================================
 
-    public static function displayName(): string
-    {
-        return Craft::t('snipcart', 'Snipcart Orders');
-    }
-
-    public static function iconPath(): string
-    {
-        return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
-    }
-
-    public static function maxColspan(): int
-    {
-        return 3;
-    }
-
     public function getTitle(): string
     {
         $rangeName = $this->getChartRangeOptions()[$this->chartRange];
         $typeName = $this->getChartTypeOptions()[$this->chartType];
 
         return Craft::t('snipcart', 'Snipcart {range} {type}', ['range' => $rangeNames, 'type' => $typeName]);
-    }
-
-    public function rules(): array
-    {
-        $rules = parent::rules();
-
-        $rules[] = [['chartType', 'chartRange'], 'required'];
-        $rules[] = [['chartType', 'chartRange'], 'string'];
-        $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
-        $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
-
-        return $rules;
     }
 
     public function getBodyHtml(): ?string
@@ -95,5 +87,20 @@ class Orders extends Widget
             'weekly' => 'Weekly',
             'monthly' => 'Monthly',
         ];
+    }
+    
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function defineRules(): array
+    {
+        $rules = parent::defineRules();
+        
+        $rules[] = [['chartType', 'chartRange'], 'required'];
+        $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
+        $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];
+
+        return $rules;
     }
 }
