@@ -16,6 +16,25 @@ use yii\base\InvalidConfigException;
 
 class Orders extends Widget
 {
+    // Static Methods
+    // =========================================================================
+
+    public static function displayName(): string
+    {
+        return Craft::t('snipcart', 'Snipcart Orders');
+    }
+
+    public static function icon(): string
+    {
+        return Craft::getAlias('@verbb/snipcart/icon-mask.svg');
+    }
+
+    public static function maxColspan(): int
+    {
+        return 3;
+    }
+
+
     // Properties
     // =========================================================================
 
@@ -25,21 +44,6 @@ class Orders extends Widget
 
     // Public Methods
     // =========================================================================
-
-    public static function displayName(): string
-    {
-        return Craft::t('snipcart', 'Snipcart Orders');
-    }
-
-    public static function iconPath(): string
-    {
-        return Craft::getAlias('@fostercommerce/snipcart/assetbundles/dist/img/orders-icon.svg');
-    }
-
-    public static function maxColspan(): int
-    {
-        return 3;
-    }
 
     public function getTitle(): string
     {
