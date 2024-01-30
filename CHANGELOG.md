@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.4 - 2024-01-31
+
+### Fixed
+- Fix `textEmailTemplate` typing. (thanks @tobystokes).
+- Fix dashboard widget icon.
+
 ## 2.1.3 - 2024-01-23
 
 ### Added
