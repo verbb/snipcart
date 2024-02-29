@@ -1,6 +1,8 @@
 <?php
 namespace verbb\snipcart\migrations;
 
+use verbb\snipcart\Snipcart;
+
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
@@ -8,7 +10,7 @@ use craft\elements\Entry;
 use craft\helpers\App;
 use craft\helpers\Json;
 
-use RuntimeException;
+use Throwable;
 
 class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 {
@@ -85,7 +87,7 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
         $projectConfig = Craft::$app->getProjectConfig();
         $schemaVersion = $projectConfig->get('plugins.snipcart.schemaVersion', true);
 
-        if (version_compare($schemaVersion, '1.0.9', '>=')) {
+        if (version_compare($schemaVersion, '1.1.11', '>=')) {
             return;
         }
 
@@ -97,23 +99,31 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 
         $fields = (new Query())
             ->from('{{%fields}}')
+            ->where(['context' => 'global'])
             ->all();
 
         $fieldsService = Craft::$app->getFields();
         $fieldsService->refreshFields();
 
         foreach ($fields as $field) {
-            $field = $fieldsService->getFieldById($field['id']);
+            try {
+                $field = $fieldsService->getFieldById($field['id']);
 
-            if (!$field) {
-                continue;
-            }
+                if (!$field) {
+                    continue;
+                }
 
-            if (!$fieldsService->saveField($field, false)) {
-                throw new RuntimeException(Json::encode([
-                    'field' => $field->handle,
-                    'type' => $field::class,
-                    'errors' => $field->getErrors(),
+                $fieldsService->saveField($field, false);
+            } catch (Throwable $e) {
+                Snipcart::error(Craft::t('snipcart', 'Error trying to fetch mapped field value: “{message}” {file}:{line} - {errors}', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'errors' => Json::encode([
+                        'field' => $field->handle,
+                        'type' => $field::class,
+                        'errors' => $field->getErrors(),
+                    ]),
                 ]));
             }
         }
