@@ -1,5 +1,30 @@
 # Changelog
 
+## 2.1.5 - 2024-03-01
+
+### Fixed
+- Fix an error when migrating from Craft 3.
+- Fix an error when generating buttons when overriding `class` attributes.
+- Fix order of operations when uninstalling the plugin.
+
+## 2.1.4 - 2024-01-31
+
+### Fixed
+- Fix `textEmailTemplate` typing. (thanks @tobystokes).
+- Fix dashboard widget icon.
+
+## 2.1.3 - 2024-01-23
+
+### Added
+- Add 404 handling for detail view of objects.
+- Add french translations. (thanks @scandella).
+
+### Fixed
+- Fix a migration error.
+- Fix Shipstation shipments.
+- Fix display of “Total Spent” values.
+- Fix metadata typing.
+
 ## 2.1.2 - 2023-12-19
 
 ### Added

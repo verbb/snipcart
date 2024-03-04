@@ -299,7 +299,14 @@ class ProductDetails extends Model
             }
         }
 
-        return array_replace_recursive($options, $params);
+        // Merge classes separately, as `snipcart-add-item` is required, and any override classes will replace that
+        $optionsClass = ArrayHelper::remove($options, 'class', []);
+        $paramsClass = ArrayHelper::remove($params, 'class', []);
+
+        $newParams = array_replace_recursive($options, $params);
+        $newParams['class'] = array_merge($optionsClass, $paramsClass);
+
+        return $newParams;
     }
 
     private function skuIsUniqueRecordAttribute($attribute): bool

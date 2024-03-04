@@ -23,15 +23,15 @@ class Shipments extends Component
     // Properties
     // =========================================================================
 
-    private ShipStation $_shipStation;
+    private ?ShipStation $_shipStation = null;
 
 
     // Public Methods
     // =========================================================================
 
-    public function getShipStation(): ShipStation
+    public function getShipStation(): ?ShipStation
     {
-        if (!$this->_shipStation instanceof ShipStation) {
+        if (!($this->_shipStation instanceof ShipStation)) {
             $settings = Snipcart::$plugin->getSettings();
 
             return $this->_shipStation = $settings->getProvider('shipStation');
@@ -50,13 +50,19 @@ class Shipments extends Component
             return [];
         }
 
+        $shipStation = $this->getShipStation();
+
+        if (!$shipStation) {
+            return [];
+        }
+
         try {
             $rates = [];
             $package = Snipcart::$plugin->getOrders()->getOrderPackaging($order);
 
-            $includeShipStationRates = $this->getShipStation()->isConfigured() && $this->getShipStation()->getSettings()->enableShippingRates;
+            $includeShipStationRates = $shipStation->isConfigured() && $shipStation->getSettings()->enableShippingRates;
 
-            if ($includeShipStationRates && $shipStationRates = $this->getShipStation()->getRatesForOrder($order, $package)) {
+            if ($includeShipStationRates && $shipStationRates = $shipStation->getRatesForOrder($order, $package)) {
                 $rates = array_merge($rates, $shipStationRates);
             }
 
@@ -104,21 +110,27 @@ class Shipments extends Component
             'errors' => [],
         ];
 
+        $shipStation = $this->getShipStation();
+
+        if (!$shipStation) {
+            return $response;
+        }
+
         // is the plugin in test mode?
         $isTestMode = Snipcart::$plugin->getSettings()->testMode;
 
         // has ShipStation integration been configured?
-        $shipStationConfigured = $this->getShipStation()->isConfigured();
+        $shipStationConfigured = $shipStation->isConfigured();
 
         // does ShipStation's settings say we should send completed Snipcart orders?
-        $shipStationShouldSend = $this->getShipStation()->getSettings()->sendCompletedOrders;
+        $shipStationShouldSend = $shipStation->getSettings()->sendCompletedOrders;
 
         // should we seriously do it?
         $sendToShipStation = ! $isTestMode && $order->hasShippableItems() && $shipStationConfigured && $shipStationShouldSend;
 
         // send order to ShipStation if we need to
         if ($sendToShipStation) {
-            $shipStationOrder = $this->getShipStation()->createOrder($order);
+            $shipStationOrder = $shipStation->createOrder($order);
             $response->orders['shipStation'] = $shipStationOrder;
 
             if ((is_countable($shipStationOrder->getErrors()) ? count($shipStationOrder->getErrors()) : 0) > 0) {

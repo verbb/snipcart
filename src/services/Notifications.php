@@ -1,4 +1,5 @@
 <?php
+
 namespace verbb\snipcart\services;
 
 use verbb\snipcart\Snipcart;
@@ -17,7 +18,7 @@ class Notifications extends Component
     // =========================================================================
 
     private string $htmlEmailTemplate;
-    private string $textEmailTemplate;
+    private ?string $textEmailTemplate;
     private bool $emailTemplatesAreFrontEnd;
     private string $slackWebhook;
     private mixed $notificationVars;
@@ -59,7 +60,7 @@ class Notifications extends Component
         $model = Snipcart::$plugin->getSettings();
 
         // Bail if we’re in test mode and don’t want to send emails.
-        if ($model->testMode && ! $model->sendTestModeEmail) {
+        if ($model->testMode && !$model->sendTestModeEmail) {
             // pretend it went well
             return true;
         }
@@ -89,7 +90,7 @@ class Notifications extends Component
 
         $messageText = '';
 
-        if ($this->textEmailTemplate !== '' && $this->textEmailTemplate !== '0') {
+        if (!empty($this->textEmailTemplate)) {
             $messageText = $view->renderPageTemplate($this->textEmailTemplate, $this->getNotificationVars());
         }
 
@@ -135,7 +136,7 @@ class Notifications extends Component
             return false;
         }
 
-        if ($this->textEmailTemplate !== '' && $this->textEmailTemplate !== '0') {
+        if (!empty($this->textEmailTemplate)) {
             $this->ensureTemplateExists($this->textEmailTemplate);
 
             return false;
@@ -150,7 +151,7 @@ class Notifications extends Component
             Snipcart::error('Specified email template `{path}` does not exist.', [
                 'path' => $path,
             ]);
-            
+
             return false;
         }
 

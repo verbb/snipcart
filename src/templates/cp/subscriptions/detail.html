@@ -1,6 +1,10 @@
 {% extends '_layouts/cp' %}
 {% import '_includes/forms' as forms %}
 
+{% if not subscription %}
+    {% exit 404 %}
+{% endif %}
+
 {% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
 
 {% set centered = true %}
@@ -84,7 +88,7 @@
 
                                 <tr>
                                     <th class="light">{{ 'Total Spent' | t('snipcart') }}</th>
-                                    <td>{{ craft.snipcart.formatCurrency(subscription.totalSpent) }}</td>
+                                    <td>{{ craft.snipcart.formatCurrency(subscription.totalSpent) | raw }}</td>
                                 </tr>
 
                                 {% if subscription.firstInvoiceReceivedOn %}
