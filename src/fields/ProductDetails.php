@@ -29,6 +29,11 @@ class ProductDetails extends Field
     {
         return Craft::t('snipcart', 'Snipcart Product Details');
     }
+
+    public static function icon(): string
+    {
+        return '@verbb/snipcart/icon-mask.svg';
+    }
     
 
     // Properties
