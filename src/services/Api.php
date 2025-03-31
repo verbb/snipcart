@@ -29,7 +29,7 @@ class Api extends Component
     {
         TagDependency::invalidate(Craft::$app->getCache(), self::CACHE_TAG);
 
-        Snipcart::log('API caches cleared.');
+        Snipcart::info('API caches cleared.');
     }
 
 
