@@ -9,8 +9,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\FieldInterface;
 use craft\base\Model;
+use craft\base\NestedElementInterface;
 use craft\elements\Entry;
-use craft\elements\MatrixBlock;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use craft\helpers\Template as TemplateHelper;
@@ -72,9 +72,9 @@ class ProductDetails extends Model
         }
 
         $element = Craft::$app->elements->getElementById($this->elementId);
-        $isMatrix = isset($element) && $element instanceof MatrixBlock;
+        $hasOwner = isset($element) && $element instanceof NestedElementInterface;
 
-        if ($isMatrix && $entryOnly) {
+        if ($hasOwner && $entryOnly) {
             return $element->getOwner();
         }
 

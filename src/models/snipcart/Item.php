@@ -7,7 +7,7 @@ use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Model;
-use craft\elements\MatrixBlock;
+use craft\base\NestedElementInterface;
 
 use DateTime;
 use stdClass;
@@ -83,9 +83,9 @@ class Item extends Model
         }
 
         if ($element = Craft::$app->getElements()->getElementById($record->elementId)) {
-            $isMatrix = $element && $element instanceof MatrixBlock;
+            $hasOwner = $element && $element instanceof NestedElementInterface;
 
-            if ($isMatrix && $entryOnly) {
+            if ($hasOwner && $entryOnly) {
                 return $element->getOwner();
             }
 
