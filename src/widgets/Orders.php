@@ -50,7 +50,7 @@ class Orders extends Widget
         $rangeName = $this->getChartRangeOptions()[$this->chartRange];
         $typeName = $this->getChartTypeOptions()[$this->chartType];
 
-        return Craft::t('snipcart', 'Snipcart {range} {type}', ['range' => $rangeNames, 'type' => $typeName]);
+        return Craft::t('snipcart', 'Snipcart {range} {type}', ['range' => $rangeName, 'type' => $typeName]);
     }
 
     public function getBodyHtml(): ?string
