@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.2 - 2025-05-01
+
+### Fixed
+- Fix an error with the Orders widget title.
+
 ## 3.0.1 - 2024-08-11
 
 ### Fixed
