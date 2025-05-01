@@ -12,6 +12,11 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.1.7 - 2025-05-01
+
+### Fixed
+- Fix an error with the Orders widget title.
+
 ## 2.1.6 - 2024-08-11
 
 ### Fixed
