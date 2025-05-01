@@ -4,6 +4,11 @@
 
 ### Fixed
 - Fix an error with the Orders widget title.
+- Fix references to outdated Matrix block elements.
+- Fix “Order Email Notification Template” setting.
+- Fix an error when processing the “Notification Emails” plugin setting.
+- Fix template fields not autosuggesting templates.
+- Fix deprecated `log()` function.
 
 ## 3.0.1 - 2024-08-11
 
