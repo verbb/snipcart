@@ -123,6 +123,9 @@ A key/value JSON array can also be used to define prices in different currencies
 | `quantity`        | integer                    | Initial quantity to be added to the cart. Defaults to `1`.                                                                                                                                               |
 | `image`           | string                     | URL for a product thumbnail to be used in the cart. The default cart template's image is 50px square.                                                                                                    |
 | `price`           | decimal or key/value array | Price override, or key/value array to define multiple currencies (`{ 'usd': 20, 'eur': 17.79 }`). Defaults to the price defined in the Product Details field.                                            |
+| `name`            | string                     | The name of the product.                                         
+| `url`             | string                     | The URL to the product page.                                         
+
 
 ## Querying Elements by Product Details
 You can query elements by information stored in the Product Details field. For example, you can grab `products` entries that have inventory:
