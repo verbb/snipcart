@@ -44,7 +44,7 @@ class ProductDetails extends Model
     public ?int $id = null;
     public ?int $siteId = null;
     public ?string $sku = null;
-    public ?float $price = null;
+    public float|string|null $price = null;
     public bool $shippable = false;
     public bool $taxable = false;
     public ?float $weight = null;
