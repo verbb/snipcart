@@ -345,7 +345,7 @@ class ProductDetails extends Model
         // Apply the query for the Snipcart field and SKU
         Craft::configure($otherElementQuery, [$field->handle => [$attribute => $this->sku]]);
 
-        return !$otherElementQuery->exists();=
+        return !$otherElementQuery->exists();
     }
 
     private function renderFieldTemplate(string $template, array $data): string
