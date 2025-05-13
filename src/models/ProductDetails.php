@@ -338,7 +338,7 @@ class ProductDetails extends Model
 
         // Query all other elements in this section with the same SKU value
         $otherElementQuery = Entry::find()
-            ->id(['not', $currentElement->id])
+            ->id(['not', $currentElement->getCanonicalId()])
             ->sectionId($currentElement->section->id)
             ->limit(1);
 
