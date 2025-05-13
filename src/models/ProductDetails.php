@@ -194,7 +194,7 @@ class ProductDetails extends Model
     {
         $rules = parent::defineRules();
 
-        $rules[] = ['sku', 'validateSku'];
+        $rules[] = [['sku'], 'validateSku'];
         $rules[] = [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false];
         $rules[] = [['elementId', 'fieldId', 'inventory'], 'number', 'integerOnly' => true];
         $rules[] = [['sku'], 'required'];
@@ -323,67 +323,29 @@ class ProductDetails extends Model
 
     private function skuIsUniqueElementAttribute($attribute): bool
     {
-        $hasConflict = false;
+        // $hasConflict = false;
+        $field = $this->getField();
         $currentElement = $this->getElement();
 
-        $potentialDuplicates = Entry::find()
-            ->id(['not', $currentElement->id])
-            ->sectionId($currentElement->section->id)
-            ->all();
-
-        foreach ($potentialDuplicates as $potentialDuplicate) {
-            $duplicateElement = Craft::$app->elements->getElementById($potentialDuplicate->elementId);
-
-            if ($duplicateElement === null) {
-                continue;
-            }
-
-            if (is_a($duplicateElement, ElementInterface::class) === false) {
-                continue;
-            }
-
-            if (!$currentElement instanceof ElementInterface || $duplicateElement::class !== $currentElement::class) {
-                // Different element types with the same SKU are a conflict, as are new and existing.
-                $hasConflict = true;
-                break;
-            }
-
-            $getCanonicalId = static function($element): int {
-                return (int) $element->canonicalId;
-            };
-
-            if ($duplicateElement instanceof Entry) {
-                // Don’t worry about unpublished Elements.
-                if ($duplicateElement->revisionId === null) {
-                    continue;
-                }
-
-                // If a different Entry is using the SKU, that’s a conflict.
-                if ($getCanonicalId($duplicateElement) !== $getCanonicalId($currentElement)) {
-                    $hasConflict = true;
-                    break;
-                }
-            }
-
-            if ($duplicateElement instanceof MatrixBlock) {
-                // A duplicate in a different field is a conflict.
-                if ((int) $duplicateElement->fieldId !== (int)$currentElement->fieldId) {
-                    $hasConflict = true;
-                    break;
-                }
-
-                // Duplicate within same Matrix field on the same Entry.
-                $sameSource = $getCanonicalId($duplicateElement->getOwner()) === $getCanonicalId($currentElement->getOwner());
-                $sameOwner = (int) $duplicateElement->ownerId === (int)$currentElement->ownerId;
-
-                if ($sameSource && $sameOwner) {
-                    $hasConflict = true;
-                    break;
-                }
-            }
+        if (!$field) {
+            return false;
         }
 
-        return $hasConflict === false;
+        // Only handle entries for now
+        if (!($currentElement instanceof Entry)) {
+            return false;
+        }
+
+        // Query all other elements in this section with the same SKU value
+        $otherElementQuery = Entry::find()
+            ->id(['not', $currentElement->id])
+            ->sectionId($currentElement->section->id)
+            ->limit(1);
+
+        // Apply the query for the Snipcart field and SKU
+        Craft::configure($otherElementQuery, [$field->handle => [$attribute => $this->sku]]);
+
+        return !$otherElementQuery->exists();=
     }
 
     private function renderFieldTemplate(string $template, array $data): string

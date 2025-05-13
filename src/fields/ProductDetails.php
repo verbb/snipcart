@@ -140,9 +140,21 @@ class ProductDetails extends Field
         ]);
     }
 
-    public function getElementValidationRules(): array
+    public function beforeElementSave(ElementInterface $element, bool $isNew): bool
     {
-        return [[ProductDetailsValidator::class]];
+        $value = $element->getFieldValue($this->handle);
+        
+        if (!$value->validate()) {
+            foreach ($value->getErrors() as $errors) {
+                foreach ($errors as $error) {
+                    $element->addError($this->handle, $error);
+                }
+            }
+
+            return false;
+        }
+
+        return parent::beforeElementSave($element, $isNew);
     }
 
 
