@@ -34,6 +34,14 @@ class ProductDetails extends Field
     {
         return '@verbb/snipcart/icon-mask.svg';
     }
+
+    public static function dbType(): array|string
+    {
+        return [
+            // List any nested properties (for a ProductDetails model) which we can query
+            'sku' => Schema::TYPE_STRING,
+        ];
+    }
     
 
     // Properties
