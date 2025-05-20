@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.8 - 2025-05-20
+
+### Fixed
+- Fix pricing value when containing commas.
+- Fix an error when generating buy button.
+
 ## 2.1.7 - 2025-05-01
 
 ### Fixed
