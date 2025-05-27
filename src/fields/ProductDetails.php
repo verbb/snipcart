@@ -7,6 +7,7 @@ use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
 use verbb\snipcart\validators\ProductDetailsValidator;
 
 use Craft;
+use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\gql\GqlEntityRegistry;
@@ -142,16 +143,18 @@ class ProductDetails extends Field
 
     public function beforeElementSave(ElementInterface $element, bool $isNew): bool
     {
-        $value = $element->getFieldValue($this->handle);
-        
-        if (!$value->validate()) {
-            foreach ($value->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $element->addError($this->handle, $error);
+        if ($element->getScenario() === Element::SCENARIO_LIVE) {
+            $value = $element->getFieldValue($this->handle);
+            
+            if (!$value->validate()) {
+                foreach ($value->getErrors() as $errors) {
+                    foreach ($errors as $error) {
+                        $element->addError($this->handle, $error);
+                    }
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
 
         return parent::beforeElementSave($element, $isNew);
