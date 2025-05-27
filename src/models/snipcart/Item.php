@@ -71,7 +71,7 @@ class Item extends Model
         return ['paymentSchedule'];
     }
 
-    public function getRelatedElement(bool $entryOnly = false): ?ElementInterface
+    public function getRelatedElement(): ?ElementInterface
     {
         // get related record by SKU
         if (!($record = ProductDetailsRecord::findOne([
@@ -83,12 +83,6 @@ class Item extends Model
         }
 
         if ($element = Craft::$app->getElements()->getElementById($record->elementId)) {
-            $hasOwner = $element && $element instanceof NestedElementInterface;
-
-            if ($hasOwner && $entryOnly) {
-                return $element->getOwner();
-            }
-
             return $element;
         }
 

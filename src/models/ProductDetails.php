@@ -9,7 +9,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\FieldInterface;
 use craft\base\Model;
-use craft\base\NestedElementInterface;
 use craft\elements\Entry;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -65,20 +64,13 @@ class ProductDetails extends Model
     // Public Methods
     // =========================================================================
 
-    public function getElement(bool $entryOnly = false): ?ElementInterface
+    public function getElement(): ?ElementInterface
     {
         if (!$this->elementId) {
             return null;
         }
 
-        $element = Craft::$app->elements->getElementById($this->elementId);
-        $hasOwner = isset($element) && $element instanceof NestedElementInterface;
-
-        if ($hasOwner && $entryOnly) {
-            return $element->getOwner();
-        }
-
-        return $element;
+        return Craft::$app->elements->getElementById($this->elementId);
     }
 
     public function getField(): ProductDetailsField|FieldInterface|null
@@ -242,7 +234,7 @@ class ProductDetails extends Model
 
     private function getBuyButtonParams(array $params = []): array
     {
-        $element = $this->getElement(true);
+        $element = $this->getElement();
 
         // Provide some options as top-level for good DX and backwards-compatibility
         $price = ArrayHelper::remove($params, 'price', $this->price);
