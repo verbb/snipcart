@@ -272,6 +272,6 @@ return [
   '{name} just placed an order' => '{name} just placed an order',
   '{name} just placed an order.' => '{name} just placed an order.',
   '{siteName} Order #{invoiceNumber}' => '{siteName} Order #{invoiceNumber}',
-  '£' => '£',
   '€' => '€',
+  '£' => '£',
 ];

@@ -32,6 +32,11 @@
 - Now requires PHP `8.2.0+`.
 - Now requires Craft `5.0.0+`.
 
+## 2.1.9 - 2025-07-18
+
+### Changed
+- Update English translations.
+
 ## 2.1.8 - 2025-05-20
 
 ### Fixed
@@ -94,6 +99,7 @@
 - Fix URL param for buy now button.
 
 ## 2.1.0 - 2023-12-12
+
 > {note} The plugin’s package name has changed to `verbb/snipcart`. Snipcart will need be updated to 1.7.0 from a terminal, by running `composer require verbb/snipcart && composer remove fostercommerce//craft-snipcart`.
 
 ### Changed
@@ -169,6 +175,7 @@
 - Fixed aliases to use new `@fostercommerce` instead of `@workingconcept`. Thanks @mattstein.
 
 ## 1.5.0 - 2021-01-22
+
 > {warning} Links to deprecated classes have been removed. Be sure to update any custom modules or plugins relying on Snipcart prior to 1.4.0.
 
 ### Changed
@@ -232,6 +239,7 @@
 - The Recent Orders summary now uses relative timestamps rather than `m/d` format.
 
 ## 1.4.0 - 2020-07-21
+
 > {warning} This release re-namespaces some classes for PSR-4 compliance. If you’re using event hooks or other custom code relying on the `workingconcept\snipcart\models\*` or `workingconcept\snipcart\providers\*` namespaces, you may need to update those references.
 
 ### Fixed
@@ -462,7 +470,7 @@
 ## 1.0.3 - 2019-03-05
 
 ### Fixed
-- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2. 
+- Fixed a bug where passing a `null` value for Product Details `customOptions` would throw a warning in PHP 7.2.
 
 ## 1.0.2 - 2019-03-04
 
