@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.4 - 2025-07-18
+
+### Changed
+- Update English translations.
+
+### Fixed
+- Fix handling of getting current element for buy now links, not working correctly.
+- Fix an error when validating Snipcart fields.
+
 ## 3.0.3 - 2025-05-20
 
 ### Added
