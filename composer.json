@@ -2,7 +2,7 @@
     "name": "verbb/snipcart",
     "description": "Integrate with Snipcart.",
     "type": "craft-plugin",
-    "version": "3.0.4",
+    "version": "4.0.0-alpha.1",
     "keywords": [
         "craft",
         "cms",
@@ -33,10 +33,10 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "craftcms/cms": "^5.0.0",
+        "php": "^8.4",
+        "craftcms/cms": "6.x-dev",
         "pelago/emogrifier": "*",
-        "verbb/base": "^3.0.0"
+        "verbb/base": "dev-craft-6"
     },
     "autoload": {
         "psr-4": {
@@ -46,7 +46,9 @@
     "extra": {
         "name": "Snipcart",
         "handle": "snipcart",
-        "changelogUrl": "https://raw.githubusercontent.com/verbb/snipcart/craft-5/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/verbb/snipcart/craft-6/CHANGELOG.md",
         "class": "verbb\\snipcart\\Snipcart"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
