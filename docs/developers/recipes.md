@@ -46,9 +46,12 @@ Options you've defined on product buttons will display in the cart. If you'd lik
 
 Let's say we're selling coffee and we'd like customers to be able to select the grind before adding the item to the cart.
 
-#### 1. Add a select menu and [buy button](docs:templating/fields) to your template.
+#### 1. Add a select menu and [buy button](docs:template-guides/fields) to your template.
 
 ```twig
+{# Assuming your products field with the handle `grinds` #}
+{% set grinds = entry.grinds %}
+
 <div class="product-detail">
     <label>{{ "Select a Grind"|t }}</label>
 

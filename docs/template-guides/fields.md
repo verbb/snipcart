@@ -15,7 +15,7 @@ The quickest way to add a product add-to-cart button.
 {{ entry.productDetails.getBuyNowButton() }}
 ```
 
-The default markup will look something like this without any [customization](docs:templating/fields#additional-options):
+The default markup will look something like this without any [customization](docs:template-guides/fields#additional-options):
 
 ```html
 <a href="#"
