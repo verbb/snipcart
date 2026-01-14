@@ -49,19 +49,32 @@ Let's say we're selling coffee and we'd like customers to be able to select the 
 #### 1. Add a select menu and [buy button](docs:template-guides/fields) to your template.
 
 ```twig
-{# Assuming your products field with the handle `grinds` #}
-{% set grinds = entry.grinds %}
+{% set grinds = [
+    { label: 'Small', value: 10 },
+    { label: 'Medium', value: 15 },
+    { label: 'Large', value: 20 },
+] %}
 
 <div class="product-detail">
-    <label>{{ "Select a Grind"|t }}</label>
+    <label>{{ "Select a Grind" | t }}</label>
 
     <select class="grind-select" name="data-item-custom1">
         {% for grind in grinds %}
-            <option value="{{ grind }}">
-                {{ grind }}
+            <option value="{{ grind.value }}">
+                {{ grind.label }}
             </option>
         {% endfor %}
     </select>
+
+    {# Build custom options for "name" and "price" #}
+    {% set customOptions = [] %}
+
+    {% for grind in grinds %}
+        {% set customOptions = customOptions | merge({
+            name: grind.label,
+            price: grind.value,
+        }) %}
+    {% endfor %}
 
     {{ coffee.productDetails.getBuyNowButton({
         classes: ['btn'],
@@ -70,7 +83,7 @@ Let's say we're selling coffee and we'd like customers to be able to select the 
             {
                 name: 'Grind',
                 required: true,
-                options: grinds
+                options: customOptions,
             }
         ]
     }) }}
