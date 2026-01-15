@@ -70,10 +70,7 @@ Let's say we're selling coffee and we'd like customers to be able to select the 
     {% set customOptions = [] %}
 
     {% for grind in grinds %}
-        {% set customOptions = customOptions | merge({
-            name: grind.label,
-            price: grind.value,
-        }) %}
+        {% set customOptions = customOptions | merge([grind.label]) %}
     {% endfor %}
 
     {{ coffee.productDetails.getBuyNowButton({
