@@ -1,4 +1,4 @@
-<p align="center"><img src="https://verbb.imgix.net/plugins/snipcart/snipcart-icon.svg" width="100" height="100" alt="Snipcart icon"></p>
+<p align="center"><img src="https://assets.verbb.io/plugins/snipcart/snipcart-icon.svg" width="100" height="100" alt="Snipcart icon"></p>
 <h1 align="center">Snipcart for Craft CMS</h1>
 
 Quickly turn a Craft CMS website into a fully functioning store.
