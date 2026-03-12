@@ -21,6 +21,7 @@ use verbb\snipcart\records\WebhookLog;
 
 use Craft;
 use craft\base\Component;
+use Throwable;
 
 class Webhooks extends Component
 {
@@ -58,10 +59,7 @@ class Webhooks extends Component
     {
         $this->setMode($payload->mode);
         $this->webhookData = $payload;
-
-        if (Snipcart::$plugin->getSettings()->logWebhookRequests) {
-            $this->logWebhookTransaction();
-        }
+        $this->logWebhookTransaction();
     }
 
     public function getData(): mixed
@@ -82,6 +80,12 @@ class Webhooks extends Component
     public function handleOrderCompleted(): array
     {
         $order = $this->getCleanOrder();
+
+        Snipcart::info('Handling order.completed webhook.', [
+            'orderToken' => $order->token,
+            'invoiceNumber' => $order->invoiceNumber,
+            'itemsCount' => count($order->items),
+        ]);
 
         $responseData = [
             'success' => true,
@@ -107,6 +111,12 @@ class Webhooks extends Component
                 'elements' => 'Failed to update product Elements.',
             ];
         }
+
+        Snipcart::info('Completed order.completed webhook handling.', [
+            'orderToken' => $order->token,
+            'success' => $responseData['success'],
+            'errors' => $responseData['errors'] ?? [],
+        ]);
 
         if (isset($providerOrders->orders['shipStation'])) {
             $responseData['shipstation_order_id'] = $providerOrders->orders['shipStation']->orderId ?? '';
@@ -353,14 +363,20 @@ class Webhooks extends Component
 
     private function logWebhookTransaction(): void
     {
-        $webhookLog = new WebhookLog();
+        try {
+            $webhookLog = new WebhookLog();
 
-        $webhookLog->siteId = Craft::$app->sites->currentSite->id;
-        $webhookLog->type = $this->getData()->eventName;
-        $webhookLog->body = $this->getData();
-        $webhookLog->mode = strtolower($this->getMode());
-
-        $webhookLog->save();
+            $webhookLog->siteId = Craft::$app->sites->currentSite->id;
+            $webhookLog->type = $this->getData()->eventName;
+            $webhookLog->body = $this->getData();
+            $webhookLog->mode = strtolower($this->getMode());
+            $webhookLog->save();
+        } catch (Throwable $e) {
+            Snipcart::error('Could not persist webhook transaction log: {message}', [
+                'message' => $e->getMessage(),
+                'type' => $e::class,
+            ]);
+        }
     }
 
     private function nonResponse(): array

@@ -1,16 +1,19 @@
 <?php
 namespace verbb\snipcart\models\snipcart;
 
+use verbb\snipcart\fields\ProductDetails as ProductDetailsField;
 use verbb\snipcart\helpers\ModelHelper;
 use verbb\snipcart\records\ProductDetails as ProductDetailsRecord;
+use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Model;
-use craft\base\NestedElementInterface;
+use craft\elements\Entry;
 
 use DateTime;
 use stdClass;
+use Throwable;
 
 class Item extends Model
 {
@@ -73,21 +76,34 @@ class Item extends Model
 
     public function getRelatedElement(): ?ElementInterface
     {
-        // get related record by SKU
-        if (!($record = ProductDetailsRecord::findOne([
-            'sku' => $this->id,
-        ])) instanceof ProductDetailsRecord) {
-            // bail without a Record, which can happen if the product's details
-            // aren't stored in our Product Details field type
+        if (!$this->id) {
+            Snipcart::info('Could not resolve related element: item has no SKU/id.');
+
             return null;
         }
 
-        if ($element = Craft::$app->getElements()->getElementById($record->elementId)) {
-            return $element;
-        }
+        try {
+            // Prefer querying current Craft field storage by Product Details field handle.
+            // Since Craft now stores field values in native content storage, this avoids
+            // relying on the legacy `snipcart_product_details` table.
+            if ($element = $this->findElementByFieldStorage($this->id)) {
+                return $element;
+            }
 
-        // Record without an Element
-        return null;
+            Snipcart::info('No element found from field storage; trying legacy product details record.', [
+                'sku' => $this->id,
+            ]);
+
+            // Fall back to legacy record lookup for older installs.
+            return $this->findElementByLegacyRecord($this->id);
+        } catch (Throwable $e) {
+            Snipcart::error('Failed resolving related element for SKU `{sku}`: {message}', [
+                'sku' => $this->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     public function getPaymentSchedule(): ?PaymentSchedule
@@ -108,5 +124,77 @@ class Item extends Model
         }
 
         return $this->paymentSchedule = $paymentSchedule;
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    private function findElementByFieldStorage(string $sku): ?ElementInterface
+    {
+        $fields = Craft::$app->getFields()->getAllFields(false);
+
+        foreach ($fields as $field) {
+            if (!$field instanceof ProductDetailsField) {
+                continue;
+            }
+
+            try {
+                $query = Entry::find()
+                    ->status(null)
+                    ->site('*')
+                    ->limit(1);
+
+                Craft::configure($query, [
+                    $field->handle => ['sku' => $sku],
+                ]);
+
+                if (($element = $query->one()) instanceof Entry) {
+                    Snipcart::info('Resolved related element from field storage.', [
+                        'sku' => $sku,
+                        'fieldHandle' => $field->handle,
+                        'elementId' => $element->id,
+                    ]);
+
+                    return $element;
+                }
+            } catch (Throwable $e) {
+                Snipcart::info('Skipping Product Details field during SKU lookup.', [
+                    'sku' => $sku,
+                    'fieldHandle' => $field->handle,
+                    'reason' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    private function findElementByLegacyRecord(string $sku): ?ElementInterface
+    {
+        if (!($record = ProductDetailsRecord::findOne([
+            'sku' => $sku,
+        ])) instanceof ProductDetailsRecord) {
+            Snipcart::info('No legacy product details record found for SKU.', [
+                'sku' => $sku,
+            ]);
+
+            return null;
+        }
+
+        if (($element = Craft::$app->getElements()->getElementById($record->elementId)) instanceof ElementInterface) {
+            Snipcart::info('Resolved related element from legacy product details record.', [
+                'sku' => $sku,
+                'elementId' => $record->elementId,
+            ]);
+
+            return $element;
+        }
+
+        Snipcart::info('Legacy product details record found, but element could not be loaded.', [
+            'sku' => $sku,
+            'elementId' => $record->elementId,
+        ]);
+
+        return null;
     }
 }

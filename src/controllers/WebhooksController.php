@@ -9,9 +9,11 @@ use craft\helpers\Json;
 use craft\web\Controller;
 
 use Yii;
+use ErrorException;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
+use Throwable;
 
 class WebhooksController extends Controller
 {
@@ -74,19 +76,80 @@ class WebhooksController extends Controller
 
     public function actionHandle(): Response
     {
-        $this->requirePostRequest();
-        $requestBody = Craft::$app->getRequest()->getRawBody();
-        $payload = Json::decode($requestBody, false);
+        $request = Craft::$app->getRequest();
+        $requestBody = $request->getRawBody();
 
-        if ($reason = $this->hasInvalidRequestData($payload)) {
-            return $this->badRequestResponse([
-                'reason' => $reason,
-            ]);
+        if ($requestBody === '') {
+            $requestBody = file_get_contents('php://input') ?: '';
         }
 
-        Snipcart::$plugin->getWebhooks()->setData($payload);
+        Snipcart::info('Incoming webhook request received. method={method} path={pathInfo} bodyLength={bodyLength}', [
+            'method' => $request->getMethod(),
+            'pathInfo' => $request->getPathInfo(),
+            'bodyLength' => strlen($requestBody),
+        ]);
 
-        return $this->handleWebhookData($payload->eventName);
+        Snipcart::info('Incoming webhook raw body: {rawBody}', [
+            'rawBody' => $requestBody,
+        ]);
+
+        $previousErrorHandler = set_error_handler(static function(int $severity, string $message, string $file, int $line): never {
+            throw new ErrorException($message, 0, $severity, $file, $line);
+        });
+
+        try {
+            $this->requirePostRequest();
+            $payload = Json::decode($requestBody, false);
+
+            if ($reason = $this->hasInvalidRequestData($payload)) {
+                Snipcart::info('Webhook rejected before processing.', [
+                    'reason' => $reason,
+                ]);
+
+                return $this->badRequestResponse([
+                    'reason' => $reason,
+                ]);
+            }
+
+            Snipcart::info('Webhook received.', [
+                'eventName' => $payload->eventName ?? null,
+                'mode' => $payload->mode ?? null,
+            ]);
+
+            Snipcart::$plugin->getWebhooks()->setData($payload);
+
+            $response = $this->handleWebhookData($payload->eventName);
+
+            Snipcart::info('Webhook processed successfully: ' . Json::encode([
+                'eventName' => $payload->eventName ?? null,
+                'statusCode' => $response->statusCode,
+                'responseContent' => $response->content,
+            ]));
+
+            return $response;
+        } catch (Throwable $e) {
+            Snipcart::error('Unhandled exception while processing webhook: {message} type={type} file={file} line={line} trace={trace}', [
+                'message' => $e->getMessage(),
+                'type' => $e::class,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            $response = $this->asJson([
+                'success' => false,
+                'error' => 'Unhandled webhook exception.',
+            ]);
+            $response->setStatusCode(500, 'Internal Server Error');
+
+            return $response;
+        } finally {
+            if ($previousErrorHandler !== null) {
+                set_error_handler($previousErrorHandler);
+            } else {
+                restore_error_handler();
+            }
+        }
     }
 
 
@@ -97,8 +160,21 @@ class WebhooksController extends Controller
     {
         $methodName = self::WEBHOOK_EVENT_MAP[$eventName];
 
+        Snipcart::info('Webhook dispatching to handler.', [
+            'eventName' => $eventName,
+            'methodName' => $methodName,
+        ]);
+
         if (method_exists(Snipcart::$plugin->getWebhooks(), $methodName)) {
-            return $this->asJson(Snipcart::$plugin->getWebhooks()->{$methodName}());
+            $responseData = Snipcart::$plugin->getWebhooks()->{$methodName}();
+
+            Snipcart::info('Webhook handler response data prepared: ' . Json::encode([
+                'eventName' => $eventName,
+                'methodName' => $methodName,
+                'responseData' => $responseData,
+            ]));
+
+            return $this->asJson($responseData);
         }
 
         throw new Exception("Invalid Snipcart webhook handler specified for `$eventName`.");

@@ -105,12 +105,35 @@ class Orders extends Component
 
     public function updateProductsFromOrder(Order $order): bool
     {
-        if (Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder) {
-            foreach ($order->items as $orderItem) {
+        $reduceQuantitiesOnOrder = Snipcart::$plugin->getSettings()->reduceQuantitiesOnOrder;
+
+        Snipcart::info('Starting product inventory update from order.', [
+            'orderToken' => $order->token,
+            'reduceQuantitiesOnOrder' => $reduceQuantitiesOnOrder,
+            'itemsCount' => count($order->items),
+        ]);
+
+        if ($reduceQuantitiesOnOrder) {
+            foreach ($order->items as $index => $orderItem) {
+                Snipcart::info('Processing order item for inventory update.', [
+                    'orderToken' => $order->token,
+                    'index' => $index,
+                    'itemId' => $orderItem->id,
+                    'quantity' => $orderItem->quantity,
+                ]);
+
                 Snipcart::$plugin->getProducts()->reduceInventory($orderItem);
                 // TODO: reduce product inventory in ShipStation if necessary
             }
+        } else {
+            Snipcart::info('Skipping inventory update because setting is disabled.', [
+                'orderToken' => $order->token,
+            ]);
         }
+
+        Snipcart::info('Finished product inventory update from order.', [
+            'orderToken' => $order->token,
+        ]);
 
         return true;
     }
