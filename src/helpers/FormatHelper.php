@@ -63,7 +63,7 @@ class FormatHelper
         }
 
         if ($interval->m > 0) {
-            return $interval->m . 'm';
+            return $interval->m . 'mo';
         }
 
         if ($interval->d > 0) {
@@ -74,7 +74,11 @@ class FormatHelper
             return $interval->h . 'h';
         }
 
-        return '<1h';
+        if ($interval->i >= 1) {
+            return $interval->i . 'min';
+        }
+
+        return '<1min';
     }
 
     private static function normalizeCurrencyValue(mixed $value): string|array|null
