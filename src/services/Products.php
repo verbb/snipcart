@@ -117,7 +117,7 @@ class Products extends Component
                 $fieldValue->inventory = $newQuantity;
                 $element->setFieldValue($fieldHandle, $fieldValue);
 
-                $saveResult = Craft::$app->getElements()->saveElement($element);
+                $saveResult = Craft::$app->getElements()->saveElement($element, false);
 
                 Snipcart::info('Attempted to save updated inventory.', [
                     'itemId' => $itemId,
