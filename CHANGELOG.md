@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.5 - 2026-03-15
+
+### Changed
+- Remove validation check when decrementing inventory.
+
+### Fixed
+- Fix webhook handling for stock changes and provide better logging.
+- Fix ambiguous “Placed” date value for dashboard orders.
+
 ## 3.0.4 - 2025-07-18
 
 ### Changed
