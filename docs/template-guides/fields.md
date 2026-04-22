@@ -15,7 +15,7 @@ The quickest way to add a product add-to-cart button.
 {{ entry.productDetails.getBuyNowButton() }}
 ```
 
-The default markup will look something like this without any [customization](docs:template-guides/fields#additional-options):
+The default markup will look something like this without any [customization](docs:template-guides/fields#all-options):
 
 ```html
 <a href="#"
@@ -35,23 +35,46 @@ The default markup will look something like this without any [customization](doc
 ```
 
 ## Custom Attributes
-You can also pass an object of attribute key-values, which will set any HTML attribute on the anchor tag.
+Alongside the [documented options](docs:template-guides/fields#all-options) (`price`, `classes`, `customOptions`, etc.), you can pass any other key/value pairs. Each becomes an HTML attribute on the same `<a>` as the buy button—so Snipcart reads `data-item-*` attributes you add here on the real add-to-cart control (unlike a second manual `<a>` elsewhere on the page).
+
+The plugin always outputs Snipcart's standard product attributes from the Product Details field (`data-item-id`, `data-item-name`, `data-item-price`, and the rest). The HTML samples below are **abbreviated on purpose**: they only show the attributes you pass in Twig, so it is obvious what *you* control. In view source, the anchor will still include every default `data-item-*` (and dimensions/weight when shippable), as in the [default markup](docs:template-guides/fields#buy-button) example above.
+
+### Extra HTML attributes
 
 ```twig
 {{ entry.productDetails.getBuyNowButton({
-    rel: 'some-rel',
+    rel: 'nofollow',
     href: '#add-to-cart',
-    class: ['btn'],
+    classes: ['btn', 'btn-primary'],
 }) }}
+```
 
+Abbreviated resulting anchor (all default Snipcart `data-item-*` attributes omitted for clarity):
+
+```html
 <a href="#add-to-cart"
-    rel="some-rel"
-    class="snipcart-add-item btn"
-    data-item-id="to-slay-a-mockingbird"
-    data-item-name="To Slay a Mockingbird"
-    data-item-price="12.99"
-    data-item-url="https://craftcms.dev/products/to-slay-mockingbird"
+    rel="nofollow"
+    class="snipcart-add-item btn btn-primary"
 >Buy Now</a>
+```
+
+### Snipcart `data-item-*` attributes
+
+Use the same object for attributes [documented by Snipcart](https://docs.snipcart.com/v3/setup/products#advanced-product-attributes) that are not filled in by the field—for example categories (pipe-separated) for global category discounts:
+
+```twig
+{{ entry.productDetails.getBuyNowButton({
+    'data-item-categories': 'doors|windows',
+}) }}
+```
+
+Other common examples:
+
+```twig
+{{ entry.productDetails.getBuyNowButton({
+    'data-item-metadata': { internalRef: '123' }|json_encode,
+    'aria-label': 'Add ' ~ entry.title ~ ' to cart',
+}) }}
 ```
 
 ## Buy Button + Simple Options
@@ -125,6 +148,7 @@ A key/value JSON array can also be used to define prices in different currencies
 | `price`           | decimal or key/value array | Price override, or key/value array to define multiple currencies (`{ 'usd': 20, 'eur': 17.79 }`). Defaults to the price defined in the Product Details field.                                            |
 | `name`            | string                     | The name of the product.                                         
 | `url`             | string                     | The URL to the product page.                                         
+| _(any other key)_ | mixed                      | Treated as an HTML attribute on the anchor (for example `rel`, `aria-label`, or Snipcart values such as `data-item-categories`). See [Custom attributes](docs:template-guides/fields#custom-attributes). |
 
 
 ## Querying Elements by Product Details
