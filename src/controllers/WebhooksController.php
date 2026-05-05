@@ -93,7 +93,15 @@ class WebhooksController extends Controller
             'rawBody' => $requestBody,
         ]);
 
-        $previousErrorHandler = set_error_handler(static function(int $severity, string $message, string $file, int $line): never {
+        set_error_handler(static function(int $severity, string $message, string $file, int $line): bool {
+            if (!(error_reporting() & $severity)) {
+                return false;
+            }
+
+            if (in_array($severity, [E_DEPRECATED, E_USER_DEPRECATED], true)) {
+                return true;
+            }
+
             throw new ErrorException($message, 0, $severity, $file, $line);
         });
 
@@ -144,11 +152,7 @@ class WebhooksController extends Controller
 
             return $response;
         } finally {
-            if ($previousErrorHandler !== null) {
-                set_error_handler($previousErrorHandler);
-            } else {
-                restore_error_handler();
-            }
+            restore_error_handler();
         }
     }
 
