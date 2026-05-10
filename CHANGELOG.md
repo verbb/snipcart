@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.6 - 2026-05-10
+
+### Fixed
+- Fix `set_error_handler` handling for deprecation warninga.
+
 ## 3.0.5 - 2026-03-15
 
 ### Changed
