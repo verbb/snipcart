@@ -18,4 +18,4 @@ Caching is enabled and somewhat conservative to balance timeliness and speed, bu
 ### Shipping
 If you've set up a ShipStation account and want the Snipcart plugin to get live rates or forward orders, this is where you'll need to add your credentials along with a _Ship From_ address.
 
-See the [Shipments page](docs:shipments/overview) for more about how ShipStation integration works.
+See the [Shipments page](docs:feature-tour/shipments) for more about how ShipStation integration works.

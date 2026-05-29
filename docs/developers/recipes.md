@@ -2,7 +2,7 @@
 There's lots you can do with the Snipcart plugin. Below are some examples you can use or take as inspiration.
 
 ## Webhooks
-There's a lot you can do by responding to Snipcart's [webhooks](docs:webhooks/when)! Here are some examples.
+There's a lot you can do by responding to Snipcart's [webhooks](docs:webhooks/events)! Here are some examples.
 
 ### Send Low Stock Warning
 Use the `init()` function of a custom module to listen for changes to product inventory and send an email if there are fewer than 10 items left in stock.
