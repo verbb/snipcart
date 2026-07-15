@@ -43,4 +43,4 @@ The simplest version looks like this, and you'd add it to product detail pages o
 {{ entry.productDetails.getBuyNowButton() }}
 ```
 
-More on customizing these buttons [here](docs:templating/fields).
+More on customizing these buttons [here](docs:template-guides/fields).

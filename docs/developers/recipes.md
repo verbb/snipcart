@@ -2,7 +2,7 @@
 There's lots you can do with the Snipcart plugin. Below are some examples you can use or take as inspiration.
 
 ## Webhooks
-There's a lot you can do by responding to Snipcart's [webhooks](docs:webhooks/when)! Here are some examples.
+There's a lot you can do by responding to Snipcart's [webhooks](docs:webhooks/overview)! Here are some examples.
 
 ### Send Low Stock Warning
 Use the `init()` function of a custom module to listen for changes to product inventory and send an email if there are fewer than 10 items left in stock.
@@ -46,7 +46,7 @@ Options you've defined on product buttons will display in the cart. If you'd lik
 
 Let's say we're selling coffee and we'd like customers to be able to select the grind before adding the item to the cart.
 
-#### 1. Add a select menu and [buy button](docs:templating/fields) to your template.
+#### 1. Add a select menu and [buy button](docs:template-guides/fields) to your template.
 
 ```twig
 <div class="product-detail">
