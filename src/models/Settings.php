@@ -260,6 +260,9 @@ class Settings extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
+        $rules[] = [['pluginName'], 'trim'];
+        $rules[] = [['pluginName'], 'required'];
+        $rules[] = [['pluginName'], 'string', 'max' => 52];
         
         $rules[] = [['publicApiKey', 'secretApiKey'], 'required'];
         $rules[] = [['cacheDurationLimit'], 'number', 'integerOnly' => true];

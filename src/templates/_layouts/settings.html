@@ -1,14 +1,17 @@
-{% extends 'snipcart/_layouts/settings' %}
+{% extends 'verbb-base/_layouts/settings' %}
 
 {% import '_includes/forms' as forms %}
 {% import 'verbb-base/_macros' as macros %}
 
 {% requireAdmin %}
 
-{% set selectedTab = selectedTab ?? craft.app.request.getSegment(3) %}
-{% set selectedTab = selectedTab ?: 'general' %}
-{% set fullPageForm = true %}
-{% set pageTabs = {
+{% set crumbs = [
+    { label: 'Settings' | t('app'), url: url('settings') },
+    { label: 'Plugins' | t('app'), url: url('settings/plugins') },
+    { label: craft.snipcart.getPluginName() | t('snipcart'), url: url('snipcart/settings') },
+] | merge(crumbs ?? []) %}
+
+{% set pageTabs = pageTabs ?? {
     general: { title: 'General Settings' | t('snipcart'), url: url('snipcart/settings') },
     account: { title: 'Snipcart Account' | t('snipcart'), url: url('snipcart/settings/account') },
     orders: { title: 'Orders' | t('snipcart'), url: url('snipcart/settings/orders') },
@@ -16,11 +19,12 @@
     logging: { title: 'Logging & Caching' | t('snipcart'), url: url('snipcart/settings/logging') },
     shipping: { title: 'Shipping' | t('snipcart'), url: url('snipcart/settings/shipping') },
 } %}
-{% set pageTitle = pageTabs[selectedTab].title ?? pageTabs[selectedTab].heading ?? null %}
-{% if not pageTitle %}{% exit 404 %}{% endif %}
-{% set pageAction = 'plugins/save-plugin-settings' %}
-{% set pageUrl = selectedTab == 'general' ? 'snipcart/settings' : 'snipcart/settings/' ~ selectedTab %}
 
-{% block settingsContent %}
-    {% include 'snipcart/settings/_panes/' ~ selectedTab ignore missing %}
+{% set pageTitle = pageTitle ?? false %}
+{% if title is not defined and pageTitle %}
+    {% set title = pageTitle %}
+{% endif %}
+
+{% block settingsMeta %}
+    {{ hiddenInput('pluginHandle', 'snipcart') }}
 {% endblock %}

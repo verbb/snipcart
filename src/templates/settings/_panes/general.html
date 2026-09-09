@@ -2,7 +2,6 @@
 {% import 'verbb-base/_macros' as macros %}
 
 {{ forms.textField({
-    first: true,
     label: 'Plugin Name' | t('app'),
     instructions: 'Plugin name for the end user.' | t('snipcart'),
     id: 'pluginName',
@@ -10,5 +9,6 @@
     value: settings.pluginName,
     autofocus: true,
     required: true,
+    errors: settings.getErrors('pluginName'),
     warning: macros.configWarning('pluginName', 'snipcart'),
 }) }}
