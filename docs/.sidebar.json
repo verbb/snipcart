@@ -4,9 +4,9 @@
         "collapsable": false,
         "children": [
             "get-started/installation-setup",
+            "get-started/setup",
             "get-started/requirements",
-            "get-started/configuration",
-            "get-started/setup"
+            "get-started/configuration"
         ]
     },
     {
@@ -54,7 +54,7 @@
         "children": [
             "troubleshooting/logging",
             "troubleshooting/testing-webhooks",
-            "troubleshooting/verify-orders"
+            "troubleshooting/shipstation"
         ]
     }
 ]

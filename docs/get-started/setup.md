@@ -19,3 +19,11 @@ Caching is enabled and somewhat conservative to balance timeliness and speed, bu
 If you've set up a ShipStation account and want the Snipcart plugin to get live rates or forward orders, this is where you'll need to add your credentials along with a _Ship From_ address.
 
 See the [Shipments page](docs:feature-tour/shipments) for more about how ShipStation integration works.
+
+## Complete a Test Order
+
+Enable [Test Mode](docs:feature-tour/test-mode) and configure the matching test keys. Create a recognisable [product](docs:feature-tour/products), such as a Studio Notebook, with its price and identifier. Follow [Templating](docs:feature-tour/templating) to include the cart assets and render its buy button on the product page.
+
+Open that page as a visitor, add the product and inspect the cart. Check its name, quantity, price and product URL before completing a test checkout. Snipcart needs to be able to reach and validate the product data, so test on a reachable environment when a local URL is unavailable to the service.
+
+After checkout, inspect the order in Snipcart and confirm the corresponding webhook reaches Craft. Check the resulting order and any configured notification or shipping integration. A successful browser checkout does not prove that the webhook was delivered; use [Testing Webhooks](docs:troubleshooting/testing-webhooks) to diagnose that part separately.

@@ -46,7 +46,7 @@ Options you've defined on product buttons will display in the cart. If you'd lik
 
 Let's say we're selling coffee and we'd like customers to be able to select the grind before adding the item to the cart.
 
-#### 1. Add a select menu and [buy button](docs:template-guides/fields) to your template.
+#### 1. Add a Select Menu and [Buy Button](docs:template-guides/fields) to Your Template.
 
 ```twig
 {% set grinds = [
@@ -121,7 +121,7 @@ The resulting markup will look something like this. Note the `data-item-custom1`
 </div>
 ```
 
-#### 2. Bind input changes to buy button properties.
+#### 2. Bind Input Changes to Buy Button Properties.
 A quick little bit of jQuery can listen for the select menu to change, look in `product-detail` for a matching `data-item-custom*` property, and update it with the new selection.
 
 :::tip

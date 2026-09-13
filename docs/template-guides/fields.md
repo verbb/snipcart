@@ -39,7 +39,7 @@ Alongside the [documented options](docs:template-guides/fields#all-options) (`pr
 
 The plugin always outputs Snipcart's standard product attributes from the Product Details field (`data-item-id`, `data-item-name`, `data-item-price`, and the rest). The HTML samples below are **abbreviated on purpose**: they only show the attributes you pass in Twig, so it is obvious what *you* control. In view source, the anchor will still include every default `data-item-*` (and dimensions/weight when shippable), as in the [default markup](docs:template-guides/fields#buy-button) example above.
 
-### Extra HTML attributes
+### Extra HTML Attributes
 
 ```twig
 {{ entry.productDetails.getBuyNowButton({
@@ -58,7 +58,7 @@ Abbreviated resulting anchor (all default Snipcart `data-item-*` attributes omit
 >Buy Now</a>
 ```
 
-### Snipcart `data-item-*` attributes
+### Snipcart `data-item-*` Attributes
 
 Use the same object for attributes [documented by Snipcart](https://docs.snipcart.com/v3/setup/products#advanced-product-attributes) that are not filled in by the field—for example categories (pipe-separated) for global category discounts:
 
