@@ -5,16 +5,17 @@ use verbb\snipcart\Snipcart;
 use verbb\snipcart\models\Settings;
 
 use Craft;
-use craft\web\Controller;
 
 use yii\web\Response;
 
-class PluginController extends Controller
+use verbb\base\controllers\SettingsController as BaseSettingsController;
+
+class SettingsController extends BaseSettingsController
 {
     // Public Methods
     // =========================================================================
 
-    public function actionSettings(): Response
+    public function actionIndex(): Response
     {
         /* @var Settings $settings */
         $settings = Snipcart::$plugin->getSettings();

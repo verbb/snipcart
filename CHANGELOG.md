@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Fix saving one settings page resetting settings on the other pages.
+
 ## 3.0.8 - 2026-09-14
 
 ### Changed

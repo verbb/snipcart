@@ -113,8 +113,8 @@ class Snipcart extends Plugin
             $event->rules['snipcart/abandoned/<cartId>'] = 'snipcart/carts/detail';
             $event->rules['snipcart/subscriptions'] = 'snipcart/subscriptions/index';
             $event->rules['snipcart/subscription/<subscriptionId>'] = 'snipcart/subscriptions/detail';
-            $event->rules['snipcart/settings'] = 'snipcart/plugin/settings';
-            $event->rules['snipcart/settings/<settingsNavItem:{handle}>'] = 'snipcart/plugin/settings';
+            $event->rules['snipcart/settings'] = 'snipcart/settings/index';
+            $event->rules['snipcart/settings/<settingsNavItem:{handle}>'] = 'snipcart/settings/index';
         });
     }
 
