@@ -12,6 +12,28 @@ use yii\web\Response;
 
 class DiscountsController extends Controller
 {
+    // Constants
+    // =========================================================================
+
+    private const CREATE_ATTRIBUTES = [
+        'name',
+        'expires',
+        'maxNumberOfUsages',
+        'trigger',
+        'code',
+        'itemId',
+        'totalToReach',
+        'type',
+        'amount',
+        'productIds',
+        'rate',
+        'alternatePrice',
+        'shippingDescription',
+        'shippingCost',
+        'shippingGuaranteedDaysToDelivery',
+    ];
+
+
     // Public Methods
     // =========================================================================
 
@@ -38,9 +60,10 @@ class DiscountsController extends Controller
     {
         $this->requirePostRequest();
 
-        $params = Craft::$app->getRequest()->post();
-
-        unset($params['CRAFT_CSRF_TOKEN'], $params['action']);
+        $params = array_intersect_key(
+            Craft::$app->getRequest()->post(),
+            array_flip(self::CREATE_ATTRIBUTES),
+        );
 
         if (!$discount = new Discount($params)) {
             Craft::$app->getUrlManager()->setRouteParams([

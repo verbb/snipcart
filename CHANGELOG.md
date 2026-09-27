@@ -5,6 +5,9 @@
 ### Changed
 - Route plugin settings through the plugin’s authorized settings controller.
 
+### Fixed
+- Fixed discount creation accepting properties that are not supported by the control-panel form.
+
 ## 3.0.9 - 2026-09-23
 
 ### Fixed
