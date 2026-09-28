@@ -73,7 +73,6 @@ class ShipStation extends ShippingProvider
                 'Content-Type' => 'application/json; charset=utf-8',
                 'Accept' => 'application/json',
             ],
-            'verify' => false,
             'debug' => false,
         ]);
     }
