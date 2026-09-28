@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed a high-severity authorization vulnerability.
+- Fixed a high-severity control-panel rendering vulnerability.
 - Fixed discount creation accepting properties that are not supported by the control-panel form.
 
 ## 3.0.9 - 2026-09-23

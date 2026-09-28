@@ -33,19 +33,23 @@ function fetchCarts() {
                     row.setAttribute('data-name', cart.email);
 
                     const nameColumn = document.createElement('td');
-                    nameColumn.innerHTML = `<a href="${cart.cpUrl}">${cart.billingAddress.name}</a>`;
+                    const nameLink = document.createElement('a');
+
+                    nameLink.href = cart.cpUrl;
+                    nameLink.textContent = cart.billingAddress.name;
+                    nameColumn.appendChild(nameLink);
 
                     const emailColumn = document.createElement('td');
-                    emailColumn.innerHTML = cart.email;
+                    emailColumn.textContent = cart.email;
 
                     const statusColumn = document.createElement('td');
-                    statusColumn.innerHTML = cart.status;
+                    statusColumn.textContent = cart.status;
 
                     const dateColumn = document.createElement('td');
-                    dateColumn.innerHTML = cart.modificationDate;
+                    dateColumn.textContent = cart.modificationDate;
 
                     const totalColumn = document.createElement('td');
-                    totalColumn.innerHTML = cart.total;
+                    totalColumn.textContent = cart.total;
 
                     row.appendChild(nameColumn);
                     row.appendChild(emailColumn);
