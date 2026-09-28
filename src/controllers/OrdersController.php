@@ -2,16 +2,17 @@
 namespace verbb\snipcart\controllers;
 
 use verbb\snipcart\Snipcart;
+use verbb\snipcart\services\Api;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
-
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 use DateTime;
 
-class OrdersController extends Controller
+class OrdersController extends BaseCpController
 {
     // Constants
     // =========================================================================
@@ -20,6 +21,14 @@ class OrdersController extends Controller
     public const START_DATE_SESSION_KEY = 'snipcartStartDate';
     public const END_DATE_PARAM = 'endDate';
     public const END_DATE_SESSION_KEY = 'snipcartEndDate';
+
+
+    // Properties
+    // =========================================================================
+
+    protected array $actionPermissions = [
+        'refund' => Snipcart::PERMISSION_REFUND_ORDERS,
+    ];
 
 
     // Public Methods
@@ -63,9 +72,37 @@ class OrdersController extends Controller
     {
         $this->requirePostRequest();
 
-        $params = Craft::$app->getRequest()->post();
+        $request = Craft::$app->getRequest();
+        $orderId = (string)$request->getRequiredBodyParam('orderId');
+        $amountParam = $request->getRequiredBodyParam('amount');
 
-        Snipcart::$plugin->getOrders()->refundOrder($params['orderId'], $params['amount'], $params['comment'], $params['notifyCustomer']);
+        if (!is_numeric($amountParam)) {
+            throw new BadRequestHttpException('Refund amount must be a number.');
+        }
+
+        $amount = (float)$amountParam;
+
+        if (!is_finite($amount) || $amount <= 0) {
+            throw new BadRequestHttpException('Refund amount must be greater than zero.');
+        }
+
+        $order = Snipcart::$plugin->getOrders()->getOrder($orderId, false);
+
+        if (!$order || !$order->token || $order->finalGrandTotal === null) {
+            throw new NotFoundHttpException('Order not found.');
+        }
+
+        $remainingAmount = max(0.0, $order->finalGrandTotal - ($order->refundsAmount ?? 0.0));
+
+        if ($amount > $remainingAmount) {
+            throw new BadRequestHttpException('Refund amount exceeds the order’s remaining refundable value.');
+        }
+
+        $comment = (string)$request->getBodyParam('comment', '');
+        $notifyCustomer = filter_var($request->getBodyParam('notifyCustomer', false), FILTER_VALIDATE_BOOL);
+
+        Snipcart::$plugin->getOrders()->refundOrder($order->token, $amount, $comment, $notifyCustomer);
+        Api::invalidateCache();
 
         Craft::$app->getSession()->setNotice('Order refunded.');
 

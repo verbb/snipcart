@@ -2,14 +2,22 @@
 namespace verbb\snipcart\controllers;
 
 use verbb\snipcart\Snipcart;
+use verbb\snipcart\services\Api;
 
 use Craft;
-use craft\web\Controller;
-
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class SubscriptionsController extends Controller
+class SubscriptionsController extends BaseCpController
 {
+    // Properties
+    // =========================================================================
+
+    protected array $actionPermissions = [
+        'cancel' => Snipcart::PERMISSION_MANAGE_SUBSCRIPTIONS,
+    ];
+
+
     // Public Methods
     // =========================================================================
 
@@ -40,9 +48,15 @@ class SubscriptionsController extends Controller
     {
         $this->requirePostRequest();
 
-        $params = Craft::$app->getRequest()->post();
+        $subscriptionId = (string)Craft::$app->getRequest()->getRequiredBodyParam('subscriptionId');
+        $subscription = Snipcart::$plugin->getSubscriptions()->getSubscription($subscriptionId, false);
 
-        Snipcart::$plugin->getSubscriptions()->cancel($params['subscriptionId']);
+        if (!$subscription || !$subscription->id) {
+            throw new NotFoundHttpException('Subscription not found.');
+        }
+
+        Snipcart::$plugin->getSubscriptions()->cancel($subscription->id);
+        Api::invalidateCache();
 
         Craft::$app->getSession()->setNotice('Subscription cancelled.');
 

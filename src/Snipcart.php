@@ -14,10 +14,12 @@ use Craft;
 use craft\base\Plugin;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUserPermissionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Dashboard;
 use craft\services\Fields;
+use craft\services\UserPermissions;
 use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
@@ -30,6 +32,10 @@ class Snipcart extends Plugin
     // =========================================================================
 
     public const EVENT_REGISTER_SHIPPING_PROVIDERS = 'registerShippingProviders';
+    public const PERMISSION_VIEW_STORE = 'snipcart-viewStore';
+    public const PERMISSION_REFUND_ORDERS = 'snipcart-refundOrders';
+    public const PERMISSION_MANAGE_DISCOUNTS = 'snipcart-manageDiscounts';
+    public const PERMISSION_MANAGE_SUBSCRIPTIONS = 'snipcart-manageSubscriptions';
 
 
     // Traits
@@ -41,7 +47,7 @@ class Snipcart extends Plugin
     // Properties
     // =========================================================================
 
-    public string $schemaVersion = '1.1.0';
+    public string $schemaVersion = '1.2.0';
     public bool $hasCpSection = true;
     public bool $hasCpSettings = true;
 
@@ -58,6 +64,7 @@ class Snipcart extends Plugin
         $this->_registerFieldTypes();
         $this->_registerVariable();
         $this->_registerCacheTypes();
+        $this->_registerPermissions();
         $this->_registerShippingProviders();
 
         if (Craft::$app->getRequest()->getIsCpRequest()) {
@@ -78,6 +85,10 @@ class Snipcart extends Plugin
 
     public function getCpNavItem(): ?array
     {
+        if (!Craft::$app->getUser()->checkPermission(self::PERMISSION_VIEW_STORE)) {
+            return null;
+        }
+
         $navItems = parent::getCpNavItem();
 
         $navItems['label'] = $this->getPluginName();
@@ -146,6 +157,31 @@ class Snipcart extends Plugin
                 'key' => Api::CACHE_TAG,
                 'label' => Craft::t('snipcart', 'Snipcart API cache'),
                 'action' => [Snipcart::$plugin->getApi(), 'invalidateCache'],
+            ];
+        });
+    }
+
+    private function _registerPermissions(): void
+    {
+        Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event): void {
+            $event->permissions[] = [
+                'heading' => $this->getPluginName(),
+                'permissions' => [
+                    self::PERMISSION_VIEW_STORE => [
+                        'label' => Craft::t('snipcart', 'View Snipcart store data'),
+                        'nested' => [
+                            self::PERMISSION_REFUND_ORDERS => [
+                                'label' => Craft::t('snipcart', 'Refund Snipcart orders'),
+                            ],
+                            self::PERMISSION_MANAGE_DISCOUNTS => [
+                                'label' => Craft::t('snipcart', 'Manage Snipcart discounts'),
+                            ],
+                            self::PERMISSION_MANAGE_SUBSCRIPTIONS => [
+                                'label' => Craft::t('snipcart', 'Manage Snipcart subscriptions'),
+                            ],
+                        ],
+                    ],
+                ],
             ];
         });
     }

@@ -34,6 +34,18 @@ class Orders extends Widget
         return 3;
     }
 
+    public static function isSelectable(): bool
+    {
+        return parent::isSelectable() && self::_canViewStore();
+    }
+
+    private static function _canViewStore(): bool
+    {
+        $user = Craft::$app->getUser();
+
+        return $user->checkPermission('accessPlugin-snipcart') && $user->checkPermission(Snipcart::PERMISSION_VIEW_STORE);
+    }
+
 
     // Properties
     // =========================================================================
@@ -55,6 +67,10 @@ class Orders extends Widget
 
     public function getBodyHtml(): ?string
     {
+        if (!self::_canViewStore()) {
+            return null;
+        }
+
         $view = Craft::$app->getView();
 
         $view->registerAssetBundle(OrdersWidgetAsset::class);

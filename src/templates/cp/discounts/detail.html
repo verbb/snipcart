@@ -264,12 +264,14 @@
             {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
         </a>
 
-        <form action="" method="post" class="inline-block ml-1">
-            <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
-            <input type="hidden" name="discountId" value="{{ discount.id }}">
-            {{ csrfInput() }}
+        {% if currentUser.can('snipcart-manageDiscounts') %}
+            <form action="" method="post" class="inline-block ml-1">
+                <input type="hidden" name="action" value="snipcart/discounts/delete-discount">
+                <input type="hidden" name="discountId" value="{{ discount.id }}">
+                {{ csrfInput() }}
 
-            <input type="submit" class="btn" value="{{ 'Delete' | t('snipcart') }}">
-        </form>
+                <input type="submit" class="btn" value="{{ 'Delete' | t('snipcart') }}">
+            </form>
+        {% endif %}
     </div>
 {% endblock %}

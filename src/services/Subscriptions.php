@@ -32,9 +32,11 @@ class Subscriptions extends Component
         ];
     }
 
-    public function getSubscription(string $subscriptionId): ?Subscription
+    public function getSubscription(string $subscriptionId, bool $useCache = true): ?Subscription
     {
-        if ($subscriptionData = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId")) {
+        $subscriptionId = rawurlencode($subscriptionId);
+
+        if ($subscriptionData = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId", [], $useCache)) {
             return ModelHelper::safePopulateModel((array)$subscriptionData, Subscription::class);
         }
 
@@ -43,6 +45,8 @@ class Subscriptions extends Component
 
     public function getSubscriptionInvoices($subscriptionId): array
     {
+        $subscriptionId = rawurlencode((string)$subscriptionId);
+
         $response = Snipcart::$plugin->getApi()->get("subscriptions/$subscriptionId/invoices");
 
         return is_array($response) ? $response : [];
@@ -50,16 +54,22 @@ class Subscriptions extends Component
 
     public function cancel(string $subscriptionId): mixed
     {
+        $subscriptionId = rawurlencode($subscriptionId);
+
         return Snipcart::$plugin->getApi()->delete("subscriptions/$subscriptionId");
     }
 
     public function pause(string $subscriptionId): mixed
     {
+        $subscriptionId = rawurlencode($subscriptionId);
+
         return Snipcart::$plugin->getApi()->post("subscriptions/$subscriptionId/pause");
     }
 
     public function resume(string $subscriptionId): mixed
     {
+        $subscriptionId = rawurlencode($subscriptionId);
+
         return Snipcart::$plugin->getApi()->post("subscriptions/$subscriptionId/resume");
     }
 }

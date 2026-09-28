@@ -5,14 +5,12 @@ use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
-
 use yii\base\Response;
 
 use DateTime;
 use DateTimeZone;
 
-class ChartsController extends Controller
+class ChartsController extends BaseCpController
 {
     // Public Methods
     // =========================================================================

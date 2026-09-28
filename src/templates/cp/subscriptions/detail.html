@@ -212,7 +212,7 @@
             {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
         </a>
 
-        {% if not isCancelled %}
+        {% if not isCancelled and currentUser.can('snipcart-manageSubscriptions') %}
             <form action="" method="post" class="inline-block ml-1">
                 <input type="hidden" name="action" value="snipcart/subscriptions/cancel">
                 <input type="hidden" name="subscriptionId" value="{{ subscription.id }}">

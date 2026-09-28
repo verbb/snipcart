@@ -4,6 +4,18 @@ This guide assumes you've established a Craft site and you're setting up a new s
 ## Create a Snipcart Account
 Start by [creating an account](https://app.snipcart.com/register) via Snipcart. Copy your API keys from **Account** → **API Keys** in Snipcart to **Settings** → **Snipcart** on your Craft site.
 
+## Give Staff Access
+
+Staff need Craft’s **Access Snipcart** permission and the **View Snipcart store data** permission to open the plugin’s control-panel section. The view permission includes the store dashboard, orders, customers, abandoned carts, discounts and subscriptions.
+
+Grant the additional permissions only to staff who perform the corresponding operation:
+
+- **Refund Snipcart orders** allows refunds up to the order’s remaining refundable value.
+- **Manage Snipcart discounts** allows creating and deleting discounts.
+- **Manage Snipcart subscriptions** allows cancelling subscriptions.
+
+Craft administrators retain access to every operation. A staff member with view access can inspect store data without receiving permission to refund orders or change discounts and subscriptions.
+
 ### Orders
 Everything here is off by default, but you can configure a number of options that don't require any extra code unless you'd prefer your own markup, field types, and integrations.
 

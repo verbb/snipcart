@@ -6,11 +6,9 @@ use verbb\snipcart\Snipcart;
 use Craft;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
-use craft\web\Controller;
-
 use yii\web\Response;
 
-class CartsController extends Controller
+class CartsController extends BaseCpController
 {
     // Public Methods
     // =========================================================================

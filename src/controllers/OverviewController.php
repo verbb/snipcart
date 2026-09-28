@@ -6,14 +6,12 @@ use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\helpers\DateTimeHelper;
-use craft\web\Controller;
-
 use yii\web\Response;
 
 use DateTime;
 use DateTimeZone;
 
-class OverviewController extends Controller
+class OverviewController extends BaseCpController
 {
     // Public Methods
     // =========================================================================
@@ -29,11 +27,15 @@ class OverviewController extends Controller
 
     public function actionGetStats(): Response
     {
+        $this->requirePostRequest();
+
         return $this->asJson($this->getOverviewStats(true));
     }
 
     public function actionGetOrdersCustomers(): Response
     {
+        $this->requirePostRequest();
+
         return $this->asJson($this->getOrderAndCustomerSummary(true));
     }
 

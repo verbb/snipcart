@@ -114,43 +114,45 @@
 
         {% hook 'cp.snipcart.order.detail' %}
 
-        {% if totalRefunded is not defined or totalRefunded < order.finalGrandTotal -%}
+        {% if currentUser.can('snipcart-refundOrders') and (totalRefunded is not defined or totalRefunded < order.finalGrandTotal) -%}
             <a href="#" class="btn" id="refund-order-btn">{{ 'Refund Order …' | t('snipcart') }}</a>
         {%- endif %}
 
-        <form id="refund-form" action="" method="post" class="hidden">
-            <input type="hidden" name="action" value="snipcart/orders/refund">
-            <input type="hidden" name="orderId" value="{{ order.token }}">
-            {{ csrfInput() }}
+        {% if currentUser.can('snipcart-refundOrders') %}
+            <form id="refund-form" action="" method="post" class="hidden">
+                <input type="hidden" name="action" value="snipcart/orders/refund">
+                <input type="hidden" name="orderId" value="{{ order.token }}">
+                {{ csrfInput() }}
 
-            {{ forms.textField({
-                first: true,
-                label: 'Refund Amount' | t('snipcart'),
-                id: 'amount',
-                required: true,
-                name: 'amount',
-                autofocus: true,
-            }) }}
+                {{ forms.textField({
+                    first: true,
+                    label: 'Refund Amount' | t('snipcart'),
+                    id: 'amount',
+                    required: true,
+                    name: 'amount',
+                    autofocus: true,
+                }) }}
 
-            {{ forms.textField({
-                label: 'Comment' | t('snipcart'),
-                id: 'comment',
-                required: false,
-                name: 'comment',
-            }) }}
+                {{ forms.textField({
+                    label: 'Comment' | t('snipcart'),
+                    id: 'comment',
+                    required: false,
+                    name: 'comment',
+                }) }}
 
-            {{ forms.lightswitchField({
-                label: 'Notify Customer' | t('snipcart'),
-                id: 'notifyCustomer',
-                required: false,
-                name: 'notifyCustomer',
-                on: false,
-                value: true,
-            }) }}
+                {{ forms.lightswitchField({
+                    label: 'Notify Customer' | t('snipcart'),
+                    id: 'notifyCustomer',
+                    required: false,
+                    name: 'notifyCustomer',
+                    on: false,
+                    value: true,
+                }) }}
 
-            <a href="#" class="btn cancel">{{ 'Cancel' | t('snipcart') }}</a>
-            <input type="submit" name="submit" class="btn submit" value="{{ 'Process Refund' | t('snipcart') }}">
-        </form>
+                <a href="#" class="btn cancel">{{ 'Cancel' | t('snipcart') }}</a>
+                <input type="submit" name="submit" class="btn submit" value="{{ 'Process Refund' | t('snipcart') }}">
+            </form>
+        {% endif %}
 
         <a href="{{ order.dashboardUrl() }}" class="btn" target="_blank">
             {{- 'View in Snipcart Dashboard' | t('snipcart') -}}
@@ -158,18 +160,20 @@
     </div>
 {% endblock %}
 
-{% js %}
-    (function($) {
-        "use strict";
-        var $form = $("#refund-form");
+{% if currentUser.can('snipcart-refundOrders') %}
+    {% js %}
+        (function($) {
+            "use strict";
+            var $form = $("#refund-form");
         
-        $("#refund-order-btn").click(function(e){
-            $form.removeClass("hidden");
-            var hud = new Garnish.HUD(e.target, $form);
+            $("#refund-order-btn").click(function(e){
+                $form.removeClass("hidden");
+                var hud = new Garnish.HUD(e.target, $form);
 
-            $form.find('.cancel').click(function(e){
-                hud.hide();
+                $form.find('.cancel').click(function(e){
+                    hud.hide();
+                });
             });
-        });
-    })(jQuery);
-{% endjs %}
+        })(jQuery);
+    {% endjs %}
+{% endif %}

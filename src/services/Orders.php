@@ -31,9 +31,11 @@ class Orders extends Component
     // Public Methods
     // =========================================================================
 
-    public function getOrder(String $orderId): ?Order
+    public function getOrder(string $orderId, bool $useCache = true): ?Order
     {
-        if ($orderData = Snipcart::$plugin->getApi()->get("orders/$orderId")) {
+        $orderId = rawurlencode($orderId);
+
+        if ($orderData = Snipcart::$plugin->getApi()->get("orders/$orderId", [], $useCache)) {
             return ModelHelper::safePopulateModel((array)$orderData, Order::class);
         }
 
@@ -77,11 +79,15 @@ class Orders extends Component
 
     public function getOrderNotifications(string $orderId): array
     {
+        $orderId = rawurlencode($orderId);
+
         return ModelHelper::safePopulateArrayWithModels((array) Snipcart::$plugin->getApi()->get("orders/$orderId/notifications"), Notification::class);
     }
 
     public function getOrderRefunds(string $orderId): array
     {
+        $orderId = rawurlencode($orderId);
+
         return ModelHelper::safePopulateArrayWithModels((array) Snipcart::$plugin->getApi()->get("orders/$orderId/refunds"), Refund::class);
     }
 
@@ -203,6 +209,8 @@ class Orders extends Component
             'comment' => $comment,
             'notifyCustomer' => $notifyCustomer,
         ]);
+
+        $orderId = rawurlencode($orderId);
 
         return Snipcart::$plugin->getApi()->post("orders/$orderId/refunds", $refund->getPayloadForPost());
     }

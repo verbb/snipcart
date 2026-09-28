@@ -4,11 +4,9 @@ namespace verbb\snipcart\controllers;
 use verbb\snipcart\Snipcart;
 
 use Craft;
-use craft\web\Controller;
-
 use yii\web\Response;
 
-class CustomersController extends Controller
+class CustomersController extends BaseCpController
 {
     // Constants
     // =========================================================================

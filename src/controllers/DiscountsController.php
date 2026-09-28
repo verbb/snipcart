@@ -1,16 +1,16 @@
 <?php
 namespace verbb\snipcart\controllers;
 
-use verbb\snipcart\models\snipcart\Discount;
 use verbb\snipcart\Snipcart;
+use verbb\snipcart\models\snipcart\Discount;
+use verbb\snipcart\services\Api;
 
 use Craft;
 use craft\helpers\UrlHelper;
-use craft\web\Controller;
-
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class DiscountsController extends Controller
+class DiscountsController extends BaseCpController
 {
     // Constants
     // =========================================================================
@@ -31,6 +31,17 @@ class DiscountsController extends Controller
         'shippingDescription',
         'shippingCost',
         'shippingGuaranteedDaysToDelivery',
+    ];
+
+
+    // Properties
+    // =========================================================================
+
+    protected array $actionPermissions = [
+        'new' => Snipcart::PERMISSION_MANAGE_DISCOUNTS,
+        'save' => Snipcart::PERMISSION_MANAGE_DISCOUNTS,
+        'update-discount' => Snipcart::PERMISSION_MANAGE_DISCOUNTS,
+        'delete-discount' => Snipcart::PERMISSION_MANAGE_DISCOUNTS,
     ];
 
 
@@ -80,6 +91,7 @@ class DiscountsController extends Controller
 
             Craft::$app->getSession()->setError('Invalid Discount details.');
         } else if (Snipcart::$plugin->getDiscounts()->createDiscount($discount)) {
+            Api::invalidateCache();
             Craft::$app->getSession()->setNotice('Discount saved.');
         } else {
             Craft::$app->getSession()->setError('Failed to save Discount.');
@@ -97,17 +109,19 @@ class DiscountsController extends Controller
     {
         $this->requirePostRequest();
 
-        $discountId = (string) Craft::$app->getRequest()->post('discountId');
+        $discountId = (string)Craft::$app->getRequest()->getRequiredBodyParam('discountId');
+        $discount = Snipcart::$plugin->getDiscounts()->getDiscount($discountId, false);
 
-        // successful response will be `null`, do don't bother checking
-        Snipcart::$plugin->getDiscounts()->deleteDiscountById($discountId);
+        if (!$discount || !$discount->id) {
+            throw new NotFoundHttpException('Discount not found.');
+        }
+
+        // Successful responses are empty, so there is no response body to check.
+        Snipcart::$plugin->getDiscounts()->deleteDiscountById($discount->id);
 
         Craft::$app->getSession()->setNotice('Discount deleted.');
 
-        // Clear cache so we don't return to see our deleted item on the list.
-        // @todo Be more conservative about this, just clearing Snipcart or even 'discounts' caches.
-        $cacheService = Craft::$app->getCache();
-        $cacheService->flush();
+        Api::invalidateCache();
 
         return $this->redirect(UrlHelper::cpUrl('snipcart/discounts'));
     }

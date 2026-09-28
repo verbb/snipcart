@@ -7,9 +7,11 @@
 {% set selectedTab = 'discounts' %}
 
 {% block actionButton %}
-    <a id="newdiscountmenubtn" class="btn submit add icon" href="{{ url('snipcart/discounts/new') }}">
-        {{- 'New Discount' | t('snipcart') -}}
-    </a>
+    {% if currentUser.can('snipcart-manageDiscounts') %}
+        <a id="newdiscountmenubtn" class="btn submit add icon" href="{{ url('snipcart/discounts/new') }}">
+            {{- 'New Discount' | t('snipcart') -}}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

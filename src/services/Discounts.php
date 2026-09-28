@@ -27,9 +27,11 @@ class Discounts extends Component
         return Snipcart::$plugin->getApi()->post('discounts', $discount->getPayloadForPost());
     }
 
-    public function getDiscount(string $discountId): ?Discount
+    public function getDiscount(string $discountId, bool $useCache = true): ?Discount
     {
-        if ($discountData = Snipcart::$plugin->getApi()->get("discounts/$discountId")) {
+        $discountId = rawurlencode($discountId);
+
+        if ($discountData = Snipcart::$plugin->getApi()->get("discounts/$discountId", [], $useCache)) {
             return ModelHelper::safePopulateModel((array)$discountData, Discount::class);
         }
 
@@ -38,11 +40,15 @@ class Discounts extends Component
 
     public function updateDiscount(Discount $discount): array|stdClass
     {
-        return Snipcart::$plugin->getApi()->put("discounts/$discount->id", $discount->getPayloadForPost(false));
+        $discountId = rawurlencode((string)$discount->id);
+
+        return Snipcart::$plugin->getApi()->put("discounts/$discountId", $discount->getPayloadForPost(false));
     }
 
     public function deleteDiscountById(string $discountId): mixed
     {
+        $discountId = rawurlencode($discountId);
+
         return Snipcart::$plugin->getApi()->delete("discounts/$discountId");
     }
 }

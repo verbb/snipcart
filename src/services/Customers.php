@@ -29,6 +29,8 @@ class Customers extends Component
 
     public function getCustomer(string $customerId): ?Customer
     {
+        $customerId = rawurlencode($customerId);
+
         if ($customerData = Snipcart::$plugin->getApi()->get(sprintf('customers/%s', $customerId))) {
             return ModelHelper::safePopulateModel((array)$customerData, Customer::class);
         }
@@ -38,6 +40,8 @@ class Customers extends Component
 
     public function getCustomerOrders(string $customerId): array
     {
+        $customerId = rawurlencode($customerId);
+
         $orders = ModelHelper::safePopulateArrayWithModels((array)Snipcart::$plugin->getApi()->get("customers/$customerId/orders", [
             'orderBy' => 'creationDate',
         ]),
