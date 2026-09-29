@@ -1,19 +1,22 @@
 <p align="center"><img src="https://assets.verbb.io/plugins/snipcart/snipcart-icon.svg" width="100" height="100" alt="Snipcart icon"></p>
 <h1 align="center">Snipcart for Craft CMS</h1>
 
-Snipcart is a Craft CMS plugin that connects Craft content to Snipcart's hosted shopping cart.
+Snipcart is a Craft CMS plugin that connects Craft content to a hosted shopping cart without making editors leave Craft for everyday store operations. Add purchasable details to content, surface Snipcart data in the control panel, and keep the front end in your templates.
 
-- Fast store setup (even if you're new to Snipcart) with an optional Field Type and Twig tags.
-- Control panel section for sales stats and browsing orders, customers, subscriptions, and abandoned carts without leaving Craft.
-- Create discounts and issue refunds from the control panel.
-- Live shipping rates and tax calculation at checkout with Snipcart's various shipping and tax providers.
-- ShipStation integration for fetching shipping rates and forwarding completed Snipcart orders for processing.
-- Customer and administrator order notifications with project-owned Twig templates.
-- Test mode for exercising checkout and webhook workflows without production credentials.
-- Webhook-driven order, customer, subscription and abandoned-cart records in Craft.
-- Inventory adjustments for mapped Craft products when Snipcart orders are completed or refunded.
+Use the optional product field and Twig helpers to provide Snipcart with the identifiers, prices, URLs, and options it needs. The surrounding product content and presentation stay in Craft instead of moving into a second catalogue.
 
-If Commerce Pro is too complex for your project and Commerce Lite is too limiting, Snipcart will be a great fit.
+## Features
+
+- Add hosted cart and checkout behaviour to Craft-managed products.
+- Store the product details Snipcart needs with the rest of the content.
+- See sales activity and important commerce records inside Craft.
+- Handle common customer-service actions from the control panel.
+- Send customer and administrator emails through project-owned Twig templates.
+- Exercise checkout and webhook workflows without production credentials.
+- Keep orders, customers, subscriptions, and abandoned carts in sync with Craft.
+- Update mapped Craft products when orders are completed or refunded.
+- Use live shipping services and optional ShipStation fulfilment.
+- Apply Snipcart's supported tax providers during checkout.
 
 ## Documentation
 Visit the [Snipcart Plugin page](https://verbb.io/craft-plugins/snipcart) for all documentation, guides, pricing and developer resources.

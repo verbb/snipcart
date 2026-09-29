@@ -4,15 +4,13 @@ Use the optional product field and Twig helpers to provide Snipcart with the ide
 
 ## Features
 
-- **Snipcart checkout:** Add hosted cart and checkout behaviour to Craft-managed products.
-- **Product field:** Store the product details Snipcart needs with the rest of the content.
-- **Store overview:** See sales activity and important commerce records inside Craft.
-- **Discounts and refunds:** Handle common customer-service actions from the control panel.
-- **Order notifications:** Send customer and administrator emails through project-owned Twig templates.
-- **Test mode:** Exercise checkout and webhook workflows without production credentials.
-- **Webhook records:** Keep orders, customers, subscriptions, and abandoned carts in sync with Craft.
-- **Inventory adjustments:** Update mapped Craft products when orders are completed or refunded.
-- **Shipping:** Use live shipping services and optional ShipStation fulfilment.
-- **Tax calculation:** Apply Snipcart’s supported tax providers during checkout.
-- **Store activity in Craft:** View sales statistics and browse orders, customers, subscriptions, and abandoned carts in the control panel. Staff can create discounts and issue refunds without moving between administration tools for common tasks.
-- **Shipping and tax:** Use Snipcart’s shipping and tax services during checkout, or connect ShipStation to quote shipping and forward completed orders for processing.
+- Add hosted cart and checkout behaviour to Craft-managed products.
+- Store the product details Snipcart needs with the rest of the content.
+- See sales activity and important commerce records inside Craft.
+- Handle common customer-service actions from the control panel.
+- Send customer and administrator emails through project-owned Twig templates.
+- Exercise checkout and webhook workflows without production credentials.
+- Keep orders, customers, subscriptions, and abandoned carts in sync with Craft.
+- Update mapped Craft products when orders are completed or refunded.
+- Use live shipping services and optional ShipStation fulfilment.
+- Apply Snipcart's supported tax providers during checkout.
