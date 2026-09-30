@@ -7,7 +7,7 @@ Snipcart connects Craft content to a hosted shopping cart without making editors
 
 Use the optional product field and Twig helpers to provide Snipcart with the identifiers, prices, URLs, and options it needs. The surrounding product content and presentation stay in Craft instead of moving into a second catalogue.
 
-![A Snipcart Product Details field with price, inventory, tax, shipping and dimensions in Craft 5.](../screenshots/output/feature-tour/snipcart-product-field.png)
+![A Snipcart Product Details field with price, inventory, tax, shipping and dimensions in Craft 5.](../screenshots/snipcart-product-field.png)
 
 <!-- feature-section-end -->
 
@@ -16,7 +16,7 @@ Use the optional product field and Twig helpers to provide Snipcart with the ide
 
 See sales statistics, recent orders and leading customers together in the control panel. The overview turns day-to-day store activity into a current picture without making staff leave Craft.
 
-![Snipcart store performance, recent orders and top customers in Craft 5.](../screenshots/output/feature-tour/snipcart-overview.png)
+![Snipcart store performance, recent orders and top customers in Craft 5.](../screenshots/snipcart-overview.png)
 
 <!-- feature-section-end -->
 
@@ -25,7 +25,7 @@ See sales statistics, recent orders and leading customers together in the contro
 
 Add the Snipcart Orders widget to Craft’s dashboard and choose the sales view and time period that matter to the team. Store performance can sit beside the other information an editor checks each day.
 
-![A weekly Snipcart sales chart on the Craft dashboard.](../screenshots/output/feature-tour/snipcart-widget.png)
+![A weekly Snipcart sales chart on the Craft dashboard.](../screenshots/snipcart-widget.png)
 
 <!-- feature-section-end -->
 
@@ -34,7 +34,7 @@ Add the Snipcart Orders widget to Craft’s dashboard and choose the sales view 
 
 Open an order in Craft to review its customer, address, payment, shipping and line items. Staff can issue refunds, jump to the matching Snipcart record and send customisable order notifications from the same operational workflow.
 
-![A Snipcart order with customer, payment, shipping and line-item details in Craft 5.](../screenshots/output/feature-tour/snipcart-order-detail.png)
+![A Snipcart order with customer, payment, shipping and line-item details in Craft 5.](../screenshots/snipcart-order-detail.png)
 
 <!-- feature-section-end -->
 
@@ -43,7 +43,7 @@ Open an order in Craft to review its customer, address, payment, shipping and li
 
 Browse customer accounts with their billing details, order counts and lifetime spend. Subscriptions and abandoned carts are available in the same Snipcart area, keeping common commerce records close to the content team.
 
-![Snipcart customers with order counts and lifetime spend in Craft 5.](../screenshots/output/feature-tour/snipcart-customers.png)
+![Snipcart customers with order counts and lifetime spend in Craft 5.](../screenshots/snipcart-customers.png)
 
 <!-- feature-section-end -->
 
