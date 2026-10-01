@@ -19,6 +19,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Dashboard;
 use craft\services\Fields;
+use craft\services\Gc;
 use craft\services\UserPermissions;
 use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
@@ -64,6 +65,7 @@ class Snipcart extends Plugin
         $this->_registerFieldTypes();
         $this->_registerVariable();
         $this->_registerCacheTypes();
+        $this->_registerGarbageCollection();
         $this->_registerPermissions();
         $this->_registerShippingProviders();
 
@@ -158,6 +160,13 @@ class Snipcart extends Plugin
                 'label' => Craft::t('snipcart', 'Snipcart API cache'),
                 'action' => [Snipcart::$plugin->getApi(), 'invalidateCache'],
             ];
+        });
+    }
+
+    private function _registerGarbageCollection(): void
+    {
+        Event::on(Gc::class, Gc::EVENT_RUN, function() {
+            $this->getWebhooks()->purgeExpiredLogs();
         });
     }
 

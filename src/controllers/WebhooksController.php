@@ -11,7 +11,7 @@ use craft\web\Controller;
 use Yii;
 use ErrorException;
 use yii\base\Exception;
-use yii\web\BadRequestHttpException;
+use yii\base\InvalidArgumentException;
 use yii\web\Response;
 use Throwable;
 
@@ -89,10 +89,6 @@ class WebhooksController extends Controller
             'bodyLength' => strlen($requestBody),
         ]);
 
-        Snipcart::info('Incoming webhook raw body: {rawBody}', [
-            'rawBody' => $requestBody,
-        ]);
-
         set_error_handler(static function(int $severity, string $message, string $file, int $line): bool {
             if (!(error_reporting() & $severity)) {
                 return false;
@@ -107,16 +103,19 @@ class WebhooksController extends Controller
 
         try {
             $this->requirePostRequest();
-            $payload = Json::decode($requestBody, false);
+
+            if (self::$validateWebhook && !$this->requestIsValid()) {
+                return $this->rejectWebhook('Could not validate webhook request. Are you Snipcart?');
+            }
+
+            try {
+                $payload = Json::decode($requestBody, false);
+            } catch (InvalidArgumentException) {
+                return $this->rejectWebhook('Invalid JSON request body.');
+            }
 
             if ($reason = $this->hasInvalidRequestData($payload)) {
-                Snipcart::info('Webhook rejected before processing.', [
-                    'reason' => $reason,
-                ]);
-
-                return $this->badRequestResponse([
-                    'reason' => $reason,
-                ]);
+                return $this->rejectWebhook($reason);
             }
 
             Snipcart::info('Webhook received.', [
@@ -201,10 +200,6 @@ class WebhooksController extends Controller
 
     private function hasInvalidRequestData(mixed $payload): bool|string
     {
-        if (self::$validateWebhook && ! $this->requestIsValid()) {
-            return 'Could not validate webhook request. Are you Snipcart?';
-        }
-
         if ($payload === null || ! isset($payload->eventName)) {
             return 'NULL request body or missing eventName.';
         }
@@ -239,15 +234,26 @@ class WebhooksController extends Controller
         }
 
         if (!$headers->has($key)) {
-            throw new BadRequestHttpException('Invalid request: no request token');
+            return false;
         }
 
         $token = $headers->get($key);
 
         if (!is_string($token)) {
-            throw new BadRequestHttpException('Invalid request: token can only be a string');
+            return false;
         }
 
         return Snipcart::$plugin->getApi()->tokenIsValid($token);
+    }
+
+    private function rejectWebhook(string $reason): Response
+    {
+        Snipcart::info('Webhook rejected before processing.', [
+            'reason' => $reason,
+        ]);
+
+        return $this->badRequestResponse([
+            'reason' => $reason,
+        ]);
     }
 }

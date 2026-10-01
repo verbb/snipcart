@@ -40,7 +40,12 @@ class Settings extends Model
     public bool $cacheResponses = true;
     public int $cacheDurationLimit = 300; // 5 minutes
     public bool $logCustomRates = false;
+
+    /**
+     * @deprecated Valid webhook requests are always retained for support diagnostics.
+     */
     public bool $logWebhookRequests = false;
+    public int $webhookLogRetentionDays = 30;
     public array $shipFromAddress = [];
     public array $providers = [];
     public array $providerSettings = [];
@@ -265,7 +270,7 @@ class Settings extends Model
         $rules[] = [['pluginName'], 'string', 'max' => 52];
 
         $rules[] = [['publicApiKey', 'secretApiKey'], 'required'];
-        $rules[] = [['cacheDurationLimit'], 'number', 'integerOnly' => true];
+        $rules[] = [['cacheDurationLimit', 'webhookLogRetentionDays'], 'number', 'integerOnly' => true, 'min' => 0];
         $rules[] = ['notificationEmails', 'each', 'rule' => ['email']];
 
         return $rules;

@@ -135,11 +135,11 @@ Whether to log responses to `shippingrates.fetch` webhook events for troubleshoo
 
 
 ::: reference
-### `logWebhookRequests`
+### `webhookLogRetentionDays`
 
-**Type:** `bool` · **Default:** `false`
+**Type:** `int` · **Default:** `30`
 
-Whether to log all valid incoming webhook posts from Snipcart.
+The number of days to retain valid incoming webhook requests for troubleshooting before Craft garbage collection can delete them. Set this to `0` to retain them indefinitely.
 :::
 
 

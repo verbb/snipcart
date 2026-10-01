@@ -21,6 +21,8 @@ use verbb\snipcart\records\WebhookLog;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use Throwable;
 
 class Webhooks extends Component
@@ -75,6 +77,23 @@ class Webhooks extends Component
     public function getMode(): string
     {
         return $this->currentMode;
+    }
+
+    public function purgeExpiredLogs(): int
+    {
+        $retentionDays = Snipcart::$plugin->getSettings()->webhookLogRetentionDays;
+
+        if ($retentionDays <= 0) {
+            return 0;
+        }
+
+        $threshold = DateTimeHelper::toDateTime("-{$retentionDays} days");
+
+        return WebhookLog::deleteAll([
+            '<',
+            'dateCreated',
+            Db::prepareDateForDb($threshold),
+        ]);
     }
 
     public function handleOrderCompleted(): array

@@ -29,11 +29,13 @@
     warning: macros.configWarning('logCustomRates', 'snipcart'),
 }) }}
 
-{{ forms.lightswitchField({
-    label: 'Log Webhook Requests?' | t('snipcart'),
-    instructions: 'Switch on to look valid webhook posts to the database for troubleshooting.' | t('snipcart'),
-    name: 'logWebhookRequests',
-    on: settings.logWebhookRequests,
-    errors: settings.getErrors('logWebhookRequests'),
-    warning: macros.configWarning('logWebhookRequests', 'snipcart'),
+{{ forms.textField({
+    label: 'Webhook Log Retention' | t('snipcart'),
+    instructions: 'Valid webhook requests are logged to the database for troubleshooting. Enter the number of days to retain them before Craft garbage collection can delete them, or 0 to keep them indefinitely.' | t('snipcart'),
+    name: 'webhookLogRetentionDays',
+    type: 'number',
+    min: 0,
+    value: settings.webhookLogRetentionDays,
+    errors: settings.getErrors('webhookLogRetentionDays'),
+    warning: macros.configWarning('webhookLogRetentionDays', 'snipcart'),
 }) }}
