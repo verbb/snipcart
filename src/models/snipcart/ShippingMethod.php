@@ -9,7 +9,7 @@ class ShippingMethod extends Model
 {
     // Properties
     // =========================================================================
-    
+
     public ?string $id = null;
     public ?DateTime $creationDate = null;
     public ?string $name = null;

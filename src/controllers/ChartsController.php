@@ -25,7 +25,7 @@ class ChartsController extends BaseCpController
 
         if ($range === 'weekly') {
             $startDate = (new DateTime('now'))->modify('-1 week');
-        } else if ($range === 'monthly') {
+        } elseif ($range === 'monthly') {
             $startDate = (new DateTime('now'))->modify('-1 month');
         } else {
             $problem = 'Invalid date range requested.';
@@ -42,7 +42,7 @@ class ChartsController extends BaseCpController
             $chartData = $this->getTotalSales($data);
 
             $formats['currencySymbol'] = Snipcart::$plugin->getSettings()->getDefaultCurrencySymbol();
-        } else if ($type === 'numberOfOrders') {
+        } elseif ($type === 'numberOfOrders') {
             $data = Snipcart::$plugin->getData()->getOrderCount($startDate, $endDate);
             $chartData = $this->getNumberOfOrders($data);
         } else {
@@ -142,7 +142,7 @@ class ChartsController extends BaseCpController
     private function getEndDate(): DateTime
     {
         $endDateParam = Craft::$app->getRequest()->getParam('endDate');
-        
+
         if (!$endDateParam) {
             return new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone()));
         }

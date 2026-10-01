@@ -7,7 +7,7 @@ class Domain extends Model
 {
     // Properties
     // =========================================================================
-    
+
     public ?string $domain = null;
     public ?string $protocol = null;
 }

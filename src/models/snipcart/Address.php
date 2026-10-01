@@ -35,12 +35,12 @@ class Address extends Model
 
         if (strlen($num) === 10 && is_numeric($num)) {
             // format US phone numbers (555) 555-5555
-            return ($num !== '' && $num !== '0') ? '(' . substr($num,0,3) . ') ' . substr($num,3,3) . '-' . substr($num,6,4) : '&nbsp;';
+            return ($num !== '' && $num !== '0') ? '(' . substr($num, 0, 3) . ') ' . substr($num, 3, 3) . '-' . substr($num, 6, 4) : '&nbsp;';
         }
 
         return $num;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -48,7 +48,7 @@ class Address extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['name', 'companyName', 'address1', 'address2', 'city', 'country', 'province', 'postalCode', 'phone', 'email'], 'string', 'max' => 255];
         $rules[] = [['name', 'address1', 'city', 'country', 'province', 'postalCode'], 'required'];
         $rules[] = [['country', 'province'], 'string', 'length' => 2];

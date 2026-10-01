@@ -42,7 +42,7 @@ class ItemOption extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['name', 'value'], 'required'];
 
         return $rules;

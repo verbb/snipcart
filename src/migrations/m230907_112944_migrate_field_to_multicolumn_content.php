@@ -45,7 +45,7 @@ class m230907_112944_migrate_field_to_multicolumn_content extends Migration
 
             $entry = Entry::find()->id($element['canonicalId'])->one();
             $field = $fieldsService->getFieldById($product['fieldId']);
-            
+
             // set the field data
             if (!$entry) {
                 continue;

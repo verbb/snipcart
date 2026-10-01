@@ -49,7 +49,7 @@ class Product extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['productId', 'length', 'width', 'height', 'weightOz'], 'number', 'integerOnly' => true];
         $rules[] = [['price', 'defaultCost', 'customsValue'], 'number', 'integerOnly' => false];
 

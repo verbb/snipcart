@@ -35,7 +35,7 @@ class ProductDetails extends Model
     public const WEIGHT_UNIT_OUNCES = 'ounces';
     public const DIMENSIONS_UNIT_CENTIMETERS = 'centimeters';
     public const DIMENSIONS_UNIT_INCHES = 'inches';
-    
+
 
     // Properties
     // =========================================================================

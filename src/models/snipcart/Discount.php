@@ -152,7 +152,7 @@ class Discount extends Model
     {
         return 'https://app.snipcart.com/dashboard/discounts/edit/' . $this->id;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -160,7 +160,7 @@ class Discount extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['name', 'trigger', 'type'], 'required'];
 
         $rules[] = [['maxNumberOfUsages', 'shippingGuaranteedDaysToDelivery', 'numberOfUsages', 'numberOfUsagesUncompleted'],

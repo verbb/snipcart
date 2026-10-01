@@ -10,7 +10,7 @@ class ProductTag extends Model
 
     public mixed $tagId = null;
     public ?string $name = null;
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -18,7 +18,7 @@ class ProductTag extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['tagId'], 'number', 'integerOnly' => true];
 
         return $rules;

@@ -19,7 +19,7 @@ class Weight extends Model
     public ?int $value = null;
     public ?string $units = null;
     public ?int $weightUnits = null;
-    
+
 
     // Public Methods
     // =========================================================================
@@ -31,7 +31,7 @@ class Weight extends Model
             'units' => self::UNIT_GRAMS,
         ]);
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -39,7 +39,7 @@ class Weight extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['value'], 'number', 'integerOnly' => true];
         $rules[] = [['units'], 'in', 'range' => [self::UNIT_POUNDS, self::UNIT_OUNCES, self::UNIT_GRAMS]];
 

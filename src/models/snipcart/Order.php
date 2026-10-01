@@ -173,7 +173,7 @@ class Order extends Model
 
         // added a bit to get a user element based on the email passed in from $user as it is an array
         $craftUser = Craft::$app->users->getUserByUsernameOrEmail($user['email']);
-        
+
         return $this->_user = $craftUser;
     }
 
@@ -279,7 +279,7 @@ class Order extends Model
             'cpUrl',
         ];
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -287,7 +287,7 @@ class Order extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['finalGrandTotal', 'shippingFees', 'rebateAmount'], 'number', 'integerOnly' => false];
 
         return $rules;

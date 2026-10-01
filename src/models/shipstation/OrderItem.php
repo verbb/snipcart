@@ -16,7 +16,7 @@ class OrderItem extends Model
     public ?int $orderItemId = null;
     public ?string $lineItemKey = null;
     public ?string $sku = null;
-    public string $name = null;
+    public ?string $name = null;
     public ?string $imageUrl = null;
     public ?int $quantity = null;
     public ?float $unitPrice = null;
@@ -32,7 +32,7 @@ class OrderItem extends Model
 
     private ?Weight $_weight = null;
     private array $_options = [];
-    
+
 
     // Public Methods
     // =========================================================================
@@ -91,7 +91,7 @@ class OrderItem extends Model
     {
         $fields = array_keys(Yii::getObjectVars($this));
         $fields = [...$fields, 'weight', 'options'];
-        
+
         return array_combine($fields, $fields);
     }
 
@@ -102,7 +102,7 @@ class OrderItem extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['orderItemId', 'quantity', 'productId'], 'number', 'integerOnly' => true];
         $rules[] = [['unitPrice', 'taxAmount', 'shippingAmount'], 'number', 'integerOnly' => false];
         $rules[] = [['lineItemKey', 'sku', 'name', 'warehouseLocation', 'fulfillmentSku', 'upc', 'createDate', 'modifyDate'], 'string', 'max' => 255];

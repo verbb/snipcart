@@ -43,7 +43,7 @@ class ProductDetails extends Field
             'sku' => Schema::TYPE_STRING,
         ];
     }
-    
+
 
     // Properties
     // =========================================================================
@@ -92,7 +92,7 @@ class ProductDetails extends Field
 
                 if (is_string($v)) {
                     $value[$k] = LitEmoji::unicodeToShortcode($v);
-                } else if ($v instanceof Stringable) {
+                } elseif ($v instanceof Stringable) {
                     $value[$k] = LitEmoji::unicodeToShortcode($v->__toString());
                 } else {
                     $value[$k] = $v;
@@ -145,7 +145,7 @@ class ProductDetails extends Field
     {
         if ($element->getScenario() === Element::SCENARIO_LIVE) {
             $value = $element->getFieldValue($this->handle);
-            
+
             if (!$value->validate()) {
                 foreach ($value->getErrors() as $errors) {
                     foreach ($errors as $error) {

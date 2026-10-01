@@ -34,7 +34,7 @@ class Package extends Model
     {
         return $this->length !== null && $this->length > 0 && $this->width !== null && $this->width > 0 && $this->height !== null && $this->height > 0;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -42,7 +42,7 @@ class Package extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['length', 'width', 'height', 'weight'], 'number', 'integerOnly' => false];
         $rules[] = [['name', 'length', 'width', 'height', 'weight'], 'required'];
         $rules[] = [['weightUnit'], 'in', 'range' => [self::WEIGHT_UNIT_GRAM, self::WEIGHT_UNIT_POUND, self::WEIGHT_UNIT_OUNCE]];

@@ -16,7 +16,7 @@ interface ShippingProviderInterface extends ComponentInterface
 
     public static function refHandle(): ?string;
     public static function apiBaseUrl(): string;
-    
+
 
     // Public Methods
     // =========================================================================

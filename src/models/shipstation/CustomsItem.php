@@ -22,7 +22,7 @@ class CustomsItem extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['quantity'], 'number', 'integerOnly' => true];
         $rules[] = [['value'], 'number', 'integerOnly' => false];
         $rules[] = [['countryOfOrigin'], 'string', 'length' => 2];

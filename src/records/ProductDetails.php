@@ -17,7 +17,7 @@ class ProductDetails extends ActiveRecord
         return Table::PRODUCT_DETAILS;
     }
 
-    
+
     // Properties
     // =========================================================================
 

@@ -155,7 +155,7 @@ class Orders extends Component
             ]);
 
             $this->trigger(self::EVENT_BEFORE_REQUEST_SHIPPING_RATES, $shippingRateEvent);
-            
+
             if (!$shippingRateEvent->isValid) {
                 throw new ShippingRateException($shippingRateEvent);
             }
@@ -186,7 +186,7 @@ class Orders extends Component
 
         if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $toEmails = Snipcart::$plugin->getSettings()->notificationEmails;
-        } else if ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
+        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $toEmails = [$order->email];
             $subject = Craft::t('snipcart', '{siteName} Order #{invoiceNumber}', [
                 'siteName' => Craft::$app->getSites()->getCurrentSite()->name,
@@ -262,7 +262,7 @@ class Orders extends Component
         if ($type === self::NOTIFICATION_TYPE_ADMIN) {
             $defaultTemplatePath = 'snipcart/email/order';
             $customTemplatePath = $model->notificationEmailTemplate;
-        } else if ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
+        } elseif ($type === self::NOTIFICATION_TYPE_CUSTOMER) {
             $defaultTemplatePath = 'snipcart/email/customer-order';
             $customTemplatePath = $model->customerNotificationEmailTemplate;
         }

@@ -34,7 +34,7 @@ class Dimensions extends Model
     public ?int $width = null;
     public ?int $height = null;
     public ?string $units = null;
-    
+
 
     // Public Methods
     // =========================================================================
@@ -51,7 +51,7 @@ class Dimensions extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['length', 'width', 'height'], 'number', 'integerOnly' => true];
         $rules[] = [['units'], 'in', 'range' => [self::UNIT_INCHES, self::UNIT_CENTIMETERS]];
 

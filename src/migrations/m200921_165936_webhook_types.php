@@ -15,7 +15,7 @@ class m200921_165936_webhook_types extends Migration
     {
         if ($this->getDb()->tableExists(Table::WEBHOOK_LOG)) {
             $typeValues = array_keys(WebhooksController::WEBHOOK_EVENT_MAP);
-            
+
             $this->alterColumn(Table::WEBHOOK_LOG, 'type', $this->enum('type', $typeValues));
         }
     }

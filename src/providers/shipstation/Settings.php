@@ -38,7 +38,7 @@ class Settings extends Model
     {
         return App::parseEnv($this->apiSecret);
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -46,7 +46,7 @@ class Settings extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-    
+
         $rules[] = [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'];
         $rules[] = [['defaultWarehouseId'], 'number', 'integerOnly' => true];
         $rules[] = [['defaultCountry'], 'string', 'length' => 2];

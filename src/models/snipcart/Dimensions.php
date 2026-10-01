@@ -7,7 +7,7 @@ class Dimensions extends Model
 {
     // Properties
     // =========================================================================
-    
+
     public ?string $width = null;
     public ?string $height = null;
     public ?string $length = null;

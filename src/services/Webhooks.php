@@ -332,7 +332,7 @@ class Webhooks extends Component
         return $this->nonResponse();
     }
 
-    
+
     // Private Methods
     // =========================================================================
 

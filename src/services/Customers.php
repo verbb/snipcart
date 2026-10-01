@@ -42,10 +42,12 @@ class Customers extends Component
     {
         $customerId = rawurlencode($customerId);
 
-        $orders = ModelHelper::safePopulateArrayWithModels((array)Snipcart::$plugin->getApi()->get("customers/$customerId/orders", [
+        $orders = ModelHelper::safePopulateArrayWithModels(
+            (array)Snipcart::$plugin->getApi()->get("customers/$customerId/orders", [
             'orderBy' => 'creationDate',
         ]),
-        Order::class);
+            Order::class
+        );
 
         usort($orders, fn($a, $b): bool => $this->sortOrdersByDateDescending($a, $b));
 

@@ -12,7 +12,7 @@ class Webhook extends Model
     public const TYPE_ITEM_ORDER_NOTIFY = 'ITEM_ORDER_NOTIFY';
     public const TYPE_SHIP_NOTIFY = 'SHIP_NOTIFY';
     public const TYPE_ITEM_SHIP_NOTIFY = 'ITEM_SHIP_NOTIFY';
-    
+
 
     // Properties
     // =========================================================================
@@ -27,7 +27,7 @@ class Webhook extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['resource_url', 'resource_type'], 'string', 'max' => 200];
         $rules[] = [['resource_url'], 'url'];
 

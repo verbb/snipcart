@@ -10,7 +10,7 @@ class CustomerStatistics extends Model
 
     public ?int $ordersCount = 0;
     public ?float $ordersAmount = 0;
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -18,7 +18,7 @@ class CustomerStatistics extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['ordersCount'], 'number', 'integerOnly' => true];
         $rules[] = [['ordersAmount'], 'number', 'integerOnly' => false];
 

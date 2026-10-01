@@ -61,7 +61,7 @@ class OrdersController extends BaseCpController
     {
         $order = Snipcart::$plugin->getOrders()->getOrder($orderId);
         $orderRefunds = Snipcart::$plugin->getOrders()->getOrderRefunds($orderId);
-        
+
         return $this->renderTemplate('snipcart/cp/orders/detail', [
             'order' => $order,
             'orderRefunds' => $orderRefunds,

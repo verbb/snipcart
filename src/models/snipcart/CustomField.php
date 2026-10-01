@@ -7,7 +7,7 @@ class CustomField extends Model
 {
     // Properties
     // =========================================================================
-    
+
     public ?string $name = null;
     public ?string $operation = null;
     public ?string $type = null;

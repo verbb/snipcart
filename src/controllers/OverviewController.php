@@ -103,7 +103,7 @@ class OverviewController extends BaseCpController
     private function getStartDate(): DateTime
     {
         $startDateParam = Craft::$app->getRequest()->getParam('startDate');
-        
+
         if (!$startDateParam) {
             return (new DateTime('now', new DateTimeZone(Craft::$app->getTimeZone())))
                 ->modify('-1 month');

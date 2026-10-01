@@ -34,7 +34,7 @@ class ShippingRate extends Model
 
         return $return;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -42,7 +42,7 @@ class ShippingRate extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['guaranteedDaysToDelivery'], 'number', 'integerOnly' => true];
         $rules[] = [['cost'], 'number', 'integerOnly' => false];
         $rules[] = [['cost', 'description'], 'required'];

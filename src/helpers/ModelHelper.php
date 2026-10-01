@@ -56,7 +56,7 @@ class ModelHelper
             if (is_string($key) && ! in_array($key, $modelAttributes, false)) {
                 if (is_object($data)) {
                     unset($data->{$key});
-                } else if (is_array($data)) {
+                } elseif (is_array($data)) {
                     unset($data[$key]);
                 }
 

@@ -56,7 +56,7 @@ class Address extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['name', 'street1', 'street2', 'street3', 'city', 'state', 'postalCode', 'phone', 'addressVerified'], 'string', 'max' => 255];
         $rules[] = [['name', 'street1', 'city', 'state', 'postalCode'], 'required'];
         $rules[] = [['country'], 'string', 'length' => 2];

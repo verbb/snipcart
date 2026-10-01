@@ -47,7 +47,7 @@ class Settings extends Model
     public int $reFeedAttemptWindow = 15;
     public ?bool $testMode = false;
     public ?bool $sendTestModeEmail = false;
-    
+
     private ?Address $_shipFrom = null;
     private array $_providers = [];
 
@@ -141,7 +141,7 @@ class Settings extends Model
     {
         if ($this->hasEnabledProviders() && ! $this->getShipFrom()->validate()) {
             $this->addError('shipFrom', 'Please enter required Ship From details.');
-            
+
             return false;
         }
 
@@ -252,7 +252,7 @@ class Settings extends Model
     {
         return $this->_providers;
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -263,7 +263,7 @@ class Settings extends Model
         $rules[] = [['pluginName'], 'trim'];
         $rules[] = [['pluginName'], 'required'];
         $rules[] = [['pluginName'], 'string', 'max' => 52];
-        
+
         $rules[] = [['publicApiKey', 'secretApiKey'], 'required'];
         $rules[] = [['cacheDurationLimit'], 'number', 'integerOnly' => true];
         $rules[] = ['notificationEmails', 'each', 'rule' => ['email']];

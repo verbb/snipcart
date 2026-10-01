@@ -82,7 +82,7 @@ class DiscountsController extends BaseCpController
                     'discount' => $discount,
                 ],
             ]);
-        } else if (!$discount->validate()) {
+        } elseif (!$discount->validate()) {
             Craft::$app->getUrlManager()->setRouteParams([
                 'variables' => [
                     'discount' => $discount,
@@ -90,7 +90,7 @@ class DiscountsController extends BaseCpController
             ]);
 
             Craft::$app->getSession()->setError('Invalid Discount details.');
-        } else if (Snipcart::$plugin->getDiscounts()->createDiscount($discount)) {
+        } elseif (Snipcart::$plugin->getDiscounts()->createDiscount($discount)) {
             Api::invalidateCache();
             Craft::$app->getSession()->setNotice('Discount saved.');
         } else {

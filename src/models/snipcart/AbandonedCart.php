@@ -21,7 +21,7 @@ class AbandonedCart extends Model
 
     // Properties
     // =========================================================================
-    
+
     public ?string $id = null;
     public ?string $token = null;
     public ?string $accountId = null;

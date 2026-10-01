@@ -96,7 +96,7 @@ class Order extends Model
     private ?InsuranceOptions $_insuranceOptions = null;
     private ?InternationalOptions $_internationalOptions = null;
     private ?AdvancedOptions $_advancedOptions = null;
-    
+
 
     // Public Methods
     // =========================================================================
@@ -312,7 +312,7 @@ class Order extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         // ShipStation uses the ISO 8601 combined format for dateTime stamps
         // being submitted to and returned from the API. `2016-11-29 23:59:59`
         // The time zone represented in all API responses is PST/PDT.

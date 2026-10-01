@@ -52,7 +52,7 @@ class InternationalOptions extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-                
+
         $rules[] = [['contents'], 'in', 'range' => [
             self::CONTENTS_MERCHANDISE,
             self::CONTENTS_DOCUMENTS,

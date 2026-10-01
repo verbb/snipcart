@@ -143,7 +143,7 @@ class ShipStation extends ShippingProvider
             if (($createdOrder = $this->sendOrder($order)) instanceof Order) {
                 // TODO: delete related rate quotes when order makes it to
                 // ShipStation, or after a sensible amount of time
-                 
+
                 return $createdOrder;
             }
 

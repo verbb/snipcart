@@ -1,5 +1,4 @@
 <?php
-
 namespace verbb\snipcart\services;
 
 use verbb\snipcart\Snipcart;

@@ -140,7 +140,7 @@ class Api extends Component
     {
         try {
             $response = $this->getClient()->get($endpoint);
-            
+
             return $this->prepResponseData($response->getBody());
         } catch (RequestException $requestException) {
             return $this->handleRequestException($requestException, $endpoint);

@@ -10,7 +10,7 @@ class ProductCategory extends Model
 
     public mixed $categoryId = null;
     public ?string $name = null;
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -18,7 +18,7 @@ class ProductCategory extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['categoryId'], 'number', 'integerOnly' => true];
 
         return $rules;

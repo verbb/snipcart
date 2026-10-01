@@ -104,7 +104,7 @@ class Orders extends Widget
             'monthly' => 'Monthly',
         ];
     }
-    
+
 
     // Protected Methods
     // =========================================================================
@@ -112,7 +112,7 @@ class Orders extends Widget
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['chartType', 'chartRange'], 'required'];
         $rules[] = [['chartType'], 'in', 'range' => array_keys($this->getChartTypeOptions())];
         $rules[] = [['chartRange'], 'in', 'range' => array_keys($this->getChartRangeOptions())];

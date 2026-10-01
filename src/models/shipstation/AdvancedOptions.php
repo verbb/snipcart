@@ -33,7 +33,7 @@ class AdvancedOptions extends Model
     protected function defineRules(): array
     {
         $rules = parent::defineRules();
-        
+
         $rules[] = [['warehouseId', 'storeId', 'parentId'], 'number', 'integerOnly' => true];
         $rules[] = ['mergedIds', 'each', 'rule' => ['integer']];
         $rules[] = [['billToCountryCode'], 'string', 'length' => 2];

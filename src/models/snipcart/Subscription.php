@@ -20,7 +20,7 @@ class Subscription extends Model
 
     // Properties
     // =========================================================================
-    
+
     public ?string $user = null;
     public ?string $initialOrderToken = null;
     public ?string $firstInvoiceReceivedOn = null;
