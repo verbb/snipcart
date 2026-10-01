@@ -6,6 +6,7 @@
 - Added configurable retention for webhook request logs.
 
 ### Fixed
+- Fixed a low-severity configuration injection vulnerability.
 - Fixed a low-severity log injection vulnerability.
 
 ## 3.0.10 - 2026-09-30

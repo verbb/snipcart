@@ -14,6 +14,25 @@ use stdClass;
 
 class Fields extends Component
 {
+    // Constants
+    // =========================================================================
+
+    private const PRODUCT_DETAILS_INPUT_ATTRIBUTES = [
+        'sku',
+        'price',
+        'shippable',
+        'taxable',
+        'weight',
+        'weightUnit',
+        'length',
+        'width',
+        'height',
+        'inventory',
+        'dimensionsUnit',
+        'customOptions',
+    ];
+
+
     // Public Methods
     // =========================================================================
 
@@ -46,7 +65,11 @@ class Fields extends Component
         $elementId = $element->id;
 
         if (is_array($value)) {
-            $model = new ProductDetailsModel($value);
+            $model = new ProductDetailsModel();
+            $model->setAttributes(array_intersect_key(
+                $value,
+                array_flip(self::PRODUCT_DETAILS_INPUT_ATTRIBUTES),
+            ), false);
 
             $model->fieldId = $field->id;
             $model->siteId = $siteId;
