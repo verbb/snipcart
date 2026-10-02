@@ -1,6 +1,6 @@
 {% extends parentLayout ?? '_layouts/cp' %}
 
-{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
 {% if title is not defined %}
     {% set title = craft.snipcart.getPluginName() %}

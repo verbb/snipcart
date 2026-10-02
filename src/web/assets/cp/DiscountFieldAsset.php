@@ -1,23 +1,23 @@
 <?php
-namespace verbb\snipcart\assetbundles;
+namespace verbb\snipcart\web\assets\cp;
 
 use craft\web\AssetBundle;
 
-class OrdersWidgetAsset extends AssetBundle
+class DiscountFieldAsset extends AssetBundle
 {
     // Public Methods
     // =========================================================================
 
     public function init(): void
     {
-        $this->sourcePath = '@verbb/snipcart/resources/dist';
+        $this->sourcePath = '@verbb/snipcart/web/assets/cp/dist';
 
         $this->depends = [
-            ChartAsset::class,
+            SnipcartAsset::class,
         ];
 
         $this->js = [
-            'js/OrdersWidget.js',
+            'js/settings-discount.js',
         ];
 
         parent::init();

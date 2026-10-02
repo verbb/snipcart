@@ -4,7 +4,7 @@
     {% exit 404 %}
 {% endif %}
 
-{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
 {% set crumbs = [
     { label: craft.snipcart.getPluginName(), url: url('snipcart') },

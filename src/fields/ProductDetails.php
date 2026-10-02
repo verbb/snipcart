@@ -2,7 +2,7 @@
 namespace verbb\snipcart\fields;
 
 use verbb\snipcart\Snipcart;
-use verbb\snipcart\assetbundles\ProductDetailsFieldAsset;
+use verbb\snipcart\web\assets\cp\ProductDetailsFieldAsset;
 use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
 use verbb\snipcart\validators\ProductDetailsValidator;
 

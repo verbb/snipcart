@@ -5,7 +5,7 @@
     {% exit 404 %}
 {% endif %}
 
-{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
 {% set centered = true %}
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}

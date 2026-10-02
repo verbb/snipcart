@@ -89,8 +89,8 @@ class TailwindExtractor {
     }
 }
 
-const assetbundleSrc = './src/assetbundles/src';
-const assetbundleDist = './src/assetbundles/dist';
+const assetbundleSrc = './src/web/assets/cp/src';
+const assetbundleDist = './src/web/assets/cp/dist';
 
 module.exports = {
     entry: {

@@ -1,6 +1,6 @@
 {% extends 'snipcart/cp/_layout' %}
 
-{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\OverviewAsset') %}
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\OverviewAsset') %}
 
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}

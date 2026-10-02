@@ -2,7 +2,7 @@
 namespace verbb\snipcart\widgets;
 
 use verbb\snipcart\Snipcart;
-use verbb\snipcart\assetbundles\OrdersWidgetAsset;
+use verbb\snipcart\web\assets\cp\OrdersWidgetAsset;
 
 use Craft;
 use craft\base\Widget;

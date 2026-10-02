@@ -5,6 +5,10 @@
 ### Added
 - Added configurable retention for webhook request logs.
 
+### Changed
+- Updated the required version of `verbb/base` to 3.0.19.
+- Reorganized control panel assets under `src/web` and aligned the existing Webpack paths with their source and output directories.
+
 ### Fixed
 - Fixed a low-severity configuration injection vulnerability.
 - Fixed a low-severity log injection vulnerability.

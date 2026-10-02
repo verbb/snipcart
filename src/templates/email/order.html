@@ -1,7 +1,7 @@
 {% extends 'snipcart/email/_layout' %}
 
 {% set isDevMode = craft.app.getConfig().general.devMode %}
-{% set imageUrl = isDevMode ? '@verbb/snipcart/resources/dist/img/order-complete-devmode.png' : '@verbb/snipcart/resources/dist/img/order-complete.png' %}
+{% set imageUrl = isDevMode ? '@verbb/snipcart/web/assets/cp/dist/img/order-complete-devmode.png' : '@verbb/snipcart/web/assets/cp/dist/img/order-complete.png' %}
 
 {% set primaryDetails = {
     'Order Number': order.invoiceNumber,

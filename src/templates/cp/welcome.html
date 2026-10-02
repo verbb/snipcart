@@ -4,10 +4,10 @@
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}
 
-{% do view.registerAssetBundle('verbb\\snipcart\\assetbundles\\SnipcartAsset') %}
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
 {% set graphicUrl = craft.app.assetManager.getPublishedUrl(
-    '@verbb/snipcart/resources/dist/img/disconnected.svg',
+    '@verbb/snipcart/web/assets/cp/dist/img/disconnected.svg',
     true
 ) %}
 
