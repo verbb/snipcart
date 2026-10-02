@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.11 - 2026-10-02
 
 ### Added
 - Added configurable retention for webhook request logs.

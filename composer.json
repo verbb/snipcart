@@ -2,7 +2,7 @@
     "name": "verbb/snipcart",
     "description": "A Craft CMS plugin for connecting products to Snipcart's hosted cart and checkout.",
     "type": "craft-plugin",
-    "version": "3.0.10",
+    "version": "3.0.11",
     "keywords": [
         "craft",
         "cms",
