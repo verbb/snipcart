@@ -83,9 +83,12 @@ class WebhooksController extends Controller
             $requestBody = file_get_contents('php://input') ?: '';
         }
 
+        // Keep the text prefix so the log formatter does not expand JSON newline escapes.
+        $logJsonOptions = JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE;
+
         Snipcart::info('Incoming webhook request received. method={method} path={pathInfo} bodyLength={bodyLength}', [
-            'method' => $request->getMethod(),
-            'pathInfo' => $request->getPathInfo(),
+            'method' => Json::encode($request->getMethod(), $logJsonOptions),
+            'pathInfo' => Json::encode($request->getPathInfo(), $logJsonOptions),
             'bodyLength' => strlen($requestBody),
         ]);
 

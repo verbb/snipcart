@@ -5,6 +5,9 @@
 ### Changed
 - Updated Craft API usage to avoid deprecated calls.
 
+### Fixed
+- Fixed a low-severity log injection vulnerability.
+
 ## 3.0.12 - 2026-10-07
 
 ### Changed
