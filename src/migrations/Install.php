@@ -7,7 +7,6 @@ use verbb\snipcart\models\ProductDetails;
 
 use Craft;
 use craft\db\Migration;
-use craft\helpers\MigrationHelper;
 
 class Install extends Migration
 {
@@ -117,8 +116,7 @@ class Install extends Migration
 
         foreach ($tables as $table) {
             if ($this->getDb()->tableExists($table)) {
-                MigrationHelper::dropAllForeignKeysToTable($table, $this);
-                MigrationHelper::dropAllForeignKeysOnTable($table, $this);
+                $this->dropAllForeignKeysToTable($table);
             }
         }
     }
