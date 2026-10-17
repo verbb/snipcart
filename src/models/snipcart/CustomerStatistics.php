@@ -8,8 +8,8 @@ class CustomerStatistics extends Model
     // Properties
     // =========================================================================
 
-    public ?int $ordersCount = null;;
-    public ?float $ordersAmount = null;;
+    public ?int $ordersCount = null;
+    public ?float $ordersAmount = null;
 
 
     // Public Methods

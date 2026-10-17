@@ -8,6 +8,8 @@ use craft\helpers\UrlHelper;
 
 use DateTime;
 
+use stdClass;
+
 class Subscription extends Model
 {
     // Constants
@@ -20,7 +22,7 @@ class Subscription extends Model
 
     // Properties
     // =========================================================================
-    
+
     public ?string $user = null;
     public ?string $initialOrderToken = null;
     public ?string $firstInvoiceReceivedOn = null;

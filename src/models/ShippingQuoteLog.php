@@ -3,6 +3,8 @@ namespace verbb\snipcart\models;
 
 use craft\base\Model;
 
+use DateTime;
+
 class ShippingQuoteLog extends Model
 {
     // Properties
@@ -13,6 +15,6 @@ class ShippingQuoteLog extends Model
     public ?string $token = null;
     public ?string $body = null;
     public ?DateTime $dateCreated = null;
-    public ??DateTime $dateUpdated = null;
+    public ?DateTime $dateUpdated = null;
     public ?string $uid = null;
 }

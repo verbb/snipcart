@@ -5,6 +5,8 @@ use craft\base\Model;
 
 use DateTime;
 
+use stdClass;
+
 class Product extends Model
 {
     // Properties

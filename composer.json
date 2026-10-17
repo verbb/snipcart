@@ -48,5 +48,8 @@
         "handle": "snipcart",
         "changelogUrl": "https://raw.githubusercontent.com/verbb/snipcart/craft-4/CHANGELOG.md",
         "class": "verbb\\snipcart\\Snipcart"
+    },
+    "scripts": {
+        "test:models": "@php tests/regression/model-types.php"
     }
 }
