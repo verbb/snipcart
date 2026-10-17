@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.14 - 2026-10-17
 
 ### Fixed
 - Fixed syntax errors and missing date and metadata class references in API models.
