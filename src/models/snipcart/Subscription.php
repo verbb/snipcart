@@ -8,6 +8,8 @@ use craft\helpers\UrlHelper;
 
 use DateTime;
 
+use stdClass;
+
 class Subscription extends Model
 {
     // Constants
