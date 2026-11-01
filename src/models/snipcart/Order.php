@@ -7,6 +7,7 @@ use verbb\snipcart\helpers\ModelHelper;
 
 use Craft;
 use craft\base\Model;
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 
 use DateTime;
@@ -156,7 +157,7 @@ class Order extends Model
         return $this->_refunds = $refunds;
     }
 
-    public function getUser(): Customer
+    public function getUser(): ?User
     {
         return $this->_user;
     }
