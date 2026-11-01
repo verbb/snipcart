@@ -113,7 +113,7 @@ class Settings extends Model
 
     public function getSecretKey(): ?string
     {
-        return $this->testMode ? $this->secretTestApiKey : $this->secretApiKey;
+        return $this->testMode ? $this->getSecretTestApiKey() : $this->getSecretApiKey();
     }
 
     public function isConfigured(): bool
@@ -161,6 +161,7 @@ class Settings extends Model
             foreach ($this->getProviders() as $provider) {
                 if ($request->getBodyParam('providers')[$provider->refHandle()]['enabled'] && ! $provider->getSettings()->validate()) {
                     $this->addError('providerSettings', 'Provider settings are missing.');
+
                     return false;
                 }
             }
