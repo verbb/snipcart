@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed notification emails not being sent when a text template is set, and not restoring the template mode when a template is missing.
+- Fixed notification emails not parsing environment variables in the system From email address and name.
 
 ## 3.0.14 - 2026-10-17
 

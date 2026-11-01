@@ -5,6 +5,7 @@ use verbb\snipcart\Snipcart;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\App;
 use craft\mail\Message;
 
 use yii\base\Exception;
@@ -99,7 +100,7 @@ class Notifications extends Component
                 $message = new Message();
 
                 $message->setFrom([
-                    $emailSettings['fromEmail'] => $emailSettings['fromName'],
+                    App::parseEnv($emailSettings['fromEmail']) => App::parseEnv($emailSettings['fromName']),
                 ]);
 
                 $message->setTo($address);
