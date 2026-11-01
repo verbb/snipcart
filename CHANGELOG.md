@@ -6,6 +6,7 @@
 - Fixed notification emails not being sent when a text template is set, and not restoring the template mode when a template is missing.
 - Fixed notification emails not parsing environment variables in the system From email address and name.
 - Fixed `Order::getUser()` always throwing an error. It now returns the matching Craft user, or `null`.
+- Fixed an error when setting an order or abandoned cart shipping address from an `Address` model.
 
 ## 3.0.14 - 2026-10-17
 

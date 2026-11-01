@@ -201,10 +201,10 @@ class Order extends Model
             }
 
             $addrData = ModelHelper::stripUnknownProperties($address, Address::class);
-            $addressModel = new Address((array)$addrData);
+            $address = new Address((array)$addrData);
         }
 
-        return $this->_shippingAddress = $addressModel;
+        return $this->_shippingAddress = $address;
     }
 
     public function getCpUrl(): string
