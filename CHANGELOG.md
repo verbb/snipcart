@@ -9,6 +9,7 @@
 - Fixed an error when setting an order or abandoned cart shipping address from an `Address` model.
 - Fixed the customer link on the subscription detail page.
 - Fixed the secret API key not being parsed for environment variables when making API requests.
+- Fixed `Orders::getAllOrders()` returning duplicate orders when there was more than one page of results.
 
 ## 3.0.14 - 2026-10-17
 

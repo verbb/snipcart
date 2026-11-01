@@ -63,7 +63,7 @@ class Orders extends Component
                 $collection[] = $currentItems;
 
                 if ($result->totalItems > $collected) {
-                    ++$offset;
+                    $offset += count($currentItems);
                 } else {
                     $finished = true;
                 }
