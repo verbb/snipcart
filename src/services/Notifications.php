@@ -69,54 +69,56 @@ class Notifications extends Component
 
         $emailSettings = Craft::$app->getProjectConfig()->get('email');
 
+        $originalTemplateMode = $view->getTemplateMode();
+
         // Switch template mode only if we need to rely on our own template.
         if ($this->emailTemplatesAreFrontEnd === false) {
-            $originalTemplateMode = $view->getTemplateMode();
-
             $view->setTemplateMode($view::TEMPLATE_MODE_CP);
         }
 
-        if (!$this->ensureTemplatesExist()) {
-            $this->setErrors(['Email template(s) are missing.']);
-            return false;
-        }
+        try {
+            if (!$this->ensureTemplatesExist()) {
+                $this->setErrors(['Email template(s) are missing.']);
 
-        // render the HTML message
-        $messageHtml = $view->renderPageTemplate($this->htmlEmailTemplate, $this->getNotificationVars());
-
-        // inline the message’s styles so they're more likely to be applied
-        $mergedHtml = CssInliner::fromHtml($messageHtml)->inlineCss()->render();
-
-        $messageText = '';
-
-        if (!empty($this->textEmailTemplate)) {
-            $messageText = $view->renderPageTemplate($this->textEmailTemplate, $this->getNotificationVars());
-        }
-
-        foreach ($to as $address) {
-            $message = new Message();
-
-            $message->setFrom([
-                $emailSettings['fromEmail'] => $emailSettings['fromName'],
-            ]);
-
-            $message->setTo($address);
-            $message->setSubject($subject);
-            $message->setHtmlBody($mergedHtml);
-
-            if ($messageText) {
-                $message->setTextBody($messageText);
+                return false;
             }
 
-            if (!Craft::$app->getMailer()->send($message)) {
-                $problem = "Notification failed to send to $address!";
-                Snipcart::error($problem);
+            // render the HTML message
+            $messageHtml = $view->renderPageTemplate($this->htmlEmailTemplate, $this->getNotificationVars());
 
-                $errors[] = $problem;
+            // inline the message’s styles so they're more likely to be applied
+            $mergedHtml = CssInliner::fromHtml($messageHtml)->inlineCss()->render();
+
+            $messageText = '';
+
+            if (!empty($this->textEmailTemplate)) {
+                $messageText = $view->renderPageTemplate($this->textEmailTemplate, $this->getNotificationVars());
             }
-        }
 
-        if ($this->emailTemplatesAreFrontEnd === false && isset($originalTemplateMode)) {
+            foreach ($to as $address) {
+                $message = new Message();
+
+                $message->setFrom([
+                    $emailSettings['fromEmail'] => $emailSettings['fromName'],
+                ]);
+
+                $message->setTo($address);
+                $message->setSubject($subject);
+                $message->setHtmlBody($mergedHtml);
+
+                if ($messageText) {
+                    $message->setTextBody($messageText);
+                }
+
+                if (!Craft::$app->getMailer()->send($message)) {
+                    $problem = "Notification failed to send to $address!";
+                    Snipcart::error($problem);
+
+                    $errors[] = $problem;
+                }
+            }
+        } finally {
+            // Restore the template mode on every exit, including missing templates.
             $view->setTemplateMode($originalTemplateMode);
         }
 
@@ -135,9 +137,7 @@ class Notifications extends Component
             return false;
         }
 
-        if (!empty($this->textEmailTemplate)) {
-            $this->ensureTemplateExists($this->textEmailTemplate);
-
+        if (!empty($this->textEmailTemplate) && !$this->ensureTemplateExists($this->textEmailTemplate)) {
             return false;
         }
 
