@@ -11,6 +11,7 @@
 - Fixed the secret API key not being parsed for environment variables when making API requests.
 - Fixed `Orders::getAllOrders()` returning duplicate orders when there was more than one page of results.
 - Fixed `craft.snipcart.publicApiKey()` throwing an error when no public API key is set.
+- Fixed `craft.snipcart.getProductInfo()` and `FieldHelper::getProductInfo()` throwing an error for elements with a Product Details field.
 
 ## 3.0.14 - 2026-10-17
 

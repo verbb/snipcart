@@ -2,9 +2,9 @@
 namespace verbb\snipcart\variables;
 
 use verbb\snipcart\Snipcart;
-use verbb\snipcart\fields\ProductDetails;
 use verbb\snipcart\helpers\FieldHelper;
 use verbb\snipcart\helpers\FormatHelper;
+use verbb\snipcart\models\ProductDetails;
 use verbb\snipcart\models\snipcart\Customer;
 use verbb\snipcart\models\snipcart\Order;
 use verbb\snipcart\models\snipcart\Subscription;

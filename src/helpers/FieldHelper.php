@@ -2,6 +2,7 @@
 namespace verbb\snipcart\helpers;
 
 use verbb\snipcart\fields\ProductDetails;
+use verbb\snipcart\models\ProductDetails as ProductDetailsModel;
 
 use craft\base\ElementInterface;
 use craft\models\FieldLayout;
@@ -11,7 +12,7 @@ class FieldHelper
     // Static Methods
     // =========================================================================
 
-    public static function getProductInfo(ElementInterface $element): ?ProductDetails
+    public static function getProductInfo(ElementInterface $element): ?ProductDetailsModel
     {
         // if we don't have an Element, there’s nothing to get
         if (!isset($element)) {
