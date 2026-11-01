@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.15 - 2026-11-01
 
 ### Fixed
 - Fixed notification emails not being sent when a text template is set, and not restoring the template mode when a template is missing.
