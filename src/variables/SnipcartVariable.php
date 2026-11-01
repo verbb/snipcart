@@ -41,7 +41,7 @@ class SnipcartVariable
 
     public function publicApiKey(): string
     {
-        return Snipcart::$plugin->getSettings()->getPublicKey();
+        return Snipcart::$plugin->getSettings()->getPublicKey() ?? '';
     }
 
     public function defaultCurrency(): string

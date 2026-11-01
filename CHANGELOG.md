@@ -10,6 +10,7 @@
 - Fixed the customer link on the subscription detail page.
 - Fixed the secret API key not being parsed for environment variables when making API requests.
 - Fixed `Orders::getAllOrders()` returning duplicate orders when there was more than one page of results.
+- Fixed `craft.snipcart.publicApiKey()` throwing an error when no public API key is set.
 
 ## 3.0.14 - 2026-10-17
 
