@@ -7,6 +7,7 @@
 - Fixed notification emails not parsing environment variables in the system From email address and name.
 - Fixed `Order::getUser()` always throwing an error. It now returns the matching Craft user, or `null`.
 - Fixed an error when setting an order or abandoned cart shipping address from an `Address` model.
+- Fixed the customer link on the subscription detail page.
 
 ## 3.0.14 - 2026-10-17
 

@@ -69,7 +69,7 @@
                                     <tr>
                                         <th class="light">{{ 'Customer' | t('snipcart') }}</th>
                                         <td>
-                                            <a href="{{ url('snipcart/customers/' ~ subscription.user.id) }}">
+                                            <a href="{{ url('snipcart/customer/' ~ subscription.user.id) }}">
                                                 {{- subscription.user.billingAddress.fullName -}}
                                             </a>
                                         </td>
