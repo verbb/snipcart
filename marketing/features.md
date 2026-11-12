@@ -14,7 +14,7 @@ Use the optional product field and Twig helpers to provide Snipcart with the ide
 <!-- feature-section media-size="large" -->
 ## Store activity in Craft
 
-See sales statistics, recent orders and leading customers together in the control panel. The overview turns day-to-day store activity into a current picture without making staff leave Craft.
+See sales statistics, recent orders and leading customers together in the control panel. The overview turns day-to-day store activity into a current picture.
 
 ![Snipcart store performance, recent orders and top customers in Craft 5.](../screenshots/snipcart-overview.png)
 

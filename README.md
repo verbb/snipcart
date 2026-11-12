@@ -19,13 +19,16 @@ Use the optional product field and Twig helpers to provide Snipcart with the ide
 - Apply Snipcart's supported tax providers during checkout.
 
 ## Documentation
+
 Visit the [Snipcart Plugin page](https://verbb.io/craft-plugins/snipcart) for all documentation, guides, pricing and developer resources.
 
 ## Credit & Thanks
+
 Originally created by [Matt Stein](https://mattstein.com) and suported by the [Foster Commerce](https://www.fostercommerce.com) team.
 
 ## Support
-Get in touch with us via the [Snipcart Support page](https://verbb.io/craft-plugins/snipcart/support) or by [creating a Github issue](https://github.com/verbb/snipcart/issues)
+
+Get in touch with us via the [Snipcart Support page](https://verbb.io/craft-plugins/snipcart/support) or by [creating a GitHub issue](https://github.com/verbb/snipcart/issues).
 
 <h2></h2>
 
