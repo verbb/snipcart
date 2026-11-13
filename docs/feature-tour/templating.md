@@ -20,10 +20,10 @@ You can also pass in any options defined in the [Snipcart docs](https://docs.sni
 }) }}
 ```
 
-This will add the JavaScript to the end of the page, near the `</body>` tag, but you can also render it inline.
+This will add the JavaScript to the end of the page, near the `</body>` tag, but you can also render it inline by passing `true` as the second argument.
 
 ```twig
-{{ craft.snipcart.cartJs({}, false) }}
+{{ craft.snipcart.cartJs({}, true) }}
 ```
 
 ## Cart Button

@@ -27,7 +27,8 @@
         "collapsable": false,
         "children": [
             "template-guides/template-tags",
-            "template-guides/fields"
+            "template-guides/fields",
+            "template-guides/fetching-orders-customers-and-subscriptions"
         ]
     },
     {
@@ -35,9 +36,17 @@
         "collapsable": false,
         "children": [
             "developers/events",
-            "developers/graphql",
             "developers/template-hooks",
-            "developers/recipes"
+            "developers/recipes",
+            "developers/console-commands"
+        ]
+    },
+    {
+        "title": "GraphQL",
+        "collapsable": false,
+        "children": [
+            "graphql/queries",
+            "graphql/interfaces-types"
         ]
     },
     {
