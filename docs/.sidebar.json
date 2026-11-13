@@ -18,7 +18,8 @@
             "feature-tour/notifications",
             "feature-tour/order-fields",
             "feature-tour/shipments",
-            "feature-tour/test-mode"
+            "feature-tour/test-mode",
+            "feature-tour/permissions"
         ]
     },
     {

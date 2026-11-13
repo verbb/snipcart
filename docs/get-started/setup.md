@@ -14,7 +14,7 @@ Grant the additional permissions only to staff who perform the corresponding ope
 - **Manage Snipcart discounts** allows creating and deleting discounts.
 - **Manage Snipcart subscriptions** allows cancelling subscriptions.
 
-Craft administrators retain access to every operation. A staff member with view access can inspect store data without receiving permission to refund orders or change discounts and subscriptions.
+Craft administrators retain access to every operation. A staff member with view access can inspect store data without receiving permission to refund orders or change discounts and subscriptions. See [Permissions](docs:feature-tour/permissions) for what each permission allows.
 
 ### Orders
 Everything here is off by default, but you can configure a number of options that don't require any extra code unless you'd prefer your own markup, field types, and integrations.
