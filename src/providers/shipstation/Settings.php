@@ -50,6 +50,7 @@ class Settings extends Model
         $rules[] = [['apiKey', 'apiSecret', 'defaultCountry', 'defaultWarehouseId', 'defaultOrderConfirmation'], 'required'];
         $rules[] = [['defaultWarehouseId'], 'number', 'integerOnly' => true];
         $rules[] = [['defaultCountry'], 'string', 'length' => 2];
+        $rules[] = [['defaultCarrierCode', 'defaultPackageCode', 'enableShippingRates', 'sendCompletedOrders'], 'safe'];
 
         return $rules;
     }
