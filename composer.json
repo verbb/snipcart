@@ -50,6 +50,7 @@
         "class": "verbb\\snipcart\\Snipcart"
     },
     "scripts": {
-        "test:models": "@php tests/regression/model-types.php"
+        "test:models": "@php tests/regression/model-types.php",
+        "test:shipstation": "@php tests/regression/shipstation-rates.php"
     }
 }

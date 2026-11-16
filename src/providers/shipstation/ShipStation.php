@@ -59,7 +59,7 @@ class ShipStation extends ShippingProvider
 
     public function getClient(): Client
     {
-        if ($this->client instanceof Client) {
+        if (isset($this->client)) {
             return $this->client;
         }
 
@@ -82,9 +82,7 @@ class ShipStation extends ShippingProvider
     {
         $rates = [];
 
-        foreach ($this->getShipStationRatesForOrder($snipcartOrder, $package) as $responseItem) {
-            $rate = new Rate($responseItem);
-
+        foreach ($this->getShipStationRatesForOrder($snipcartOrder, $package) as $rate) {
             $rates[] = new SnipcartRate([
                 'cost' => number_format($rate->shipmentCost + $rate->otherCost, 2),
                 'description' => $rate->serviceName,
@@ -138,13 +136,14 @@ class ShipStation extends ShippingProvider
 
             if ($isDevMode || $isTestMode) {
                 $order->orderId = self::TEST_ORDER_ID;
+
                 return $order;
             }
 
             if (($createdOrder = $this->sendOrder($order)) instanceof Order) {
                 // TODO: delete related rate quotes when order makes it to
                 // ShipStation, or after a sensible amount of time
-                 
+
                 return $createdOrder;
             }
 
@@ -262,7 +261,7 @@ class ShipStation extends ShippingProvider
 
         $responseData = $this->post('shipments/getrates', $shipmentInfo);
 
-        if ($responseData === null) {
+        if (!is_array($responseData)) {
             Snipcart::error('ShipStation did not return any rates for {num}', [
                 'num' => $snipcartOrder->invoiceNumber,
             ]);
@@ -270,7 +269,7 @@ class ShipStation extends ShippingProvider
             return [];
         }
 
-        return ModelHelper::populateArrayWithModels($responseData, Rate::class);
+        return ModelHelper::safePopulateArrayWithModels($responseData, Rate::class);
     }
 
     private function getShippingMethodFromOrder(SnipcartOrder $snipcartOrder): ?Rate
@@ -323,6 +322,7 @@ class ShipStation extends ShippingProvider
 
             if (!$closest instanceof Rate) {
                 $closest = $rate;
+
                 continue;
             }
 
