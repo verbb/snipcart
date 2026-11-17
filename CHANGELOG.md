@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.16 - 2026-11-17
 
 ### Fixed
 - Fixed the ShipStation carrier code, package code, “Enable Shipping Rates” and “Send Completed Orders” settings not being applied. ([#70](https://github.com/verbb/snipcart/issues/70))
