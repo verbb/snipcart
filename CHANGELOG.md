@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.1.11 - 2026-11-17
 
 ### Fixed
 - Fixed errors when fetching live shipping rates from ShipStation. ([#70](https://github.com/verbb/snipcart/issues/70))
