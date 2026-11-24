@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.1.0 - 2026-11-24
 
 ### Added
 - Added a setup checklist to the Overview for new installs, shown until the store’s first order in place of the “Nothing to see here yet” page. It covers the API keys, a Product Details field, webhooks and the first order, and each step ticks itself off. Existing installs keep their current Overview.
