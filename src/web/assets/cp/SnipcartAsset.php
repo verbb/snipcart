@@ -21,7 +21,6 @@ class SnipcartAsset extends AssetBundle
         ];
 
         $this->js = [
-            'js/vendors.js',
             'js/snipcart.js',
         ];
 

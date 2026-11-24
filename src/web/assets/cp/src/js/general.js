@@ -1,7 +1,3 @@
-/* global Craft */
-
-import '../css/general.css';
-
 /**
  * @todo Get serious and rebuild this with Vue
  */

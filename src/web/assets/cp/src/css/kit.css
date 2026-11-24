@@ -1,0 +1,16 @@
+@import '@verbb/plugin-kit-web/plugin-kit.css';
+
+/* The setup checklist draws its own card, so the Overview drops Craft's content pane around it. */
+.snipcart-bare-content #content.content-pane {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Without the pane, the tabs become their own strip above the checklist. */
+.snipcart-bare-content #content-header {
+    margin: 0 0 var(--padding, 24px);
+    border-radius: var(--radius-lg);
+    background-color: var(--pane-bg, #fff);
+    box-shadow: var(--pane-shadow);
+}

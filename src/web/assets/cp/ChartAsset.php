@@ -16,10 +16,6 @@ class ChartAsset extends AssetBundle
             SnipcartAsset::class,
         ];
 
-        $this->js = [
-            'js/charts.js',
-        ];
-
         $this->css = [
             'css/charts.css',
         ];

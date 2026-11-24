@@ -1,5 +1,3 @@
-import '../css/field-product-details.css';
-
 var shippableSwitches = document.querySelectorAll(`[id*='fields-shippable']`);
 
 if (shippableSwitches.length) {

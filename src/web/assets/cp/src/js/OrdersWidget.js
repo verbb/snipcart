@@ -1,7 +1,3 @@
-/* global Craft */
-/* global Garnish */
-/* global jQuery */
-
 import ApexCharts from 'apexcharts'
 
 (function($) {

@@ -1,5 +1,3 @@
-/* global Craft */
-
 import ApexCharts from 'apexcharts'
 
 const statPanels = document.getElementById('stat-panels');

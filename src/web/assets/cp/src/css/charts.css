@@ -1,5 +1,3 @@
-/* purgecss start ignore */
-
 #overview-chart .apexcharts-menu-item { text-align: center; }
 #overview-chart .apexcharts-toolbar { top: 15px; }
 #overview-chart .apexcharts-xaxistooltip { background: #fff; padding: 6px 12px; border: 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10); }
@@ -10,4 +8,3 @@
 #overview-chart .apexcharts-legend-marker { top: 1px; }
 #overview-chart .apexcharts-tooltip-series-group.apexcharts-active,
 #overview-chart .apexcharts-tooltip-series-group:last-child { padding-bottom: 0; }
-/* purgecss end ignore */

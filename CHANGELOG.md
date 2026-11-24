@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- Moved the control panel asset build from webpack and Tailwind to Vite. Styles and scripts are unchanged.
+
 ## 3.0.16 - 2026-11-17
 
 ### Fixed

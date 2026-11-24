@@ -1,4 +1,3 @@
-import '../css/settings-plugin.css';
 import ClipboardJS from 'clipboard';
 
 const inputField = document.getElementById('webhookEndpoint');
