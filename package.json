@@ -16,7 +16,7 @@
         "lint": "eslint src/web/assets/cp/src vite.config.mjs eslint.config.mjs"
     },
     "dependencies": {
-        "@verbb/plugin-kit-web": "file:../../../plugin-kit/plugin-kit/plugin-kit-web",
+        "@verbb/plugin-kit-web": "^2.3.0",
         "apexcharts": "3.42.0",
         "clipboard": "^2.0.11"
     },
