@@ -3,15 +3,14 @@
 ## Unreleased
 
 ### Added
-- Added a setup checklist to the Overview until the store’s first order, covering the API keys, a Product Details field, webhooks and the first order. Each step ticks itself off.
+- Added a setup checklist to the Overview for new installs, shown until the store’s first order in place of the “Nothing to see here yet” page. It covers the API keys, a Product Details field, webhooks and the first order, and each step ticks itself off. Existing installs keep their current Overview.
 - Added empty states to the Orders, Customers, Discounts, Abandoned Carts and Subscriptions pages and the Overview’s Recent Orders and Top Customers tables. Orders tells an empty date range apart from a store with no orders yet.
 
 ### Changed
-- The Overview now shows the setup checklist in place of the “Nothing to see here yet” page.
 - Moved the control panel asset build from webpack and Tailwind to Vite. Styles and scripts are unchanged.
 
 ### Fixed
-- Fixed the Overview showing an error page when Snipcart rejected the API keys. The setup checklist now says the keys didn’t work.
+- Fixed the Overview on new installs showing an error page when Snipcart rejected the API keys. The setup checklist now says the keys didn’t work.
 - Fixed the Overview’s Recent Orders and Top Customers tables showing an empty table instead of their empty message.
 
 ## 3.0.16 - 2026-11-17

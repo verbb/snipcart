@@ -9,16 +9,28 @@ use verbb\snipcart\records\WebhookLog;
 use Craft;
 use craft\base\Component;
 use craft\base\FieldInterface;
+use craft\helpers\DateTimeHelper;
 
+use DateTime;
+use DateTimeZone;
 use Throwable;
 
 class Setup extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * Installs from this date on get the setup checklist. Sites that installed Snipcart earlier never see it.
+     */
+    public const SETUP_CHECKLIST_SINCE = '2026-11-23';
+
+
     // Public Methods
     // =========================================================================
 
     /**
-     * The Overview's setup steps, or null once the store has its first order.
+     * The Overview's setup steps, or null once the store has its first order or for an install that predates them.
      *
      * Each step ticks from real data. The API keys tick once Snipcart answers an order lookup with them,
      * so keys it rejects stay unticked. Setup only ends while the keys work, because the dashboard needs them.
@@ -26,6 +38,10 @@ class Setup extends Component
      */
     public function getSetupSteps(): ?array
     {
+        if (!$this->_isNewInstall()) {
+            return null;
+        }
+
         $settings = Snipcart::$plugin->getSettings();
         $keys = false;
         $keysFailed = false;
@@ -64,6 +80,22 @@ class Setup extends Component
 
     // Private Methods
     // =========================================================================
+
+    private function _isNewInstall(): bool
+    {
+        // Craft records this per environment on install, so it needs no storage of our own. A missing date counts as an existing install.
+        $installDate = Craft::$app->getPlugins()->getStoredPluginInfo('snipcart')['installDate'] ?? null;
+
+        if (!$installDate instanceof DateTime) {
+            $installDate = DateTimeHelper::toDateTime($installDate) ?: null;
+        }
+
+        if (!$installDate) {
+            return false;
+        }
+
+        return $installDate >= new DateTime(self::SETUP_CHECKLIST_SINCE, new DateTimeZone('UTC'));
+    }
 
     private function _hasCompletedOrderWebhook(): bool
     {
