@@ -9,6 +9,10 @@
 {% set showingSearchResult = keywords is not empty %}
 {% set hasResults = customers | length > 0 %}
 
+{% if not hasResults %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% block content %}
     <div>
         <div class="mb-6 p-2 bg-light-grey rounded{% if not showingSearchResult and not hasResults %} hidden{% endif %}">
@@ -41,9 +45,15 @@
         </div>
 
         {% if not hasResults %}
-            <p id="noredirects">
-                {{ showingSearchResult ? 'No records found.' | t('snipcart') : 'There aren’t any customers with accounts yet.' | t('snipcart') }}
-            </p>
+            {% if showingSearchResult %}
+                <pk-state-panel heading="{{ 'No customers match' | t('snipcart') }}">
+                    {{ 'Try a different name, or clear the search.' | t('snipcart') }}
+                </pk-state-panel>
+            {% else %}
+                <pk-state-panel heading="{{ 'No customers yet' | t('snipcart') }}">
+                    {{ 'Customers show here with their orders and total spent.' | t('snipcart') }}
+                </pk-state-panel>
+            {% endif %}
         {% else %}
 
             <table id="customers" class="data w-full">

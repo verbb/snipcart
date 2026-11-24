@@ -2,17 +2,21 @@
 
 {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
+{% if not subscriptions %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = 'Snipcart Subscriptions' ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'subscriptions' %}
 
 {% block content %}
     <div>
-        <p id="noredirects"{% if subscriptions %} class="hidden"{% endif %}>
-            {{ 'There aren’t any subscriptions yet.' | t('snipcart') }}
-        </p>
-
-        {% if subscriptions %}
+        {% if not subscriptions %}
+            <pk-state-panel heading="{{ 'No subscriptions yet' | t('snipcart') }}">
+                {{ 'Subscriptions to products with a payment schedule show here.' | t('snipcart') }}
+            </pk-state-panel>
+        {% else %}
             <table id="carts" class="data w-full">
                 <thead>
                     <th scope="col">{{ 'Plan' | t('snipcart') }}</th>

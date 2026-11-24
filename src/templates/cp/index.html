@@ -2,9 +2,16 @@
 
 {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\OverviewAsset') %}
 
+{% if not orders.items or not customers.items %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'overview' %}
+{% set crumbs = [
+    { label: craft.snipcart.getPluginName(), url: url('snipcart') },
+] %}
 
 {% block content %}
     <div>
@@ -138,15 +145,15 @@
                     <div class="inner">
                         <h2>{{ 'Recent Orders' | t('snipcart') }}</h2>
 
-                        <table id="stat-orders" class="data w-full">
-                            <thead>
-                                <th scope="col">{{ 'Invoice' | t('snipcart') }}</th>
-                                <th scope="col">{{ 'Placed' | t('snipcart') }}</th>
-                                <th scope="col">{{ 'Customer' | t('snipcart') }}</th>
-                                <th scope="col">{{ 'Total' | t('snipcart') }}</th>
-                            </thead>
-                            <tbody>
-                                {% if orders %}
+                        {% if orders.items %}
+                            <table id="stat-orders" class="data w-full">
+                                <thead>
+                                    <th scope="col">{{ 'Invoice' | t('snipcart') }}</th>
+                                    <th scope="col">{{ 'Placed' | t('snipcart') }}</th>
+                                    <th scope="col">{{ 'Customer' | t('snipcart') }}</th>
+                                    <th scope="col">{{ 'Total' | t('snipcart') }}</th>
+                                </thead>
+                                <tbody>
                                     {% for order in orders.items %}
                                         <tr data-id="{{ order.invoiceNumber }}" data-name="{{ order.invoiceNumber }}">
                                             <td class="whitespace-no-wrap"><a href="{{ order.cpUrl }}">{{ order.invoiceNumber }}</a></td>
@@ -155,13 +162,13 @@
                                             <td>{{ craft.snipcart.formatCurrency(order.finalGrandTotal, order.currency) }}</td>
                                         </tr>
                                     {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="4">{{ 'No orders found.' | t('snipcart') }}</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <pk-state-panel size="sm" heading="{{ 'No orders yet' | t('snipcart') }}" heading-level="3">
+                                {{ 'The latest orders show here.' | t('snipcart') }}
+                            </pk-state-panel>
+                        {% endif %}
 
                         <a href="{{ url('snipcart/orders') }}" class="btn mt-6">{{ 'All Orders' | t('snipcart') }}</a>
                     </div>
@@ -171,14 +178,14 @@
                     <div class="inner">
                         <h2>{{ 'Top Customers' | t('snipcart') }}</h2>
 
-                        <table id="stat-customers" class="data w-full">
-                            <thead>
-                                <th scope="col">{{ 'Name' | t('snipcart') }}</th>
-                                <th scope="col">{{ 'Orders' | t('snipcart') }}</th>
-                                <th scope="col">{{ 'Total Spent' | t('snipcart') }}</th>
-                            </thead>
-                            <tbody>
-                                {% if customers %}
+                        {% if customers.items %}
+                            <table id="stat-customers" class="data w-full">
+                                <thead>
+                                    <th scope="col">{{ 'Name' | t('snipcart') }}</th>
+                                    <th scope="col">{{ 'Orders' | t('snipcart') }}</th>
+                                    <th scope="col">{{ 'Total Spent' | t('snipcart') }}</th>
+                                </thead>
+                                <tbody>
                                     {% for customer in customers.items %}
                                         <tr data-id="{{ customer.id }}" data-name="{{ customer.id }}">
                                             <td><a href="{{ customer.cpUrl }}">{{ customer.billingAddressName }}</a></td>
@@ -186,13 +193,13 @@
                                             <td>{{ craft.snipcart.formatCurrency(customer.statistics.ordersAmount, craft.snipcart.defaultCurrency) | raw }}</td>
                                         </tr>
                                     {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="3">{{ 'No customers found.' | t('snipcart') }}</td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <pk-state-panel size="sm" heading="{{ 'No customers yet' | t('snipcart') }}" heading-level="3">
+                                {{ 'Customers who’ve spent the most show here.' | t('snipcart') }}
+                            </pk-state-panel>
+                        {% endif %}
 
                         <a href="{{ url('snipcart/customers') }}" class="btn mt-6">
                             {{- 'All Customers' | t('snipcart') -}}

@@ -2,18 +2,21 @@
 
 {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
+{% if not carts %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = 'Snipcart Abandoned Carts' ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'abandoned' %}
 
 {% block content %}
     <div>
-        <p id="noredirects"{% if carts | length %} class="hidden"{% endif %}>
-            {{ 'There aren’t any abandoned carts yet.' | t('snipcart') }}
-        </p>
-
-        {% if carts | length %}
-
+        {% if not carts %}
+            <pk-state-panel heading="{{ 'No abandoned carts yet' | t('snipcart') }}">
+                {{ 'Carts that customers leave without checking out show here.' | t('snipcart') }}
+            </pk-state-panel>
+        {% else %}
             <table id="carts" class="data w-full">
                 <thead>
                     <th scope="col">{{ 'Email' | t('snipcart') }}</th>

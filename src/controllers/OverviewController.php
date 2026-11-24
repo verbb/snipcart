@@ -18,8 +18,11 @@ class OverviewController extends BaseCpController
 
     public function actionIndex(): Response
     {
-        if (!Snipcart::$plugin->getSettings()->isConfigured()) {
-            return $this->renderTemplate('snipcart/cp/welcome');
+        // The Overview is a setup checklist until the store's first order.
+        if ($setup = Snipcart::$plugin->getSetup()->getSetupSteps()) {
+            return $this->renderTemplate('snipcart/cp/_setup', [
+                'setup' => $setup,
+            ]);
         }
 
         return $this->renderTemplate('snipcart/cp/index', $this->getOrderAndCustomerSummary());

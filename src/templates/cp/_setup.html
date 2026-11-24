@@ -1,0 +1,79 @@
+{# The Overview until the store's first order. The other tabs need working API keys, so they show from then. #}
+{% extends setup.keys ? 'snipcart/cp/_layout' : '_layouts/cp' %}
+
+{% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+
+{% set isTestMode = setup.testMode %}
+{% set title = craft.snipcart.getPluginName() ~ (isTestMode ? ' 🚧') %}
+{% set selectedTab = 'overview' %}
+{% set crumbs = [
+    { label: craft.snipcart.getPluginName(), url: url('snipcart') },
+] %}
+
+{# The checklist draws its own card, so it sits straight on the page without Craft's content pane around it. #}
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('snipcart-bare-content') %}
+
+{% set canChangeSettings = currentUser.admin and craft.app.config.general.allowAdminChanges %}
+{% set webhookUrl = siteUrl(craft.app.config.general.actionTrigger ~ '/snipcart/webhooks/handle') %}
+
+{% block content %}
+<pk-setup-checklist
+    heading="{{ 'Get Ready to Sell'|t('snipcart') }}"
+    count-label="{{ '{done} of {total} done'|t('snipcart') }}"
+    done-label="{{ '(done)'|t('snipcart') }}"
+    copy-label="{{ 'Copy'|t('snipcart') }}"
+    copied-label="{{ 'Copied'|t('snipcart') }}"
+>
+    <span slot="intro">
+        {{ 'Orders, sales and top customers will show here from your first order. Each step ticks itself off when Snipcart sees it done.'|t('snipcart') }}
+
+        {%- if not canChangeSettings and not (setup.keys and setup.field) %}
+            {{ currentUser.admin
+                ? 'API keys and fields are set up where admin changes are allowed, then deployed.'|t('snipcart')
+                : 'An admin can add the API keys and the Product Details field.'|t('snipcart') }}
+        {%- endif %}
+    </span>
+
+    <pk-setup-step heading="{{ 'Add your API keys'|t('snipcart') }}"{{ setup.keys ? ' done' }}>
+        {% if setup.keys %}
+            {{ isTestMode
+                ? 'Connected with your test keys.'|t('snipcart')
+                : 'Connected with your live keys.'|t('snipcart') }}
+        {% elseif setup.keysFailed %}
+            {{ 'Snipcart didn’t accept these keys, or couldn’t be reached. Check them against API Keys in your Snipcart account.'|t('snipcart') }}
+        {% else %}
+            {{ 'Copy your public and secret keys from API Keys in your Snipcart account, so Craft can show your store’s orders and customers.'|t('snipcart') }}
+        {% endif %}
+
+        {% if canChangeSettings %}
+            <a slot="action" class="btn" href="{{ cpUrl('snipcart/settings/account') }}">
+                {{- setup.keysFailed ? 'Check API keys'|t('snipcart') : 'Add API keys'|t('snipcart') -}}
+            </a>
+            <a slot="change" href="{{ cpUrl('snipcart/settings/account') }}">{{ 'Change'|t('snipcart') }}</a>
+        {% endif %}
+    </pk-setup-step>
+
+    <pk-setup-step heading="{{ 'Add a Product Details field'|t('snipcart') }}"{{ setup.field ? ' done' }}>
+        {% if setup.field %}
+            {{ 'Products get their SKU, price and shipping details from the {name} field.'|t('snipcart', {name: setup.field.name}) }}
+        {% else %}
+            {{ 'Add it to the entries you sell, so each one gets a SKU, price and shipping details.'|t('snipcart') }}
+        {% endif %}
+
+        {% if canChangeSettings %}
+            <a slot="action" class="btn" href="{{ cpUrl('settings/fields/new', {type: 'verbb\\snipcart\\fields\\ProductDetails'}) }}">{{ 'Create field'|t('snipcart') }}</a>
+        {% endif %}
+    </pk-setup-step>
+
+    {# Snipcart only posts to a URL it can reach, so a local site won't tick this until it's public. #}
+    <pk-setup-step heading="{{ 'Connect Snipcart’s webhooks'|t('snipcart') }}"{{ setup.webhook ? ' done' }} snippet="{{ webhookUrl }}">
+        {{ setup.webhook
+            ? 'Snipcart’s webhooks are reaching Craft.'|t('snipcart')
+            : 'Paste this URL into Webhooks in your Snipcart account, so orders reach Craft as they’re placed.'|t('snipcart') }}
+    </pk-setup-step>
+
+    <pk-setup-step heading="{{ 'Place your first order'|t('snipcart') }}" snippet="{{ '{{ craft.snipcart.cartJs() }}' }}">
+        {{ 'Add the cart to your layout with this tag and a buy button to a product page, then check out. A test order counts.'|t('snipcart') }}
+    </pk-setup-step>
+</pk-setup-checklist>
+{% endblock %}

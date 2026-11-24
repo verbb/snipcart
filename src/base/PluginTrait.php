@@ -12,6 +12,7 @@ use verbb\snipcart\services\Fields;
 use verbb\snipcart\services\Notifications;
 use verbb\snipcart\services\Orders;
 use verbb\snipcart\services\Products;
+use verbb\snipcart\services\Setup;
 use verbb\snipcart\services\Shipments;
 use verbb\snipcart\services\Subscriptions;
 use verbb\snipcart\services\Webhooks;
@@ -52,6 +53,7 @@ trait PluginTrait
                 'notifications' => Notifications::class,
                 'orders' => Orders::class,
                 'products' => Products::class,
+                'setup' => Setup::class,
                 'shipments' => Shipments::class,
                 'subscriptions' => Subscriptions::class,
                 'webhooks' => Webhooks::class,
@@ -111,6 +113,11 @@ trait PluginTrait
     public function getProducts(): Products
     {
         return $this->get('products');
+    }
+
+    public function getSetup(): Setup
+    {
+        return $this->get('setup');
     }
 
     public function getShipments(): Shipments

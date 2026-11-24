@@ -47,7 +47,11 @@ class OrdersController extends BaseCpController
 
         $totalPages = ceil($orders->totalItems / $orders->limit);
 
+        // An empty date range only needs a second lookup to tell it apart from a store with no orders yet.
+        $hasOrders = $orders->totalItems > 0 || Snipcart::$plugin->getOrders()->listOrders(1, 1)->totalItems > 0;
+
         return $this->renderTemplate('snipcart/cp/orders/index', [
+            'hasOrders' => $hasOrders,
             'startDate' => $startDate,
             'endDate' => $endDate,
             'pageNumber' => $page,

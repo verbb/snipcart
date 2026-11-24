@@ -2,13 +2,17 @@
 
 {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\SnipcartAsset') %}
 
+{% if not orders %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% set isTestMode = craft.app.plugins.getPlugin('snipcart').getSettings().testMode %}
 {% set title = 'Snipcart Orders' ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'orders' %}
 
 {% block content %}
     <div>
-        <div class="mb-6 p-2 bg-light-grey rounded">
+        <div class="mb-6 p-2 bg-light-grey rounded{% if not hasOrders %} hidden{% endif %}">
             <form action="" method="post">
                 {{ csrfInput() }}
 
@@ -38,11 +42,17 @@
             </form>
         </div>
         
-        <p id="noredirects"{% if orders|length %} class="hidden"{% endif %}>
-            {{- 'There aren’t any orders to show. Time to sell some things!' | t('snipcart') -}}
-        </p>
-
-        {% if orders %}
+        {% if not orders %}
+            {% if hasOrders %}
+                <pk-state-panel heading="{{ 'No orders in these dates' | t('snipcart') }}">
+                    {{ 'Try a wider date range.' | t('snipcart') }}
+                </pk-state-panel>
+            {% else %}
+                <pk-state-panel heading="{{ 'No orders yet' | t('snipcart') }}">
+                    {{ 'Orders placed through Snipcart show here, newest first.' | t('snipcart') }}
+                </pk-state-panel>
+            {% endif %}
+        {% else %}
             <table id="orders" class="data w-full">
                 <thead>
                     <th scope="col">{{ 'Invoice' | t('snipcart') }}</th>

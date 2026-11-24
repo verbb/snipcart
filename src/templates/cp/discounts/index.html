@@ -6,6 +6,10 @@
 {% set title = 'Snipcart Discounts' ~ (isTestMode ? ' 🚧') %}
 {% set selectedTab = 'discounts' %}
 
+{% if not discounts %}
+    {% do view.registerAssetBundle('verbb\\snipcart\\web\\assets\\cp\\PluginKitAsset') %}
+{% endif %}
+
 {% block actionButton %}
     {% if currentUser.can('snipcart-manageDiscounts') %}
         <a id="newdiscountmenubtn" class="btn submit add icon" href="{{ url('snipcart/discounts/new') }}">
@@ -15,11 +19,11 @@
 {% endblock %}
 
 {% block content %}
-    <p id="noredirects"{% if discounts|length %} class="hidden"{% endif %}>
-        {{ 'There aren’t any discounts yet.' | t('snipcart') }}
-    </p>
-
-    {% if discounts|length %}
+    {% if not discounts %}
+        <pk-state-panel heading="{{ 'No discounts yet' | t('snipcart') }}">
+            {{ 'Codes and automatic discounts saved here apply in Snipcart’s cart.' | t('snipcart') }}
+        </pk-state-panel>
+    {% else %}
         <table id="discounts" class="data" style="width: 100%;">
             <thead>
                 <th scope="col">{{ 'Name' | t('snipcart') }}</th>
